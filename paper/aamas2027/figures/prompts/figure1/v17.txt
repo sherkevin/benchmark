@@ -1,0 +1,25 @@
+Create a new complete publication-quality AI architecture figure using Image 1, the current MIRA-Relay v08, as the target. Keep its compact composition, white canvas, pale blue dominant method region, pale cream execution region, calm thin linework, short labels, visible feature/weight/register/vector glyphs, explicit plus operator, and compact selected-only feedback loop. Do not add more modules or prose. Render the entire revised figure, not a pasted patch. This is a real architecture schematic, with no measured performance data.
+
+THE COMPLETE CURRENT METHOD
+The Molecule + Endpoint input feeds Features. Features feeds a locked frozen scorer, producing a three-cell A/B/C base-score vector q⁰. Released counters have one row per provider and n,s columns; they produce the matching residual vector Δ. These vectors enter the circular plus operator, giving q=q⁰+Δ. q enters Select, and a gray externally provided Eligible tools menu just above Select supplies the menu constraint through one short downward arrow. Select emits only tool B. B alone is called. The valid return is read by a frozen Judge, which computes a binary chemical-feedback event identified with B. An error return goes to the separate runtime ledger and creates no chemical label. The selected feedback enters a pending queue. Only at τₜ=t+1+D does Release pass it to Update, which touches only row B of Released counters. The counters→Residual→+→q→Select path already represents its effect on future actions.
+
+PRESERVE THESE CORRECT CONNECTIONS
+Molecule + Endpoint → Features → Frozen scorer → q⁰ → +.
+Released counters → Residual Δ → +.
++ → q → Select → Selected tool B.
+Eligible tools → Select, directly downward; no menu edge to Features.
+Selected tool B → Call → Return.
+Chemical feedback → Selected-only queue → Release → Update → B row of Released counters.
+The Queue→Release edge is purple and dashed, the released Release→Update→counters edges are blue and solid. NO direct Update/counters-to-Select branch and NO extra Later decisions arrow. All existing correct method-region connectors remain intact.
+
+MANDATORY CORRECTION 1: JUDGE DATA FLOW
+In the execution region arrange Return at the left-middle, frozen Judge at the upper-right, Chemical feedback directly below Judge, and Runtime ledger below Return. Connect the valid branch FROM Return TO Judge using a short clean upward-right elbow, labelled "valid". Then draw a downward arrow FROM Judge TO Chemical feedback. Remove the current v08 valid arrow directly from Return into Chemical feedback. Return must have NO arrow to Chemical feedback or queue. Judge must have an actual incoming output from Return, not only an outgoing arrow. Draw Return status → Runtime ledger with edge label "error"; this local branch stops there. The chemical event then has exactly one outgoing connector downward to the queue.
+
+MANDATORY CORRECTION 2: REPRESENTATION NOTATION
+Below the feature grid write exactly "φ(x) ∈ ℝᵈ". The molecule is x, and the feature vector is φ(x). Do not write x∈ℝᵈ. Keep all q and Δ vector symbols and the q=q⁰+Δ equation unchanged. Use only one Frozen scorer label on its object; remove the duplicate label below it.
+
+MANDATORY CORRECTION 3: INPUT MENU IS UNSELECTED
+Keep A, B, C in Eligible tools equally neutral gray. None of these candidate cards is highlighted or marked selected. Only after Select should the output B tool be blue; B remains highlighted in q and the updated counter row and identified on the feedback/queue event. No A or C row updates. Do not fill score or counter cells with actual numeric values.
+
+STYLE
+No new subtitle sentence, no giant title bar; small headings "Inputs", "MIRA-Relay", "Execution". Blue #2E5DA1 for online core/selected action, gray #E9EDF2 for frozen and menu objects, amber #E8A02B for evaluated feedback, muted purple #8C70B5 for pending/release only. Keep white gutters and the current tight proportions. Flat molecule bond sketch and consistent outline symbols, small corner radii, uniform arrows, calm academic sans serif, readable at seven-inch full width. The central computation is the visual focus; explanations belong in the paper caption. Avoid whole-canvas grid lines, crossed-out cards, decorative robots, gradients, shadows, gloss, watermark, charts or invented metrics. Local feature/weight/counter cells are necessary. No old family residual/provider bias, fine-tuned backbone, extra tool call, verifier/refusal, fallback or diagnostic branch, unselected output/label, or queue/score bypass.

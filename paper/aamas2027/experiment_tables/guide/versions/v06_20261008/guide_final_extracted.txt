@@ -1,0 +1,564 @@
+DESIGN GUIDE — CONDITIONAL TARGETS ARE NOT RESULTS                                                                                      v06 / 2026-10-08
+
+
+
+Targets with an Error Model
+Joint distributions, paired errors, and conditional requirements
+M: observations. Blue B: conditional error requirements. T: goals. B is evaluator-side accounting, not a deployable strategy or
+future forecast.
+
+E1 / body Table 3: measured comparison and spread
+Each supported cell contains 4,710 records from 157 unique molecules, five fitted priors, two seed labels, and three delays. SD
+is the spread of five fit-fold means; the same cohort and arrival order recur.
+Table 1: E1. Accuracy (%), descriptive fit SD (pp), and error counts. SD is not a standard error.
+
+
+                                                                                 Natural                 Controlled
+                               Method                                 Acc.         SD      Errors    Acc.      SD      Errors
+                               Random M                              83.76        0.00       765       —        —         —
+                               Fit-only Best Fixed M
+                               Frozen M
+                                                                     88.15
+                                                                     89.81
+                                                                                  0.57
+                                                                                  1.19
+                                                                                             558
+                                                                                             480
+                                                                                                       —
+                                                                                                    73.38
+                                                                                                                —
+                                                                                                              5.83
+                                                                                                                          —
+                                                                                                                        1254
+                                                                                                                                      E D
+                               Online SGD M
+                               LinUCB M
+                                                                     89.21
+                                                                     89.72
+                                                                                  1.01
+                                                                                  1.11
+                                                                                             508
+                                                                                             484
+                                                                                                    84.03
+                                                                                                    81.15
+                                                                                                              5.98
+                                                                                                              5.25
+                                                                                                                         752
+                                                                                                                         888
+                                                                                                                          U         R
+                               BayesianRouter M
+                               Marginal reliability M
+                               MIRA-Relay M
+                                                                     89.53
+                                                                     89.81
+                                                                     89.81
+                                                                                  0.84
+                                                                                  1.19
+                                                                                  0.21
+                                                                                             493
+                                                                                             480
+                                                                                             480
+                                                                                                    80.28
+                                                                                                       —
+                                                                                                    87.56
+                                                                                                              2.64
+                                                                                                                —
+                                                                                                              1.86
+                                                                                                                      A S929
+                                                                                                                          —
+                                                                                                                         586
+                               Retrospective Best Fixed M            90.45        0.00       450       —
+                                                                                                               E—         —
+
+                                                                                                       M
+                                                                                     T
+MIRA, Frozen, SGD and LinUCB seed 0/1 vectors are identical. Random’s zero fit SD reflects reused decisions, not zero uncertainty. The fixed-provider
+control is not the per-molecule oracle.
+
+                                                                                    O
+Table 2: E1. Paired error changes relative to the same Frozen decisions (M).
+
+                                                                                 / N
+                               Condition
+                                                   E
+                                                  Method
+
+                                                  D
+                                                                       Rescued           Harmed     Both wrong       Net (pp)
+                               Natural
+                                                I Online SGD                  84            112              396       -0.59
+
+
+
+                                              GU
+                               Natural            LinUCB                      24             28              456       -0.08
+                               Natural            BayesianRouter              92            105              388       -0.28
+                               Natural            MIRA-Relay                  82             82              398       +0.00
+
+
+                           ET  Controlled
+                               Controlled
+                                                  Online SGD
+                                                  LinUCB
+                                                                             720
+                                                                             414
+                                                                                            218
+                                                                                             48
+                                                                                                             534
+                                                                                                             840
+                                                                                                                      +10.66
+                                                                                                                       +7.77
+
+
+
+            R            G     Controlled
+                               Controlled
+                                                  BayesianRouter
+                                                  MIRA-Relay
+                                                                             492
+                                                                             780
+                                                                                            167
+                                                                                            112
+                                                                                                             762
+                                                                                                             474
+                                                                                                                       +6.90
+                                                                                                                      +14.18
+
+
+
+         TA
+Rescued = method correct / Frozen wrong; harmed = method wrong / Frozen correct. Natural Relay’s 82 rescues and 82 harms cancel. Controlled
+Relay’s 780 rescues exceed its 112 harms. Neutral action changes are not rescues.
+
+Joint provider difficulty: preserve the actual dependence
+Table 3: Native joint correctness vectors (M): one bit per provider, 1 = correct.
+
+
+                      Bits     Dev.      Fresh      Bits     Dev.     Fresh        Bits     Dev.     Fresh    Bits     Dev.     Fresh
+                      0000      104           7     0100         3           1     1000       20        3     1100       13        3
+                      0001        8           3     0101         2           0     1001        0        0     1101        1        0
+                      0010        1           0     0110         0           0     1010        2        1     1110       65       21
+                      0011       15           1     0111         9           7     1011        8        0     1111      471      110
+
+Bit order: logreg / MLP / random forest / graph. Development: 471 all-correct, 147 mixed, 104 all-wrong. Fresh: 110 / 40 / 7. Native oracle: 618/722
+and 150/157. Independent provider-error draws would distort this structure. Controlled flips require a separate panel: its recorded oracle is 4572/4710.
+
+
+
+
+M: measured   B: conditional budget   T: research objective; no future CI                                                                             1
+DESIGN GUIDE — CONDITIONAL TARGETS ARE NOT RESULTS                                                                                       v06 / 2026-10-08
+
+
+
+E1–E2 / body Table 4 and Figure 3: one shared budget
+Let c be a recorded Relay correctness bit, h indicate Relay wrong/Frozen correct, and r indicate Relay correct/Frozen wrong. A
+conditional repair budget is
+                                               c′ = c + αh − β r,   0 ≤ α, β ≤ 1.
+Case: for a harmed decision (c, h, r) = (0, 1, 0), α = .6 gives fractional score .6; for a rescued decision (1, 0, 1), β = .02 gives .98. These are budget
+weights, not binary predictions. Assumption: the same fractions apply uniformly within every observed error stratum, in both conditions. All other
+records are unchanged. Altered future feedback would require a full causal policy run.
+Table 4: E1 conditional response surface (B), including null and adverse outcomes.
+
+
+                                                                                     Natural            Controlled
+                                 Scenario                 α(%)       β (%)     Acc.(%)        ∆(pp)   Acc.(%)     ∆(pp)
+                                 Observed M                0.00       0.00          89.81     +0.00     87.56     +0.00
+                                 Loss only B               0.00      10.00          89.63     -0.17     85.90     -1.66
+                                 Blunt repair B           30.00      10.00          90.16     +0.35     86.62     -0.94
+                                 Selective repair B
+                                 v05 E1 inverse B
+                                                          60.00
+                                                          59.67
+                                                                      2.00
+                                                                      1.13
+                                                                                    90.82
+                                                                                    90.83
+                                                                                              +1.01
+                                                                                              +1.02
+                                                                                                        88.65
+                                                                                                        88.79
+                                                                                                                  +1.10
+                                                                                                                  +1.23
+                                                                                                                                    E D
+                                                                                                                      U           R
+Delta is relative to recorded Relay, not Frozen. The v05 inverse solves exactly for its former +48/+58 gains: prevent 59.67% of harms while losing only
+
+                                                                                                                    S
+1.13% of rescues. These demanding selectivity requirements have not been demonstrated. B has no target CI or new seed distribution.
+Table 5: E1 stratum profiles from the same ledger: M and selective-repair B.
+                                                                                                                  A
+                                                                                                            E
+                                                        Natural accuracy (%)                          M
+                                                                                     Controlled accuracy (%)
+                                          Stratum          M                   B
+                                                                                 OT     M                     B
+                                          delay 0
+                                          delay 1
+                                          delay 4
+                                                        89.68
+                                                        89.68
+                                                        90.06
+                                                                                N
+                                                                            90.72
+
+                                                                              /
+                                                                            90.79
+                                                                            90.95
+                                                                                     87.01
+                                                                                     87.90
+                                                                                     87.77
+                                                                                                          88.14
+                                                                                                          89.09
+                                                                                                          88.74
+                                          fold 0
+
+                                                  DE    90.02               91.90    89.38                90.62
+                                          fold 1
+                                                I       89.60               89.83    84.93                86.03
+
+
+
+                                              GU
+                                          fold 2        89.60               90.83    86.41                87.32
+                                          fold 3        90.02               90.36    88.96                89.30
+                                          fold 4        89.81               91.16    88.11                90.00
+
+
+                            ET
+Fold = fitted-prior condition, not a separate confirmation sample. Delay counts are 1570 each; fold counts are 942 each. Natural delay means are
+
+                          G
+nonmonotone and remain so; no curve was smoothed to imply that shorter delay always helps. Conditional fit SD is a spread of transformed recorded
+strata, not predictive uncertainty.
+
+            R
+Table 6: E2 weighting consistency, computed from the E1 molecule ledger.
+
+
+         TA                    Condition       Status                   Pooled–F       Scaffold–F     Scaffold–old Perm.
+                               Natural         Recorded M                    +0.00            +0.10                -0.30
+                               Natural         v05 E1 inverse B              +1.02            +0.84                +0.44
+                               Controlled      Recorded M                   +14.18           +14.40               +15.67
+                               Controlled      v05 E1 inverse B             +15.41           +15.30               +16.57
+
+All contrasts are pp. v05 E1 means imply +0.44pp against the old natural permutation, not its separately chosen +1.00pp. A future attribution result
+MUST rerun that candidate’s own matched permutation; holding the old comparator fixed is only budget accounting, not a causal estimate of the new
+mechanism.
+
+
+
+
+M: measured   B: conditional budget   T: research objective; no future CI                                                                               2
+DESIGN GUIDE — CONDITIONAL TARGETS ARE NOT RESULTS                                                                                      v06 / 2026-10-08
+
+
+
+E3 / body Table 5: cold-start errors, not just a mean
+The development OOF folds partition 722 distinct molecules. Across the native panel, only mixed molecules can change correct-
+ness when the provider menu is fixed. For this cohort,
+                                                                                471 + 147q
+                                                               accuracy =                  ,
+                                                                                   722
+Case: q is mixed-molecule selection accuracy. Corrected Frozen has q = 108/147 = 73.47%, giving 579/722=80.19%. Fresh has a different equation
+(110 + 40q)/157; Relay’s q = 77.50% gives 89.81%. The cohort mix explains much of the level difference, not superior adaptation alone.
+Table 7: E3 measured error composition by held-out development fold (M).
+
+
+                                   Fold      Molecules       Correct        All wrong     Avoidable       Mixed correct
+                                       0            145          108                28             9      21/30
+                                       1            145          111                25             9      25/34
+                                       2            144          119                19             6      19/25
+                                       3            144          125                12             7      19/26
+                                       4            144          116                20             8      24/32
+
+                                                                                                                                    E D
+                                                                                                                                  R
+All-wrong errors cannot be fixed by selection. Corrected has only 39 avoidable unique errors: 9/9/6/7/8. Its remaining rank gaps do not calibrate a
+probability of rescue.
+
+                                                                                                                         U
+Table 8: E3 comparable prior attempts: actual paired negative results (M).
+
+
+                                                                                                                     A S
+                                       Candidate        Acc.(%)        Rescued       Harmed
+                                                                                                               E
+                                                                                                 Fold net counts
+                                       BCE/seed0            78.53              16          28
+                                                                                                       M
+                                                                                                 -6, -2, -3, +1, -2
+                                       BCE/seed1
+                                       BT/seed0
+                                       BT/seed1
+                                                            78.95
+                                                            78.81
+                                                            78.25
+                                                                               17
+                                                                               14
+                                                                                9
+                                                                                  OT       26
+                                                                                           24
+                                                                                           23
+                                                                                                 +2, -5, +0, +1, -7
+                                                                                                 -7, +1, -2, -1, -1
+                                                                                                 +1, -6, -1, -1, -7
+
+
+                                                                               / N
+All recorded leave-one-fold-out effects are negative. Do not replace these with two tightly spaced winning future seeds. Future training-seed uncertainty
+is uncalibrated.
+
+
+                                                   DE
+                                                 I
+E4 / body Table 6: keep prior and update effects separate
+
+
+                                               GU
+Table 9: E4 measured prior by update factorial (M), 2166 records per cell.
+
+
+
+
+                            ET             Prior + update              Acc.(%)
+                                                                              Natural
+                                                                                    Errors
+                                                                                                  Controlled
+                                                                                                Acc.(%)     Errors
+
+
+            R             G                raw + frozen
+                                           raw + marginal
+                                                                            79.36
+                                                                            79.18
+                                                                                         447
+                                                                                         451
+                                                                                                  69.11
+                                                                                                  77.29
+                                                                                                               669
+                                                                                                               492
+
+
+         TA                                raw + query
+                                           corrected + frozen
+                                           corrected + marginal
+                                                                            78.49
+                                                                            80.19
+                                                                            79.82
+                                                                                         466
+                                                                                         429
+                                                                                         437
+                                                                                                  75.95
+                                                                                                  63.30
+                                                                                                  78.30
+                                                                                                               521
+                                                                                                               795
+                                                                                                               470
+                                           corrected + query                80.33        426      78.67        462
+
+Corrected/query vs corrected/frozen: natural rescue/harm=26/23 (net+3), controlled=425/92 (net+333). A better prior cannot count as update benefit.
+Controlled provider flips change the joint error partition; the native 471/147/104 partition must not be reused there.
+Table 10: Goals translated into error requirements (T), not candidate forecasts.
+
+
+                     Component        Goal             Added correct         Required mixed success         Minimum requirement
+                     E3 prior T       591/722                       +12      120/147 = 81.63%               12 net rescues from 39
+                     E4 query T       1770/2166                     +30      357/441 = 80.95%               30 net rescues from 114
+
+E3/E4 have different comparators; these gains cannot be added into a future E1 result. BCE seed0 needs at least 24/28 harmful switches repaired to
+reach 591 while retaining its 16 rescues. Query has only 23 harms: fixing all reaches 1763, so at least seven additional rescues are needed for 1770. Of
+114 avoidable query errors, 109 had a released correct-provider receipt. This is provider-level coverage, not local support or a bound on earlier-release
+benefit. New prior, own Frozen, new update and their combination need a common evaluation contract.
+
+
+M: measured   B: conditional budget   T: research objective; no future CI                                                                              3
+DESIGN GUIDE — CONDITIONAL TARGETS ARE NOT RESULTS                                                                                v06 / 2026-10-08
+
+
+
+E5 / body Table 7: matched cost and feasibility
+Costs are the mean of 30 recorded stream-level p95 kernel times on macOS arm64. They exclude encoding, queue, I/O and
+end-to-end tool time. They do not describe A800 performance.
+Table 11: E5 measured kernel costs (M) and research caps (T), microseconds.
+
+
+                                                                              Natural          Controlled
+                                            Method                     Select     Update     Select   Update
+                                            Frozen M                   15.89         1.31    17.88      1.50
+                                            Online SGD M               14.08        19.37    14.29     20.02
+                                            LinUCB M                  128.63        90.90   128.36     92.32
+                                            BayesianRouter M          133.65        88.96   137.34     92.55
+                                            MIRA-Relay M               27.21         2.81    32.47      3.46
+                                            Candidate cap T             ≤ 30          ≤5      ≤ 35       ≤5
+
+
+
+                                                                                                                               E D
+T is a feasibility requirement, not an estimated time. More capacity or a changed representation requires real remeasurement. Live peak memory and
+end-to-end latency have not been measured; no target SD is imputed.
+
+E6 / body Table 8: coverage must match within each fitted policy
+                                                                                                                       U     R
+Table 12: E6 actual fit-level coverage and available hindsight swaps (M).
+
+                                                                                                                   A S
+                              Fit      Accepted       Wrong       Refused       Refused correct   Swap cap  E     Acc.(%)
+                                0              119           5           38                  26       M     5        95.80
+                                1
+                                2
+                                               134
+                                               137
+                                                             7
+                                                             8
+                                                                         23
+                                                                         20
+                                                                                   OT        11
+                                                                                              9
+                                                                                                            7
+                                                                                                            8
+                                                                                                                     94.78
+                                                                                                                     94.16
+                                3
+                                4
+                                               137
+                                               136
+                                                             8
+                                                             8
+                                                                         20
+                                                                         21
+                                                                                / N           9
+                                                                                             10
+                                                                                                            8
+                                                                                                            8
+                                                                                                                     94.16
+                                                                                                                     94.12
+
+
+
+                                                    DE
+785 records reuse 157 molecules under five fitted policies. Accepted counts 119/134/137/137/136 must each remain fixed in a matched-coverage
+
+                                                  I
+comparison. Refused correctness is obtained from the matching always-accept evaluator ledger, not imputed from null answer fields. Swap caps use
+
+
+
+                                                GU
+truth and do not prove a legal gate can rank them.
+Table 13: E6 same-coverage conditional error and utility budget (B).
+
+
+
+                           ET         Status                     Wrong accepted         Accepted acc.(%)        Utility
+
+
+
+           R             G            Recorded M
+                                      4 favorable swaps B
+                                                                                  36
+                                                                                  32
+                                                                                                  94.57
+                                                                                                  95.17
+                                                                                                            -0.0947
+                                                                                                            -0.0896
+
+
+        TA                            8 favorable swaps B                         28              95.78     -0.0845
+
+Each favorable swap replaces an accepted-wrong with a refused-correct output within the same fit; adverse swaps subtract from the gain. Eight net
+swaps are 22.22% of current accepted errors. Their allocation and ranking quality must be observed, not invented. Utility=-(W+.25R+.01C)/N, with
+C=N=785. New routing changes these outputs and requires a new gate evaluation.
+
+A joint success criterion
+A scientifically useful improvement should reduce harmful switches while retaining drift recovery, beat its own Frozen and
+matched mechanism controls, and satisfy the kernel budget at the same time. E6 remains a separately frozen gate unless its joint
+routing outputs are evaluated. Six independently improved means do not establish one successful candidate.
+
+
+
+
+M: measured   B: conditional budget    T: research objective; no future CI                                                                      4
+DESIGN GUIDE — CONDITIONAL TARGETS ARE NOT RESULTS                                                                                  v06 / 2026-10-08
+
+
+
+Distribution checks for the scientist
+
+   Check                              Reference or expected signature                             Failure interpretation
+   Provider dependence                Preserve joint 4-bit patterns; split all-correct, mixed,    Independent provider errors overstate head-
+                                      all-wrong                                                   room
+   Paired errors                      Report rescue/harm/both-wrong and neutral action            A mean gain alone hides offsetting damage
+                                      changes
+   Fitted priors                      Use paired five-fit profiles; retain all seed results       Seed duplicates do not add evidence
+   Delay                              No same-decision feedback before selection;                 Early improvement suggests leakage or
+                                      matched prefix before release                               changed prior
+   Drift phase                        Compare pre/post error trajectory and released af-          A aggregate stress gain may hide slow re-
+                                      fected receipts                                             covery
+   Mechanism                          Candidate vs its own Frozen and its own permutation         A gain against an old comparator is not at-
+                                                                                                  tribution
+   Coverage                           Match accepted counts in each fit, not only their sum       More refusal or changed cohort confounds
+
+   Uncertainty                        Separate fit variation, new arrivals, new scaffolds,
+                                      random gate draws
+                                                                                                  accuracy
+
+
+                                                                                                                                E D
+                                                                                                  Fixed-trace reweighting is not a new trajec-
+                                                                                                  tory CI
+
+
+                                                                                                                  U           R
+What has high-confidence support, and what still needs evidence
+                                                                                                              A S
+Verified empirical structure: recorded denominators, provider-error overlap, paired rescue/harm, fit/delay/phase strata, source
+hashes and table identities. These are finite-cohort facts, not generalization estimates.               E
+                                                                                                 M
+Exact conditional requirements: given uniform α/β response, E1 pooled, scaffold and stratum budgets are calculated from
+
+                                                                                T
+the same recorded molecules. E6 utility follows its within-fit swap contract. Conditional validity does not establish attainable
+selectivity.
+                                                                               O
+                                                                              N
+Unresolved prediction: no calibrated future outcome distribution, seed SD or predictive CI exists for an unspecified new can-
+
+                                                                            /
+didate. Null and adverse effects remain plausible; the previous learned priors actually underperformed. The table should guide
+
+                                                   E
+which mechanism to repair, not imply certainty of winning.
+
+Before filling a prospective result matrix
+                                                  D
+                                                I
+                                              GU
+Freeze one candidate: features, prior, parameters, update rule, selected-only feedback, release clock, failure semantics and gate.
+Then match its own Frozen, online baselines and attribution controls. New arrival-order uncertainty requires full adaptive tra-
+jectories; unseen-scaffold generalization requires untouched data. The 157 inspected molecules cannot become a new unseen
+                            T
+confirmation cohort. Write a calibrated predictive interval only after its model and coverage have been justified.
+
+                           E
+                         G
+Evidence and reproducibility
+
+           R
+Measured reference: distribution_audit_v1/ contains 16 CSVs, 19 hashed sources, and an independent standard-library extractor. Actual E1
+
+         A
+records include 65,940 method/configuration/molecule rows; E2 includes 28,260. Their Local and Relay terminal vectors match completely. All seed
+
+        T
+dependencies are retained. conditional_requirements.json stores the response assumptions, fractional budget sums, fit/delay profiles, scaffold
+contrasts, and per-fit swap limits. build_distribution_guide.py performs no training, policy replay, model inference or random sampling.
+This Guide maps E1–E6 to body Tables 3–8 and Figure 3; the active review standard’s E6 untouched-confirmation gate is a different identifier. v01–v05
+remain archived; v05 passed arithmetic/visual checks but failed scientific target confidence. Its independently chosen means and smooth delay goals
+have been superseded. The real manuscript and measured-result preview remain separate and unchanged.
+
+
+
+
+M: measured   B: conditional budget   T: research objective; no future CI                                                                          5
+

@@ -1,0 +1,439 @@
++ set -o errexit
++ PIP_SOURCE='http://yum.tbsite.net/pypi/simple/ --trusted-host yum.tbsite.net --extra-index-url http://yum.tbsite.net/aliyun-pypi/simple/ --extra-index-url http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/'
++ AI_SCHEDULER_MODULE=ai_scheduler
++ AI_SCHEDULER_WRAPPER_MODULE=ai_scheduler.wrapper
++ DEPS_MODULE_LIST=("kazoo==2.9.0" "psutil==5.9.5" "pynvml==12.0.0" "tornado==6.1" "transitions==0.9.0" "thrift==0.16.0" "GPUtil==1.4.0" "requests==2.22.0" "pyodps==0.12.3" "openlm-hub>=0.1.17" "alluxio-pfs>=0.1.6a17" "http://sample-lake.cn-beijing.oss.aliyuncs.com/paimon_test/alibabacloud_metastore20250609_inner-1.0.3-py3-none-any.whl" "pypaimon_ali==1.5.dev0" "https://nebula-cv.cn-zhangjiakou.oss.aliyuncs.com/docker_image/mdl_packages/mdl-0.3.4-py3-none-any.whl" "http://nebula-cv.cn-zhangjiakou.oss.aliyuncs.com/docker_image/common_io/release/common_io-0.8.26-cp310-cp310-linux_x86_64.whl")
++ DEPS_WHEEL_LIST=("http://ados-nebula-v2.cn-zhangjiakou.oss.aliyuncs.com/nebula-one-proxy/ai_scheduler/kmontitor_client-0.0.0-py3-none-any.whl" "http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/pykmonitor/2.2.1/pykmonitor-2.2.1-py3-none-any.whl")
++ [[ '' != \1 ]]
++ DEPS_MODULE_LIST+=("http://yum.tbsite.net/aliyun-pypi/packages/lake-py-lib/lake_py_lib-0.1.16-py3.10-none-any.whl")
++ AI_SCHEDULER_VERSION=--ai_scheduler_url=http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/ai-scheduler/0.10.42+d0e7369/ai_scheduler-0.10.42+d0e7369-py3-none-any.whl
++ AI_SCHEDULER_VERSION_PREFIX=--ai_scheduler_url=
++ [[ --ai_scheduler_url=http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/ai-scheduler/0.10.42+d0e7369/ai_scheduler-0.10.42+d0e7369-py3-none-any.whl == \-\-\a\i\_\s\c\h\e\d\u\l\e\r\_\u\r\l\=* ]]
++ AI_SCHEDULER_WHEEL=http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/ai-scheduler/0.10.42+d0e7369/ai_scheduler-0.10.42+d0e7369-py3-none-any.whl
++ shift
++ echo http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/ai-scheduler/0.10.42+d0e7369/ai_scheduler-0.10.42+d0e7369-py3-none-any.whl
++ echo 'PATH: /usr/local/openmpi/bin:/opt/rh/gcc-toolset-13/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/conda/bin:/usr/local/nvidia/bin/:/usr/local/cuda/bin:/usr/local/cmake-3.30.2-linux-x86_64/bin:/usr/local/ninja:/home/admin/.local/bin:/usr/share/Modules/bin:/usr/local/openmpi/bin:/opt/rh/gcc-toolset-13/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/conda/bin:/usr/local/nvidia/bin/:/usr/local/cuda/bin:/usr/local/cmake-3.30.2-linux-x86_64/bin:/usr/local/ninja:/home/admin/.local/bin:/usr/local/openmpi/bin:/opt/rh/gcc-toolset-13/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/conda/bin:/usr/local/nvidia/bin/:/usr/local/cuda/bin:/usr/local/cmake-3.30.2-linux-x86_64/bin:/usr/local/ninja:/home/admin/.local/bin'
++ Main
++ InstallAiScheduler
++ '[' -n 3.10.13 ']'
++ UnsetIfNotInUserEnv TCMALLOC_MAX_TOTAL_THREAD_CACHE_BYTES
++ local var_name=TCMALLOC_MAX_TOTAL_THREAD_CACHE_BYTES
++ [[ -z TCMALLOC_MAX_TOTAL_THREAD_CACHE_BYTES ]]
++ IsInUserDefineEnv TCMALLOC_MAX_TOTAL_THREAD_CACHE_BYTES
++ local target=TCMALLOC_MAX_TOTAL_THREAD_CACHE_BYTES
++ local list=
++ [[ -z '' ]]
++ return 1
++ unset TCMALLOC_MAX_TOTAL_THREAD_CACHE_BYTES
++ UnsetIfNotInUserEnv TCMALLOC_AGGRESSIVE_DECOMMIT
++ local var_name=TCMALLOC_AGGRESSIVE_DECOMMIT
++ [[ -z TCMALLOC_AGGRESSIVE_DECOMMIT ]]
++ IsInUserDefineEnv TCMALLOC_AGGRESSIVE_DECOMMIT
++ local target=TCMALLOC_AGGRESSIVE_DECOMMIT
++ local list=
++ [[ -z '' ]]
++ return 1
++ unset TCMALLOC_AGGRESSIVE_DECOMMIT
++ UnsetIfNotInUserEnv MALLOC_ARENA_MAX
++ local var_name=MALLOC_ARENA_MAX
++ [[ -z MALLOC_ARENA_MAX ]]
++ IsInUserDefineEnv MALLOC_ARENA_MAX
++ local target=MALLOC_ARENA_MAX
++ local list=
++ [[ -z '' ]]
++ return 1
++ unset MALLOC_ARENA_MAX
++ UnsetIfNotInUserEnv LD_PRELOAD
++ local var_name=LD_PRELOAD
++ [[ -z LD_PRELOAD ]]
++ IsInUserDefineEnv LD_PRELOAD
++ local target=LD_PRELOAD
++ local list=
++ [[ -z '' ]]
++ return 1
++ unset LD_PRELOAD
++ export LD_LIBRARY_PATH=/opt/conda/envs/python3.10.13/lib/python3.10/site-packages/third_party/swift/lib/:/opt/conda/envs/python3.10.13/lib/python3.10/site-packages/:/usr/local/openmpi/lib:/opt/rh/gcc-toolset-13/root/usr/lib64:/opt/rh/gcc-toolset-13/root/usr/lib:/usr/local/lib64:/lib64:/usr/local/gcc75/lib:/usr/local/gcc75/lib64::/usr/local/nvidia/lib:/usr/local/nvidia/lib64:/usr/local/cuda/lib64:/usr/local/cuda/targets/x86_64-linux/lib:/usr/lib64:/pu:/opt/taobao/java/jre/lib/amd64/server:/apsara/alicpp/built/gcc-4.9.2/glog-0.3.4/lib:/apsara/alicpp/built/gcc-4.9.2/gflags-2.1.2/lib:/apsara/alicpp/built/gcc-4.9.2/protobuf-2.4.1.ali/lib:/apsara/alicpp/built/gcc-4.9.2/odps-cryptography-1.0.0/lib:/apsara/alicpp/built/gcc-4.9.2/boost-1.58.0.fix.thread/lib:/apsara/alicpp/built/gcc-4.9.2/openssl-1.0.2a/lib:/apsara/alicpp/built/gcc-4.9.2/mysql-connector-c-6.1.6/lib:/apsara/alicpp/built/gcc-4.9.2/arrow-0.16.0/lib64:/apsara/alicpp/built/gcc-4.9.2/bzip2-1.0.6/lib64:/apsara/alicpp/built/gcc-4.9.2/zstd-1.4.4/lib:/apsara/alicpp/built/gcc-4.9.2/libevent-2.0.22.stable/lib64:/worker:/worker/lib:/opt/conda/envs/python3.10.13/lib
++ LD_LIBRARY_PATH=/opt/conda/envs/python3.10.13/lib/python3.10/site-packages/third_party/swift/lib/:/opt/conda/envs/python3.10.13/lib/python3.10/site-packages/:/usr/local/openmpi/lib:/opt/rh/gcc-toolset-13/root/usr/lib64:/opt/rh/gcc-toolset-13/root/usr/lib:/usr/local/lib64:/lib64:/usr/local/gcc75/lib:/usr/local/gcc75/lib64::/usr/local/nvidia/lib:/usr/local/nvidia/lib64:/usr/local/cuda/lib64:/usr/local/cuda/targets/x86_64-linux/lib:/usr/lib64:/pu:/opt/taobao/java/jre/lib/amd64/server:/apsara/alicpp/built/gcc-4.9.2/glog-0.3.4/lib:/apsara/alicpp/built/gcc-4.9.2/gflags-2.1.2/lib:/apsara/alicpp/built/gcc-4.9.2/protobuf-2.4.1.ali/lib:/apsara/alicpp/built/gcc-4.9.2/odps-cryptography-1.0.0/lib:/apsara/alicpp/built/gcc-4.9.2/boost-1.58.0.fix.thread/lib:/apsara/alicpp/built/gcc-4.9.2/openssl-1.0.2a/lib:/apsara/alicpp/built/gcc-4.9.2/mysql-connector-c-6.1.6/lib:/apsara/alicpp/built/gcc-4.9.2/arrow-0.16.0/lib64:/apsara/alicpp/built/gcc-4.9.2/bzip2-1.0.6/lib64:/apsara/alicpp/built/gcc-4.9.2/zstd-1.4.4/lib:/apsara/alicpp/built/gcc-4.9.2/libevent-2.0.22.stable/lib64:/worker:/worker/lib:/opt/conda/envs/python3.10.13/lib
+++ nvidia-smi --query-gpu=driver_version --format=csv,noheader
+++ echo error
++ DRIVER_VERSION=error
++ '[' '!' -z error ']'
++ '[' e = 4 ']'
+++ ibv_devices
+++ grep --color=auto mlx
+++ wc -l
++ NET_COUNT=0
++ '[' 0 -eq 4 ']'
++ echo 'LD_PRELOAD: '
++ echo 'LD_LIBRARY_PATH: /opt/conda/envs/python3.10.13/lib/python3.10/site-packages/third_party/swift/lib/:/opt/conda/envs/python3.10.13/lib/python3.10/site-packages/:/usr/local/openmpi/lib:/opt/rh/gcc-toolset-13/root/usr/lib64:/opt/rh/gcc-toolset-13/root/usr/lib:/usr/local/lib64:/lib64:/usr/local/gcc75/lib:/usr/local/gcc75/lib64::/usr/local/nvidia/lib:/usr/local/nvidia/lib64:/usr/local/cuda/lib64:/usr/local/cuda/targets/x86_64-linux/lib:/usr/lib64:/pu:/opt/taobao/java/jre/lib/amd64/server:/apsara/alicpp/built/gcc-4.9.2/glog-0.3.4/lib:/apsara/alicpp/built/gcc-4.9.2/gflags-2.1.2/lib:/apsara/alicpp/built/gcc-4.9.2/protobuf-2.4.1.ali/lib:/apsara/alicpp/built/gcc-4.9.2/odps-cryptography-1.0.0/lib:/apsara/alicpp/built/gcc-4.9.2/boost-1.58.0.fix.thread/lib:/apsara/alicpp/built/gcc-4.9.2/openssl-1.0.2a/lib:/apsara/alicpp/built/gcc-4.9.2/mysql-connector-c-6.1.6/lib:/apsara/alicpp/built/gcc-4.9.2/arrow-0.16.0/lib64:/apsara/alicpp/built/gcc-4.9.2/bzip2-1.0.6/lib64:/apsara/alicpp/built/gcc-4.9.2/zstd-1.4.4/lib:/apsara/alicpp/built/gcc-4.9.2/libevent-2.0.22.stable/lib64:/worker:/worker/lib:/opt/conda/envs/python3.10.13/lib'
++ python3_bin_path=/opt/conda/envs/python3.10.13/bin/python
++ '[' -n /opt/conda/envs/python3.10.13/bin/python ']'
++ EnablePipDragonfly /opt/conda/envs/python3.10.13/bin/python
++ python3_bin_path=/opt/conda/envs/python3.10.13/bin/python
++ '[' -n 1 ']'
++ rm -rf /home/staragent/plugins
++ wget -q https://ados-nebula-hz.cn-hangzhou.oss.aliyuncs.com/nebula-one-proxy/resources/sa_install.sh
++ bash sa_install.sh
+Cann't access socket file [/home/staragent/data/core.sock].
+pluginctl: illegal option -- e
+must specify -p params
+System has not been booted with systemd as init system (PID 1). Can't operate.
+Failed to connect to bus: Host is down
+Synchronizing state of staragentctl.service with SysV service script with /usr/lib/systemd/systemd-sysv-install.
+Executing: /usr/lib/systemd/systemd-sysv-install enable staragentctl
+Created symlink /etc/systemd/system/multi-user.target.wants/staragentctl.service → /etc/systemd/system/staragentctl.service.
+System has not been booted with systemd as init system (PID 1). Can't operate.
+Failed to connect to bus: Host is down
+System has not been booted with systemd as init system (PID 1). Can't operate.
+Failed to connect to bus: Host is down
++ rm -f sa_install.sh
++ export PIP_DRAGONFLY_ENABLED=1
++ PIP_DRAGONFLY_ENABLED=1
++ export PIP_DRAGONFLY_MIN_SIZE_MB=0
++ PIP_DRAGONFLY_MIN_SIZE_MB=0
++ /opt/conda/envs/python3.10.13/bin/python -m pip install pip-plugin-dragonfly -i http://yum.tbsite.net/aliyun-pypi/simple/ --trusted-host yum.tbsite.net --user
+  WARNING: The scripts dragonfly-pip-install, dragonfly-pip-uninstall and pip-dragonfly are installed in '/root/.local/bin' which is not on PATH.
+  Consider adding this directory to PATH or, if you prefer to suppress this warning, use --no-warn-script-location.
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
++ /root/.local/bin/dragonfly-pip-install
++ echo 'install return code: 1'
++ /opt/conda/envs/python3.10.13/bin/python -m pip install --upgrade pip==24.0
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
++ /opt/conda/envs/python3.10.13/bin/python -m pip install --upgrade --force-reinstall --no-deps http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/ai-scheduler/0.10.42+d0e7369/ai_scheduler-0.10.42+d0e7369-py3-none-any.whl
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+
+[notice] A new release of pip is available: 24.0 -> 26.2.1
+[notice] To update, run: /opt/conda/envs/python3.10.13/bin/python -m pip install --upgrade pip
++ InstallPy3Deps /opt/conda/envs/python3.10.13/bin/python
++ python3_bin_path=/opt/conda/envs/python3.10.13/bin/python
++ for wheel in "${DEPS_WHEEL_LIST[@]}"
++ /opt/conda/envs/python3.10.13/bin/python -m pip install http://ados-nebula-v2.cn-zhangjiakou.oss.aliyuncs.com/nebula-one-proxy/ai_scheduler/kmontitor_client-0.0.0-py3-none-any.whl -i http://yum.tbsite.net/pypi/simple/ --trusted-host yum.tbsite.net --extra-index-url http://yum.tbsite.net/aliyun-pypi/simple/ --extra-index-url http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+
+[notice] A new release of pip is available: 24.0 -> 26.2.1
+[notice] To update, run: /opt/conda/envs/python3.10.13/bin/python -m pip install --upgrade pip
++ for wheel in "${DEPS_WHEEL_LIST[@]}"
++ /opt/conda/envs/python3.10.13/bin/python -m pip install http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/pykmonitor/2.2.1/pykmonitor-2.2.1-py3-none-any.whl -i http://yum.tbsite.net/pypi/simple/ --trusted-host yum.tbsite.net --extra-index-url http://yum.tbsite.net/aliyun-pypi/simple/ --extra-index-url http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.
+ai-scheduler 0.10.42+d0e7369 requires alluxio-pfs==0.1.6a17, which is not installed.
+ai-scheduler 0.10.42+d0e7369 requires thrift==0.16.0, but you have thrift 0.10.0 which is incompatible.
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+
+[notice] A new release of pip is available: 24.0 -> 26.2.1
+[notice] To update, run: /opt/conda/envs/python3.10.13/bin/python -m pip install --upgrade pip
++ for module in "${DEPS_MODULE_LIST[@]}"
++ /opt/conda/envs/python3.10.13/bin/python -m pip install kazoo==2.9.0 -i http://yum.tbsite.net/pypi/simple/ --trusted-host yum.tbsite.net --extra-index-url http://yum.tbsite.net/aliyun-pypi/simple/ --extra-index-url http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+
+[notice] A new release of pip is available: 24.0 -> 26.2.1
+[notice] To update, run: /opt/conda/envs/python3.10.13/bin/python -m pip install --upgrade pip
++ for module in "${DEPS_MODULE_LIST[@]}"
++ /opt/conda/envs/python3.10.13/bin/python -m pip install psutil==5.9.5 -i http://yum.tbsite.net/pypi/simple/ --trusted-host yum.tbsite.net --extra-index-url http://yum.tbsite.net/aliyun-pypi/simple/ --extra-index-url http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+
+[notice] A new release of pip is available: 24.0 -> 26.2.1
+[notice] To update, run: /opt/conda/envs/python3.10.13/bin/python -m pip install --upgrade pip
++ for module in "${DEPS_MODULE_LIST[@]}"
++ /opt/conda/envs/python3.10.13/bin/python -m pip install pynvml==12.0.0 -i http://yum.tbsite.net/pypi/simple/ --trusted-host yum.tbsite.net --extra-index-url http://yum.tbsite.net/aliyun-pypi/simple/ --extra-index-url http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+
+[notice] A new release of pip is available: 24.0 -> 26.2.1
+[notice] To update, run: /opt/conda/envs/python3.10.13/bin/python -m pip install --upgrade pip
++ for module in "${DEPS_MODULE_LIST[@]}"
++ /opt/conda/envs/python3.10.13/bin/python -m pip install tornado==6.1 -i http://yum.tbsite.net/pypi/simple/ --trusted-host yum.tbsite.net --extra-index-url http://yum.tbsite.net/aliyun-pypi/simple/ --extra-index-url http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+
+[notice] A new release of pip is available: 24.0 -> 26.2.1
+[notice] To update, run: /opt/conda/envs/python3.10.13/bin/python -m pip install --upgrade pip
++ for module in "${DEPS_MODULE_LIST[@]}"
++ /opt/conda/envs/python3.10.13/bin/python -m pip install transitions==0.9.0 -i http://yum.tbsite.net/pypi/simple/ --trusted-host yum.tbsite.net --extra-index-url http://yum.tbsite.net/aliyun-pypi/simple/ --extra-index-url http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+
+[notice] A new release of pip is available: 24.0 -> 26.2.1
+[notice] To update, run: /opt/conda/envs/python3.10.13/bin/python -m pip install --upgrade pip
++ for module in "${DEPS_MODULE_LIST[@]}"
++ /opt/conda/envs/python3.10.13/bin/python -m pip install thrift==0.16.0 -i http://yum.tbsite.net/pypi/simple/ --trusted-host yum.tbsite.net --extra-index-url http://yum.tbsite.net/aliyun-pypi/simple/ --extra-index-url http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.
+ai-scheduler 0.10.42+d0e7369 requires alluxio-pfs==0.1.6a17, which is not installed.
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+
+[notice] A new release of pip is available: 24.0 -> 26.2.1
+[notice] To update, run: /opt/conda/envs/python3.10.13/bin/python -m pip install --upgrade pip
++ for module in "${DEPS_MODULE_LIST[@]}"
++ /opt/conda/envs/python3.10.13/bin/python -m pip install GPUtil==1.4.0 -i http://yum.tbsite.net/pypi/simple/ --trusted-host yum.tbsite.net --extra-index-url http://yum.tbsite.net/aliyun-pypi/simple/ --extra-index-url http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+
+[notice] A new release of pip is available: 24.0 -> 26.2.1
+[notice] To update, run: /opt/conda/envs/python3.10.13/bin/python -m pip install --upgrade pip
++ for module in "${DEPS_MODULE_LIST[@]}"
++ /opt/conda/envs/python3.10.13/bin/python -m pip install requests==2.22.0 -i http://yum.tbsite.net/pypi/simple/ --trusted-host yum.tbsite.net --extra-index-url http://yum.tbsite.net/aliyun-pypi/simple/ --extra-index-url http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+
+[notice] A new release of pip is available: 24.0 -> 26.2.1
+[notice] To update, run: /opt/conda/envs/python3.10.13/bin/python -m pip install --upgrade pip
++ for module in "${DEPS_MODULE_LIST[@]}"
++ /opt/conda/envs/python3.10.13/bin/python -m pip install pyodps==0.12.3 -i http://yum.tbsite.net/pypi/simple/ --trusted-host yum.tbsite.net --extra-index-url http://yum.tbsite.net/aliyun-pypi/simple/ --extra-index-url http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+
+[notice] A new release of pip is available: 24.0 -> 26.2.1
+[notice] To update, run: /opt/conda/envs/python3.10.13/bin/python -m pip install --upgrade pip
++ for module in "${DEPS_MODULE_LIST[@]}"
++ /opt/conda/envs/python3.10.13/bin/python -m pip install 'openlm-hub>=0.1.17' -i http://yum.tbsite.net/pypi/simple/ --trusted-host yum.tbsite.net --extra-index-url http://yum.tbsite.net/aliyun-pypi/simple/ --extra-index-url http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.
+ai-scheduler 0.10.42+d0e7369 requires alluxio-pfs==0.1.6a17, which is not installed.
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+
+[notice] A new release of pip is available: 24.0 -> 26.2.1
+[notice] To update, run: /opt/conda/envs/python3.10.13/bin/python -m pip install --upgrade pip
++ for module in "${DEPS_MODULE_LIST[@]}"
++ /opt/conda/envs/python3.10.13/bin/python -m pip install 'alluxio-pfs>=0.1.6a17' -i http://yum.tbsite.net/pypi/simple/ --trusted-host yum.tbsite.net --extra-index-url http://yum.tbsite.net/aliyun-pypi/simple/ --extra-index-url http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.
+ai-scheduler 0.10.42+d0e7369 requires alluxio-pfs==0.1.6a17, but you have alluxio-pfs 0.1.6a18 which is incompatible.
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+
+[notice] A new release of pip is available: 24.0 -> 26.2.1
+[notice] To update, run: /opt/conda/envs/python3.10.13/bin/python -m pip install --upgrade pip
++ for module in "${DEPS_MODULE_LIST[@]}"
++ /opt/conda/envs/python3.10.13/bin/python -m pip install http://sample-lake.cn-beijing.oss.aliyuncs.com/paimon_test/alibabacloud_metastore20250609_inner-1.0.3-py3-none-any.whl -i http://yum.tbsite.net/pypi/simple/ --trusted-host yum.tbsite.net --extra-index-url http://yum.tbsite.net/aliyun-pypi/simple/ --extra-index-url http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+
+[notice] A new release of pip is available: 24.0 -> 26.2.1
+[notice] To update, run: /opt/conda/envs/python3.10.13/bin/python -m pip install --upgrade pip
++ for module in "${DEPS_MODULE_LIST[@]}"
++ /opt/conda/envs/python3.10.13/bin/python -m pip install pypaimon_ali==1.5.dev0 -i http://yum.tbsite.net/pypi/simple/ --trusted-host yum.tbsite.net --extra-index-url http://yum.tbsite.net/aliyun-pypi/simple/ --extra-index-url http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.
+ai-scheduler 0.10.42+d0e7369 requires alluxio-pfs==0.1.6a17, but you have alluxio-pfs 0.1.6a18 which is incompatible.
+vllm 0.11.1rc2.dev0+gc3a722fcb.d20251021 requires requests>=2.26.0, but you have requests 2.22.0 which is incompatible.
+vllm 0.11.1rc2.dev0+gc3a722fcb.d20251021 requires transformers>=4.55.2, but you have transformers 4.55.0 which is incompatible.
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+
+[notice] A new release of pip is available: 24.0 -> 26.2.1
+[notice] To update, run: /opt/conda/envs/python3.10.13/bin/python -m pip install --upgrade pip
++ for module in "${DEPS_MODULE_LIST[@]}"
++ /opt/conda/envs/python3.10.13/bin/python -m pip install https://nebula-cv.cn-zhangjiakou.oss.aliyuncs.com/docker_image/mdl_packages/mdl-0.3.4-py3-none-any.whl -i http://yum.tbsite.net/pypi/simple/ --trusted-host yum.tbsite.net --extra-index-url http://yum.tbsite.net/aliyun-pypi/simple/ --extra-index-url http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+
+[notice] A new release of pip is available: 24.0 -> 26.2.1
+[notice] To update, run: /opt/conda/envs/python3.10.13/bin/python -m pip install --upgrade pip
++ for module in "${DEPS_MODULE_LIST[@]}"
++ /opt/conda/envs/python3.10.13/bin/python -m pip install http://nebula-cv.cn-zhangjiakou.oss.aliyuncs.com/docker_image/common_io/release/common_io-0.8.26-cp310-cp310-linux_x86_64.whl -i http://yum.tbsite.net/pypi/simple/ --trusted-host yum.tbsite.net --extra-index-url http://yum.tbsite.net/aliyun-pypi/simple/ --extra-index-url http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+
+[notice] A new release of pip is available: 24.0 -> 26.2.1
+[notice] To update, run: /opt/conda/envs/python3.10.13/bin/python -m pip install --upgrade pip
++ for module in "${DEPS_MODULE_LIST[@]}"
++ /opt/conda/envs/python3.10.13/bin/python -m pip install http://yum.tbsite.net/aliyun-pypi/packages/lake-py-lib/lake_py_lib-0.1.16-py3.10-none-any.whl -i http://yum.tbsite.net/pypi/simple/ --trusted-host yum.tbsite.net --extra-index-url http://yum.tbsite.net/aliyun-pypi/simple/ --extra-index-url http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+
+[notice] A new release of pip is available: 24.0 -> 26.2.1
+[notice] To update, run: /opt/conda/envs/python3.10.13/bin/python -m pip install --upgrade pip
++ /opt/conda/envs/python3.10.13/bin/python -m pip show ai_scheduler
++ ai_scheduler_wrapper_ok=1
++ echo '/opt/conda/envs/python3.10.13/bin/python: [/opt/conda/envs/python3.10.13/bin/python]'
++ echo 'ai_scheduler_wrapper_ok: [1]'
++ '[' -n /opt/conda/envs/python3.10.13/bin/python ']'
++ '[' 1 == 1 ']'
++ python_bin=/opt/conda/envs/python3.10.13/bin/python
++ params='-m ai_scheduler.wrapper '
++ '[' --run_mode=dist == python ']'
++ python_params='-m ai_scheduler.wrapper --run_mode=dist --task_name=scheduler --app_id=xdl-6ab7d642730a --zk_addr=zfs://ad-ea120-xdl-common-new.vip.tbsite.net:2187/psplus/xdl-6ab7d642730a --config=../_nop_user_config.json --task_index=0'
++ unset PIP_DRAGONFLY_ENABLED
++ set --
++ source activate
+++ _CONDA_ROOT=/opt/conda
+++ . /opt/conda/etc/profile.d/conda.sh
++++ export CONDA_EXE=/opt/conda/bin/conda
++++ CONDA_EXE=/opt/conda/bin/conda
++++ export _CE_M=
++++ _CE_M=
++++ export _CE_CONDA=
++++ _CE_CONDA=
++++ export CONDA_PYTHON_EXE=/opt/conda/bin/python
++++ CONDA_PYTHON_EXE=/opt/conda/bin/python
++++ '[' -z '' ']'
++++ export CONDA_SHLVL=0
++++ CONDA_SHLVL=0
++++ '[' -n '' ']'
++++++ dirname /opt/conda/bin/conda
+++++ dirname /opt/conda/bin
++++ PATH=/opt/conda/condabin:/usr/local/openmpi/bin:/opt/rh/gcc-toolset-13/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/conda/bin:/usr/local/nvidia/bin/:/usr/local/cuda/bin:/usr/local/cmake-3.30.2-linux-x86_64/bin:/usr/local/ninja:/home/admin/.local/bin:/usr/share/Modules/bin:/usr/local/openmpi/bin:/opt/rh/gcc-toolset-13/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/conda/bin:/usr/local/nvidia/bin/:/usr/local/cuda/bin:/usr/local/cmake-3.30.2-linux-x86_64/bin:/usr/local/ninja:/home/admin/.local/bin:/usr/local/openmpi/bin:/opt/rh/gcc-toolset-13/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/conda/bin:/usr/local/nvidia/bin/:/usr/local/cuda/bin:/usr/local/cmake-3.30.2-linux-x86_64/bin:/usr/local/ninja:/home/admin/.local/bin
++++ export PATH
++++ '[' -z '' ']'
++++ PS1=
+++ conda activate
+++ local cmd=activate
+++ case "$cmd" in
+++ __conda_activate activate
+++ '[' -n '' ']'
+++ local ask_conda
++++ PS1=
++++ __conda_exe shell.posix activate
++++ /opt/conda/bin/conda shell.posix activate
+++ ask_conda='PS1='\''(base) '\''
+export PATH='\''/opt/conda/bin:/opt/conda/condabin:/usr/local/openmpi/bin:/opt/rh/gcc-toolset-13/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/conda/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/cmake-3.30.2-linux-x86_64/bin:/usr/local/ninja:/home/admin/.local/bin:/usr/share/Modules/bin:/usr/local/openmpi/bin:/opt/rh/gcc-toolset-13/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/conda/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/cmake-3.30.2-linux-x86_64/bin:/usr/local/ninja:/home/admin/.local/bin:/usr/local/openmpi/bin:/opt/rh/gcc-toolset-13/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/conda/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/cmake-3.30.2-linux-x86_64/bin:/usr/local/ninja:/home/admin/.local/bin'\''
+export CONDA_PREFIX='\''/opt/conda'\''
+export CONDA_SHLVL='\''1'\''
+export CONDA_DEFAULT_ENV='\''base'\''
+export CONDA_PROMPT_MODIFIER='\''(base) '\''
+export CONDA_EXE='\''/opt/conda/bin/conda'\''
+export _CE_M='\'''\''
+export _CE_CONDA='\'''\''
+export CONDA_PYTHON_EXE='\''/opt/conda/bin/python'\'''
+++ eval 'PS1='\''(base) '\''
+export PATH='\''/opt/conda/bin:/opt/conda/condabin:/usr/local/openmpi/bin:/opt/rh/gcc-toolset-13/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/conda/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/cmake-3.30.2-linux-x86_64/bin:/usr/local/ninja:/home/admin/.local/bin:/usr/share/Modules/bin:/usr/local/openmpi/bin:/opt/rh/gcc-toolset-13/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/conda/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/cmake-3.30.2-linux-x86_64/bin:/usr/local/ninja:/home/admin/.local/bin:/usr/local/openmpi/bin:/opt/rh/gcc-toolset-13/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/conda/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/cmake-3.30.2-linux-x86_64/bin:/usr/local/ninja:/home/admin/.local/bin'\''
+export CONDA_PREFIX='\''/opt/conda'\''
+export CONDA_SHLVL='\''1'\''
+export CONDA_DEFAULT_ENV='\''base'\''
+export CONDA_PROMPT_MODIFIER='\''(base) '\''
+export CONDA_EXE='\''/opt/conda/bin/conda'\''
+export _CE_M='\'''\''
+export _CE_CONDA='\'''\''
+export CONDA_PYTHON_EXE='\''/opt/conda/bin/python'\'''
++++ PS1='(base) '
++++ export PATH=/opt/conda/bin:/opt/conda/condabin:/usr/local/openmpi/bin:/opt/rh/gcc-toolset-13/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/conda/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/cmake-3.30.2-linux-x86_64/bin:/usr/local/ninja:/home/admin/.local/bin:/usr/share/Modules/bin:/usr/local/openmpi/bin:/opt/rh/gcc-toolset-13/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/conda/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/cmake-3.30.2-linux-x86_64/bin:/usr/local/ninja:/home/admin/.local/bin:/usr/local/openmpi/bin:/opt/rh/gcc-toolset-13/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/conda/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/cmake-3.30.2-linux-x86_64/bin:/usr/local/ninja:/home/admin/.local/bin
++++ PATH=/opt/conda/bin:/opt/conda/condabin:/usr/local/openmpi/bin:/opt/rh/gcc-toolset-13/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/conda/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/cmake-3.30.2-linux-x86_64/bin:/usr/local/ninja:/home/admin/.local/bin:/usr/share/Modules/bin:/usr/local/openmpi/bin:/opt/rh/gcc-toolset-13/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/conda/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/cmake-3.30.2-linux-x86_64/bin:/usr/local/ninja:/home/admin/.local/bin:/usr/local/openmpi/bin:/opt/rh/gcc-toolset-13/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/conda/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/cmake-3.30.2-linux-x86_64/bin:/usr/local/ninja:/home/admin/.local/bin
++++ export CONDA_PREFIX=/opt/conda
++++ CONDA_PREFIX=/opt/conda
++++ export CONDA_SHLVL=1
++++ CONDA_SHLVL=1
++++ export CONDA_DEFAULT_ENV=base
++++ CONDA_DEFAULT_ENV=base
++++ export 'CONDA_PROMPT_MODIFIER=(base) '
++++ CONDA_PROMPT_MODIFIER='(base) '
++++ export CONDA_EXE=/opt/conda/bin/conda
++++ CONDA_EXE=/opt/conda/bin/conda
++++ export _CE_M=
++++ _CE_M=
++++ export _CE_CONDA=
++++ _CE_CONDA=
++++ export CONDA_PYTHON_EXE=/opt/conda/bin/python
++++ CONDA_PYTHON_EXE=/opt/conda/bin/python
+++ __conda_hashr
+++ '[' -n '' ']'
+++ '[' -n '' ']'
+++ hash -r
++ source deactivate
+++ _CONDA_ROOT=/opt/conda
+++ echo 'DeprecationWarning: '\''source deactivate'\'' is deprecated. Use '\''conda deactivate'\''.'
+DeprecationWarning: 'source deactivate' is deprecated. Use 'conda deactivate'.
+++ . /opt/conda/etc/profile.d/conda.sh
++++ export CONDA_EXE=/opt/conda/bin/conda
++++ CONDA_EXE=/opt/conda/bin/conda
++++ export _CE_M=
++++ _CE_M=
++++ export _CE_CONDA=
++++ _CE_CONDA=
++++ export CONDA_PYTHON_EXE=/opt/conda/bin/python
++++ CONDA_PYTHON_EXE=/opt/conda/bin/python
++++ '[' -z x ']'
+++ conda deactivate
+++ local cmd=deactivate
+++ case "$cmd" in
+++ __conda_activate deactivate
+++ '[' -n '' ']'
+++ local ask_conda
++++ PS1='(base) '
++++ __conda_exe shell.posix deactivate
++++ /opt/conda/bin/conda shell.posix deactivate
+++ ask_conda='export PATH='\''/opt/conda/condabin:/usr/local/openmpi/bin:/opt/rh/gcc-toolset-13/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/conda/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/cmake-3.30.2-linux-x86_64/bin:/usr/local/ninja:/home/admin/.local/bin:/usr/share/Modules/bin:/usr/local/openmpi/bin:/opt/rh/gcc-toolset-13/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/conda/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/cmake-3.30.2-linux-x86_64/bin:/usr/local/ninja:/home/admin/.local/bin:/usr/local/openmpi/bin:/opt/rh/gcc-toolset-13/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/conda/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/cmake-3.30.2-linux-x86_64/bin:/usr/local/ninja:/home/admin/.local/bin'\''
+unset CONDA_PREFIX
+unset CONDA_DEFAULT_ENV
+unset CONDA_PROMPT_MODIFIER
+PS1='\'''\''
+export CONDA_SHLVL='\''0'\''
+export CONDA_EXE='\''/opt/conda/bin/conda'\''
+export _CE_M='\'''\''
+export _CE_CONDA='\'''\''
+export CONDA_PYTHON_EXE='\''/opt/conda/bin/python'\'''
+++ eval 'export PATH='\''/opt/conda/condabin:/usr/local/openmpi/bin:/opt/rh/gcc-toolset-13/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/conda/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/cmake-3.30.2-linux-x86_64/bin:/usr/local/ninja:/home/admin/.local/bin:/usr/share/Modules/bin:/usr/local/openmpi/bin:/opt/rh/gcc-toolset-13/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/conda/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/cmake-3.30.2-linux-x86_64/bin:/usr/local/ninja:/home/admin/.local/bin:/usr/local/openmpi/bin:/opt/rh/gcc-toolset-13/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/conda/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/cmake-3.30.2-linux-x86_64/bin:/usr/local/ninja:/home/admin/.local/bin'\''
+unset CONDA_PREFIX
+unset CONDA_DEFAULT_ENV
+unset CONDA_PROMPT_MODIFIER
+PS1='\'''\''
+export CONDA_SHLVL='\''0'\''
+export CONDA_EXE='\''/opt/conda/bin/conda'\''
+export _CE_M='\'''\''
+export _CE_CONDA='\'''\''
+export CONDA_PYTHON_EXE='\''/opt/conda/bin/python'\'''
++++ export PATH=/opt/conda/condabin:/usr/local/openmpi/bin:/opt/rh/gcc-toolset-13/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/conda/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/cmake-3.30.2-linux-x86_64/bin:/usr/local/ninja:/home/admin/.local/bin:/usr/share/Modules/bin:/usr/local/openmpi/bin:/opt/rh/gcc-toolset-13/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/conda/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/cmake-3.30.2-linux-x86_64/bin:/usr/local/ninja:/home/admin/.local/bin:/usr/local/openmpi/bin:/opt/rh/gcc-toolset-13/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/conda/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/cmake-3.30.2-linux-x86_64/bin:/usr/local/ninja:/home/admin/.local/bin
++++ PATH=/opt/conda/condabin:/usr/local/openmpi/bin:/opt/rh/gcc-toolset-13/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/conda/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/cmake-3.30.2-linux-x86_64/bin:/usr/local/ninja:/home/admin/.local/bin:/usr/share/Modules/bin:/usr/local/openmpi/bin:/opt/rh/gcc-toolset-13/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/conda/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/cmake-3.30.2-linux-x86_64/bin:/usr/local/ninja:/home/admin/.local/bin:/usr/local/openmpi/bin:/opt/rh/gcc-toolset-13/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/conda/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/cmake-3.30.2-linux-x86_64/bin:/usr/local/ninja:/home/admin/.local/bin
++++ unset CONDA_PREFIX
++++ unset CONDA_DEFAULT_ENV
++++ unset CONDA_PROMPT_MODIFIER
++++ PS1=
++++ export CONDA_SHLVL=0
++++ CONDA_SHLVL=0
++++ export CONDA_EXE=/opt/conda/bin/conda
++++ CONDA_EXE=/opt/conda/bin/conda
++++ export _CE_M=
++++ _CE_M=
++++ export _CE_CONDA=
++++ _CE_CONDA=
++++ export CONDA_PYTHON_EXE=/opt/conda/bin/python
++++ CONDA_PYTHON_EXE=/opt/conda/bin/python
+++ __conda_hashr
+++ '[' -n '' ']'
+++ '[' -n '' ']'
+++ hash -r
++ conda activate python3.10
++ local cmd=activate
++ case "$cmd" in
++ __conda_activate activate python3.10
++ '[' -n '' ']'
++ local ask_conda
+++ PS1=
+++ __conda_exe shell.posix activate python3.10
+++ /opt/conda/bin/conda shell.posix activate python3.10
++ ask_conda='PS1='\''(python3.10) '\''
+export PATH='\''/opt/conda/envs/python3.10/bin:/opt/conda/condabin:/usr/local/openmpi/bin:/opt/rh/gcc-toolset-13/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/conda/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/cmake-3.30.2-linux-x86_64/bin:/usr/local/ninja:/home/admin/.local/bin:/usr/share/Modules/bin:/usr/local/openmpi/bin:/opt/rh/gcc-toolset-13/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/conda/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/cmake-3.30.2-linux-x86_64/bin:/usr/local/ninja:/home/admin/.local/bin:/usr/local/openmpi/bin:/opt/rh/gcc-toolset-13/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/conda/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/cmake-3.30.2-linux-x86_64/bin:/usr/local/ninja:/home/admin/.local/bin'\''
+export CONDA_PREFIX='\''/opt/conda/envs/python3.10'\''
+export CONDA_SHLVL='\''1'\''
+export CONDA_DEFAULT_ENV='\''python3.10'\''
+export CONDA_PROMPT_MODIFIER='\''(python3.10) '\''
+export CONDA_EXE='\''/opt/conda/bin/conda'\''
+export _CE_M='\'''\''
+export _CE_CONDA='\'''\''
+export CONDA_PYTHON_EXE='\''/opt/conda/bin/python'\'''
++ eval 'PS1='\''(python3.10) '\''
+export PATH='\''/opt/conda/envs/python3.10/bin:/opt/conda/condabin:/usr/local/openmpi/bin:/opt/rh/gcc-toolset-13/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/conda/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/cmake-3.30.2-linux-x86_64/bin:/usr/local/ninja:/home/admin/.local/bin:/usr/share/Modules/bin:/usr/local/openmpi/bin:/opt/rh/gcc-toolset-13/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/conda/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/cmake-3.30.2-linux-x86_64/bin:/usr/local/ninja:/home/admin/.local/bin:/usr/local/openmpi/bin:/opt/rh/gcc-toolset-13/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/conda/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/cmake-3.30.2-linux-x86_64/bin:/usr/local/ninja:/home/admin/.local/bin'\''
+export CONDA_PREFIX='\''/opt/conda/envs/python3.10'\''
+export CONDA_SHLVL='\''1'\''
+export CONDA_DEFAULT_ENV='\''python3.10'\''
+export CONDA_PROMPT_MODIFIER='\''(python3.10) '\''
+export CONDA_EXE='\''/opt/conda/bin/conda'\''
+export _CE_M='\'''\''
+export _CE_CONDA='\'''\''
+export CONDA_PYTHON_EXE='\''/opt/conda/bin/python'\'''
+++ PS1='(python3.10) '
+++ export PATH=/opt/conda/envs/python3.10/bin:/opt/conda/condabin:/usr/local/openmpi/bin:/opt/rh/gcc-toolset-13/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/conda/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/cmake-3.30.2-linux-x86_64/bin:/usr/local/ninja:/home/admin/.local/bin:/usr/share/Modules/bin:/usr/local/openmpi/bin:/opt/rh/gcc-toolset-13/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/conda/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/cmake-3.30.2-linux-x86_64/bin:/usr/local/ninja:/home/admin/.local/bin:/usr/local/openmpi/bin:/opt/rh/gcc-toolset-13/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/conda/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/cmake-3.30.2-linux-x86_64/bin:/usr/local/ninja:/home/admin/.local/bin
+++ PATH=/opt/conda/envs/python3.10/bin:/opt/conda/condabin:/usr/local/openmpi/bin:/opt/rh/gcc-toolset-13/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/conda/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/cmake-3.30.2-linux-x86_64/bin:/usr/local/ninja:/home/admin/.local/bin:/usr/share/Modules/bin:/usr/local/openmpi/bin:/opt/rh/gcc-toolset-13/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/conda/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/cmake-3.30.2-linux-x86_64/bin:/usr/local/ninja:/home/admin/.local/bin:/usr/local/openmpi/bin:/opt/rh/gcc-toolset-13/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/conda/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/cmake-3.30.2-linux-x86_64/bin:/usr/local/ninja:/home/admin/.local/bin
+++ export CONDA_PREFIX=/opt/conda/envs/python3.10
+++ CONDA_PREFIX=/opt/conda/envs/python3.10
+++ export CONDA_SHLVL=1
+++ CONDA_SHLVL=1
+++ export CONDA_DEFAULT_ENV=python3.10
+++ CONDA_DEFAULT_ENV=python3.10
+++ export 'CONDA_PROMPT_MODIFIER=(python3.10) '
+++ CONDA_PROMPT_MODIFIER='(python3.10) '
+++ export CONDA_EXE=/opt/conda/bin/conda
+++ CONDA_EXE=/opt/conda/bin/conda
+++ export _CE_M=
+++ _CE_M=
+++ export _CE_CONDA=
+++ _CE_CONDA=
+++ export CONDA_PYTHON_EXE=/opt/conda/bin/python
+++ CONDA_PYTHON_EXE=/opt/conda/bin/python
++ __conda_hashr
++ '[' -n '' ']'
++ '[' -n '' ']'
++ hash -r
++ [[ -n 1 ]]
++ export PIP_DRAGONFLY_ENABLED=1
++ PIP_DRAGONFLY_ENABLED=1
++ echo '/opt/conda/envs/python3.10.13/bin/python -m ai_scheduler.wrapper --run_mode=dist --task_name=scheduler --app_id=xdl-6ab7d642730a --zk_addr=zfs://ad-ea120-xdl-common-new.vip.tbsite.net:2187/psplus/xdl-6ab7d642730a --config=../_nop_user_config.json --task_index=0'
++ exec /opt/conda/envs/python3.10.13/bin/python -m ai_scheduler.wrapper --run_mode=dist --task_name=scheduler --app_id=xdl-6ab7d642730a --zk_addr=zfs://ad-ea120-xdl-common-new.vip.tbsite.net:2187/psplus/xdl-6ab7d642730a --config=../_nop_user_config.json --task_index=0
+INFO:ai_scheduler:[HeartBeatListener] init done.
+INFO:ai_scheduler:Initialized <class 'ai_scheduler.scheduler.worker_status.heartbeat.HeartBeatListener'> for the first time.
+INFO:ai_scheduler:Scheduler/WorkerStatus: Discovered new worker: 0-0-0-worker-xdl-6ab7d642730a-1-1790433145-33.97.226.77
+INFO:ai_scheduler:[HeartBeatListener] worker_unique_id: 0-0-0-worker-xdl-6ab7d642730a-1-1790433145-33.97.226.77 received dead_signal
+[2026-09-26 22:33:54,360] [WARNING] [AiScheduler#2565] [rank_status_detector.py:387] [RankStatusDetector] on_heart_beat_dead ignore!pod_id:0-0-0-worker-xdl-6ab7d642730a-1-1790433145-33.97.226.77 cur_rank.current_pod_state:RankStates.Success 

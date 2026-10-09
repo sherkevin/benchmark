@@ -1,0 +1,26 @@
+Use case: infographic-diagram
+Asset type: Figure 1 method architecture for a top-conference machine-learning paper.
+
+Input images:
+- Image 1: Figure 1 v25, the edit target. Preserve its compact central-hub layout, card texture, palette, labels, candidate-menu placement, and all correct arrows.
+- Image 2: Figure 2 v26, style reference only. Keep the same flat-vector paper texture, fine navy outlines, icon family, typography scale, and restrained blue/gray/amber/purple palette. Do not copy the Figure 2 timeline.
+
+Single hard correction:
+Fix the final write edge. The released-state register is the blue two-column card in the lower-left relay area. Its middle row is the highlighted blue row. Keep the blue Update card below and slightly to the right, but draw one short solid-blue arrow from Update directly into the middle row of the released-state register. The arrow must terminate with a clearly visible arrowhead INSIDE the highlighted middle-row cells, not at the card border, not below the card, and not at the bottom edge. Align the arrow with the center of the highlighted row and leave visible white space around it so the destination is unmistakable.
+
+Keep every other part of Figure 1 v25 unchanged:
+- input: molecule and endpoint feed Features; eligible-tools tray feeds Selector only;
+- relay: Features → Frozen score, released state → residual, plus operator with q=q^0+Δ, score vector, Selector → selected tool;
+- execution: Call → Terminal record → Frozen endpoint judge → Chemical feedback; runtime error ends at Runtime ledger;
+- bottom: Chemical feedback → selected-only queue → one purple dashed leftward edge labeled τ_t=t+1+D → Release → solid-blue Update → highlighted released-state row;
+- small captions input, relay, execution; no giant headings or bracket lines;
+- no provider names, no A/B/C labels, no repeated outcome modules, no Figure 2 timeline.
+
+Style/medium:
+Flat-vector scientific infographic with top-conference polish. White background, dark navy text, compact rounded cards, fine navy/gray outlines, consistent line icons and arrowheads, balanced paper-scale density. Deep blue for method/state, gray for frozen/diagnostic, amber for terminal/chemical feedback, muted purple only for pending/release.
+
+Hard constraints:
+- Keep exactly two equations: q=q^0+Δ and τ_t=t+1+D.
+- Released state is the only persistent state store; residual is a readout.
+- All edges must be short, direct, attached to node borders, non-crossing, and single-direction. No floating arrowheads, bypasses, duplicated arrows, or arrows that stop at a card border when they represent a write.
+- Every label is at most two short lines. No explanatory paragraphs, metrics, extra symbols, arbitrary letters, gradients, 3-D, neon colors, swimlanes, grid backgrounds, crossed-out symbols, or decorative clutter.

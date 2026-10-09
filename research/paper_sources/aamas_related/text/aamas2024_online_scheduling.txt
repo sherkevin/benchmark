@@ -1,0 +1,813 @@
+Full Research Paper                                                                                         AAMAS 2024, May 6–10, 2024, Auckland, New Zealand
+
+
+
+          Learning to Schedule Online Tasks with Bandit Feedback
+                     Yongxin Xu                                            Shangshang Wang                                           Hengquan Guo
+           Shanghaitech University                                    ShanghaiTech University                                     ShanghaiTech University
+               Shanghai, China                                            Shanghai, China                                             Shanghai, China
+        xuyx2022@shanghaitech.edu.cn                               wangshsh2@shanghaitech.edu.cn                                guohq@shanghaitech.edu.cn
+
+                                                       Xin Liu                                                 Ziyu Shao
+                                           ShanghaiTech University                                      ShanghaiTech University
+                                               Shanghai, China                                              Shanghai, China
+                                        liuxin7@shanghaitech.edu.cn                                   shaozy@shanghaitech.edu.cn
+
+ABSTRACT                                                                                                       4
+                                                                                                                   Reward
+
+Online task scheduling serves an integral role for task-intensive                                                                 �Ⅱ , �Ⅲ         �Ⅰ , �Ⅰ
+applications in cloud computing and crowdsourcing. Optimal sched-                                              3
+uling can enhance system performance, typically measured by the
+                                                                                                               2
+reward-to-cost ratio, under some task arrival distribution. On one                                                    �Ⅱ , �Ⅱ
+hand, both reward and cost are dependent on task context (e.g.,                                                1
+evaluation metric) and remain black-box in practice. These render
+                                                                                                               0
+reward and cost hard to model thus unknown before decision mak-                                                                                             Higher
+ing. On the other hand, task arrival behaviors remain sensitive to                                             1                                            ratio
+factors like unpredictable system fluctuation whereby a prior esti-
+mation or the conventional assumption of arrival distribution (e.g.,                                           2
+Poisson) may fail. This implies another practical yet often neglected                                          3
+challenge, i.e., uncertain task arrival distribution. Towards effective                                            Cost
+scheduling under a stationary environment with various uncertain-
+                                                                                                      Figure 1: Rewards and Costs for (𝑆, 𝑎) in a Toy System.
+ties, we propose a double-optimistic learning based Robbins-Monro
+(DOL-RM) algorithm. Specifically, DOL-RM integrates a learning
+module that incorporates optimistic estimation for reward-to-cost                                 Table 1: Reward-to-Cost Ratio under Distribution {0.8, 0.2}.
+ratio and a decision module that utilizes the Robbins-Monro method
+to implicitly learn task arrival distribution while making scheduling                                         Algorithm                       Policy                 Ratio
+decisions. Theoretically, DOL-RM achieves a sub-linear regret of                                         The greedy algorithm         (𝑆𝐼 , 𝑎𝐼 ), (𝑆𝐼 𝐼 , 𝑎𝐼 𝐼 𝐼 )    2.5
+𝑂 (𝑇 3/4 ), which is the first result for online task scheduling under                                   The reverse algorithm        (𝑆𝐼 , 𝑎𝐼 ), (𝑆𝐼 𝐼 , 𝑎𝐼 𝐼 )      2.6
+uncertain task arrival distribution and unknown reward and cost.
+Our numerical results in a synthetic experiment and a real-world
+application demonstrate the effectiveness of DOL-RM in achiev-                                    1    INTRODUCTION
+ing the best cumulative reward-to-cost ratio compared with other                                  Online task scheduling refers to the process that schedules incom-
+state-of-the-art baselines.                                                                       ing tasks to available resources in real-time. It plays a central role
+                                                                                                  in boosting operational efficiency for cloud computing [1, 3, 16],
+KEYWORDS                                                                                          crowdsourcing [2, 9, 22] and multiprocessing [11, 17, 21] systems,
+                                                                                                  etc. When a task is scheduled, it occupies resources for processing,
+Online scheduling, Double-Optimistic learning, Robbins-Monro
+                                                                                                  e.g., computing hardware or labor costs. Upon task completion,
+method
+                                                                                                  we receive rewards, e.g., a high-accuracy machine learning model
+ACM Reference Format:                                                                             or high-quality data. The typical goal of online task scheduling is
+Yongxin Xu, Shangshang Wang, Hengquan Guo, Xin Liu, and Ziyu Shao.                                to optimize the reward-to-cost ratio, which represents the system
+2024. Learning to Schedule Online Tasks with Bandit Feedback. In Proc.                            efficiency. For instance, a cloud computing platform bills users to
+of the 23rd International Conference on Autonomous Agents and Multiagent                          process their tasks using virtualized processing units, aiming to
+Systems (AAMAS 2024), Auckland, New Zealand, May 6 – 10, 2024, IFAAMAS,                           maximize the average revenue-to-hardware cost ratio. A crowd-
+9 pages.
+                                                                                                  sourcing platform compensates appropriate workers for processing
+                                                                                                  data labeling tasks, aiming to optimize the quality-to-cost ratio.
+                          This work is licensed under a Creative Commons Attribution                 There exist two major challenges to establish an effective online
+                          International 4.0 License.                                              task scheduling policy. The first one is the black-box nature of
+                                                                                                  rewards and costs. Take the machine learning model training as an
+Proc. of the 23rd International Conference on Autonomous Agents and Multiagent Systems            example, rewards could refer to the model training accuracy, area
+(AAMAS 2024), N. Alechina, V. Dignum, M. Dastani, J.S. Sichman (eds.), May 6 – 10, 2024,
+Auckland, New Zealand. © 2024 International Foundation for Autonomous Agents and                  under the curve (AUC) and f1 score while the costs could refer to
+Multiagent Systems (www.ifaamas.org).                                                             the power consumption [20, 32]. The scheduler needs to choose
+
+
+
+
+                                                                                           1975
+Full Research Paper                                                                          AAMAS 2024, May 6–10, 2024, Auckland, New Zealand
+
+
+
+an appropriate training time (decision) to maximize the accuracy                  of reward, cost and task arrival distribution. This framework en-
+(reward) per power consumption (cost). However, the knowledge of                  capsulates a variety of practical instances whose goal is to optimize
+accuracy and power consumption w.r.t. training time is unknown                    the reward-to-cost ratio, thereby striving to achieve high-return
+apriori and thus information is only revealed for the chosen decision             and cost-effective outcomes in real-world scheduling systems.
+(i.e., bandit feedback) when the task is completed.                                  • Algorithm Design. We propose a novel algorithm called DOL-
+     The second challenge is the uncertainty of task arrival, where               RM which incorporates double-optimistic learning for unknown
+there exist multiple types of tasks in the system and the scheduler               rewards and costs and a modified Robbins-Monro method to im-
+has no prior information on their arrival distribution. One intuitive             plicitly learn the uncertain task arrival distribution. This integrated
+approach to addressing this challenge is always choosing the greedy               design enables the balance between rewards and costs such that
+decision with the maximal estimated ratio (suppose the knowledge                  the cumulative reward-to-cost ratio is maximized.
+of rewards and costs is known), regardless of the task type. This                    • Theoretical Analysis. We prove that DOL-RM achieves a sub-
+idea seems to work because the greedy decision for every incoming                 linear regret at order 𝑂 (𝑇 3/4 ) against the optimal scheduling policy
+tasks would maximize the average reward-to-cost across all tasks.                 in hindsight (Theorem 4.1). To prove the main result, we decompose
+However, we show the greedy decision could be an arbitrarily sub-                 the regret into two individual errors w.r.t. double-optimistic learn-
+optimal solution by slightly twisting the task arrival distribution.              ing and Robbins-Monro method and then leverage the Lyapunov
+Consider a toy task scheduling system with arriving tasks of two                  drift technique and carefully control the cumulative errors over the
+types in Figure 1, denoted as task 𝑆𝐼 and 𝑆𝐼 𝐼 . For task 𝑆𝐼 , there is           entire learning process.
+only one available decision 𝑎𝐼 . For task 𝑆𝐼 𝐼 , two decisions exist,                • Applications. We test DOL-RM and compare it with state-of-
+i.e., the first decision 𝑎𝐼 𝐼 involves a low reward and a low cost,               the-art baselines via both a synthetic simulation and a real-world
+while the second one 𝑎𝐼 𝐼 𝐼 is characterized by a higher reward and a             experiment of machine learning task scheduling. These results
+higher cost which has a higher reward-to-cost ratio than decision                 demonstrate that DOL-RM can achieve the best cumulative reward-
+𝑎𝐼 𝐼 . We consider two algorithms, i.e., the greedy (𝑎𝐼 for task 𝑆𝐼 and           to-cost ratio without any prior knowledge of reward, costs and task
+𝑎𝐼 𝐼 𝐼 for task 𝑆𝐼 𝐼 ) and the reverse (𝑎𝐼 for task 𝑆𝐼 and 𝑎𝐼 𝐼 for task          arrival distribution.
+𝑆𝐼 𝐼 ) algorithm. One may argue that the greedy algorithm is more
+favorable since it achieves a higher ratio for task 𝑆𝐼 𝐼 . However, when
+the task arrival distribution is {0.8, 0.2} in Table 1, this intuitive            1.1    Related Work
+algorithm achieves an expected ratio of (0.8 × 3 + 0.2 × 3)/(0.8 ×                Online Task Scheduling. Online task scheduling has been studied
+1 + 0.2 × 2) = 2.5, which is worse than its reverse algorithm with                extensively in the literature. We focus on presenting the works most
+that of (0.8 × 3 + 0.2 × 1)/(0.8 × 1 + 0.2 × 1) = 2.6. One may then               related to ours. In [15], the authors utilize a UCB variant to address
+suggest to adopt the reverse algorithm instead. However, we can                   the exploration-exploitation dilemma in online task scheduling,
+always construct another distribution (e.g., {0.2, 0.8}) to fail the              however, the work does not take the cost into the consideration.
+reverse algorithm such that it turns out to be worse. From this                   In [26], a Robbins-Monro based approach is proposed for task sched-
+example, we emphasize the critical role of task arrival distribution              uling in edge computing. However, its primary goal is to preserve
+in establishing effective online task scheduling algorithms.                      data freshness, measured by Age of Information (AoI), differs from
+     To address the two challenges above, we propose a double-                    our setting of maximizing a generic reward-to-cost ratio. In [5],
+optimistic learning approach to estimate the reward and cost with                 online bandit feedback is leveraged to schedule tasks in a renewal
+bandit feedback. Intuitively, the learning approach establishes the               system, which is distinct from ours because it allows the scheduler
+optimistic and pessimistic estimations for rewards and costs, re-                 to interrupt a task in service but the task in our model cannot be
+spectively, yielding an overall optimistic estimation for the reward-             stopped once being scheduled. The closely related work is [31],
+to-cost ratio. This confirms the principle, the optimism in the face              which studies a similar setting with this paper except assuming the
+of uncertainty, which is exemplified by the confidence bound based                decision set and the information of reward and cost are completely
+algorithms [24]. Furthermore, instead of adopting naive estima-                   known before decision making. In contrast, we focus on a more
+tion for the task arrival distribution, we utilize the Robbins-Monro              practical scenario without assuming any knowledge of the rewards
+method to implicitly learn the task arrival distribution while mak-               and costs. Moreover, our algorithm and proof techniques are also
+ing decisions. Intuitively, this method transforms the problem of                 different with [31] as we need to handle the additional uncertainties
+reward-to-cost ratio maximization into a fixed point problem, which               of the rewards and costs.
+can be efficiently solved by carefully using stochastic samples and               Cost-Aware Bandits: The key feature in our online task scheduling
+yields a fast convergence.                                                        problem is that costs are concomitant with rewards upon decision-
+     In summary, we propose and analyze a novel optimization frame-               making. This feature is also captured in another decision-making
+work for online task scheduling, where the objective is to optimize               model, i.e., the cost-aware bandit model, where an agent incurs
+the cumulative reward-to-cost ratio under a stationary environ-                   a reward and a cost simultaneously by pulling an arm. The cost-
+ment with uncertain task arrival distribution. We integrate double-               aware bandits can be specialized into two major models, including
+optimistic learning and the Robbins-Monro method for effective and                budget-constrained bandits and the cost-aware cascading bandits.
+efficient online scheduling. Our main contributions are summarized                The budget-constrained bandits have been widely explored in [6,
+as follows:                                                                       8, 10, 25, 40, 41, 43–45], where pulling an arm incurs an additional
+     • Model for Online Task Scheduling. We propose a general                     cost and there exists a hard stopping point once the cumulative cost
+framework for online task scheduling without any prior knowledge                  exceeds a given budget. Our setting has two major differences with
+
+
+
+
+                                                                           1976
+Full Research Paper                                                                                              AAMAS 2024, May 6–10, 2024, Auckland, New Zealand
+
+
+
+                                                Epoch numbers
+                                                                                                          Reward-to-Cost Ratio Maximization: The controller aims to
+                                                �    �   �     …   �
+                                                                                                      maximize the cumulative reward-to-cost ratio over a sequence of 𝑇
+     Model 1   Model 1    Model 2    Model 1                                            AUC           tasks as follows:
+                                                                          Trained                                                    Í𝑇
+                                                                          model
+                                                                                        Time                                                E[𝑅𝑆𝑡 ,𝑎𝑡 ]
+                                            Cloud computing                                                                    max Í𝑡 =1                .                  (1)
+                                                                                                                               {𝑎𝑡 }𝑡 𝑇
+                                                                                                                                       𝑡 =1 E[𝐶𝑆𝑡 ,𝑎𝑡 ]
+                                                                                                      Expectation in Problem (1) is taken over the randomness w.r.t. re-
+                Picture    Picture     Text          Picture
+               labeling   labeling   labeling       labeling
+                                                                                                      ward, cost and task arrival distribution P(·). We emphasize that we
+                                                                   Platform                           do not assume any prior knowledge on such distribution and instead
+                                                                                    …
+    Consumer                              Finished                                                    learn it implicitly in an online manner (please refer to Section 3).
+                 Accuracy & payment
+                                          labeling                                                        When the task arrival distribution and the expected reward and
+                                                                              Workers
+                                                Crowdsourcing                                         cost are known, we can compute the optimal policy by solving Prob-
+                                                                                                      lem (1) with offline optimization techniques [12]. However, such
+Figure 2: Online Task Scheduling in Cloud Computing (above)                                           knowledge is practically unavailable or infeasible to the controller
+and Crowdsourcing (bottom).                                                                           and we have to learn it by exploring the decision space in an online
+                                                                                                      manner. Moreover, as discussed in the introduction, the greedy
+                                                                                                      algorithm that simply maximizes 𝑅𝑆𝑡 ,𝑎𝑡 /𝐶𝑆𝑡 ,𝑎𝑡 for each individual
+                                                                                                      task can achieve arbitrary sub-optimal performance because it ig-
+the budget-constrained bandits. The first one is we do not have or                                    nores the task arrival distribution. Therefore, we propose an online
+assume any explicit budget limit constraints; and the second one                                      learning based algorithm to address challenges on the uncertainties
+is we consider a “continual” system, where it would not stop in                                       of rewards, costs and task arrivals.
+the middle until all tasks are completed. Therefore, the previous                                         Before presenting our algorithm, we emphasize that our mod-
+algorithms and analysis in budget-constrained bandits cannot be                                       eling is general to capture many real-world applications, which is
+applied in this paper. Besides, cost-aware cascading bandits are also                                 illustrated with two following examples as shown in Figure 2:
+related and have been studied in [7, 13, 14, 37, 42]. Its goal is to                                       • Machine Learning (ML) model training on cloud servers: The
+maximize the reward-to-cost gap, however, such a maximal gap                                                  cloud platforms (e.g., AWS, Microsoft Azure or Google Cloud)
+does not necessarily yield the optimal ratio as in our paper because                                          constantly process ML model training tasks submitted by
+we have multiple types of tasks in the system and need to take the                                            users. The types of ML training tasks are unknown apriori
+task arrival distribution into consideration.                                                                 and only revealed at the server when they are executed. For
+   Compared to the previous works, this paper takes a bold step and                                           each upcoming task, the platform decides a specific training
+investigates online task scheduling without any knowledge of re-                                              time from a range of options, which corresponds to the cost;
+wards, costs, and task arrival distribution. Accordingly, we propose                                          when the training process is finished, the test accuracy is re-
+DOL-RM, an effective algorithm for optimizing the reward-to-cost                                              turned as the reward. However, the relationship of accuracy
+ratio in online task scheduling. Furthermore, DOL-RM establishes                                              v.s. training time is uncertain. The goal of the platform is to
+a near-optimal regret performance for this challenging setting and                                            schedule the training time for each individual task such that
+has been validated to achieve the best empirical performance via a                                            the average accuracy per time unit (i.e., accuracy-to-time
+synthetic simulation and a real-world experiment.                                                             ratio) is maximized.
+                                                                                                           • Tasks assignment in Crowdsourcing: The crowdsourcing
+2    SYSTEM MODEL                                                                                             platforms (e.g., Amazon Turk or Task Rabbit) received a
+We study a typical online task scheduling system where a central                                              sequence of data labeling tasks submitted by consumers. The
+controller processes an incoming sequence of heterogeneous tasks                                              platform is unaware of the type of tasks until they arrive. For
+in a back-to-back manner (i.e., the controller observes and processes                                         each task, the platform assigns it to a suitable worker from a
+the next task immediately upon the completion of its current task).                                           set of candidates with various task proficiency and expertise.
+We assume 𝑆 types of incoming tasks in the system, denoted by                                                 The quality of the labeled data from workers is considered as
+the set S ≜ {1, 2, · · · , 𝑆 } and every task is randomly drawn from                                          the reward, while his/her payment corresponds to the cost.
+a stationary probability distribution P : S → R+ . For the 𝑡th task,                                          The goal of the platform is to assign the worker for each
+the controller observes its type 𝑆𝑡 ∈ S and chooses a decision 𝑎𝑡 ∈                                           individual task such that the average quality per dollar (i.e.,
+A (𝑆𝑡 ), where A (𝑆𝑡 ) is the corresponding available decision set of                                         quality-to-payment ratio) is maximized.
+task type 𝑆𝑡 . When the 𝑡th task is completed, the controller observes                                Next, we present our online learning and decision algorithm to
+the feedback of reward 𝑅𝑆𝑡 ,𝑎𝑡 and cost 𝐶𝑆𝑡 ,𝑎𝑡 , which are randomly                                  solve the reward-to-cost ratio maximization in Problem (1).
+generated from with the expected values 𝑟 𝑆𝑡 ,𝑎𝑡 ≜ E[𝑅𝑆𝑡 ,𝑎𝑡 ] and
+𝑐 𝑆𝑡 ,𝑎𝑡 ≜ 𝐶𝑆𝑡 ,𝑎𝑡 . Note we only observe the feedback with respect to                                3    ALGORITHM DESIGN
+the selected decision 𝑎𝑡 , thus coined as “bandit feedback”, a term                                   In this section, we propose a double-optimistic learning based
+borrowed from bandit learning [24]. Then, the controller continues                                    Robbins-Monro (DOL-RM) algorithm to address the challenges
+to work on the next (𝑡 + 1)th task until 𝑇 tasks are completed. In                                    induced by unknown reward, cost and task arrival distributions.
+the paper, we assume the rewards {𝑅𝑆𝑡 ,𝑎𝑡 }𝑡 and costs {𝐶𝑆𝑡 ,𝑎𝑡 }𝑡 are                                Specifically, DOL-RM includes two algorithmic modules, i.e., the
+independent if (𝑆𝑡 , 𝑎𝑡 ) is the same.                                                                learning module leverages double-optimistic learning for unknown
+
+
+
+
+                                                                                               1977
+Full Research Paper                                                                                AAMAS 2024, May 6–10, 2024, Auckland, New Zealand
+
+
+
+                                                                                       Algorithm 1 DOL-RM
+                Learning
+                 Double-optimistic       Reward-to-cost                                   Input: Number of tasks 𝑇 , minimum cost 𝑐 min , 𝜃 max and 𝜃 min .
+                     learning             ratio learning                                  Initialization: 𝜃 1 ← 𝜃 min , 𝜂 ← 1√ .
+                                                                                                                                  𝑐 min 𝑇
+                                                                                          for 𝑡 = 1, 2, . . . ,𝑇 do
+                Decision
+                                                                                            •Observation: Task type 𝑆𝑡 and available decision set A (𝑆𝑡 ).
+                          Robbins-Monro method                                              •Double-Optimistic Learning: Calculate reward and cost
+                                                                                            estimates 𝑟ˆ𝑆𝑡 ,𝑎 and 𝑐ˇ𝑆𝑡 ,𝑎 , ∀𝑎 ∈ A (𝑆𝑡 ) according to (2) and (3),
+                                                                                            respectively.
+         Figure 3: Illustration of DOL-RM Algorithm.                                        •Robbins-Monro Based Decision: Choose the greedy deci-
+                                                                                            sion for task scheduling:
+                                                                                                            𝑎𝑡 ← arg max 𝑟ˆ𝑆𝑡 ,𝑎 − 𝜃 𝑡 𝑐ˇ𝑆𝑡 ,𝑎                    (7)
+rewards and costs, and the decision module utilizes the Robbins-                                                   𝑎∈ A (𝑆𝑡 )
+Monro method to make decisions via implicitly learning the task
+arrival distribution. As shown in Figure 3, upon each task arrives,                         •Bandit Feedback: Obtain reward 𝑅𝑆𝑡 ,𝑎𝑡 and cost 𝐶𝑆𝑡 ,𝑎𝑡 .
+the learning module first estimates the reward and cost via a double-                       •Reward-to-Cost Ratio Learning:
+optimistic learning approach. Based on the estimation, the deci-                                                                             𝜃
+                                                                                                   𝜃 𝑡 +1 ← 𝜃 𝑡 + 𝜂 (𝑟ˆ𝑆𝑡 ,𝑎𝑡 − 𝜃 𝑡 𝑐ˇ𝑆𝑡 ,𝑎𝑡 ) 𝜃 max . (8)
+sion module makes a proper decision through the Robbins-Monro                                                                                     min
+
+method, which in turn provides an iteratively approaching estima-                           Update the empirical means of rewards and costs with (4)–(6).
+tion for the reward-to-cost ratio even without explicitly learning                        end for
+the task arrival distribution. Next, we introduce these two major
+modules in detail and explain the intuition behind the algorithm.
+The completed DOL-RM algorithm is depicted in Algorithm 1.                                Robbins-Monro Based Decision: Let 𝜃 ∗ be the optimal objec-
+   Double-Optimistic Learning: Recall that for the 𝑡th task with                       tive (i.e., reward-to-cost ratio) in Problem (1). It is notable to observe
+the type 𝑆𝑡 , the expected reward 𝑟 𝑆𝑡 ,𝑎 and cost 𝑐 𝑆𝑡 ,𝑎 for each decision           that Problem (1) is equivalent to finding an optimal sequence of
+𝑎 ∈ A (𝑆𝑡 ) are unknown. We consider them as multi-armed bandit                        actions such that:
+                                                                                                               "𝑇                   𝑇
+                                                                                                                                             #
+problems, where each decision is regarded as an arm associated with                                             ∑︁
+                                                                                                                                 ∗
+                                                                                                                                   ∑︁
+a pair of reward and cost. Accordingly, we leverage the canonical                                       max E        𝑅𝑆𝑡 ,𝑎𝑡 − 𝜃      𝐶𝑆𝑡 ,𝑎𝑡 = 0,             (9)
+                                                                                                       {𝑎𝑡 }𝑡
+                                                                                                                  𝑡 =1              𝑡 =1
+algorithm design principle in bandit learning [24], optimism in the
+face of uncertainty, to estimate the reward and cost as follows:                       This is essentially a fixed point problem and can be solved using the
+                           (                √︄                )                        Robbins-Monro method with stochastic samples [30, 34]. Specifi-
+                                                   log𝑇                                cally, assuming the optimal ratio 𝜃 ∗ is known and using 𝑟ˆ𝑆𝑡 ,𝑎 and
+              𝑟ˆ𝑆𝑡 ,𝑎 ≜ min 𝑟 max, 𝑅𝑆𝑡 ,𝑎 +
+                                   ¯                            ,         (2)
+                                               𝑁𝑆𝑡 ,𝑎 (𝑡 − 1)                          𝑐ˇ𝑆𝑡 ,𝑎 as the proxy of 𝑅𝑆𝑡 ,𝑎𝑡 and 𝐶𝑆𝑡 ,𝑎𝑡 , we can follow a greedy deci-
+                           (                √︄                )                        sion for task 𝑆𝑡 ∈ S according to (9):
+                                                   log𝑇
+             𝑐ˇ𝑆𝑡 ,𝑎 ≜ max 𝑐 min, 𝐶𝑆𝑡 ,𝑎 −
+                                   ¯                            ,         (3)                                   arg max 𝑟ˆ𝑆𝑡 ,𝑎 − 𝜃 ∗ 𝑐ˇ𝑆𝑡 ,𝑎
+                                               𝑁𝑆𝑡 ,𝑎 (𝑡 − 1)                                                   𝑎∈ A (𝑆𝑡 )
+
+where 𝑅¯𝑆𝑡 ,𝑎 and 𝐶¯𝑆𝑡 ,𝑎 denote the empirical means of reward and                     However, this decision is non-causal and infeasible due to the lack
+cost; 𝑁𝑆𝑡 ,𝑎 (𝑡 − 1) denotes times the arm (decision) 𝑎 has been cho-                  of knowledge on the best ratio 𝜃 ∗ . To learn 𝜃 ∗ , we modify the
+sen for task of type 𝑆𝑡 until round (𝑡 − 1); 𝑟 max and 𝑐 min are the                   Robbins-Monro iteration method by plugging the 𝑟ˆ𝑆𝑡 ,𝑎 and 𝑐ˇ𝑆𝑡 ,𝑎 :
+maximum reward and minimum cost, respectively. Note that 𝑟ˆ𝑆𝑡 ,𝑎                                                                               𝜃
+                                                                                                     𝜃 𝑡 +1 = 𝜃 𝑡 + 𝜂 (𝑟ˆ𝑆𝑡 ,𝑎𝑡 − 𝜃 𝑡 𝑐ˇ𝑆𝑡 ,𝑎𝑡 ) 𝜃 max
+                                                                                                                                                  min
+and 𝑐ˇ𝑆𝑡 ,𝑎 denote the truncated Upper Confidence Bound (UCB) and
+Lower Confidence Bound (LCB) for reward and cost estimation,                           where 𝜂 is the learning rate and [·]𝜃𝜃 max denotes the projection of
+                                                                                                                              min
+respectively. Recall in Problem (1), 𝑟ˆ𝑆𝑡 ,𝑎 and 1/ˇ𝑐 𝑆𝑡 ,𝑎 serve as the op-           real number onto the interval [𝜃 min, 𝜃 max ] with 𝜃 min ≜ 𝑟 min /𝑐 max
+timistic estimators for E[𝑅𝑆𝑡 ,𝑎 ] and 1/E[𝐶𝑆𝑡 ,𝑎 ], yielding the name                 and 𝜃 max ≜ 𝑟 max /𝑐 min .
+of “Double-Optimistic Learning”. Intuitively, this learning policy                       Note this is different with the classical RM method [31, 34] which
+encourages exploration among arms (decision space) to learn the                        adopts the samples 𝑅𝑆𝑡 ,𝑎𝑡 and 𝐶𝑆𝑡 ,𝑎𝑡 for updating 𝜃 𝑡 . Finally, our
+optimal reward-to-cost ratio effectively.                                              Robbins-Monro based decision is defined as follows:
+   Suppose we make decision 𝑎𝑡 for the task 𝑆𝑡 and observe the
+reward 𝑅𝑆𝑡 ,𝑎𝑡 and cost 𝐶𝑆𝑡 ,𝑎𝑡 feedback when the task is completed,                                            arg max 𝑟ˆ𝑆𝑡 ,𝑎 − 𝜃 𝑡 𝑐ˇ𝑆𝑡 ,𝑎 .
+                                                                                                                𝑎∈ A (𝑆𝑡 )
+we conduct the following updates:
+                                                                                       where 𝜃 𝑡 is treated as an estimation of 𝜃 ∗ .
+               𝑁𝑆𝑡 ,𝑎𝑡 (𝑡) = 𝑁𝑆𝑡 ,𝑎𝑡 (𝑡 − 1) + 1,                        (4)               This method circumvents the need to directly estimate the task
+                             𝑅¯𝑆 ,𝑎 𝑁𝑆 ,𝑎 (𝑡 − 1) + 𝑅𝑆𝑡 ,𝑎𝑡                            arrival distribution. Instead, it learns the optimal cumulative ratio
+                𝑅¯𝑆𝑡 +1 ,𝑎𝑡 = 𝑡 𝑡 𝑡 𝑡                       ,            (5)           by iteratively adjusting 𝜃 with the term 𝜂 (𝑟ˆ𝑆𝑡 ,𝑎𝑡 −𝜃 𝑡 𝑐ˇ𝑆𝑡 ,𝑎𝑡 ). When 𝜃
+                                        𝑁𝑆𝑡 ,𝑎𝑡 (𝑡)
+                                                                                       is excessively large, 𝜂 (𝑟ˆ𝑆𝑡 ,𝑎𝑡 −𝜃 𝑡 𝑐ˇ𝑆𝑡 ,𝑎𝑡 ) tends to be negative, driving
+                             𝐶¯𝑆 ,𝑎 𝑁𝑆 ,𝑎 (𝑡 − 1) + 𝐶𝑆𝑡 ,𝑎𝑡
+                𝐶¯𝑆𝑡 +1 ,𝑎𝑡 = 𝑡 𝑡 𝑡 𝑡                        .           (6)           a downward shift, whereas a small 𝜃 prompts its value to skew
+                                        𝑁𝑆𝑡 ,𝑎𝑡 (𝑡)                                    positive, inducing an upward adjustment in itself. With a proper
+
+
+
+
+                                                                                1978
+Full Research Paper                                                                                            AAMAS 2024, May 6–10, 2024, Auckland, New Zealand
+
+
+
+learning rate 𝜂, 𝜃 can steadily converge to the optimal balance ratio                              bias over the entire time horizon (Lemma 4.2 and 4.3), which re-
+as iterations increase (please refer to Section 4).                                                quires a conservative learning scheme and advanced Lyapunov drift
+                                                                                                   techniques to achieve sub-linear gap given coupled uncertainties.
+4     THEORETICAL RESULTS                                                                             Next, we present the detailed proof of Theorem 4.1 and focus
+To present our main results, we first introduce the common assump-                                 on the analysis of convergence gap 𝐺𝑎𝑝 (𝑇 ), where we first decom-
+tions on rewards and costs.                                                                        pose 𝐺𝑎𝑝 (𝑇 ) into the two items related to the double-optimistic
+                                                                                                   learning and Robbins-Monro iteration method, respectively, and
+   Assumption 1. The reward 𝑅𝑆𝑡 ,𝑎 is a sub-Gaussian random vari-                                  then established the items individually.
+able with mean 𝑟 𝑆𝑡 ,𝑎 = E[𝑅𝑆𝑡 ,𝑎 ] ∈ [𝑟 min, 𝑟 max ] for any 𝑆𝑡 ∈ S,
+𝑎 ∈ A (𝑆𝑡 ) and 𝑡 ∈ [𝑇 ].                                                                          4.1     Proof of Theorem 4.1
+   Assumption 2. The cost 𝐶𝑆𝑡 ,𝑎 is a positive sub-Gaussian random                                 Recall the definition of convergence gap in (10). We first decom-
+variable with mean 𝑐 𝑆𝑡 ,𝑎 = E[𝐶𝑆𝑡 ,𝑎 ] ∈ [𝑐 min, 𝑐 max ] for any 𝑆𝑡 ∈ S,                          pose the convergence gap using triangle inequality by involving
+𝑎 ∈ A (𝑆𝑡 ) and 𝑡 ∈ [𝑇 ].
+                                                                                                   Í𝑇
+                                                                                                          E[𝑟ˆ𝑆𝑡 ,𝑎𝑡 ]
+                                                                                                   Í𝑇𝑡 =1              as follows
+                                                                                                     𝑡 =1 E[𝑐ˇ𝑆𝑡 ,𝑎𝑡 ]
+Regret & Convergence Gap: Let 𝜃 ∗ be the optimal reward-to-cost                                                          Í𝑇                     Í𝑇
+ratio in Problem (1), we define 𝐺𝑎𝑝 (𝑇 ) to be the convergence gap:                                                             E[𝑟ˆ𝑆𝑡 ,𝑎𝑡 ]          E[𝑟 𝑆𝑡 ,𝑎𝑡 ]
+                                                                                                              𝐺𝑎𝑝 (𝑇 ) ≤ Í𝑇𝑡 =1              − Í𝑇𝑡 =1              .        (11)
+                                                                                                                           𝑡 =1 E[𝑐ˇ𝑆𝑡 ,𝑎𝑡 ]     𝑡 =1 E[𝑐 𝑆𝑡 ,𝑎𝑡 ]
+                                 Í𝑇
+                                        E[𝑅𝑆𝑡 ,𝑎𝑡 ]
+                𝐺𝑎𝑝 (𝑇 ) ≜ 𝜃 − Í𝑇𝑡 =1
+                              ∗
+                                                    ,           (10)                                                    |                    {z                  }
+                                   𝑡 =1 E[𝐶𝑆𝑡 ,𝑎𝑡 ]                                                                                 Double-optimistic learning error
+                                                                                                                                               Í𝑇
+which measures the distance between the cumulative reward-to-                                                                                         E[𝑟ˆ𝑆𝑡 ,𝑎𝑡 ]
+cost ratio returned by a policy and the optimal ratio. We define the                                                        +            𝜃 ∗ − Í𝑇𝑡 =1               .       (12)
+                                                                                                                                                 𝑡 =1 𝑐ˇ𝑆𝑡 ,𝑎𝑡 ]
+                                                                                                                                                      E[
+regret to be:                                                                                                                            |          {z             }
+                        R (𝑇 ) ≜ 𝑇 · 𝐺𝑎𝑝 (𝑇 ).                                                                                  Robbins-Monro iteration convergence gap
+Our goal is to show that DOL-RM achieves sub-linear regret 𝑜 (𝑇 ),                                 For the first term (11), we establish the bound in Lemma 4.2, which
+               R (𝑇 )
+i.e., lim𝑇 →∞ 𝑇 = lim𝑇 →∞ 𝐺𝑎𝑝 (𝑇 ) = 0, which implies that DOL-                                    is related to the bias of optimistic learning on rewards and costs.
+RM converges to the optimal policy and achieves the best reward-                                   For the second term (12), we establish the bound in Lemma 4.3 by
+to-cost ratio in the long-term. We state our main result for DOL-RM                                quantifying the cumulative bias from the Robbins-Monro iteration.
+in the following theorem.
+                                                                                                      Lemma 4.2. Suppose Assumption 1 and 2 hold, DOL-RM achieves
+   Theorem 4.1. Suppose Assumption 1 and 2 hold, DOL-RM achieves                                             Í𝑇                    Í𝑇
+the following regret:                                                                                          𝑡 =1 E[𝑟ˆ𝑆𝑡 ,𝑎𝑡 ]          E[𝑟 𝑆𝑡 ,𝑎𝑡 ]
+                                                                                                                                 − Í𝑇𝑡 =1
+                                                                                                                                                                1
+                                                   3                                                         Í𝑇                                        = 𝑂 (𝑇 − 2 ).
+                                  R (𝑇 ) = 𝑂 (𝑇 4 ).                                                           𝑡 =1 E[𝑐ˇ𝑆𝑡 ,𝑎𝑡 ]     𝑡 =1 E[𝑐 𝑆𝑡 ,𝑎𝑡 ]
+
+   Theorem 4.1 highlights DOL-RM’s favorable theoretical perfor-                                      Lemma 4.3. Suppose Assumption 1 and 2 hold, DOL-RM achieves
+                                                                   3
+mance in achieving no regret learning with sub-linear regrets 𝑂 (𝑇 4 ),                                                  Í𝑇
+                                                                                                                                E[𝑟ˆ𝑆𝑡 ,𝑎𝑡 ]
+                                                                                                                   𝜃 ∗ − Í𝑇𝑡 =1
+                                                                                                                                                      1
+                                                1
+which implies the convergence gaps of 𝑂 (𝑇 − 4 ). To the best of our                                                                         = 𝑂 (𝑇 − 4 ).
+                                                                                                                           𝑡 =1 E[𝑐ˇ𝑆𝑡 ,𝑎𝑡 ]
+knowledge, these are the first results for online task scheduling
+problems without any prior information on rewards, costs and task                                    Based on these two lemmas, we prove the convergence gap in
+arrival distributions. These results also indicate that DOL-RM can                                 Theorem 4.1 as follows:
+                                                                                                                                          1            1                1
+                                                                                                                  𝐺𝑎𝑝 (𝑇 ) ≤ 𝑂 (𝑇 − 2 ) + 𝑂 (𝑇 − 4 ) = 𝑂 (𝑇 − 4 ).
+quickly identify an effective and efficient policy that converges to
+the optimal ratio 𝜃 ∗ with the integral design of double-optimistic
+learning and the Robbins-Monro method.                                                             Here we only offer order-wise results in 𝑂 (·) for the sake of presen-
+   We want to further mention two related works cited as [39]                                      tation and the detailed expressions are delegated to the Appendix.
+and [31]. [39] studied the reward-to-cost ratio in a Markov deci-                                     Next, we prove Lemma 4.2 and 4.3, respectively.
+sion process (MDP). Though MDP includes bandit as a special case,
+[39] only established an asymmetrical convergence. [31] assumed                                    4.2     Double-Optimistic Learning Analysis
+perfect information √ on the rewards and costs and established im-                                 Lemma 4.2 represents the estimation error of the cumulative reward-
+proved regrets of 𝑂 ( 𝑇 ). With such perfect information, [31] only                                to-cost ratio. Due to the page limit, we illustrate the key steps in the
+needs to quantify the uncertainty of task arrival without any bias1                                analysis of double-optimistic learning and the completed version
+from rewards and costs. This enables [31] to conduct an aggres-                                    can be found in Appendix C.
+sive learning scheme to control the bias only from the task arrival                                   Recall that to optimize the reward-to-cost ratio given unknown
+such that it can provide an anytime gap performance and improved                                   reward and cost functions, we employ optimistic estimators for both
+performance. However, when the rewards and costs are unknown,                                      rewards and costs. This indicates that the following inequalities
+we must carefully balance all these uncertainties and control the                                  hold with a high probability according to UCB/LCU learning [24]
+1 Rewards and costs are usually biased with noises, e.g., sub-Gaussian noise in our case,                                                             1     1
+                                                                                                                  0 ≤ 𝑟ˆ𝑆,𝑎 − 𝑟 𝑆,𝑎 ≤ 0, 0 ≤             −      ≤ 0.
+while [31] assumes constant rewards and costs, thus no bias involved.                                                                               𝑐ˆ𝑆,𝑎 𝑐 𝑆,𝑎
+
+
+
+
+                                                                                            1979
+Full Research Paper                                                                                         AAMAS 2024, May 6–10, 2024, Auckland, New Zealand
+
+
+
+                                                                                                  Lemma 4.4. Suppose Assumption 1 and 2 hold, under DOL-RM, we
+                                                           Í
+These guarantee optimistic estimation for cumulative terms 𝑇𝑡=1 𝑟 𝑆𝑡 ,𝑎𝑡
+and Í𝑇 1     , resulting in an optimistic estimation for cumulative                             bound the Robbins-Monro iteration convergence gap in (12) as follows:
+       𝑡 =1 𝑐 𝑆𝑡 ,𝑎𝑡            Í𝑇                                                                              Í𝑇
+                                      E[𝑟 𝑆𝑡 ,𝑎𝑡 ]                                                                     E[𝑟ˆ𝑆𝑡 ,𝑎𝑡 ]
+reward-to-cost ratio Í𝑇𝑡 =1                           .                                                    𝜃 − Í𝑇𝑡 =1
+                                                                                                            ∗
+                                  𝑡 =1 E[𝑐 𝑆𝑡 ,𝑎𝑡 ]
+   To proceed, we define partial double-optimistic errors                                                         𝑡 =1 E[𝑐ˇ𝑆𝑡 ,𝑎𝑡 ]
+                                                                                                                  (Í                         Í𝑇
+                                                                                                                       𝑇 E[𝑟ˆ
+                                                                                                                       𝑡 =1       𝑆𝑡 ,𝑎𝑡 ]          E[𝑟 𝑆𝑡 ,𝑎𝑡 ]
+                               Í𝑇               Í𝑇                                                         ≤ max Í𝑇                        − Í𝑇𝑡 =1               , (13)
+                            𝑡 =1 E[𝑟ˆ𝑆𝑡 ,𝑎𝑡 ]          E[𝑟 𝑆𝑡 ,𝑎𝑡 ]                                                                      ]               𝑆𝑡 ,𝑎𝑡 ]
+                                              − Í𝑇𝑡 =1                                                                 𝑡 =1 E[  ˇ
+                                                                                                                                𝑐 𝑆𝑡 ,𝑎𝑡       𝑡 =1 E[𝑐
+                 𝜖 (𝑇 ) ≜ Í𝑇                                        ,
+                                                                                                                    √
+                            𝑡 =1 E[𝑐ˇ𝑆𝑡 ,𝑎𝑡 ]     𝑡 =1 E[𝑐ˇ𝑆𝑡 ,𝑎𝑡 ]                                                         𝑇 √︃
+                                                                                                                                                       )
+                                                                                                                      2𝐶 1 ∑︁
+                                                                                                                                     E (𝜃 𝑡 − 𝜃 ∗ ) 2 .
+                                                                                                                                                    
+                          Í𝑇
+                                 E[𝑟 𝑆𝑡 ,𝑎𝑡 ]
+                                                Í𝑇
+                                                       E[𝑟 𝑆𝑡 ,𝑎𝑡 ]                                                                                                 (14)
+                                                                                                                   𝑇𝑐 min 𝑡 =1
+                 𝜅 (𝑇 ) ≜ Í𝑇𝑡 =1              − Í𝑇𝑡 =1              .
+                            𝑡 =1 E[𝑐ˇ𝑆𝑡 ,𝑎𝑡 ]     𝑡 =1 E[𝑐 𝑆𝑡 ,𝑎𝑡 ]
+                                                                                                   We provide the proof sketch by considering two cases: 1) when
+                                                                                                      Í𝑇
+                                                                                                             E[𝑟ˆ       ]
+   Such errors directly form an upper bound of the double-optimistic                            𝜃 ∗ ≤ Í𝑇𝑡 =1 𝑆𝑡 ,𝑎𝑡 , the term in (13) is upper bound of (12) according
+                                                                                                        𝑡 =1 E[𝑐ˇ𝑆𝑡 ,𝑎𝑡 ]            Í𝑇
+learning error in (11) via the triangle inequality:                                                                                          E[𝑟ˆ       ]
+                                                                                                to the definition of 𝜃 ∗ . 2) when Í𝑇𝑡 =1 𝑆𝑡 ,𝑎𝑡 ≤ 𝜃 ∗ , we have the
+                                                                                                                                        𝑡 =1 E[𝑐ˇ𝑆𝑡 ,𝑎𝑡 ]
+            Í𝑇                       Í𝑇
+                                            E[𝑟 𝑆𝑡 ,𝑎𝑡 ]                                        greedy decision in our algorithm such that
+                 𝑡 =1 E[𝑟ˆ𝑆𝑡 ,𝑎𝑡 ]
+                                   − Í𝑇𝑡 =1              ≤ 𝜖 (𝑇 ) + 𝜅 (𝑇 ),
+            Í𝑇                                                                                         E[𝑟ˆ𝑆𝑡 ,𝑎𝑡 − 𝜃 𝑡 𝑐ˇ𝑆𝑡 ,𝑎𝑡 |𝜃 𝑡 ] ≥E[𝑅𝑆𝑡 ,𝑎∗ |𝜃 𝑡 ] − 𝜃 𝑡 E[𝐶𝑆𝑡 ,𝑎∗ |𝜃 𝑡 ]
+                 𝑡 =1 E[𝑐ˇ𝑆𝑡 ,𝑎𝑡 ]     𝑡 =1 E[𝑐 𝑆𝑡 ,𝑎𝑡 ]
+                                                                                                                                      ≥𝑟 ∗ − 𝜃 𝑡 𝑐 ∗,
+We then bound these partial double-optimistic errors as follows:
+                                                                                                where 𝑎 ∗ is any decision within A (𝑆𝑡 ), the first inequality holds due
+                                                                                                to the greedy decision and 𝑟ˆ𝑆𝑡 ,𝑎𝑡 ≥ 𝑟 𝑆𝑡 ,𝑎𝑡 , 𝑐ˇ𝑆𝑡 ,𝑎𝑡 ≤ 𝑐 𝑆𝑡 ,𝑎𝑡 holds with
+   𝜖 (𝑇 ) + 𝜅 (𝑇 )                                                                              a high probability; the second inequality holds because (𝑟 ∗, 𝑐 ∗ ) lies
+             1
+                              𝑇
+                             ∑︁                        𝑇
+                                                      ∑︁                                        within the closure of available decision set. By adding (𝜃 𝑡 −𝜃 ∗ )𝑐ˇ𝑆𝑡 ,𝑎𝑡
+ = Í𝑇                                          E[𝑟 𝑆𝑡 ,𝑎𝑡 ]
+                                  E[𝑟ˆ𝑆𝑡 ,𝑎𝑡 ] −                                                on both sides of the above inequality, we further have
+     𝑡 =1 E[𝑐ˇ𝑆𝑡 ,𝑎𝑡 ] 𝑡 =1               𝑡 =1
+                                                                                                         E[𝑟ˆ𝑆𝑡 ,𝑎𝑡 − 𝜃 ∗𝑐ˇ𝑆𝑡 ,𝑎𝑡 ] ≥ E (𝜃 𝑡 − 𝜃 ∗ )(𝑐ˇ𝑆𝑡 ,𝑎𝑡 − 𝑐 ∗ ) .
+                                                                                                                                                                    
+               Í𝑇                             𝑇                    𝑇
+                   𝑡 =1 E[𝑟 𝑆𝑡 ,𝑎𝑡 ]
+                                             ∑︁                   ∑︁
+   + Í𝑇                   Í𝑇                     E[𝑐 𝑆𝑡 ,𝑎𝑡 ] −        E[𝑐ˇ𝑆𝑡 ,𝑎𝑡 ]             Finally, one could use Cauchy-Schwarz inequality to establish (14)
+        𝑡 =1 E[𝑐ˇ𝑆𝑡 ,𝑎𝑡 ] 𝑡 =1 E[𝑐 𝑆𝑡 ,𝑎𝑡 ] 𝑡 =1                  𝑡 =1
+                                                                                                in Lemma 4.4. More details can be found in the Appendix A.
+             𝑇                                      𝑇                                                                               1
+      1 ∑︁                                 𝑟 max ∑︁                                                Since we already have the 𝑂 (𝑇 − 2 ) bound of (13) in Section 4.2,
+ ≤               E[𝑟ˆ𝑆𝑡 ,𝑎𝑡 − 𝑟 𝑆𝑡 ,𝑎𝑡 ] + 2             E[𝑐 𝑆𝑡 ,𝑎𝑡 − 𝑐ˇ𝑆𝑡 ,𝑎𝑡 ] ,
+   𝑇𝑐 min 𝑡 =1                            𝑇𝑐 min 𝑡 =1                                           the key is to establish the cumulative error
+                                                                                                                              𝑇
+                                                                                                                             ∑︁ √︁
+where the last inequality holds due to the boundedness of reward                                                                     E[(𝜃 𝑡 − 𝜃 ∗ ) 2 ].
+and cost. As shown in the above inequality, we break down the esti-                                                           𝑡 =1
+mated error of cumulative ratio into the estimated errors of rewards                            We leverage the Lyapunov drift analysis [29, 38] to study this key
+and costs. Consequently, we only need to bound the following terms                              term. Note that [31] also used this technique to study the cumulative
+                                                                                                error term, where they assumed the perfect information of rewards
+               𝑇
+              ∑︁                                       𝑇
+                                                      ∑︁                                        and costs such that it can establish anytime error of E[(𝜃 𝑡 −𝜃 ∗ ) 2 ] via
+                       E[𝑟ˆ𝑆𝑡 ,𝑎𝑡 − 𝑟 𝑆𝑡 ,𝑎𝑡 ] ,             E[𝑐 𝑆𝑡 ,𝑎𝑡 − 𝑐ˇ𝑆𝑡 ,𝑎𝑡 ] ,          one-step Lyapunov drift. However, we do not assume any of such
+              𝑡 =1                                    𝑡 =1                                      knowledge and quantify the cumulative error term by aggregating
+                                                                                                the bias over all tasks.
+which have been widely studied√ in UCB/LCB learning [24, 27, 28]                                   Define the Lyapunov function
+and both are in the order of 𝑂 ( 𝑇 ). Eventually, we have
+                                                                                                                            1
+                                                                                                                              (𝜃 𝑡 − 𝜃 ∗ ) 2,
+                                                                                                                               𝑉𝑡 ≜
+                                                                − 21
+                                                                                                                            2
+                                𝜖 (𝑇 ) + 𝜅 (𝑇 ) ≤ 𝑂 (𝑇                 ),
+                                                                                                we analyze the corresponding Lyapunov drift
+
+which proves Lemma 4.2.                                                                                                         Δ(𝑡) ≜ 𝑉𝑡 +1 − 𝑉𝑡
+                                                                                                and have the following lemma.
+4.3     Robbins-Monro Iteration Analysis
+                                                                                                   Lemma 4.5. Under DOL-RM, we have the expected Lyapunov drift
+Lemma 4.3 is the key to establishing the convergence gap and                                    to be bounded as follows:
+regret for DOL-RM and is also the most challenging part. We first
+establish its upper bound with the terms related to E[(𝜃 𝑡 − 𝜃 ∗ ) 2 ] in                          E[Δ(𝑡)] ≤ − 2𝑐 min𝜂E[𝑉𝑡 ] + 𝜂 2𝑏
+                                                                                                              + 𝜃𝑔𝑎𝑝 𝜂E 𝑟ˆ𝑆𝑡 ,𝑎𝑡 − 𝑟 𝑆𝑡 ,𝑎𝑡 − 𝜃 ∗ (𝑐ˇ𝑆𝑡 ,𝑎𝑡 − 𝑐 𝑆𝑡 ,𝑎𝑡 ) ,
+the following Lemma 4.4, we then carefully control the cumulative                                                                                                      
+errors in the Robbins-Monro iteration.
+                                                                                                where 𝜃𝑔𝑎𝑝 ≜ (𝜃𝑚𝑎𝑥 − 𝜃𝑚𝑖𝑛 ) and 𝑏 ≥ 12 E (𝑟ˆ𝑆𝑡 ,𝑎𝑡 − 𝜃 𝑡 𝑐ˇ𝑆𝑡 ,𝑎𝑡 ) 2 , ∀𝑡.
+                                                                                                                                                                         
+
+
+
+
+                                                                                         1980
+Full Research Paper                                                                                            AAMAS 2024, May 6–10, 2024, Auckland, New Zealand
+
+
+
+   We in the following provide the proof sketch for this key lemma.                                  Lemma 4.6. Under DOL-RM, we have
+   According to the reward-to-cost ratio learning in (8), we have
+                                                                         2                                               𝑇 √︃
+                                                                                                                         ∑︁
+                                                                                                                                                     3
+                                                                                                                               E (𝜃 𝑡 − 𝜃 ∗ ) 2 = 𝑂 (𝑇 4 ).
+                                                                                                                                              
+      (𝜃 𝑡 +1 − 𝜃 ∗ ) 2 = 𝜃 𝑡 + 𝜂 (𝑟ˆ𝑆𝑡 ,𝑎𝑡 − 𝜃 𝑡 𝑐ˇ𝑆𝑡 ,𝑎𝑡 ) 𝜃 max − 𝜃 ∗
+                                                            𝜃
+                                                               min
+                                                                                                                         𝑡 =1
+                         h                                         𝜃 i 2
+                        = 𝜃 𝑡 + 𝜂 (𝑟ˆ𝑆𝑡 ,𝑎𝑡 − 𝜃 𝑡 𝑐ˇ𝑆𝑡 ,𝑎𝑡 ) − 𝜃 ∗ 𝜃 max
+                                                                                min                 Finally, by combining Lemma 4.2 and 4.6 into Lemma 4.4, we
+                            ≤ (𝜃 𝑡 + 𝜂 (𝑟ˆ𝑆𝑡 ,𝑎𝑡 − 𝜃 𝑡 𝑐ˇ𝑆𝑡 ,𝑎𝑡 ) − 𝜃 ∗ ) 2 .                    establish the Robbins-Monro iteration convergence gap as follows:
+By the definition of the Lyapunov drift Δ𝑡 , we have                                                             Í𝑇
+                                                                                                                        E[𝑟ˆ𝑆𝑡 ,𝑎𝑡 ]      n                        o
+                   1                       1                                                               𝜃 ∗ − Í𝑇𝑡 =1              ≤ max 𝑂 (𝑇 −1/2 ), 𝑂 (𝑇 −1/4 ) ,
+        E[Δ(𝑡)] = E[(𝜃 𝑡 +1 − 𝜃 ∗ ) 2 ] − E[(𝜃 𝑡 − 𝜃 ∗ ) 2 ]                                                       𝑡 =1 E[𝑐ˇ𝑆𝑡 ,𝑎𝑡 ]
+                   2                       2
+                 ≤𝜂 2𝑏 + 𝜂E (𝜃 𝑡 − 𝜃 ∗ ) (𝑟ˆ𝑆𝑡 ,𝑎𝑡 − 𝜃 𝑡 𝑐ˇ𝑆𝑡 ,𝑎𝑡 ) .
+                                                                  
+                                                                                                 which proves Lemma 4.3.
+Similar to the proof of Lemma 4.4, we bound the last term in the
+above inequality under two cases:                                                                5     NUMERICAL RESULTS
+  1) For 𝜃 ∗ ≥ 𝜃 𝑡 , we can directly get                                                         We evaluate DOL-RM via both synthetic simulation and real-world
+         E (𝜃 𝑡 − 𝜃 ∗ ) (𝑟ˆ𝑆𝑡 ,𝑎𝑡 − 𝜃 𝑡 𝑐ˇ𝑆𝑡 ,𝑎𝑡 ) ≤ −2𝑐 min𝜂E[𝑉𝑡 ],
+                                                                                                                                                      Í                        𝑡
+                                                                                                                                                                                     𝑅
+                                                                                                 experiment in terms of the cumulative reward-to-cost ratio Í𝑡1 𝑆𝑡 ,𝑎𝑡 .
+                                                                                                                                                                                 1 𝐶𝑆𝑡 ,𝑎𝑡
+since E[𝑟ˆ𝑆𝑡 ,𝑎𝑡 − 𝜃 𝑡 𝑐ˇ𝑆𝑡 ,𝑎𝑡 |𝜃 𝑡 ] ≥ 𝑟 ∗ − 𝜃 𝑡 𝑐 ∗ = 𝑐 ∗ (𝜃 ∗ − 𝜃 𝑡 ). Then the              For both cases, we let learning rate 𝜂𝑡 = 1/𝑐𝑚𝑖𝑛 (𝑡 + 1) in our DOL-
+inequality in Lemma 4.5 holds by the fact E[𝑟ˆ𝑆𝑡 ,𝑎𝑡 − 𝑟 𝑆𝑡 ,𝑎𝑡 ] ≥                              RM algorithm.
+0, E[𝑐 𝑆𝑡 ,𝑎𝑡 − 𝑐ˇ𝑆𝑡 ,𝑎𝑡 ] ≥ 0 which is guaranteed by the property of                            Baselines: We consider the following representative baselines to
+UCB/LCB.                                                                                         justify DOL-RM’s performance:
+   2) For 𝜃 ∗ ≤ 𝜃 𝑡 , given the boundedness of cost, we have
+                                                                                                       • General Thompson Sampling (TS) [35].
+         E (𝜃 𝑡 − 𝜃 ∗ ) (𝑟ˆ𝑆𝑡 ,𝑎𝑡 − 𝜃 𝑡 𝑐ˇ𝑆𝑡 ,𝑎𝑡 )
+                                                  
+                                                                                                       • Classic Upper Confidence Bound (UCB) algorithm [24].
+      ≤E (𝜃 𝑡 − 𝜃 ∗ ) (𝑟ˆ𝑆𝑡 ,𝑎𝑡 − 𝜃 ∗𝑐ˇ𝑆𝑡 ,𝑎𝑡 ) − 𝑐𝑚𝑖𝑛 E (𝜃 𝑡 − 𝜃 ∗ ) 2 .                              • 𝜔-UCB [19], a variance-aware cost-efficient algorithm.
+                                                                         
+                                                                                                       • Oracle algorithm [31], which needs prior knowledge of re-
+  We then have the following bound by decomposing the first term
+                                                                                                         ward and cost and an optimal solution2 .
+and incorporating the fact that 𝜃 𝑡 − 𝜃 ∗ ≤ 𝜃𝑔𝑎𝑝 , i.e.,
+         E (𝜃 𝑡 − 𝜃 ∗ ) (𝑟ˆ𝑆𝑡 ,𝑎𝑡 − 𝜃 ∗𝑐ˇ𝑆𝑡 ,𝑎𝑡 )                                                5.1      Synthetic Simulation
+                                                 
+
+        ≤E (𝜃 𝑡 − 𝜃 ∗ ) (𝑟 𝑆𝑡 ,𝑎𝑡 − 𝜃 ∗𝑐 𝑆𝑡 ,𝑎𝑡 )                                                •Two-Task-Type We consider a synthetic setting similar to the
+                                                 
+
+          + 𝜃𝑔𝑎𝑝 E (𝑟ˆ𝑆𝑡 ,𝑎𝑡 − 𝑟 𝑆𝑡 ,𝑎𝑡 − 𝜃 ∗ (𝑐ˇ𝑆𝑡 ,𝑎𝑡 − 𝑐 𝑆𝑡 ,𝑎𝑡 )) .
+                                                                                               toy example presented in Figure 1. We consider two incoming typs
+                                                                                                 of tasks with arrival rates of {𝑝, 1 − 𝑝} and reward-cost vectors
+   Next, drawing upon the definition                            ∗
+                              ∗
+                                          of the optimal ratio 𝜃 , which                        of {[(3, 1)], [(3, 2), (1, 1)]}. The observations 𝑅𝑆,𝑎 and 𝐶𝑆,𝑎 are cor-
+indicates that E (𝑟 𝑆𝑡 ,𝑎𝑡 − 𝜃 𝑐 𝑆𝑡 ,𝑎𝑡 ) ≤ 0, we complete the proof of                          rupted with additive Gaussian noise sampled from N (0, 1).
+Lemma 4.5. More details are provided in Appendix B.                                                 We let 𝑝 and 1 − 𝑝 be the arrival probability of task 𝑆𝑥 and 𝑆 𝑦 ,
+   Proving Lemma 4.3: We rearrange the inequality in Lemma 4.5                                   respectively. To verify the robustness of DOL-RM against varied
+and take summation from 1 to 𝑇 over it, yielding the following:                                  task arrival distributions, we test it under two task arrival patterns,
+   𝑇
+  ∑︁                    𝑇
+                       ∑︁ E[Δ(𝑡)]             𝑇 𝜂𝑏                                               quantified by 𝑝 = 0.8, and 𝑝 = 0.6 in Figure 4(a) and 4(b).
+         E[𝑉𝑡 ] ≤ −                      +                                                          •Seven-Task-Type We consider a more complex task schedul-
+  𝑡 =1                 𝑡 =1
+                            2𝑐 min𝜂          2𝑐𝑚𝑖𝑛
+                                                                                                 ing problem with 7 types of incoming tasks with arrival rates of
+                              𝑇
+                        𝜃𝑔𝑎𝑝 ∑︁                                                                  {0.3, 0.1, 0.2, 0.1, 0.05, 0.1, 0.15} and reward-cost vectors of {[(3, 1)],
+                                  E 𝑟ˆ𝑆𝑡 ,𝑎𝑡 − 𝑟 𝑆𝑡 ,𝑎𝑡 − 𝜃 ∗ (𝑐ˇ𝑆𝑡 ,𝑎𝑡 − 𝑐 𝑆𝑡 ,𝑎𝑡 )
+                                                                                    
+                   +                                                                             [(3, 2), (1, 1)], [(2, 1)], [(2.5, 1.5)], [(2, 1), (1, 1)], [(3, 2), (1.5, 1.5)],
+                       2𝑐𝑚𝑖𝑛 𝑡 =1
+                                                                                                 [(2.5, 1)]}. The observations 𝑅𝑆,𝑎 and 𝐶𝑆,𝑎 are corrupted with addi-
+                       𝑉1  𝑇 𝜂𝑏       √         √                                                tive Gaussian noise sampled from N (0, 1).
+               ≤               + + 𝑂 ( 𝑇 ) = 𝑂 ( 𝑇 ),
+               2𝑐 min𝜂 2𝑐𝑚𝑖𝑛                                                                        Figure 4 demonstrates that DOL-RM outperforms the state-of-
+where the second inequality holds because of 𝑇𝑡=1 Δ(𝑡) = 𝑉𝑇 − 𝑉1                                 the-art learning-based algorithms in terms of the cumulative reward-
+                                                 Í
+                                                               √                                 to-cost ratio. DOL-RM’s superior performance is consistent across
+and the fact that the estimation errors are at the order of 𝑂 ( 𝑇 )
+                                                                                                 two different cases, showcasing its high adaptability. Compared to
+according to UCB/LCB learning (similarly stated in Section √
+                                                           4.2); the
+                                                                                                 the oracle algorithm [31], which has full prior knowledge and the
+last equality holds by plugging the learning rate 𝜂 = 𝑂 (1/ 𝑇 ).
+                                                                                                 optimal ratio in hindsight, DOL-RM exhibits a fast convergence
+   According to the Cauchy-Schwarz inequality, we have,
+                                    v                                                            rate, indicating its efficiency in identifying the optimal policy under
+                                    u
+                      𝑇 √︁
+                     ∑︁
+                                    t 𝑇
+                                        ∑︁                                                       certainty.
+                          E[𝑉𝑡 ] ≤ 𝑇        E[𝑉𝑡 ],
+                            𝑡 =1                     𝑡 =1
+                                                                                      3          2We adopt this algorithm as an ideal benchmark as it possesses full knowledge before
+which implies that the key cumulative error is at the order of 𝑂 (𝑇 4 )                          decision-making, allowing us to verify whether DOL-RM converges to the optimal
+in the following lemma.                                                                          ratio. However, it cannot be applied in the real world due to the lack of prior knowledge.
+
+
+
+
+                                                                                          1981
+Full Research Paper                                                                                                                                                                                          AAMAS 2024, May 6–10, 2024, Auckland, New Zealand
+
+
+
+
+                                     2.65                                                                                                                         2.30                                                                                    2.12
+
+
+
+
+   Cumulative reward-to-cost ratio                                                                                              Cumulative reward-to-cost ratio                                                         Cumulative reward-to-cost ratio
+                                                                                                                                                                                                                                                          2.10
+                                     2.60                                                                                                                         2.25
+                                                                                                                                                                                                                                                          2.08
+                                     2.55                                                                                                                         2.20
+                                                                                                                                                                                                                                                          2.06
+
+                                     2.50                                                                                                                         2.15                                                                                    2.04
+
+                                                                                        DOL-RM            UCB        Oracle                                                        DOL-RM       UCB        Oracle                                         2.02             DOL-RM        UCB           Oracle
+                                     2.45                                               TS                 -UCB                                                   2.10             TS            -UCB                                                                      TS             -UCB
+                                             0                                     1000     2000        3000    4000    5000                                             0    1000     2000   3000    4000    5000                                        2.00 0   2500 5000 7500 10000 12500 15000 17500 20000
+                                                                                            Time frame                                                                                 Time frame                                                                               Time frame
+                                                                               (a) Two-Task-Type 𝑝 = 0.8.                                                                    (b) Two-Task-Type 𝑝 = 0.6.                                                                 (c) Seven-Task-Type.
+
+
+                                        Figure 4: Synthetic Experiment: Performance Comparison in a Two-Task-Type Case and Seven-Task-Type Case.
+
+
+                                                                                                                                                                                                test set with 20% of the pictures. We use the first 1000 pictures of
+                                                                              10
+                                                                                                            DOL-RM         TS              UCB                                                  rice images in each class in [23]. The pictures are all resized into
+
+
+
+
+                                            Cumulative reward-to-cost ratio
+                                                                                                                                                                                                224 × 224 and 20% of them are reserved as the test set. We take the
+                                                                               9
+                                                                                                                                                                                                first 500 pictures in each category in the training set of [4] as train-
+                                                                                                                                                                                                ing data and utilize the test set of [4] as test data. All the pictures
+                                                                               8
+                                                                                                                                                                                                are resized into 150 × 150. The database of cat & dog classification
+                                                                               7                                                                                                                contains 11875 pictures for each class of cat or dog [36], where
+                                                                                                                                                                                                the pictures are also scaled into size 150 × 150 and 10% of these
+                                                                               6                                                                                                                pictures are reserved as the test set. Our experiment was conducted
+                                                                                                                                                                                                on an RTX 3080 Ti GPU, running a 64-bit Ubuntu 18.04 system. The
+                                                                               5                                                                                                                detailed structures and parameters of neural network models can
+                                                                                     0     25      50     75   100 125 150 175 200
+                                                                                                           Time frame                                                                           be found in Appendix E.
+                                                                                                                                                                                                    Let the arrival probability of {𝑆𝑠 , 𝑆 𝑤 , 𝑆𝑟 , 𝑆𝑛 , 𝑆𝑐 } be {0.1, 0.4, 0.2,
+                                                                                   Figure 5: Real-World Experiment.                                                                             0.2, 0.1}. As 𝜔-UCB [19] and oracle algorithm [31] requires non-
+                                                                                                                                                                                                casual information, which is infeasible in the experiment, we com-
+                                                                                                                                                                                                pare DOL-RM only with the (classical) UCB and TS. Figure 5 plot
+5.2                                    Real-World Experiment                                                                                                                                    the cumulative reward-to-cost ratio for these algorithms where the
+We apply DOL-RM to schedule machine learning (ML) training tasks                                                                                                                                light-shaded areas indicate the corresponding standard deviation.
+in a shared server. Specifically, we consider five types of ML classifi-                                                                                                                        These results show DOL-RM outperforms the baselines significantly
+cation tasks in the system, where a satellite image classification task                                                                                                                         and demonstrate that DOL-RM can converge to a better policy in
+𝑆𝑠 with four categories , a weather classification task 𝑆 𝑤 and a rice                                                                                                                          the real-world system even without any prior information.
+classification task 𝑆𝑟 with five categories , a natural scene classifica-
+tion task 𝑆𝑛 with six categories and a cat & dog classification task 𝑆𝑐 .                                                                                                                       6    CONCLUSION
+Let S = {𝑆𝑠 , 𝑆 𝑤 , 𝑆𝑟 , 𝑆𝑛 , 𝑆𝑐 }. For each classification task, the server                                                                                                                    In this paper, we initiated the study on a novel formulation of the
+decides a training epoch from a range of options. The available                                                                                                                                 online task scheduling problem, where the task arrival distribution,
+options on epoch number are within A (𝑆𝑠 ) = A (𝑆𝑟 ) = A (𝑆𝑐 ) =                                                                                                                                rewards, and costs are all unknown. Guided by double-optimistic
+{1, 2, 3, 4, 5} and A (𝑆 𝑤 ) = A (𝑆𝑛 ) = {1, 5, 10, 15, 20}3 , respectively.                                                                                                                    learning and Robbins-Monro method, we proposed an effective
+After training the model with an epoch number 𝑎𝑡 ∈ A (𝑆𝑡 ) for a                                                                                                                                and efficient algorithm DOL-RM which integrates optimistic es-
+classification task 𝑆𝑡 ∈ S, we can obtain the AUC on the test set as                                                                                                                            timations and stochastic approximation of balancing point. We
+reward 𝑅𝑆𝑡 ,𝑎𝑡 and observe the training time as cost 𝐶𝑆𝑡 ,𝑎𝑡 4 .                                                                                                                                theoretically demonstrated its superior performance with a simul-
+   The dataset of satellite image classification has more than 1000                                                                                                                             taneous achievement of sub-linear regret bound and fast learning.
+pictures in each category of satellite remote-sensing images [33].                                                                                                                              Via justification in synthetic and real-world scenarios, we not only
+All the pictures are resized into 255 × 255 and 20% of them are sep-                                                                                                                            showed the outperformance of DOL-RM over state-of-the-art base-
+arated as the test set. The dataset of weather classification contains                                                                                                                          lines but also envisioned enormous potential applications of our
+boasting over 300 pictures of weather images in each category [18].                                                                                                                             modeling and algorithm design.
+All the pictures are resized into 150 × 150 and we construct the
+3 For satellite image classification 𝑆 , each epoch contains 141 steps. For weather
+                                      𝑠
+                                                                                                                                                                                                ACKNOWLEDGMENTS
+classification 𝑆 𝑤 , each epoch contains 38 steps. For rice classification 𝑆𝑟 , each epoch                                                                                                      The work was partly supported by the Shanghai Sailing Program
+contains 100 steps. For natural scene classification 𝑆𝑛 , each epoch contains 150 steps.
+For cat & dog classification 𝑆𝑐 , each epoch has 30 steps.                                                                                                                                      22YF1428500, the National Nature Science Foundation of China
+4We conduct min-max normalization on reward and cost to facilitate practical training.                                                                                                          under grant 62302305. Corresponding author: Xin Liu.
+
+
+
+
+                                                                                                                                                                                         1982
+Full Research Paper                                                                                          AAMAS 2024, May 6–10, 2024, Auckland, New Zealand
+
+
+
+REFERENCES                                                                                      [24] Tor Lattimore and Csaba Szepesvári. 2020. Bandit Algorithms. Cambridge Uni-
+ [1] Dr Amit Agarwal and Saloni Jain. 2014. Efficient Optimal Algorithm of Task                      versity Press.
+     Scheduling in Cloud Computing Environment. International Journal of Computer               [25] Haifang Li and Yingce Xia. 2017. Infinitely Many-Armed Bandits with Budget
+     Trends and Technology 9, 7 (2014), 344–349.                                                     Constraints. In Proceedings of AAAI.
+ [2] Afra A Alabbadi and Maysoon F Abulkhair. 2021. Multi-Objective Task Scheduling             [26] Rui Li, Qian Ma, Jie Gong, Zhi Zhou, and Xu Chen. 2021. Age of processing:
+     Optimization in Spatial Crowdsourcing. Algorithms 14, 3 (2021), 77–97.                          Age-Driven Status Sampling and Processing Offloading for Edge-Computing-
+ [3] AR Arunarani, Dhanabalachandran Manjula, and Vijayan Sugumaran. 2019. Task                      Enabled Real-Time IoT Applications. IEEE Internet of Things Journal 8, 19 (2021),
+     Scheduling Techniques in Cloud Computing: A Literature Survey. Future Gener-                    14471–14484.
+     ation Computer Systems 91 (2019), 407–415.                                                 [27] Xin Liu, Bin Li, Pengyi Shi, and Lei Ying. 2020. Pond: Pessimistic-Optimistic
+ [4] PUNEET BANSAL. 2019. Intel Image Classification. Retrieved December 12, 2023                    Online Dispatching. arXiv preprint arXiv:2010.09995 (2020).
+     from https://www.kaggle.com/datasets/puneet6060/intel-image-classification/                [28] Xin Liu, Bin Li, Pengyi Shi, and Lei Ying. 2021. An Efficient Pessimistic-Optimistic
+     data                                                                                            Algorithm for Stochastic Linear Bandits with General Constraints. In Advances in
+ [5] Semih Cayci, Atilla Eryilmaz, and Rayadurgam Srikant. 2019. Learning to Control                 Neural Information Processing Systems 34 - 35th Conference on Neural Information
+     Renewal Processes with Bandit Feedback. Proceedings of the ACM on Measurement                   Processing Systems, NeurIPS 2021.
+     and Analysis of Computing Systems 3, 2 (2019), 1–32.                                       [29] Michael J Neely. 2010. Stochastic Network Optimization with Application to
+ [6] Semih Cayci, Atilla Eryilmaz, and R Srikant. 2020. Budget-Constrained Bandits                   Communication and Queueing Systems. Synthesis Lectures on Communication
+     over General Cost and Reward Distributions. In Proceedings of AISTATS.                          Networks 3, 1 (2010), 1–211.
+                                                                                                [30] Michael J. Neely. 2013. Dynamic Optimization and Learning for Renewal Systems.
+ [7] Duo Cheng, Ruiquan Huang, Cong Shen, and Jing Yang. 2022. Cascading Bandits
+                                                                                                     IEEE Trans. Automat. Control 58, 1 (2013), 32–46.
+     with Two-Level Feedback. In Proceedings of IEEE ISIT.
+                                                                                                [31] Michael J Neely. 2021. Fast Learning for Renewal Optimization in Online Task
+ [8] Debojit Das, Shweta Jain, and Sujit Gujar. 2022. Budgeted Combinatorial Multi-
+                                                                                                     Scheduling. Journal of Machine Learning Research 22, 1 (2021), 12785–12828.
+     Armed Bandits. arXiv preprint arXiv:2202.03704 (2022).
+                                                                                                [32] Fahimeh Ramezani, Jie Lu, Javid Taheri, and Farookh Khadeer Hussain. 2015.
+ [9] Dingxiong Deng, Cyrus Shahabi, and Linhong Zhu. 2015. Task Matching and
+                                                                                                     Evolutionary Algorithm-Based Multi-Objective Task Scheduling Optimization
+     Scheduling for Multiple Workers in Spatial Crowdsourcing. In Proceedings of
+                                                                                                     Model in Cloud Environments. World Wide Web 18, 6 (2015), 1737–1757.
+     ACM SIGSPATIAL.
+                                                                                                [33] MAHMOUD REDA. 2021. Satellite Image Classification. Retrieved December 12,
+[10] Wenkui Ding, Tao Qin, Xu-Dong Zhang, and Tie-Yan Liu. 2013. Multi-Armed
+                                                                                                     2023 from https://www.kaggle.com/datasets/mahmoudreda55/satellite-image-
+     Bandit with Budget Constraint and Variable Costs. In Proceedings of AAAI.
+                                                                                                     classification/data
+[11] Maciej Drozdowski. 1996. Scheduling Multiprocessor Tasks: An Overview. Euro-
+                                                                                                [34] Herbert Robbins and Sutton Monro. 1951. A Stochastic Approximation Method.
+     pean Journal of Operational Research 94, 2 (1996), 215–230.
+                                                                                                     The Annals of Mathematical Statistics 22, 3 (1951), 400–407.
+[12] Bennett Fox. 1966. Markov Renewal Programming by Linear Fractional Program-
+                                                                                                [35] Daniel J Russo, Benjamin Van Roy, Abbas Kazerouni, Ian Osband, Zheng Wen,
+     ming. SIAM J. Appl. Math. 14, 6 (1966), 1418–1432.
+                                                                                                     et al. 2018. A Tutorial on Thompson Sampling. Foundations and Trends® in
+[13] Chao Gan, Ruida Zhou, Jing Yang, and Cong Shen. 2018. Cost-Aware Learning
+                                                                                                     Machine Learning 11, 1 (2018), 1–96.
+     and Optimization for Opportunistic Spectrum Access. IEEE Transactions on
+                                                                                                [36] SACHIN. 2019. Cats-vs-Dogs. Retrieved July 15, 2023 from https://www.kaggle.
+     Cognitive Communications and Networking 5, 1 (2018), 15–27.
+                                                                                                     com/datasets/shaunthesheep/microsoft-catsvsdogs-dataset
+[14] Chao Gan, Ruida Zhou, Jing Yang, and Cong Shen. 2020. Cost-Aware Cascading
+                                                                                                [37] Anirban Santara, Gaurav Aggarwal, Shuai Li, and Claudio Gentile. 2022. Learning
+     Bandits. IEEE Transactions on Signal Processing 68 (2020), 3692–3706.
+                                                                                                     to Plan Variable Length Sequences of Actions with a Cascading Bandit Click
+[15] Chao Gao, Tong Mo, Taylor Zowtuk, Tanvir Sajed, Laiyuan Gong, Hanxuan
+                                                                                                     Model of User Feedback. In Proceedings of AISTATS.
+     Chen, Shangling Jui, and Wei Lu. 2021. Bansor: Improving Tensor Program
+                                                                                                [38] Rayadurgam Srikant and Lei Ying. 2014. Communication Networks: An Opti-
+     Auto-Scheduling with Bandit Based Reinforcement Learning. In Proceedings of
+                                                                                                     mization, Control, and Stochastic Networks Perspective. Cambridge University
+     IEEE ICTAI.
+                                                                                                     Press.
+[16] Lizheng Guo, Shuguang Zhao, Shigen Shen, and Changyuan Jiang. 2012. Task
+                                                                                                [39] Wesley Suttle, Kaiqing Zhang, Zhuoran Yang, Ji Liu, and David Kraemer. 2021. Re-
+     Scheduling Optimization in Cloud Computing Based on Heuristic Algorithm.
+                                                                                                     inforcement Learning for Cost-Aware Markov Decision Processes. In Proceedings
+     Journal of Networks 7, 3 (2012), 547–553.
+                                                                                                     of ICML.
+[17] Sachi Gupta, Vikas Kumar, and Gaurav Agarwal. 2010. Task Scheduling in
+                                                                                                [40] Long Tran-Thanh, Archie Chapman, Enrique Munoz De Cote, Alex Rogers, and
+     Multiprocessor System using Genetic Algorithm. In Proceedings of IEEE ICMLC.
+                                                                                                     Nicholas R Jennings. 2010. Epsilon-First Policies for Budget-Limited Multi-Armed
+[18] VIJAY GUPTA. 2019. Weather Classification. Retrieved July 13, 2023 from
+                                                                                                     Bandits. In Proceedings of AAAI.
+     https://www.kaggle.com/datasets/vijaygiitk/multiclass-weather-dataset
+                                                                                                [41] Long Tran-Thanh, Archie Chapman, Alex Rogers, and Nicholas Jennings. 2012.
+[19] Marco Heyden, Vadim Arzamasov, Edouard Fouché, and Klemens Böhm. 2023.
+                                                                                                     Knapsack Based Optimal Policies for Budget-Limited Multi-Armed Bandits. In
+     Budgeted Multi-Armed Bandits with Asymmetric Confidence Intervals. arXiv
+                                                                                                     Proceedings of AAAI.
+     preprint arXiv:2306.07071 (2023).
+                                                                                                [42] Chao Wang, Ruida Zhou, Jing Yang, and Cong Shen. 2019. A Cascading Ban-
+[20] Mohammad Hossin and Md Nasir Sulaiman. 2015. A Review on Evaluation
+                                                                                                     dit Approach To Efficient Mobility Management In Ultra-Dense Networks. In
+     Metrics for Data Classification Evaluations. International Journal of Data Mining
+                                                                                                     Proceedings of International Workshop on IEEE MLSP.
+     & Knowledge Management Process 5, 2 (2015), 01–11.
+                                                                                                [43] Yingce Xia, Wenkui Ding, Xu-Dong Zhang, Nenghai Yu, and Tao Qin. 2016.
+[21] Cengiz Kahraman, Orhan Engin, Ihsan Kaya, and R Elif Öztürk. 2010. Multi-
+                                                                                                     Budgeted Bandit Problems with Continuous Random Costs. In Proceedings of
+     processor Task Scheduling in Multistage Hybrid Flow-Shops: A Parallel Greedy
+                                                                                                     ACML.
+     Algorithm Approach. Applied Soft Computing 10, 4 (2010), 1293–1300.
+                                                                                                [44] Yingce Xia, Tao Qin, Wenkui Ding, Haifang Li, Xudong Zhang, Nenghai Yu,
+[22] Roman Khazankin, Harald Psaier, Daniel Schall, and Schahram Dustdar. 2011.
+                                                                                                     and Tie-Yan Liu. 2017. Finite Budget Analysis of Multi-Armed Bandit Problems.
+     QoS-Based Task Scheduling in Crowdsourcing Environments. In Proceedings of
+                                                                                                     Neurocomputing 258 (2017), 13–29.
+     ICSOC.
+                                                                                                [45] Datong Zhou and Claire Tomlin. 2018. Budget-Constrained Multi-Armed Bandits
+[23] MURAT KOKLU. 2022. Rice Image Dataset. Retrieved December 12, 2023 from
+                                                                                                     with Multiple Plays. In Proceedings of AAAI.
+     https://www.kaggle.com/datasets/muratkokludataset/rice-image-dataset/data
+
+
+
+
+                                                                                         1983
+

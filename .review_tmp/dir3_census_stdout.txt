@@ -1,0 +1,265 @@
+{
+  "meta": {
+    "generated_at": "2026-09-02T11:13:28",
+    "ledger": "/Users/jingwu/work/benchmark/cases/_methodology/tool_conflict_census/bbb_authoritative_v2/screening_ledger.jsonl",
+    "rows_total": 730,
+    "rows_rdkit_parsed_ok": 730,
+    "rdkit_parse_failures": [],
+    "conflict_subset_rows": 400,
+    "truth_dist_730": {
+      "1": 522,
+      "0": 208
+    },
+    "truth_dist_400": {
+      "1": 265,
+      "0": 135
+    }
+  },
+  "computability": {
+    "C1_henderson_hasselbalch_logD_logP_pKa": {
+      "status": "NOT_COMPUTABLE",
+      "missing": [
+        "实测 pKa 列",
+        "实测 logD 列"
+      ],
+      "note": "bbb_martins.tsv 仅 Drug_ID/Drug(SMILES)/Y 三列；ledger 仅存 BBB 概率与标签"
+    },
+    "C2_pH_solubility_monotonic": {
+      "status": "NOT_COMPUTABLE",
+      "missing": [
+        "多 pH 溶解度列"
+      ],
+      "note": "BBB 数据无溶解度列"
+    },
+    "C3_permanent_cation": {
+      "status": "COMPUTABLE",
+      "method": "RDKit 形式电荷 + 胍/脒 SMARTS"
+    },
+    "C4_GSE_logS": {
+      "status": "NOT_COMPUTABLE",
+      "missing": [
+        "熔点 MP 列",
+        "实测 logS 列"
+      ],
+      "note": "Crippen MolLogP 可算但为预测值；GSE 另需 MP 与 logS，均无"
+    },
+    "C5_tpsa_hbd": {
+      "status": "COMPUTABLE",
+      "method": "rdMolDescriptors.CalcTPSA / CalcNumHBD"
+    },
+    "C6_inchikey_segment": {
+      "status": "COMPUTABLE",
+      "method": "RDKit MolToInchiKey 分段比对"
+    },
+    "C7_unit_identity": {
+      "status": "NOT_COMPUTABLE",
+      "missing": [
+        "任何带物理单位的数值列"
+      ],
+      "note": "四模型输出为无量纲概率 + 二分类标签，真值亦为二分类标签，无单位换算空间"
+    }
+  },
+  "inchikey_structure_note": "标准 InChIKey 实为 14-10-1 三段（骨架层14 / 立体·同位素·质子化层10 / 版本位1），任务书写的『后6位立体层』与真实格式不符，本脚本按真实 14-10-1 分段",
+  "constraint_stats": {
+    "C3_perm_cation_tierB": {
+      "fire_730": 12,
+      "fire_rate_730": 0.0164,
+      "fire_400": 9,
+      "fire_rate_400": 0.0225,
+      "truth_agree_730": {
+        "fire": 12,
+        "agree": 8,
+        "agree_rate": 0.6667
+      },
+      "truth_agree_400": {
+        "fire": 9,
+        "agree": 5,
+        "agree_rate": 0.5556
+      }
+    },
+    "C3_perm_cation_tierA_only": {
+      "fire_730": 12,
+      "fire_rate_730": 0.0164,
+      "fire_400": 9,
+      "fire_rate_400": 0.0225,
+      "truth_agree_730": {
+        "fire": 12,
+        "agree": 8,
+        "agree_rate": 0.6667
+      },
+      "truth_agree_400": {
+        "fire": 9,
+        "agree": 5,
+        "agree_rate": 0.5556
+      }
+    },
+    "C5_tpsa_or_hbd": {
+      "fire_730": 63,
+      "fire_rate_730": 0.0863,
+      "fire_400": 35,
+      "fire_rate_400": 0.0875,
+      "truth_agree_730": {
+        "fire": 63,
+        "agree": 45,
+        "agree_rate": 0.7143
+      },
+      "truth_agree_400": {
+        "fire": 35,
+        "agree": 21,
+        "agree_rate": 0.6
+      }
+    },
+    "C5_tpsa_gt140_only": {
+      "fire_730": 63,
+      "fire_rate_730": 0.0863,
+      "fire_400": 35,
+      "fire_rate_400": 0.0875,
+      "truth_agree_730": {
+        "fire": 63,
+        "agree": 45,
+        "agree_rate": 0.7143
+      },
+      "truth_agree_400": {
+        "fire": 35,
+        "agree": 21,
+        "agree_rate": 0.6
+      }
+    },
+    "C5_hbd_gt6_only": {
+      "fire_730": 10,
+      "fire_rate_730": 0.0137,
+      "fire_400": 7,
+      "fire_rate_400": 0.0175,
+      "truth_agree_730": {
+        "fire": 10,
+        "agree": 9,
+        "agree_rate": 0.9
+      },
+      "truth_agree_400": {
+        "fire": 7,
+        "agree": 6,
+        "agree_rate": 0.8571
+      }
+    }
+  },
+  "C6_inchikey_duplicates": {
+    "skeleton_dup_groups_730": 7,
+    "skeleton_dup_rows_730": 14,
+    "groups_detail_730": {
+      "IAKHMKGGTNLKSZ": [
+        "z000364",
+        "z021608"
+      ],
+      "KWTSXDURSIMDCE": [
+        "z002162",
+        "z020714"
+      ],
+      "HXHWSAZORRCQMX": [
+        "z002909",
+        "z015780"
+      ],
+      "UCTWMZQNUQWSLP": [
+        "z002936",
+        "z063416"
+      ],
+      "GSDSWSVVBLHKDQ": [
+        "z015738",
+        "z034775"
+      ],
+      "JAQUASYNZVUNQP": [
+        "z020806",
+        "z034662"
+      ],
+      "ODQWQRRAPPTVAG": [
+        "z034777",
+        "z070883"
+      ]
+    },
+    "skeleton_dup_groups_within_400": 4,
+    "skeleton_dup_rows_within_400": 8,
+    "identical_full_inchikey_groups_730": 1,
+    "identical_full_inchikey_detail": {
+      "HXHWSAZORRCQMX-UHFFFAOYSA-N": [
+        "z002909",
+        "z015780"
+      ]
+    }
+  },
+  "buckets": {
+    "hard_C3_only": {
+      "decidable": 9,
+      "silent": 391,
+      "decidable_rate": 0.0225,
+      "acc": {
+        "rows_with_label_verdict": 9,
+        "agree": 5,
+        "agree_rate": 0.5556
+      }
+    },
+    "hard_C3_C6": {
+      "decidable": 17,
+      "silent": 383,
+      "decidable_rate": 0.0425,
+      "acc": {
+        "rows_with_label_verdict": 9,
+        "agree": 5,
+        "agree_rate": 0.5556
+      }
+    },
+    "hard_C3_C6_plus_soft_C5": {
+      "decidable": 50,
+      "silent": 350,
+      "decidable_rate": 0.125,
+      "acc": {
+        "rows_with_label_verdict": 42,
+        "agree": 26,
+        "agree_rate": 0.619
+      }
+    },
+    "hard_C3_C6_on_all_730": {
+      "decidable": 26,
+      "silent": 704,
+      "decidable_rate": 0.0356
+    }
+  },
+  "external_join_coverage_informational": {
+    "lipophilicity_astrazeneca(实测logD_pH7.4)": {
+      "external_rows": 4102,
+      "join_hit_730": 176,
+      "join_hit_400": 104
+    },
+    "solubility_aqsoldb(实测logS)": {
+      "external_rows": 9669,
+      "join_hit_730": 289,
+      "join_hit_400": 163
+    }
+  },
+  "descriptor_distribution": {
+    "TPSA_bins": {
+      "<75": 467,
+      "75-140": 200,
+      ">140": 63
+    },
+    "HBD_bins": {
+      "<=3": 657,
+      "4-6": 63,
+      ">6": 10
+    },
+    "CrippenLogP_bins": {
+      "<0": 78,
+      "2-4": 270,
+      ">4": 123,
+      "0-2": 259
+    },
+    "formal_charge_dist": {
+      "1": 8,
+      "0": 722
+    }
+  },
+  "data_sanity_check": {
+    "conflict_rows": 400,
+    "majority_label_rate_400": 0.6625,
+    "morgan_acc_400": 0.805,
+    "all_four_wrong_400": 0
+  }
+}

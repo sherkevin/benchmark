@@ -1,0 +1,30 @@
+Generate an original, polished academic architecture figure from three STYLE references: TableDART for quiet pastel module regions and explicit internal computation, CRITIC for a legible closed feedback loop, and CollabLLM for event-card and state miniatures. Borrow visual grammar only, not their content or text. White canvas, approximately 2.7:1 landscape, publication-quality flat linework, restrained blue/gray/amber/purple. No huge stage ribbons, spreadsheet grid, glossy cards, shadows or decorative characters.
+
+This figure describes MIRA-Relay, a frozen tool scorer with a provider-local residual state updated from delayed selected outcomes. Use a compact input region on the left, the largest pale-blue method region in the center, and a smaller pale-cream execution region on the right. Put one short purple feedback route below. The figure should emphasize actual computation, not prose-filled boxes.
+
+GRAPH NODES
+Left input: a flat molecule bond sketch and an endpoint document, joined into one input connector.
+Center method: a gray feature grid; a gray locked weight matrix labelled "Frozen scorer"; a three-cell base-score vector q⁰; a blue register labelled "Released counters", rows A/B/C and columns n/s; a blue three-cell residual vector Δ labelled "Residual"; a circular +; a three-cell score vector q; a "Select" operator; one emitted tool card B labelled "Selected tool".
+Immediately ABOVE Select, INSIDE the method region, put the externally provided gray "Eligible tools" menu as three tiny cards A/B/C. Its ONLY connector is a short downward arrow into Select. The menu is an input constraint, not a learned component. Do not put a separate menu on the far left and do not connect a menu to Features.
+Right execution: "Call"; document-shaped "Return" with output/status fields; gray frozen "Judge"; amber "Chemical feedback" event B,r∈{0,1}; separate gray "Runtime ledger".
+Lower feedback: purple "Selected-only queue" event cards carrying B; small "Release" gate with τₜ=t+1+D; blue "Update".
+
+EXACT CONNECTIVITY — DRAW ONLY THESE EDGES
+1. Joined Molecule/Endpoint input → Features → Frozen scorer → q⁰ → +.
+2. Released counters → Residual Δ → +.
+3. + → q → Select → Selected tool B.
+4. Eligible tools → Select (short vertical arrow from directly above).
+5. Selected tool B → Call → Return.
+6. Return → Judge (edge label "valid") → Chemical feedback.
+7. Return status → Runtime ledger (edge label "error"); this branch ends there.
+8. Chemical feedback → Selected-only queue (downward solid arrow).
+9. Queue → Release (leftward purple DASHED waiting arrow).
+10. Release → Update (leftward SOLID blue arrow).
+11. Update → Released counters (one solid blue connector, terminating at row B).
+These eleven edge groups are the COMPLETE graph. Every arrowhead docks on a named node. There is NO extra arrow or connector from Update, Released counters, or the lower route to Select. The real counters→Residual→+→q→Select path already completes the loop. Do NOT add a "Later decisions" arrow, a future-state arc, a next-action node, or an update-path branch. No terminal-to-state shortcut or queue bypass.
+
+IDENTITY AND FORMULAS
+Highlight B only in the q vector, selected tool, chemical event, queued event, and the B row of Released counters. A and C counter rows stay neutral. Vectors have the same A/B/C order and add component by component. Place one small "q = q⁰ + Δ" next to +. No real numeric score or experimental result. r∈{0,1} denotes the type of the selected correctness label. Runtime failure has no chemical label and never updates chemical counters. The scorer stays frozen. A pending event cannot affect an earlier decision; release occurs at τₜ=t+1+D.
+
+GRAPHIC FINISH
+Use small actual feature/weight/counter cells, a score-vector glyph and a plus operator. Use simple consistent outline document/tool/lock/clock glyphs. Blue #2E5DA1 marks online state and the selected action; pale blue #EEF4FC groups the center; gray #E9EDF2 marks frozen/external objects; amber #E8A02B marks evaluated feedback; muted purple #8C70B5 marks only the queue and release. Keep the feedback objects compact on white, without a large purple background band. Small headings "Inputs", "MIRA-Relay", "Execution". Uniform thin outlines, calm sans serif, tight balanced spacing. Keep visible words below about 65 and legible at seven-inch paper width. Local parameter cells are allowed; whole-canvas grid lines are forbidden. No family residual, provider bias, trainable backbone, extra call, verifier, refusal, fallback, diagnostic outcome, unselected result, performance chart, watermark, or explanatory paragraphs.

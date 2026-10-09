@@ -1,0 +1,39 @@
+### WideDTA
+### KDEEP
+  abdulsalam-bande/KDeep | stars: 22 | pushed: 2021-02-18T09:44:14Z | archived: False | Implementation of the Kdeep Paper
+  usermicrodevices/kdeep | stars: 3 | pushed: 2026-06-05T14:10:38Z | archived: False | AI assistent plugin for Kate editor
+  hyunyongPark/KDeep_Recsys_Pinsage | stars: 3 | pushed: 2023-01-31T12:00:07Z | archived: False | 2022 k-deep fashion Pinsage recommendation system
+  kdeepak112/kdeepak112 | stars: 0 | pushed: 2025-08-04T06:38:21Z | archived: False | 
+  Kdeep75/Kdeep75 | stars: 0 | pushed: 2022-05-26T23:39:42Z | archived: False | Config files for my GitHub profile.
+### deephERG
+  ChengF-Lab/deephERG | stars: 9 | pushed: 2019-12-18T19:22:52Z | archived: False | deephERG
+### CardioTox
+  Abdulk084/CardioTox | stars: 22 | pushed: 2025-01-05T23:49:53Z | archived: False | 
+  JamEwe/cardiotoxicity_prediction | stars: 5 | pushed: 2022-01-26T11:25:44Z | archived: False | 
+  Christini-Lab/vc-optimization-cardiotoxicity | stars: 3 | pushed: 2022-10-06T20:45:41Z | archived: False | Includes all the modeling, genetic algorithm simulations, and data analysis for 
+  LKSNextQuantumGroup/CardioTox-AI | stars: 0 | pushed: 2026-05-17T21:29:57Z | archived: False | CardioTox-AI
+  mitcheltastic/CardiotoxicityModel | stars: 0 | pushed: 2026-09-01T05:33:56Z | archived: False | 
+### aggrescan3d
+  latchbio-workflows/wf-latchbio-aggrescan3d | stars: 2 | pushed: 2025-03-04T17:44:58Z | archived: False | 
+  seanrjohnson/aggrescan3d_py3 | stars: 1 | pushed: 2025-12-03T19:27:57Z | archived: False | Python 3 port of Aggrescan3d
+  soldatmat/aggrescan3d | stars: 0 | pushed: 2026-07-01T10:53:12Z | archived: False | Backup mirror of https://bitbucket.org/lcbio/aggrescan3d (vendored submodule dep
+  pirl-unc/aggrescan3d-slurm-workflow | stars: 0 | pushed: 2026-06-19T19:02:22Z | archived: False | 
+  hydraharish123/PrionPredictorDB | stars: 3 | pushed: 2025-09-16T16:26:47Z | archived: False | A novel bioinformatics database, application and command line interface for dete
+### pred-skin
+  mittshah2/Skin-Disease-Prediction-Web-Application | stars: 8 | pushed: 2022-12-08T04:19:23Z | archived: False | We attempt to change how you look at Medical Diagnosis
+  ishanrai05/skin-cancer-prediction | stars: 16 | pushed: 2023-10-03T21:04:38Z | archived: False | Skin Cancer Prediction on HAM10000 ("Human Against Machine with 10000 training i
+  varshitha-g/Skin-Disease-Prediction | stars: 8 | pushed: 2024-10-27T05:15:41Z | archived: False | Deep Learning project that uses a Convolutional Neural Network (CNN) to detect v
+  dharani211/Skin-Disease-Prediction-using-CNN | stars: 9 | pushed: 2021-08-22T02:47:36Z | archived: False | 
+  MukundPatel1809/skinDiseasePrediction | stars: 2 | pushed: 2021-11-20T10:04:54Z | archived: False | predict skin disease name by processing an image by CNN
+### X-Score docking
+### RF-Score
+  oddt/rfscorevs_binary | stars: 33 | pushed: 2018-11-18T12:38:02Z | RF-Score-VS binary
+  oddt/rfscorevs | stars: 49 | pushed: 2018-12-30T18:36:13Z | RF-Score-VS - Random forest based protein-ligand scoring function for Virtual Screening
+  lachrymator/RF-Score | stars: 3 | pushed: 2014-05-10T10:43:10Z | A machine learning approach to predicting protein-ligand binding affinity.
+  phyllisyuell/gcForest-master-feature | stars: 9 | pushed: 2018-12-26T08:27:12Z | Add feature score for gcForest(only use xboost and rf)
+  wgrissom/ISMRM-RF-Pulse-Design-Challenge | stars: 9 | pushed: 2016-07-08T03:47:14Z | Scoring codes and examples for the 2016 ISMRM Challenge on RF Pulse Design
+  grchld/rftg-scorer | stars: 14 | pushed: 2014-04-29T22:38:02Z | Race For The Galaxy board game scorer for android with recognition ability
+  RosettaCommons/DeepAb | stars: 174 | pushed: 2022-11-30T20:18:36Z | Deep learning models and structure realization scripts for the DeepAb antibody s
+  dohlee/deepab-pytorch | stars: 3 | pushed: 2023-07-24T14:06:26Z | An unofficial re-implementation of DeepAb, an interpretable deep learning model 
+  antonkulaga/deep-antibody-docker | stars: 0 | pushed: 2022-02-21T13:18:54Z | Docker for DeepAB
+  EdoardoGruppi/Drug_Design_Models | stars: 21 | pushed: 2022-07-09T10:30:54Z | This project is a reimplementation of the models introduced in the following pap

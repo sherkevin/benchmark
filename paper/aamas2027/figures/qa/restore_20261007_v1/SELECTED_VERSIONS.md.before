@@ -1,0 +1,22 @@
+# Selected figure versions
+
+2026-10-07 用户澄清后的唯一图稿候选入口。制作方式遵循
+[决议 0012](../../../docs/决议/0012-按图类型区分AI绘图与数据绘图.md)。
+
+## 当前候选
+
+| Figure | 类型 | 路径 | 来源 |
+|---|---|---|---|
+| 1 | AI 架构图 | `generated/figure1/v05_ai.png` | `prompts/figure1/v11.md` |
+| 2 | AI 流程图 | `generated/figure2/v22_ai.png` | `prompts/figure2/v22.md` |
+| 3 | 程序数据图 | `figure3/v02_data/figure3_v02.pdf` | `figure3/v02_data/render.py` + `data.json` |
+
+Figure 3 同时输出 SVG、300 dpi PNG、精确数据 CSV 和原生 LaTeX 表格。
+复核见 `external_review/20261007_figure3_data_v02_review.md`。AI Figure 3
+v01–v05 和旧的三张 AI 图联合审查仅供历史比较，不再作为生效选择依据。
+
+## 形式稿引用
+
+当前 `main.tex` 仍引用 `figure1/v08/figure1_v08.png` 与
+`figure2/v13/figure2_v13.png`，尚无 Figure 3。图稿候选的确定不等于自动
+改写正文或通过会议图像政策。历史版本全部保留。

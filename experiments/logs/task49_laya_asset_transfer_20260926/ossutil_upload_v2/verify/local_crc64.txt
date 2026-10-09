@@ -1,0 +1,20 @@
+=== encoder/config.json ===
+17910618765037288853  .bench_runs/task49-assets/laya-1c5edc17/encoder/config.json
+
+0.000907(s) elapsed
+=== model.safetensors ===
+9521678683775112186  .bench_runs/task49-assets/laya-1c5edc17/model.safetensors
+
+0.613931(s) elapsed
+=== rl_agent_config.json ===
+4990953942551711953  .bench_runs/task49-assets/laya-1c5edc17/rl_agent_config.json
+
+0.000624(s) elapsed
+=== tokenizer/tokenizer.json ===
+2306272427653560882  .bench_runs/task49-assets/laya-1c5edc17/tokenizer/tokenizer.json
+
+0.003650(s) elapsed
+=== tokenizer/tokenizer_config.json ===
+667310818116431552  .bench_runs/task49-assets/laya-1c5edc17/tokenizer/tokenizer_config.json
+
+0.002522(s) elapsed

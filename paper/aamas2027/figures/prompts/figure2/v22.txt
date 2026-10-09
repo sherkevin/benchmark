@@ -1,0 +1,11 @@
+Use the attached v21 image as the primary visual reference. Preserve its compact flat-vector editorial style, four phase tabs, white background, navy/gray/amber/purple semantic colors, clean line icons, medium rounded cards, crisp arrowheads, and dense landscape crop. This is a semantic replacement pass: change only the method labels and keep the causal topology intact.
+
+Draw the upper chain exactly as: S_t + A_t → selector → one selected provider → call → terminal record (output + runtime status) → frozen endpoint judge → chemical correctness. Runtime status → system failure. System failure and chemical correctness → terminal outcome.
+
+Draw the lower chain exactly as: terminal outcome → selected outcome → selected-only queue labelled τ_t = t + 1 + D → released outcome → relay update labelled provider residual + released counters → released state S_τt → first action at or after τ_t. The queue has exactly one incoming arrow from selected outcome and is the only source of released outcome. Terminal outcome has exactly one outgoing arrow, a short elbow to selected outcome; do not draw any terminal-outcome-to-queue or terminal-outcome-to-released-outcome shortcut.
+
+Keep the small gray badge unselected output / not observed under the input. Put t+1 … τ_t−1 and hidden until τ_t above the purple queue. Put a local future state circular arrow above S_τt and D=0: visible before next action below it. Keep only these phase tabs: DECIDE, EXECUTE + JUDGE, DELAYED FEEDBACK, UPDATE.
+
+Use short labels only. Do not add family residual, provider bias, fallback, runtime ledger, diagnostic ledger, verifier, refusal, escalation, second call, current truth before action, same-action feedback, global loop, grid, table, swimlane, gradients, 3-D, shadows, extra prose, invented numbers, or watermark.
+
+Negative prompt: obsolete family residual label, obsolete provider bias label, terminal outcome bypass, terminal outcome directly to released outcome, queue with two incoming arrows, selected outcome disconnected, reverse arrows, upward failure arrow, scattered modules, large empty margins, crossed-out card, duplicated state, unreadable text, fake metrics.

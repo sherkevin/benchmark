@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/runpy.py", line 197, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/runpy.py", line 87, in _run_code
+    exec(code, run_globals)
+  File "/Users/jingwu/work/benchmark/src/probe_headless/verify_greedy_linucb_development.py", line 359, in <module>
+    main()
+  File "/Users/jingwu/work/benchmark/src/probe_headless/verify_greedy_linucb_development.py", line 331, in main
+    checked.append(verify_stream(stream, groups[stream], data,
+  File "/Users/jingwu/work/benchmark/src/probe_headless/verify_greedy_linucb_development.py", line 208, in verify_stream
+    update(item)
+  File "/Users/jingwu/work/benchmark/src/probe_headless/verify_greedy_linucb_development.py", line 198, in update
+    raise AssertionError(f'{stream}: feedback state_hash_after mismatch')
+AssertionError: fold0_seed0_delay0_online: feedback state_hash_after mismatch

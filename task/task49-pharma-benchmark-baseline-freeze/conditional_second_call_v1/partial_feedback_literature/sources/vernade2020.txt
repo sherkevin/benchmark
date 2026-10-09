@@ -1,0 +1,671 @@
+                         Linear Bandits with Stochastic Delayed Feedback
+
+
+            Claire Vernade 1 Alexandra Carpentier 2 Tor Lattimore 1 Giovanni Zappella 3 Beyza Ermis 3
+                                              Michael Brueckner 3
+
+
+                          Abstract                             most adopted as they allow to take into account the structure
+       Stochastic linear bandits are a natural and             of the space where the action vectors lie.
+       well-studied model for structured explo-                A key aspect of these interactions through displays on web-
+       ration/exploitation problems and are widely used        pages is the time needed by a customer to make a decision
+       in applications such as online marketing and            and provide feedback to the learning algorithm, also known
+       recommendation. One of the main challenges              as the conversion indicator (Chapelle, 2014; Diemert et al.,
+       faced by practitioners hoping to apply existing         2017). For example, a mid-size e-commerce website can
+       algorithms is that usually the feedback is              serve hundreds of recommendations per second, but cus-
+       randomly delayed and delays are only partially          tomers need minutes, or even hours, to make a purchase. In
+       observable. For example, while a purchase is            (Chapelle, 2014), the authors ran multiple tests on propri-
+       usually observable some time after the display,         etary industrial datasets, providing a good example of how
+       the decision of not buying is never explicitly sent     delays affect the performance of click-through rate estima-
+       to the system. In other words, the learner only         tion. They extract 30 days of display advertising data and
+       observes delayed positive events. We formalize          find that delays are on average of the order of several hours
+       this problem as a novel stochastic delayed linear       and up to several days.
+       bandit and propose OTFLinUCB and OTFLinTS,
+       two computationally efficient algorithms able to        On the other extreme of the time scale, some companies
+       integrate new information as it becomes available       optimize long-term metrics for customer engagement (e.g.,
+       and to deal with the permanently                        accounting for returned products in the sales results) which
+                                            √ censored         by definition can be computed only several weeks after the
+       feedback. We prove optimal Õ(d T ) bounds
+       on the regret of the first algorithm and study the      bandit has played the action. Moreover, after a piece of
+       dependency on delay-dependent parameters. Our           content is displayed on a page, the user may or may not
+       model, assumptions and results are validated by         decide to react (e.g., click, buy a product). In the negative
+       experiments on simulated and real data.                 case, no signal is sent to the system and the learner cannot
+                                                               distinguish between actions for which the user did not click
+                                                               and those where they did, but the conversion is delayed.
+1. Introduction                                                Note that in the use cases we consider, when a feedback is
+                                                               received, the learner is able to attribute it to the past action
+Content optimization for websites and online advertising are   that triggered it.
+among the main industrial applications of bandit algorithms
+(Chapelle & Li, 2011; Chapelle, 2014). The dedicated ser-      Two major requirements for bandit algorithms in order to be
+vices sequentially choose an option among several possibil-    ready to run in a real online service are the ability to leverage
+ities and display it on a web page to a particular customer.   contextual information and handle delayed feedback. Many
+In most real world architectures, for each recommendation      approaches are available to deal with contextual information
+request, the features of the products are joined and hashed    (Abbasi-Yadkori et al., 2011; Agarwal et al., 2014; Auer
+with those of the current user and provide a (finite) action   et al., 2002; Neu, 2015; Beygelzimer et al., 2011; Chu et al.,
+set included in Rd . For that purpose, linear bandits (Chu     2011; Zhou, 2015). Delays have been identified as a major
+et al., 2011; Abbasi-Yadkori et al., 2011) are among the       problem in online applications (Chapelle, 2014). We give an
+                                                               overview of the existing literature in Section 2. However, to
+   1
+    DeepMind, London, UK 2 Otto-Von-Guericke Universität,     the best of our knowledge, no algorithm was able to address
+Magdeburg, Germany 3 Amazon, Berlin, Germany. Correspon-       this problem given the requirements defined above.
+dence to: Claire Vernade <vernade@google.com>.
+
+Proceedings of the 37 th International Conference on Machine
+Learning, Online, PMLR 119, 2020. Copyright 2020 by the au-    Contributions Our main contribution is a novel bandit
+thor(s).                                                       algorithm called On-The-Fly-LinUCB (OTFLinUCB).
+                                        Linear Bandits with Stochastic Delayed Feedback
+
+The algorithm is based on LinUCB (Abbasi-Yadkori et al.,           at each round, which is observable in their case, not in ours.
+2011), but with confidence intervals and least-squares esti-       Recent work (Li et al., 2019) address the case of unknown
+mators that are adapted to account for the delayed and cen-        delays in the adversarial setting. The idea of ambiguous
+sored rewards (Section 4). The algorithm is complemented           feedback, where delays are partially unknown is introduced
+by a regret analysis, including lower bounds (Section 6). We       in (Vernade et al., 2017).
+then provide a variant inspired by Thompson sampling and
+                                                                   Many models of delays for online advertising have been pro-
+Follow the Perturbed Leader (Section 7) and evaluate the
+                                                                   posed to estimate conversion rates in an offline fashion: e.g.
+empirical performance of all algorithms in Section 8.
+                                                                   (Yoshikawa & Imai, 2018) (non-parametric) or (Chapelle,
+                                                                   2014; Diemert et al., 2017) (generalized linear parametric
+2. Related Work                                                    model).
+Delays in the environment response is a frequent phe-              An alternative, harder model relies only on anonymous feed-
+nomenon that may take many different forms and should be           back (Cesa-Bianchi et al., 2018; Pike-Burke et al., 2017;
+properly modelled to design appropriate decision strategies.       Arya & Yang, 2019): the rewards, when observed, cannot be
+For instance, in an early work on applications of bandit algo-     directly linked to the action that triggered them in the past,
+rithms to clinical trials, (Eick, 1988) uses ‘delays’ to model     and the learner has to deal with mixing processes. Finally, a
+the survival time of the patients, in which case delays are        recent full-information setting (Mann et al., 2018) suggests
+the reward rather than external noise, which is a radically        to incorporate intermediate feedback correlated with the
+different problem to ours. In the same vein, in the sequential     rewards.
+stochastic shortest path problem (Talebi et al., 2017), the
+learner aims at minimising the routing time in a network.          3. Learning Setting under Delayed Feedback
+Another example is parallel experimentation, where delays
+                                                                   Notation All vectors are in Rd where 2 ≤ d < ∞ is
+force the learner to make decisions under temporary uneven
+                                                                   fixed. For any symmetric√positive definite matrix M and
+information. For instance, (Desautels et al., 2014; Grover
+                                                                   vector x ∈ Rd , kxkM = xT M x and kxk2 = kxkI is the
+et al., 2018) consider the problem of running parallel ex-
+                                                                   usual L2 -norm of x, where I denotes the identity matrix in
+periments that do not all end simultaneously. They propose
+                                                                   dimension d.
+a Bayesian way of handling uncertain outcomes to make
+decisions: they sample hallucinated results according to the
+current posterior. The related problem of gradient-based           Learning setting Our setup involves a learner interacting
+optimization with delayed stochastic gradient information          with an environment over T rounds. The environment de-
+is studied by (Agarwal & Duchi, 2011).                             pends on an unknown parameter θ ∈ Rd with kθk2 ≤ 1 and
+                                                                   a delay distribution D supported on the natural numbers.
+In online advertising, delays are due to the natural latency       Note, in contrast to Vernade et al. (2017), we do not assume
+in users’ responses. However, in many works on bandit al-          the learner knows D. Then, in each round t,
+gorithm, delays are ignored as a first approximation. In the
+famous empirical study of Thompson sampling (Chapelle &              1. The learner receives from the environment a finite set
+Li, 2011), a section is dedicated to analyzing the impact of            of actions At ⊂ Rd with |At | = Kt < ∞ and a> θ ∈
+delays on either Thompson sampling or LinUCB. While this                [0, 1] and kak2 ≤ 1 for all a ∈ At .
+is an early interest for this problem, they only consider fixed,
+non-random, delays of 10, 30 or 60 minutes. Similarly, in            2. The learner selects an action At from At based on
+(Mandel et al., 2015), the authors conclude that random-                information observed so far.
+ized policies are more robust to this type of latencies. The
+general problem of online learning under known delayed               3. The environment samples a reward Xt ∈ {0, 1} and a
+feedback is addressed in (Joulani et al., 2013), including full         delay Dt ∈ N that are partially revealed to the learner
+information settings and partial monitoring, and we refer               and where:
+the interested reader to their references on those topics. The               3.a. Xt ∼ B(A>
+                                                                                          t θ).
+most recent and closest work to ours is (Zhou et al., 2019).
+The main difference with our approach is that they make                      3.b. Dt is sampled independently of At from D.
+strong assumptions on the distribution of the delays, while          4. Certain rewards resulting from previous actions are
+not having any censoring of the feedback. In that sense                 revealed to the learner. For s ≤ t, let Cs,t = 1{Ds ≤
+their problem is easier than ours because delays are fully              t − s}, which is called the censoring variable and in-
+observed. Nonetheless, the key idea of their algorithm is               dicates whether or not the reward resulting from the
+reminiscent to ours: they inscrease the exploration bonus by            decision in round s is revealed by round t. Then let
+a quantity that corresponds to the amount of missing data               Ys,t = Cs,t Xs . The learner observes the collection
+                                            Linear Bandits with Stochastic Delayed Feedback
+
+     {Ys,t : s ≤ t} at the end of round t. If Xt = 1, we say         We now state our main deviation result.
+     that the action At converts.                                    Theorem 1. Let τm = P(D1 ≤ m) and δ ∈ (0, 1). Then
+                                                                     the following holds for all t ≤ T with probability at least
+The delays in combination with the Bernoulli noise model             1 − 2δ.
+and censored observations introduces an interesting struc-                                                           t−1
+ture. When Xs = 0, then Ys,t = 0 for all t ≥ s, but
+                                                                                                                     X
+                                                                             W
+                                                                        kθ̂t − τm θkVt (λ) ≤ 2ft,δ +                        kAs kV −1 (λ) ,       (3)
+Ys,t = 0 is also possible when Xs = 1, but the reward from                                                          s=t−m
+                                                                                                                                     t
+
+
+round s has been delayed sufficiently. On the other hand, if
+                                                                     where
+Ys,t = 1, the learner can immediately deduce that Xs = 1.                                        s
+                                                                                     √
+                                                                                                                             
+The goal of the learner is to sequentially minimize the cu-                                                 1            dλ + t
+                                                                         ft,δ =          λ+          2 log     + d log            .               (4)
+mulative regret after T rounds, which is                                                                    δ             dλ
+                           T
+                           X                                         Proof. Let ηs = Xs − A>   s θ and s = 1{Ds ≤ m} − τm be
+               R(T, θ) =         hθ, A∗t i − hθ, At i ,       (1)
+                                                                     the two types of noise affecting our observations, both being
+                           t=1
+                                                                     centered Bernoulli and independent of the past conditionally
+where A∗t = arg max a∈At hθ, ai is the action that max-              on As . By (Lattimore & Szepesvári, 2019, Theorem 20.4)
+imises the expected reward in round t.                               it holds with probability at least 1 − 2δ that for all t ≤ T ,
+Remark 1. The assumption that a> θ ∈ [0, 1] for all a ∈ At             t                     2                        t              2
+                                                                       X                                              X
+ensures the reward is well defined. A natural alternative is                 As Xs s                  2
+                                                                                                    ≤ ft,δ , and,           As η s             2
+                                                                                                                                            ≤ ft,δ .,
+to replace the linear model with a generalized linear model.           s=1                   Vt−1                     s=1            Vt−1
+Our algorithms and analysis generalize to this setting in                                                                                         (5)
+the natural way using the techniques of (Filippi et al., 2010;
+Jun et al., 2017). For simplicity, however, we restrict our          where we used that Xs ∈ [0, 1] for the first inequality. We
+attention to the linear model. The assumption that kθk2 ≤ 1          comment on that step further below.
+and kak2 ≤ 1 for all actions are quite standard and the              The next step is to decompose Bt with respect to the value
+dependence of our results on alternative bounds is relatively        of the censoring variables of the learner. We first rewrite
+mild.                                                                Bt by expliciting the value of the indicator function in each
+                                                                     term of its sum:
+4. Concentration for Least Squares                                               t−m−1
+                                                                                  X
+   Estimators with Delays                                              Bt =              As Xs 1{Ds ≤ m}
+                                                                                  s=1
+This section is dedicated to disentangling the delays and the                          t−1
+                                                                                       X
+reward estimation. The combination of an unknown delay                           +               As Xs 1{Ds ≤ t − s}
+distribution and censored binary rewards makes it hopeless                           s=t−m
+to store all past actions and wait for every conversion. For                     t−1
+                                                                                 X
+this reason our algorithm depends on a parameter m. If a                  =            As Xs 1{Ds ≤ m}
+reward has not converted within m rounds, the algorithm                          s=1
+assumes it will never convert and ignores any subsequent                               t−1
+                                                                                       X
+signals related to this decision. There is also a practical                      +               As Xs (1{Ds ≤ t − s} − 1{Ds ≤ m}),
+advantage, which is that the learner does not need to store                          s=t−m
+
+individual actions that occurred more than m rounds in the           where we added m terms in the first sum and removed them
+past. Define                                                         in the second one. The second sum now contains the terms
+                                                                     that will eventually convert but have not been received yet.
+ Ỹs,t = Ys,t 1{Ds ≤ m} = Xs 1{Ds ≤ min(m, t − s)} ,
+                                                                 Now assume both events in Equation (5) hold. Using the
+which is the same as Ys,t except rewards that convert after      decomposition above, we have
+more than m rounds are ignored. The learner then uses
+Ỹs,t to estimate a parameter that is proportional to θ using         kθ̂tW − τm θkVt (λ)
+L2 −regularized least squares. Let λ > 0 be a regularization                        t−1
+                                                                                    X
+parameter and define                                                   ≤ Vt (λ)−1         As Xs (τm + s ) − τm θ
+                          !−1 t−1              !                                    s=1                           Vt (λ)
+           t−1
+           X                     X                                           t−1
+θ̂tW :=        As A>
+                   s + λI              Ỹs,t As := Vt (λ)−1 Bt .      +
+                                                                             X
+                                                                                  As Xs
+         s=1                          s=1
+                                                                                     s=t−m               Vt (λ)−1
+                                                              (2)
+                                           Linear Bandits with Stochastic Delayed Feedback
+
+The last term can be naively bounded and gives the second            5. Algorithm
+term of Equation (3). We can bound the first term using
+Equation (5):                                                        We are now equipped to present OTFLinUCB, an optimistic
+                                                                     linear bandit algorithm that uses concentration analysis from
+                  t−1
+                  X                                                  the previous section. The pseudocode of OTFLinUCB is
+       Vt (λ)−1         As Xs (τm + s ) − τm θ                      given in Algorithm 1. It accepts as input a confidence level
+                  s=1                                    Vt (λ)      δ > 0, a window parameter m > 0 and a regularization
+          t−1
+          X                               t−1
+                                          X                          parameter λ > 0. In each round the algorithm computes the
+      ≤         As Xs s              +         As η s               estimator θ̂tW using Equation (3) and for each arm a ∈ At
+          s=1              Vt (λ)−1       s=1             Vt (λ)−1   computes an upper confidence bound on the expected reward
+      ≤ 2ft,δ ,                                                      defined by
+                                                                                                     t−1
+                                                                                                                       !
+where both the first and second inequalities follow from the
+                                                                                                     X
+                                                                                    W
+                                                                     Ut (a) = ha, θ̂t i+ 2ft,δ +          kAs kVt (λ)−1 kakVt (λ)−1 .
+triangle inequality applied to k·kV −1 and the last from the                                       s=t−m
+                                   t
+assumption that the events in Equation (5) hold.                                                                           (6)
+                                                                     Then action At is chosen to maximize the upper confidence
+Remark 2. The initial step of the proof in Eq (5) might seem         bound:
+loose but we explain why this term cannot easily be bounded                            At = arg max Ut (a) ,
+more tightly. Note that the variance of s is τm (1 − τm ) and                                     a
+thus, when applying (Lattimore & Szepesvári, 2019, Theo-            where ties are broken arbitrarily.
+rem 20.4), we could obtain a tighter bound by taking it into
+                                2 2
+acount, which would lead to τm    ftδ . But had we included it       Implementation details The algorithm needs to keep
+there, it would have appeared in the expression of the upper         track of Vt (λ) and Bt as defined in Equation (2). These
+bound, i.e. in the algorithm, and the learner would have             can be updated incrementally as actions are taken and infor-
+needed its knowledge to compute the upper bound. This                mation is received. The algorithm also uses Vt (λ)−1 , which
+was the choice made by (Vernade et al., 2017). By removing           can be updated incrementally using the Sherman-–Morrison
+it, we pay the price of slightly larger confidence intervals         formula. In order to recompute αt,δ the algorithm needs
+(more exploration) for not having to give prior information          to store the m most recent actions, which are also used to
+to the learner. We discuss other possible approaches in              update Bt .
+conclusion.
+                                                                     Computation complexity The computation complexity
+Practical considerations As we mentioned already, a                  is dominated by three operations: (1) Updating Vt (λ) and
+practical advantage of the windowing idea is that the learner        computing its inverse, which takes O(d2 ) computation steps
+need not store actions for which the feedback has not been           using a rank-one update, and (2) computing the radius of the
+received indefinitely. The cut-off time is often rather long,        confidence ellipsoid, which requires O(md2 ) computations,
+even as much as 30 days (Chapelle & Li, 2011).                       one for each of the last m actions. Finally, (3) iterating over
+                                                                     the actions and computing the upper confidence bounds,
+Choosing the window The windowing parameter is often                 which requires O(Kt d2 ) computations. Hence the total
+a constraint of the system and the lerner cannot choose it.          computation per round is O((Kt + m)d2 ).
+Our results show the price of this external censoring on
+the regret. If the learner is able to choose m the choice is         Space complexity The space complexity is dominated
+somewhat delicate. The learner effectively discards 1 − τm           by: (1) Storing the matrix Vt (λ) and (2) storing the m
+proportion of the data, so ideally τm should be large, which         most recent actions, which are needed to compute the least
+corresponds to large m. But there is a price for this. The           squares estimator and the upper confidence bound. Hence,
+learner must store m actions and the confidence interval             the space complexity is O(md + d2 ).
+also depends (somewhat mildly) on m. When the mean
+µ = ED∼D [D] of the delay distribution D is finite and               Improved computation complexity Because Vt (λ)
+known, then a somewhat natural choice of the windowing               changes in every round, the radius of the confidence set
+parameter is m = 2µ. By Markov’s inequality this ensures             needs to be recomputed in each round, which requires
+that τm ≥ 1/2. The result continues to hold if the learner           O(md2 ) computations per round. A minor modification
+only knows an upper bound on µ.                                      reduces the computation complexity to O(d2 ). The idea is
+Precisely how m should be chosen depends on the under-               to notice that for any a ∈ Rd and s ≤ t,
+lying problem. We discuss this issue in more detail in Sec-
+tion 6 where the regret analysis is provided.                                         kakVs (λ)−1 ≥ kakVt (λ)−1 .
+                                          Linear Bandits with Stochastic Delayed Feedback
+
+Hence, one can store a buffer of scalars {kAs kVs (λ)−1 , t −            holds. Then
+m ≤ s ≤ t − 1} at the memory cost of O(m). This slightly                              1
+increases the upper confidence bounds, but not so much that              hA∗t , θi =     hτm θ, A∗t i
+                                                                                     τm
+the analysis is affected as we discuss in the next section.                                                                  U (A∗ )
+                                                                                      1  W ∗                                       t
+                                                                                   ≤       hθ̂t , At i + αt,δ kA∗t kVt (λ)−1 =          t
+                                                                                     τm                                              τm
+Algorithm 1 OTFLinUCB                                                                Ut (At )       1  W                               
+  Input: Window parameter m > 0, confidence level δ >                              ≤           =        hθ̂t , At i + αt,δ kAt kVt (λ)−1 .
+                                                                                        τm         τm
+  0 and λ > 0.
+  for t = 2, . . . , T do                                                Therefore the regret in round t is bounded by
+     Receive action set At                                                                    1                      αt,δ
+                                                                          hA∗t − At , θi ≤      hAt , θ̂tW − τm θi +      kAt kVt (λ)−1
+     Compute width of confidence interval:                                                   τm                      τm
+                                                                                             2αt,δ
+                                   t−1                                                     ≤       kAt kVt (λ)−1 ,
+                                                                                              τm
+                                   X
+               αt,δ = 2ft,δ +             kAs kVt (λ)−1
+                                s=t−m                                    where the second inequality follows from Cauchy-Schwarz.
+                                                                         We now substitute the value of αt,δ and bound the overall
+     Compute the least squares estimate θ̂tW using (2)                   regret by
+     Compute the optimistic action:                                                            T
+                                                                                           4 X
+                                                                           R(T, θ) ≤             ft,δ kAt kV −1
+            At = arg max ha, θ̂tW i + αt,δ kakVt (λ)−1                                    τm t=1            t
+
+                    a∈At
+                                                                                            T                 t−1
+                                                                                         2 X                  X
+    Play At and receive observations                                                +          kAt kVt (λ)−1       kAs kVt (λ)−1 . (7)
+                                                                                        τm t=1               s=t−m
+  end for
+                                                                         The first sum is bounded in the same way as the standard
+                                                                         setting (Abbasi-Yadkori et al., 2011):
+6. Regret Analysis                                                                                           v
+                                                                                                             u T
+                                                                               T
+                                                                           4 X                         4fn,δ u   X        2
+Our main theorem is the following high probability upper                          ft,δ kAt kVt (λ)−1 ≤       tT      kAt kVt (λ)−1
+                                                                          τm t=1                        τm
+bound on the regret of OTFLinUCB. The proof combines the                                                         t=1
+ideas from (Abbasi-Yadkori et al., 2011) with a novel argu-
+                                                                                                             s                   
+                                                                                                       4fn,δ             dλ + T
+ment to handle the confidence bound in Theorem 1, which                                              ≤         2dT log              ,
+has a more complicated form than what usually appears in                                                τm                  dλ
+the analysis of stochastic linear bandits.                               where the first inequality follows from Cauchy-Schwarz and
+Theorem 2. With probability at least 1 − 2δ the regret of                the second from the elliptical potential lemma (Lattimore
+OTFLinUCB satisfies                                                      & Szepesvári, 2019, Lemma 19.4). For the second sum in
+                                                                         Equation (7) we introduce a new trick. Using the fact that
+                     s                                                 ab ≤ (a2 + b2 )/2,
+            4fn,δ                      dλ + T
+  R(T, θ) ≤              2dT log                                                 2 X
+                                                                                    T                 t−1
+             τm                          dλ
+                                                                                                      X
+                                                                                       kAt kVt (λ)−1       kAs kVt (λ)−1
+                                                                              τm t=1
+                                     4md                dλ + T                                       s=t−m
+                                   +     log                         .                  T   t−1
+                                      τm                  dλ                         1 X X           2               2
+                                                                                                                               
+                                                                                ≤                kAt kVt (λ)−1 + kAs kVt (λ)−1
+                                                                                    τm t=1 s=t−m
+                          Pt−1                                                        T   t−1
+Proof. Let αt,δ = 2ft,δ + s=t−m kAs kVt (λ)−1 , which is                           1 X X              2               2
+                                                                                                                                
+chosen so that the upper confidence bound for action a in                       ≤                 kAt kVt (λ)−1 + kAs kVs (λ)−1
+                                                                                  τm t=1 s=t−m
+round t is
+                                                                                      T                                      
+                                                                                  2m X        2            4md        dλ + T
+                                                                                ≤        kAt kVt (λ)−1 ≤        log               ,
+           Ut (a) = ha, θ̂tW i + αt,δ kakVt (λ)−1 .                               τm t=1                    τm          dλ
+
+                                                                         where in the second inequality we used the fact that for
+and At = arg max a∈At Ut (a). By Theorem 1, with proba-
+                                                                         s ≤ t, Vs (λ) ≤ Vt (λ)1 , so that Vs (λ)−1 ≥ Vt (λ)−1 . Sub-
+bility at least 1 − 2δ it holds that kθ̂tW − τm θkVt (λ) ≤ αt,δ
+for all t. Assume for the remainder that the above event                    1
+                                                                                here we denote A ≤ B if for any x ∈ Rd+ , kxkA ≤ kxkB
+                                           Linear Bandits with Stochastic Delayed Feedback
+
+stituting the previous two displays into Equation (7) com-           time t. Nevertheless, it is possible to propose a randomized
+pletes the proof.                                                    algorithm in the spirit of Thompson sampling. To motivate
+                                                                     our choices, recall that the standard concentration analysis
+Remark 3. The choice of m is left to the learner. It influ-
+                                                                     for least squares regression by (Abbasi-Yadkori et al., 2011)
+ences the bound in two ways: (1) The lower-order term is
+                                                                     shows that with high probability
+linear in m, which prevents the user from choosing m very
+large. On the other hand, τm is increasing in m, which                                    kθ̂t − θkVt (λ) ≤ ft,δ .
+pushes the user in the opposite direction. Designing an
+adaptive algorithm that optimizes the choice of m online             In the delayed setting, on the other hand, Theorem 1 shows
+remains a challenge for the future.                                  that
+                                                                                                          t−1
+Lower bound We now provide a non-asymptotic mini-                                                         X
+max lower bound for K-armed stochastic Bernoulli bandits                    kθ̂tW − θkVt (λ) ≤ ft,δ +             kAs kVs (λ)−1    (8)
+                                                                                                        s=t−m
+showing that in the windowed setting there is an unavoidable                                     Pt−1                      !
+dependence on τm . Note, an asymptotic problem-dependent                                            s=t−m kAs kVs (λ)−1
+bound for this setting was already known (Vernade et al.,                        = ft,δ     1+                                 .   (9)
+                                                                                                           ft,δ
+2017). Although our results are specialized to the finite-
+armed bandit model, we expect that standard analysis for             An ansatz guess for a sampling algorithm that uses the
+other action sets should follow along the same lines as (Lat-        delayed least squares estimator is to compute θ̂tW and then
+timore & Szepesvári, 2019) (§24).                                   sample
+Theorem 3. For any policy π and K > 1 and T ≥ 1 and                                                            
+τm ∈ (0, 1) there exists a K-armed
+                           p       Bernoulli bandit such                            θ̃t ∼ N θ̂tW , βt,δ Vt (λ)−1 ,
+that R(T, θ) ≥ c min{T, T K/τm }, where c > 0 is a
+universal constant.                                                                       Pt−1
+                                                                     where βt,δ = 1 + ( s=t−m kAs kVt (λ)−1 )/ft,δ . The choice
+Interestingly, the dependence on τm appears in the square            of βt,δ is rather heuristic. A more conservative choice would
+root, while in our upper bounds it is not. We speculate that         be the right-hand side of Equation (9). The resulting algo-
+the upper bound is loose. In fact, were τm known it would be         rithm roughly corresponds to sampling from the confidence
+possible to improve our upper bounds by using confidence             set used by our optimistic algorithm. Although this sacri-
+intervals based on Bernstein’s inequality that exploit the           fices certain empirical advantages, we expect the analysis
+reduced variance that is a consequence of τm being small.            techniques by (Agrawal & Goyal, 2013; Abeille & Lazaric,
+When τm is unknown you might imagine estimating the                  2017) could be applied to prove a frequentist regret bound
+variance. We anticipate this should be possible, but the             for this algorithm.
+complexity of the algorithm and analysis would greatly               Remark 4. Algorithms based on adding noise to an empir-
+increase.                                                            ical estimate are often referred to as ‘follow the perturbed
+                                                                     leader’, which has been effectively applied in a variety of
+7. Thompson sampling                                                 settings (Abeille & Lazaric, 2017; Kveton et al., 2018). An
+                                                                     advantage of sampling approaches is that the optimization
+The standard implementation of Thompson sampling for lin-            problem to find At is a linear program, which for large
+ear bandits without delays and Gaussian noise is to sample           structured action sets may be more efficient than finding the
+θ̃t ∼ N (θ̂t , Vt (λ)−1 ) where θ̂t is the usual regularized least   arm maximizing an upper confidence bound.
+squares estimator                                                    Remark 5. A genuine implementation of Thompson sam-
+                                   t−1
+                                   X                                 pling would require a prior on the space of delay distribu-
+                  θ̂t = Vt (λ)−1         As Xs .                     tions as well as the unknown parameter. We are not hopeful
+                                   s=1                               about the existence of a reasonable prior for which comput-
+                                                                     ing or sampling from the posterior is efficient.
+The algorithm then chooses
+
+                    At = arg max ha, θ̃t i .
+                             a∈At                                    8. Experiments
+This algorithm corresponds to Thompson sampling (or pos-             In this section we illustrate the two realistic settings han-
+terior sampling) when the prior is Gaussian with zero mean           dled by this work. The first case below, with geometrically
+and λI covariance. No frequentist analysis exists for this           distributed delays, corresponds to the empirical study done
+algorithm, but empirically it performs very well. In the de-         by (Chapelle, 2014), already reproduced in simulations by
+layed setting the (Xs )t−1
+                       s=1 are not available to the learner at       (Vernade et al., 2017). The second case, with arbitrary
+                                                                             Linear Bandits with Stochastic Delayed Feedback
+
+                      200                                                                                 160                                                                            400
+
+                                                                                                          140                                                                            350
+                      150                                                                                 120                                                                            300
+
+
+
+
+  cumulative regret                                                                   cumulative regret                                                              cumulative regret
+                                                                                                          100                                                                            250
+                      100
+                                                                                                           80                                                                            200
+
+                                                                                                           60                                                                            150
+                       50
+                                                                                                           40                                                                            100
+
+                        0                                                                                  20                                                                             50
+                                                                 OTFLinTS                                                                             OTFLinTS                                                                      OTFLinTS
+                                                                                                            0                                                                              0
+                                                                 OTFLinUCB                                                                            OTFLinUCB                                                                     OTFLinUCB
+                       50                                                                                  20                                                                             50
+                            0   500   1000     1500       2000   2500    3000                                   0   500   1000     1500       2000     2500   3000                             0   500   1000     1500       2000   2500    3000
+                                             time steps                                                                          time steps                                                                     time steps
+
+
+
+Figure 1. Results of our simulations. From left to right, the plots report the performance of the two algorithms with (m, µ) =
+{(100, 100), (500, 100), (100, 500)}.Results are averaged over 100 independent runs.
+
+
+Algorithm 2 OTFLinTS:
+ 1: Input: Window parameter m > 0, confidence level
+                      δ > 0, λ > 0.
+ 2: for t = 2, . . . , T do
+ 3:   Receive action set At
+ 4:   Compute width of confidence interval:
+                                                              Pt−1
+                                                                 s=t−m kAs kVs (λ)−1
+                                      βt,δ = 1 +
+                                                                             ft,δ
+
+ 5:                         Compute the least squares estimate θ̂tW using (2)
+                                                                                                                                                     Figure 2. Empirical distribution of the log10 delays.
+                                                                             −1
+ 6:                         Sample θ̃t ∼ N (θ̂t , βt,δ Vt (λ)
+                                                          W
+                                                                                  )
+
+ 7:                         Compute action At = arg max a∈At ha, θ̃t i                                                                    istic simulations based on the orders of magnitude provided
+                                                                                                                                          in their study. We arbitrarily choose d = 5, K = 10. We fix
+ 8:   Play At and receive observations                                                                                                    the horizon to T = 3000, and we choose a geometric delay
+ 9: end for                                                                                                                               distribution with mean µ = E[Dt ] ∈ {100, 500}. In a real
+                                                                                                                                          setting, this would correspond to an experiment that lasts
+                                                                                                                                          3h, with average delays of 6 and 30 minutes4 respectively.
+heavy-tailed delays, corresponds to another use-case we                                                                                   The online interaction
+                                                                                                                                                           √        with
+                                                                                                                                                                       √the environment is simulated:
+extracted from the data released by (Diemert et al., 2017).2                                                                              we fix θ = {1/ d, . . . , 1/ d} and at each round we sam-
+                                                                                                                                          ple and normalize K actions from {0, 1}d . All result are
+Remark 6. To the best of our knowledge, there is no com-
+                                                                                                                                          averaged over 50 independent runs. We show three cases on
+petitor for this problem. In particular, despite the similarity
+                                                                                                                                          Figure 1: (m, µ) = (100, 100) (τm = 0.63) when delays
+of the algorithm DUCB of (Zhou et al., 2019) with ours,
+                                                                                                                                          are short and even though the timeout is set a bit too low, the
+it cannot be implemented when delays are not observed.
+                                                                                                                                          algorithm manages to learn within a reasonable time range;
+Specifically, DUCB, maintains a quantity Gt which is equal
+                                                                                                                                          (m, µ) = (500, 100) (τm = 0.993) when the window pa-
+to the exact amount of missing data (delayed feedback not
+                                                                                                                                          rameter is large enough so almost all feedback is received;
+converted yet). In our case, this quantity is not observable.
+                                                                                                                                          and (m, µ) = (100, 500) when the window is set too low
+The same comment applies for the QPM-D algorithm of
+                                                                                                                                          and the regret suffers from a high 1/τm = 5.5. Note that the
+(Joulani et al., 2013) and similar queue-based approaches.
+                                                                                                                                          notion of ‘well-tuned‘ window is dependent on the memory
+On the other end, existing algorithms for unknown delays
+                                                                                                                                          constraints one has. In general, the window is a system
+are not derived for linear bandits with arbitrary action sets.
+                                                                                                                                          parameter that the learner cannot easily set to their conve-
+                                                                                                                                          nience. In all three cases, OTFLinUCB performs better than
+Well-behaved delays In the datasets analyzed3 by                                                                                          OTFLinTS, which we believe is due to the rough posterior
+(Chapelle, 2014), delays are empirically shown to have an                                                                                 approximation. Comparing the two leftmost figures, we see
+exponential decay. As in (Vernade et al., 2017), we run real-                                                                             the impact of increasing the window size: the log regime
+                 2
+                                                                                                                                          starts earlier but the asymptotic regret is similar – roughly
+      The code for all data analysis and simulations is available at
+https://sites.google.com/view/bandits-delayed-feedback                                                                                       4
+                                                                                                                                               Note that in (Chapelle, 2014), time is rather measured in hours
+    3
+      The datasets were not released.                                                                                                     and days.
+                                                          Linear Bandits with Stochastic Delayed Feedback
+
+R(T ) = 100 in both cases. The rightmost figure, compared                          Improved algorithms Our lower bound suggests the de-
+with the leftmost one, shows the impact of a high level of                         pendence on τm in Theorem 2 can be improved. Were this
+censoring. Indeed, with 1/τm = 5.5, only few feedback                              value known we believe that using a concentration anal-
+are received within the window and the algorithm will need                         ysis that makes use of the variance should improved the
+much longer to learn. This causes the regret increase, and                         dependence to match the lower bound. When τm is not
+also explains why at T = 3000, both algorithms are still in                        known, however, the problem becomes more delicate. One
+the linear regime.                                                                 can envisage various estimation schemes, but the resulting
+                                                                                   algorithm and analysis are likely to be rather complex.
+                        800
+
+                        700
+
+                        600                                                        Generalized linear models When the rewards are
+
+
+    cumulative regret
+                        500
+                                                                                   Bernoulli it is natural to replace the linear model with a
+                        400
+                                                                                   generalized linear model. As we remarked already, this
+                        300
+                                                                                   should be possible using the machinery of (Filippi et al.,
+                        200
+                                                                                   2010).
+                        100
+                                                             OTFLinTS
+                          0
+                                                             OTFLinUCB
+                        100
+                              0   2000   4000      6000     8000    10000
+                                           time steps                              Thompson sampling Another obvious question is
+                                                                                   whether our variant of Thompson sampling/follow the per-
+Figure 3. Simulation with realistic delays and m = 2000, sampled                   turbed leader admits a regret analysis. In principle we expect
+according to the distribution of Figure 2.                                         the analysis by (Agrawal & Goyal, 2013) in combination
+                                                                                   with our new ideas in the proof of Theorem 2 can be com-
+Heavy-tailed delays. Interestingly, the more recent                                bined to yield a guarantee, possibly with a different tuning
+dataset released by (Diemert et al., 2017)5 features heavy-                        of the confidence width βt,δ . Investigating a more pure
+tailed delays, despite being sourced from a similar online                         Bayesian algorithm that updates beliefs about the delay dis-
+marketing problem in the same company. We run simula-                              tribution as well as unknown parameter is also a fascinating
+tions in the same setting as before, but this time we gener-                       open question, though possibly rather challenging.
+ate the delays according to the empirical delay distribution
+extracted from the dataset. On Figure 2, we show the distri-
+bution of the log-delays fitted with a gaussian kernel using
+the Scipy library. A high proportion of those delays are be-                       Refined lower bounds Our current lower bound is proven
+tween 105 and 106 so we rescaled them by a factor 0.01 to                          when At = {e1 , . . . , ed } is the standard basis vectors for all
+maintain the experiment horizon to the reasonable value of                         t. It would be valuable to reproduce the results where At is
+T = 104 . Nevertheless, many rewards will not be observed                          the unit sphere or hypercube, which should be a straightfor-
+within the horizon. We compare OTFLinUCB and OTFLinTS                              ward adaptation of the results in (Lattimore & Szepesvári,
+with window parameter m = 2000. The results are shown                              2019, §24).
+on Figure 3 and show that OTFLinUCB is able to cope with
+heavy-tailed delays reasonably well. It is interesting to ob-                      Acknowledgements
+serve that the behavior of both algorithms is similar to the
+central plot of Figure 1, when the window is larger than the                       The work of A. Carpentier is partially supported by the
+expectation of the delays.                                                         Deutsche Forschungsgemeinschaft (DFG) Emmy Noether
+                                                                                   grant MuSyAD (CA 1488/1-1), by the DFG - 314838170,
+                                                                                   GRK 2297 MathCoRe, by the DFG GRK 2433 DAEDALUS
+9. Discussion                                                                      (384950143/GRK2433), by the DFG CRC 1294 ’Data As-
+We introduced the delayed stochastic linear bandit setting                         similation’, Project A03, and by the UFA-DFH through the
+and proposed two algorithms. The first uses the optimism                           French-German Doktorandenkolleg CDFA 01-18 and by the
+principle in combination with ellipsoidal confidence inter-                        UFA-DFH through the French-German Doktorandenkolleg
+vals while the second is inspired by Thompson sampling                             CDFA 01-18 and by the SFI Sachsen-Anhalt for the project
+and follow the perturbed leader.                                                   RE-BCI. This work was started when CV was at Amazon
+                                                                                   Berlin and at OvGU Magdeburg, working closely with AC,
+There are a number of directions for future research, some                         GZ, BE and MB. Major changes and improvements were
+of which we now describe.                                                          made thanks to TL at DeepMind later on. CV wants to thank
+   5
+     https://ailab.criteo.com/criteo-attribution-modeling-bidding-                 Csaba Szepesvári for his useful comments and discussions,
+dataset/                                                                           and Vincent Fortuin for precisely reading and commenting.
+                                     Linear Bandits with Stochastic Delayed Feedback
+
+References                                                     Desautels, T., Krause, A., and Burdick, J. W. Paralleliz-
+                                                                 ing exploration-exploitation tradeoffs in gaussian process
+Abbasi-Yadkori, Y., Pál, D., and Szepesvári, C. Improved
+                                                                 bandit optimization. The Journal of Machine Learning
+  algorithms for linear stochastic bandits. In Advances in
+                                                                 Research, 15(1):3873–3923, 2014.
+ Neural Information Processing Systems, pp. 2312–2320,
+  2011.                                                        Diemert, E., Meynet, J., Galland, P., and Lefortier, D. Attri-
+                                                                 bution modeling increases efficiency of bidding in display
+Abeille, M. and Lazaric, A. Linear thompson sampling re-         advertising. In Proceedings of the AdKDD and TargetAd
+ visited. In AISTATS 2017-20th International Conference          Workshop, KDD, Halifax, NS, Canada, August, 14, 2017,
+  on Artificial Intelligence and Statistics, 2017.               pp. To appear. ACM, 2017.
+Agarwal, A. and Duchi, J. C. Distributed delayed stochastic    Eick, S. G. The two-armed bandit with delayed responses.
+  optimization. In Advances in Neural Information Pro-           The Annals of Statistics, pp. 254–264, 1988.
+  cessing Systems, pp. 873–881, 2011.
+                                                               Filippi, S., Cappe, O., Garivier, A., and Szepesvári, C. Para-
+Agarwal, A., Hsu, D., Kale, S., Langford, J., Li, L., and         metric bandits: The generalized linear case. In Advances
+  Schapire, R. Taming the monster: A fast and simple algo-        in Neural Information Processing Systems, pp. 586–594,
+  rithm for contextual bandits. In International Conference       2010.
+  on Machine Learning, pp. 1638–1646, 2014.
+                                                               Grover, A., Markov, T., Attia, P., Jin, N., Perkins, N.,
+Agrawal, S. and Goyal, N. Thompson sampling for contex-          Cheong, B., Chen, M., Yang, Z., Harris, S., Chueh, W.,
+  tual bandits with linear payoffs. In International Confer-     et al. Best arm identification in multi-armed bandits with
+  ence on Machine Learning, pp. 127–135, 2013.                   delayed feedback. In International Conference on Artifi-
+                                                                 cial Intelligence and Statistics, pp. 833–842, 2018.
+Arya, S. and Yang, Y. Randomized allocation with non-
+  parametric estimation for contextual multi-armed bandits     Joulani, P., Gyorgy, A., and Szepesvári, C. Online learning
+  with delayed rewards. arXiv preprint arXiv:1902.00819,         under delayed feedback. In Proceedings of the 30th In-
+  2019.                                                          ternational Conference on Machine Learning (ICML-13),
+                                                                 pp. 1453–1461, 2013.
+Auer, P., Cesa-Bianchi, N., Freund, Y., and Schapire, R. E.
+ The nonstochastic multiarmed bandit problem. SIAM             Jun, K.-S., Bhargava, A., Nowak, R., and Willett, R. Scal-
+  journal on computing, 32(1):48–77, 2002.                       able generalized linear bandits: Online computation and
+                                                                 hashing. In Advances in Neural Information Processing
+Beygelzimer, A., Langford, J., Li, L., Reyzin, L., and           Systems, pp. 99–109, 2017.
+  Schapire, R. Contextual bandit algorithms with super-
+                                                               Kveton, B., Szepesvári, C., Wen, Z., Ghavamzadeh, M.,
+  vised learning guarantees. In Proceedings of the Four-
+                                                                 and Lattimore, T. Garbage in, reward out: Bootstrapping
+  teenth International Conference on Artificial Intelligence
+                                                                 exploration in multi-armed bandits. 2018.
+  and Statistics, pp. 19–26, 2011.
+                                                               Lattimore, T. and Szepesvári, C. Bandit Algorithms. Cam-
+Cesa-Bianchi, N., Gentile, C., and Mansour, Y. Nonstochas-       bridge University Press (preprint), 2019.
+  tic bandits with composite anonymous feedback. In Con-
+  ference On Learning Theory, pp. 750–773, 2018.               Li, B., Chen, T., and Giannakis, G. B. Bandit online learn-
+                                                                 ing with unknown delays. In The 22nd International
+Chapelle, O. Modeling delayed feedback in display ad-            Conference on Artificial Intelligence and Statistics, pp.
+  vertising. In Proceedings of the 20th ACM SIGKDD               993–1002, 2019.
+  international conference on Knowledge discovery and
+  data mining, pp. 1097–1105. ACM, 2014.                       Mandel, T., Brunskill, E., and Popović, Z. Towards more
+                                                                practical reinforcement learning. In 24th International
+Chapelle, O. and Li, L. An empirical evaluation of thompson     Joint Conference on Artificial Intelligence, IJCAI 2015.
+  sampling. In Advances in neural information processing        International Joint Conferences on Artificial Intelligence,
+  systems, pp. 2249–2257, 2011.                                 2015.
+
+Chu, W., Li, L., Reyzin, L., and Schapire, R. Contextual       Mann, T. A., Gowal, S., Jiang, R., Hu, H., Lakshmi-
+  bandits with linear payoff functions. In Proceedings          narayanan, B., and Gyorgy, A. Learning from delayed
+  of the Fourteenth International Conference on Artificial      outcomes with intermediate observations. arXiv preprint
+  Intelligence and Statistics, pp. 208–214, 2011.               arXiv:1807.09387, 2018.
+                                     Linear Bandits with Stochastic Delayed Feedback
+
+Neu, G. Explore no more: Improved high-probability regret
+  bounds for non-stochastic bandits. In Advances in Neural
+  Information Processing Systems, pp. 3168–3176, 2015.
+Pike-Burke, C., Agrawal, S., Szepesvari, C., and
+  Grunewalder, S. Bandits with delayed anonymous feed-
+  back. arXiv preprint arXiv:1709.06853, 2017.
+
+Talebi, M. S., Zou, Z., Combes, R., Proutiere, A., and Jo-
+  hansson, M. Stochastic online shortest path routing: The
+  value of feedback. IEEE Transactions on Automatic Con-
+  trol, 63(4):915–930, 2017.
+Vernade, C., Cappé, O., and Perchet, V. Stochastic ban-
+  dit models for delayed conversions. In Conference on
+  Uncertainty in Artificial Intelligence, 2017.
+Yoshikawa, Y. and Imai, Y. A nonparametric delayed feed-
+  back model for conversion rate prediction. arXiv preprint
+  arXiv:1802.00255, 2018.
+
+Zhou, L. A survey on contextual multi-armed bandits. arXiv
+  preprint arXiv:1508.03326, 2015.
+Zhou, Z., Xu, R., and Blanchet, J. Learning in generalized
+  linear contextual bandits with stochastic delays. In Ad-
+  vances in Neural Information Processing Systems 32, pp.
+  5198–5209, 2019.
+

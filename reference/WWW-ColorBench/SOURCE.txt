@@ -1,0 +1,6 @@
+conference: WWW 2026
+title: ColorBench: Benchmarking Mobile Agents with Graph-Structured Framework for Complex Long-Horizon Tasks
+arxiv_id: 2510.14621v1
+arxiv_abs: http://arxiv.org/abs/2510.14621v1
+pdf_url: https://arxiv.org/pdf/2510.14621v1
+matched_arxiv_title: ColorBench: Benchmarking Mobile Agents with Graph-Structured Framework for Complex Long-Horizon Tasks

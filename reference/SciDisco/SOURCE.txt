@@ -1,0 +1,5 @@
+arXiv:2607.28990
+abs: https://arxiv.org/abs/2607.28990
+pdf: https://arxiv.org/pdf/2607.28990
+topic: DAG-grounded科学发现环境
+pulled: 2026-08-09 via arxiv MCP (arxiv_get_metadata / arxiv_read_paper)

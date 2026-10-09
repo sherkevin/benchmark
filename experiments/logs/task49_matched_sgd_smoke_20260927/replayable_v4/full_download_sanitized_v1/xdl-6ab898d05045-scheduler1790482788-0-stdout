@@ -1,0 +1,975 @@
+http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/ai-scheduler/0.10.42+d0e7369/ai_scheduler-0.10.42+d0e7369-py3-none-any.whl
+PATH: /usr/local/openmpi/bin:/opt/rh/gcc-toolset-13/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/conda/bin:/usr/local/nvidia/bin/:/usr/local/cuda/bin:/usr/local/cmake-3.30.2-linux-x86_64/bin:/usr/local/ninja:/home/admin/.local/bin:/usr/share/Modules/bin:/usr/local/openmpi/bin:/opt/rh/gcc-toolset-13/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/conda/bin:/usr/local/nvidia/bin/:/usr/local/cuda/bin:/usr/local/cmake-3.30.2-linux-x86_64/bin:/usr/local/ninja:/home/admin/.local/bin:/usr/local/openmpi/bin:/opt/rh/gcc-toolset-13/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/conda/bin:/usr/local/nvidia/bin/:/usr/local/cuda/bin:/usr/local/cmake-3.30.2-linux-x86_64/bin:/usr/local/ninja:/home/admin/.local/bin
+LD_PRELOAD: 
+LD_LIBRARY_PATH: /opt/conda/envs/python3.10.13/lib/python3.10/site-packages/third_party/swift/lib/:/opt/conda/envs/python3.10.13/lib/python3.10/site-packages/:/usr/local/openmpi/lib:/opt/rh/gcc-toolset-13/root/usr/lib64:/opt/rh/gcc-toolset-13/root/usr/lib:/usr/local/lib64:/lib64:/usr/local/gcc75/lib:/usr/local/gcc75/lib64::/usr/local/nvidia/lib:/usr/local/nvidia/lib64:/usr/local/cuda/lib64:/usr/local/cuda/targets/x86_64-linux/lib:/usr/lib64:/pu:/opt/taobao/java/jre/lib/amd64/server:/apsara/alicpp/built/gcc-4.9.2/glog-0.3.4/lib:/apsara/alicpp/built/gcc-4.9.2/gflags-2.1.2/lib:/apsara/alicpp/built/gcc-4.9.2/protobuf-2.4.1.ali/lib:/apsara/alicpp/built/gcc-4.9.2/odps-cryptography-1.0.0/lib:/apsara/alicpp/built/gcc-4.9.2/boost-1.58.0.fix.thread/lib:/apsara/alicpp/built/gcc-4.9.2/openssl-1.0.2a/lib:/apsara/alicpp/built/gcc-4.9.2/mysql-connector-c-6.1.6/lib:/apsara/alicpp/built/gcc-4.9.2/arrow-0.16.0/lib64:/apsara/alicpp/built/gcc-4.9.2/bzip2-1.0.6/lib64:/apsara/alicpp/built/gcc-4.9.2/zstd-1.4.4/lib:/apsara/alicpp/built/gcc-4.9.2/libevent-2.0.22.stable/lib64:/worker:/worker/lib:/opt/conda/envs/python3.10.13/lib
+2026-09-27 12:20:16 ossproxy.aone.alibaba-inc.com connection is ok. 
+2026-09-27 12:20:16 using dfget download agent install package: 
+--2026-09-27 12:20:16--  http://ossproxy.aone.alibaba-inc.com/aone2/build-service/api/v2/ossproxy/download?ns=Staragent&bucketName=staragent-ui&fileId=installpackage/agent2/current/linux/5/64/agent.tar.gz.md5&fileName=agent.tar.gz.md5&md5Sign=fe3903d47b01aaedf3e8763790d17125
+current user[root] output path[/home/staragent/data/agent.tar.gz.md5]
+dfget version:3.10.25
+workspace:/root/.small-dragonfly/ sign:114-1790482816.545
+client:33.97.226.77 connected to node:10.137.140.23, sn:NOSN00:25:9d:95:ef:65
+init success...
+start download by dragonfly
+taskId:aa0216d8c4d945780b492a1e71dcbbb19b0c5ea507f85342a6570b8848aa1af42
+download SUCCESS(0) cost(2.347s) length:33 reason:0
+--2026-09-27 12:20:19--  http://ossproxy.aone.alibaba-inc.com/aone2/build-service/api/v2/ossproxy/download?ns=Staragent&bucketName=staragent-ui&fileId=installpackage/agent2/current/linux/5/64/agent.tar.gz&fileName=agent.tar.gz&md5Sign=ac22e2b1fe4d78def8980b8a973f1293
+current user[root] output path[/home/staragent/data/agent.tar.gz]
+dfget version:3.10.25
+workspace:/root/.small-dragonfly/ sign:194-1790482819.043
+client:33.97.226.77 connected to node:10.137.140.24, sn:NOSN00:25:9d:95:ef:65
+init success...
+start download by dragonfly
+taskId:4245c919b1f2852f6e034bb037d63eb900cb7050d96a53490de3777b8f32ee402
+download SUCCESS(0) cost(7.695s) length:108905862 reason:0
+2026-09-27 12:20:26 download current agent.tar.gz success. 
+2026-09-27 12:20:26 download agent package success after 0 times failed 
+bin/
+bin/staragentctl
+bin/dist/
+bin/dist/dfget.yaml
+bin/dist/dfget
+bin/sa_install_lock.sh
+bin/dfget
+bin/dnsresolver
+bin/hostinfo.sh
+bin/pluginctl
+bin/unzip
+bin/agent.sh
+bin/staragent2
+bin/sa_healthCheck.sh
+bin/staragentd
+bin/post_install.sh
+bin/hostinfo
+bin/staragentctl7u
+bin/init.sh
+bin/sa_install.sh
+bin/sa_recovery.sh
+bin/fakeStaragentctl7u
+BUILD
+conf/
+data/
+log/
+plugins/
+plugins/dragonfly2.src/
+plugins/dragonfly2.src/dragonfly2.zip
+plugins/dragonfly2.src/.update.flag
+plugins/dragonfly2.src/dragonfly2.cur/
+plugins/dragonfly2.src/dragonfly2.cur/dist/
+plugins/dragonfly2.src/dragonfly2.cur/dist/dfget.yaml
+plugins/dragonfly2.src/dragonfly2.cur/dist/dfget
+plugins/dragonfly2.src/dragonfly2.cur/.plugin.conf
+plugins/dragonfly2.src/dragonfly2.cur/local_data
+plugins/dragonfly2.src/dragonfly2.cur/dfget
+plugins/dragonfly2.src/dragonfly2.cur/init.sh
+plugins/dragonfly2.src/dragonfly2.zip.md5
+plugins/dragonfly2
+plugins/sa-ops-plugin
+plugins/dragonfly
+plugins/dragonfly.src/
+plugins/dragonfly.src/dragonfly.zip
+plugins/dragonfly.src/.update.flag
+plugins/dragonfly.src/dragonfly.cur/
+plugins/dragonfly.src/dragonfly.cur/.plugin.conf
+plugins/dragonfly.src/dragonfly.cur/local_data
+plugins/dragonfly.src/dragonfly.cur/dfget
+plugins/dragonfly.src/dragonfly.cur/dfget2
+plugins/dragonfly.src/dragonfly.zip.md5
+plugins/sa-ops-plugin.src/
+plugins/sa-ops-plugin.src/.update.flag
+plugins/sa-ops-plugin.src/sa-ops-plugin.zip.md5
+plugins/sa-ops-plugin.src/sa-ops-plugin.cur/
+plugins/sa-ops-plugin.src/sa-ops-plugin.cur/.plugin.conf
+plugins/sa-ops-plugin.src/sa-ops-plugin.cur/local_data
+plugins/sa-ops-plugin.src/sa-ops-plugin.cur/cert/
+plugins/sa-ops-plugin.src/sa-ops-plugin.cur/cert/ca.crt
+plugins/sa-ops-plugin.src/sa-ops-plugin.cur/cert/.emptyDirectoryKeep
+plugins/sa-ops-plugin.src/sa-ops-plugin.cur/README
+plugins/sa-ops-plugin.src/sa-ops-plugin.cur/test
+plugins/sa-ops-plugin.src/sa-ops-plugin.cur/init.sh
+plugins/sa-ops-plugin.src/sa-ops-plugin.zip
+plugins/osteam.src/
+plugins/osteam.src/.update.flag
+plugins/osteam.src/osteam.cur/
+plugins/osteam.src/osteam.cur/.plugin.conf
+plugins/osteam.src/osteam.cur/sudo.sh
+plugins/osteam.src/osteam.cur/pluginFileMeta.yaml
+plugins/osteam.src/osteam.cur/local_data
+plugins/osteam.src/osteam.cur/sysinfo_new.sh
+plugins/osteam.src/osteam.cur/cpwd.sh
+plugins/osteam.src/osteam.cur/logfile.sh
+plugins/osteam.src/osteam.cur/account.sh
+plugins/osteam.src/osteam.cur/appacc.sh
+plugins/osteam.src/osteam.cur/app_account.sh
+plugins/osteam.src/osteam.cur/user_view.sh
+plugins/osteam.src/osteam.cur/init.sh
+plugins/osteam.src/osteam.cur/funcs.sh
+plugins/osteam.src/osteam.cur/user_account.sh
+plugins/osteam.src/osteam.cur/sshkey_new.sh
+plugins/osteam.src/osteam.zip.md5
+plugins/osteam.src/osteam.zip
+plugins/osteam
+2026-09-27 12:20:28 extract agent tar package to /tmp/sa_tmp success 
+2026-09-27 12:20:28 no task running in agent, can stop now 
+2026-09-27 12:20:28 the local agent version is older or equal to 3.4.6, need to update agent.sh 
+2026-09-27 12:20:28 start to update agent.sh 
+2026-09-27 12:20:28 update agent.sh success 
+2026-09-27 12:20:30 stop agent and rm staragentd finish 
+2026-09-27 12:20:30 copy agent binary file finish 
+2026-09-27 12:20:30 插件sa-ops-plugin 软连接 /home/staragent/plugins/sa-ops-plugin 不存在，需要从安装包拷贝 
+2026-09-27 12:20:30 插件dragonfly 软连接 /home/staragent/plugins/dragonfly 不存在，需要从安装包拷贝 
+2026-09-27 12:20:30 插件osteam 软连接 /home/staragent/plugins/osteam 不存在，需要从安装包拷贝 
+2026-09-27 12:20:30 插件dragonfly2 软连接 /home/staragent/plugins/dragonfly2 不存在，需要从安装包拷贝 
+2026-09-27 12:20:34 using staragentctl restart agent success! 
+Looking in indexes: http://yum.tbsite.net/aliyun-pypi/simple/
+Collecting pip-plugin-dragonfly
+  Downloading http://yum.tbsite.net/aliyun-pypi/packages/pip-plugin-dragonfly/pip_plugin_dragonfly-1.5.0-py2.py3-none-any.whl (25 kB)
+Installing collected packages: pip-plugin-dragonfly
+Successfully installed pip-plugin-dragonfly-1.5.0
+[Dragonfly] Installed hook to: /root/.local/lib/python3.10/site-packages/usercustomize.py
+[Dragonfly] Target directory: /root/.local/lib/python3.10/site-packages
+[Dragonfly] The plugin will now be automatically loaded when Python starts
+install return code: 1
+[32m[Dragonfly][0m P2P download plugin enabled (via environment variable)
+[32m[Dragonfly][0m Minimum file size: 0MB
+Looking in indexes: http://yum.tbsite.net/pypi/simple
+Collecting pip==24.0
+--2026-09-27 12:20:37--  http://yum.tbsite.net/pypi/packages/8a/6a/19e9fe04fca059ccf770861c7d5721ab4c2aebc539889e97c7977528a53b/pip-24.0-py3-none-any.whl
+dfget version: v2.0.9-ali-rc.8
+current user: root
+output path: /tmp/pip-24.0-py3-none-any.whl
+init success and start to download
+taskID: 53bd662b2ac96a26a9c86caf5c98ab8d3a225cbea45c4b9c25932b96bfd40c53
+finish total length 2110226 bytes
+download SUCCESS,  cost: 1078 ms
+[32m[Dragonfly][0m Downloading 'pip-24.0-py3-none-any.whl' via P2P network...
+[36m[Dragonfly][0m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/pypi/packages/8a/6a/19e9fe04fca059ccf770861c7d5721ab4c2aebc539889e97c7977528a53b/pip-24.0-py3-none-any.whl -o /tmp/pip-24.0-py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][0m Successfully downloaded 'pip-24.0-py3-none-any.whl' via P2P
+  Downloading http://yum.tbsite.net/pypi/packages/8a/6a/19e9fe04fca059ccf770861c7d5721ab4c2aebc539889e97c7977528a53b/pip-24.0-py3-none-any.whl
+     - 2.1 MB 1.0 GB/s 0:00:00
+Installing collected packages: pip
+  Attempting uninstall: pip
+    Found existing installation: pip 26.0.1
+    Uninstalling pip-26.0.1:
+      Successfully uninstalled pip-26.0.1
+Successfully installed pip-24.0
+Looking in indexes: http://yum.tbsite.net/pypi/simple
+[32m[Dragonfly][0m P2P download plugin enabled (via environment variable)
+[32m[Dragonfly][0m Minimum file size: 0MB
+Collecting ai-scheduler==0.10.42+d0e7369
+--2026-09-27 12:20:40--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/ai-scheduler/0.10.42+d0e7369/ai_scheduler-0.10.42+d0e7369-py3-none-any.whl
+dfget version: v2.0.9-ali-rc.8
+current user: root
+output path: /tmp/ai_scheduler-0.10.42+d0e7369-py3-none-any.whl
+init success and start to download
+taskID: f0804868ce465d642f93f927d34f6aae25320ea74685c0a7d826e084ee359e7b
+finish total length 295340 bytes
+download SUCCESS,  cost: 17 ms
+[32m[Dragonfly][0m Downloading 'ai_scheduler-0.10.42+d0e7369-py3-none-any.whl' via P2P network...
+[36m[Dragonfly][0m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/ai-scheduler/0.10.42+d0e7369/ai_scheduler-0.10.42+d0e7369-py3-none-any.whl -o /tmp/ai_scheduler-0.10.42+d0e7369-py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][0m Successfully downloaded 'ai_scheduler-0.10.42+d0e7369-py3-none-any.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/ai-scheduler/0.10.42+d0e7369/ai_scheduler-0.10.42+d0e7369-py3-none-any.whl
+     - 295.3 kB 732.5 MB/s 0:00:00
+Installing collected packages: ai-scheduler
+Successfully installed ai-scheduler-0.10.42+d0e7369
+Looking in indexes: http://yum.tbsite.net/pypi/simple/, http://yum.tbsite.net/aliyun-pypi/simple/, http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+[32m[Dragonfly][0m P2P download plugin enabled (via environment variable)
+[32m[Dragonfly][0m Minimum file size: 0MB
+Collecting kmontitor-client==0.0.0
+--2026-09-27 12:20:41--  http://ados-nebula-v2.cn-zhangjiakou.oss.aliyuncs.com/nebula-one-proxy/ai_scheduler/kmontitor_client-0.0.0-py3-none-any.whl
+dfget version: v2.0.9-ali-rc.8
+current user: root
+output path: /tmp/kmontitor_client-0.0.0-py3-none-any.whl
+init success and start to download
+taskID: 7bc81af3eabb60114c7be3283bcc0f2805f93f470672d8edc2c3a36d3a6c9cd2
+finish total length 66042 bytes
+download SUCCESS,  cost: 18 ms
+[32m[Dragonfly][0m Downloading 'kmontitor_client-0.0.0-py3-none-any.whl' via P2P network...
+[36m[Dragonfly][0m Command: /home/staragent/plugins/dragonfly/dfget -u http://ados-nebula-v2.cn-zhangjiakou.oss.aliyuncs.com/nebula-one-proxy/ai_scheduler/kmontitor_client-0.0.0-py3-none-any.whl -o /tmp/kmontitor_client-0.0.0-py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][0m Successfully downloaded 'kmontitor_client-0.0.0-py3-none-any.whl' via P2P
+  Downloading http://ados-nebula-v2.cn-zhangjiakou.oss.aliyuncs.com/nebula-one-proxy/ai_scheduler/kmontitor_client-0.0.0-py3-none-any.whl
+     - 66.0 kB 642.5 MB/s 0:00:00
+Requirement already satisfied: thrift in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from kmontitor-client==0.0.0) (0.10.0)
+Requirement already satisfied: six>=1.7.2 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from thrift->kmontitor-client==0.0.0) (1.14.0)
+Looking in indexes: http://yum.tbsite.net/pypi/simple/, http://yum.tbsite.net/aliyun-pypi/simple/, http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+[32m[Dragonfly][0m P2P download plugin enabled (via environment variable)
+[32m[Dragonfly][0m Minimum file size: 0MB
+Collecting pykmonitor==2.2.1
+--2026-09-27 12:20:43--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/pykmonitor/2.2.1/pykmonitor-2.2.1-py3-none-any.whl
+dfget version: v2.0.9-ali-rc.8
+current user: root
+output path: /tmp/pykmonitor-2.2.1-py3-none-any.whl
+init success and start to download
+taskID: 8cbf8879d829cce0eeea767c9085eb609802d96e9ba21c7b7377370b7e152770
+finish total length 19027 bytes
+download SUCCESS,  cost: 7 ms
+[32m[Dragonfly][0m Downloading 'pykmonitor-2.2.1-py3-none-any.whl' via P2P network...
+[36m[Dragonfly][0m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/pykmonitor/2.2.1/pykmonitor-2.2.1-py3-none-any.whl -o /tmp/pykmonitor-2.2.1-py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][0m Successfully downloaded 'pykmonitor-2.2.1-py3-none-any.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/pykmonitor/2.2.1/pykmonitor-2.2.1-py3-none-any.whl
+     - 19.0 kB 478.8 MB/s 0:00:00
+Requirement already satisfied: thrift in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from pykmonitor==2.2.1) (0.10.0)
+Requirement already satisfied: six>=1.7.2 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from thrift->pykmonitor==2.2.1) (1.14.0)
+Installing collected packages: pykmonitor
+  Attempting uninstall: pykmonitor
+    Found existing installation: pykmonitor 1.0
+    Uninstalling pykmonitor-1.0:
+      Successfully uninstalled pykmonitor-1.0
+Successfully installed pykmonitor-2.2.1
+Looking in indexes: http://yum.tbsite.net/pypi/simple/, http://yum.tbsite.net/aliyun-pypi/simple/, http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+Requirement already satisfied: kazoo==2.9.0 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (2.9.0)
+Requirement already satisfied: six in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from kazoo==2.9.0) (1.14.0)
+Looking in indexes: http://yum.tbsite.net/pypi/simple/, http://yum.tbsite.net/aliyun-pypi/simple/, http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+Requirement already satisfied: psutil==5.9.5 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (5.9.5)
+Looking in indexes: http://yum.tbsite.net/pypi/simple/, http://yum.tbsite.net/aliyun-pypi/simple/, http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+Requirement already satisfied: pynvml==12.0.0 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (12.0.0)
+Requirement already satisfied: nvidia-ml-py<13.0.0a0,>=12.0.0 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from pynvml==12.0.0) (12.575.51)
+Looking in indexes: http://yum.tbsite.net/pypi/simple/, http://yum.tbsite.net/aliyun-pypi/simple/, http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+Requirement already satisfied: tornado==6.1 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (6.1)
+Looking in indexes: http://yum.tbsite.net/pypi/simple/, http://yum.tbsite.net/aliyun-pypi/simple/, http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+Requirement already satisfied: transitions==0.9.0 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (0.9.0)
+Requirement already satisfied: six in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from transitions==0.9.0) (1.14.0)
+Looking in indexes: http://yum.tbsite.net/pypi/simple/, http://yum.tbsite.net/aliyun-pypi/simple/, http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+[32m[Dragonfly][0m P2P download plugin enabled (via environment variable)
+[32m[Dragonfly][0m Minimum file size: 0MB
+Collecting thrift==0.16.0
+--2026-09-27 12:20:56--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/e4/23/dd951c9883cb49a73b750bdfe91e39d78e8a3f1f7175608634f381a197d5/thrift-0.16.0.tar.gz
+dfget version: v2.0.9-ali-rc.8
+current user: root
+output path: /tmp/thrift-0.16.0.tar.gz
+init success and start to download
+taskID: 5912963b709762d314d2698ed16a5c799990d58a69b520318afafeb1d9fb47e2
+finish total length 59605 bytes
+download SUCCESS,  cost: 20 ms
+[32m[Dragonfly][0m Downloading 'thrift-0.16.0.tar.gz' via P2P network...
+[36m[Dragonfly][0m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/e4/23/dd951c9883cb49a73b750bdfe91e39d78e8a3f1f7175608634f381a197d5/thrift-0.16.0.tar.gz -o /tmp/thrift-0.16.0.tar.gz --callsystem pypi --notbs
+[32m[Dragonfly][0m Successfully downloaded 'thrift-0.16.0.tar.gz' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/e4/23/dd951c9883cb49a73b750bdfe91e39d78e8a3f1f7175608634f381a197d5/thrift-0.16.0.tar.gz
+     - 59.6 kB 582.4 MB/s 0:00:00
+  Preparing metadata (setup.py): started
+  Preparing metadata (setup.py): finished with status 'done'
+Requirement already satisfied: six>=1.7.2 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from thrift==0.16.0) (1.14.0)
+Building wheels for collected packages: thrift
+  Building wheel for thrift (setup.py): started
+  Building wheel for thrift (setup.py): finished with status 'done'
+  Created wheel for thrift: filename=thrift-0.16.0-cp310-cp310-linux_x86_64.whl size=440032 sha256=82055e6be7c14d0be8184b445e9303552cf3edfda056ac7c0fab9ce53dc5fd6e
+  Stored in directory: /root/.cache/pip/wheels/d1/99/b5/fcc45c37366f91a8fa5d4d753b863f1c436502e53feff3488a
+Successfully built thrift
+Installing collected packages: thrift
+  Attempting uninstall: thrift
+    Found existing installation: thrift 0.10.0
+    Uninstalling thrift-0.10.0:
+      Successfully uninstalled thrift-0.10.0
+Successfully installed thrift-0.16.0
+Looking in indexes: http://yum.tbsite.net/pypi/simple/, http://yum.tbsite.net/aliyun-pypi/simple/, http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+Requirement already satisfied: GPUtil==1.4.0 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (1.4.0)
+Looking in indexes: http://yum.tbsite.net/pypi/simple/, http://yum.tbsite.net/aliyun-pypi/simple/, http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+Requirement already satisfied: requests==2.22.0 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (2.22.0)
+Requirement already satisfied: chardet<3.1.0,>=3.0.2 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from requests==2.22.0) (3.0.4)
+Requirement already satisfied: idna<2.9,>=2.5 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from requests==2.22.0) (2.8)
+Requirement already satisfied: urllib3!=1.25.0,!=1.25.1,<1.26,>=1.21.1 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from requests==2.22.0) (1.25.11)
+Requirement already satisfied: certifi>=2017.4.17 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from requests==2.22.0) (2026.1.4)
+Looking in indexes: http://yum.tbsite.net/pypi/simple/, http://yum.tbsite.net/aliyun-pypi/simple/, http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+Requirement already satisfied: pyodps==0.12.3 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (0.12.3)
+Requirement already satisfied: requests>=2.4.0 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from pyodps==0.12.3) (2.22.0)
+Requirement already satisfied: pyarrow>=2.0.0 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from pyodps==0.12.3) (23.0.0)
+Requirement already satisfied: chardet<3.1.0,>=3.0.2 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from requests>=2.4.0->pyodps==0.12.3) (3.0.4)
+Requirement already satisfied: idna<2.9,>=2.5 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from requests>=2.4.0->pyodps==0.12.3) (2.8)
+Requirement already satisfied: urllib3!=1.25.0,!=1.25.1,<1.26,>=1.21.1 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from requests>=2.4.0->pyodps==0.12.3) (1.25.11)
+Requirement already satisfied: certifi>=2017.4.17 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from requests>=2.4.0->pyodps==0.12.3) (2026.1.4)
+Looking in indexes: http://yum.tbsite.net/pypi/simple/, http://yum.tbsite.net/aliyun-pypi/simple/, http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+[32m[Dragonfly][0m P2P download plugin enabled (via environment variable)
+[32m[Dragonfly][0m Minimum file size: 0MB
+Collecting openlm-hub>=0.1.17
+--2026-09-27 12:21:09--  http://yum.tbsite.net/aliyun-pypi/packages/openlm-hub/openlm_hub-0.1.32-py3-none-any.whl
+dfget version: v2.0.9-ali-rc.8
+current user: root
+output path: /tmp/openlm_hub-0.1.32-py3-none-any.whl
+init success and start to download
+taskID: d61bcf90991f71e1d7a3af0a83ccf9d52909136e72471203c5a6cc4c10aac88b
+finish total length 97146 bytes
+download SUCCESS,  cost: 18 ms
+[32m[Dragonfly][0m Downloading 'openlm_hub-0.1.32-py3-none-any.whl' via P2P network...
+[36m[Dragonfly][0m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/aliyun-pypi/packages/openlm-hub/openlm_hub-0.1.32-py3-none-any.whl -o /tmp/openlm_hub-0.1.32-py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][0m Successfully downloaded 'openlm_hub-0.1.32-py3-none-any.whl' via P2P
+  Downloading http://yum.tbsite.net/aliyun-pypi/packages/openlm-hub/openlm_hub-0.1.32-py3-none-any.whl
+     - 97.1 kB 659.6 MB/s 0:00:00
+Requirement already satisfied: requests in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from openlm-hub>=0.1.17) (2.22.0)
+Requirement already satisfied: filelock in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from openlm-hub>=0.1.17) (3.20.3)
+Requirement already satisfied: fsspec in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from openlm-hub>=0.1.17) (2026.2.0)
+Requirement already satisfied: ruamel.yaml in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from openlm-hub>=0.1.17) (0.19.1)
+Requirement already satisfied: ossfs in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from openlm-hub>=0.1.17) (2025.5.0)
+Requirement already satisfied: pydantic in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from openlm-hub>=0.1.17) (2.12.5)
+Requirement already satisfied: pykmonitor>=2.1.2 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from openlm-hub>=0.1.17) (2.2.1)
+Requirement already satisfied: thrift in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from pykmonitor>=2.1.2->openlm-hub>=0.1.17) (0.16.0)
+Requirement already satisfied: aiooss2>=0.2.11 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from ossfs->openlm-hub>=0.1.17) (0.2.11)
+Requirement already satisfied: oss2==2.18.4 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from ossfs->openlm-hub>=0.1.17) (2.18.4)
+Requirement already satisfied: crcmod>=1.7 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from oss2==2.18.4->ossfs->openlm-hub>=0.1.17) (1.7)
+Requirement already satisfied: pycryptodome>=3.4.7 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from oss2==2.18.4->ossfs->openlm-hub>=0.1.17) (3.23.0)
+Requirement already satisfied: aliyun-python-sdk-kms>=2.4.1 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from oss2==2.18.4->ossfs->openlm-hub>=0.1.17) (2.16.5)
+Requirement already satisfied: aliyun-python-sdk-core>=2.13.12 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from oss2==2.18.4->ossfs->openlm-hub>=0.1.17) (2.16.0)
+Requirement already satisfied: six in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from oss2==2.18.4->ossfs->openlm-hub>=0.1.17) (1.14.0)
+Requirement already satisfied: chardet<3.1.0,>=3.0.2 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from requests->openlm-hub>=0.1.17) (3.0.4)
+Requirement already satisfied: idna<2.9,>=2.5 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from requests->openlm-hub>=0.1.17) (2.8)
+Requirement already satisfied: urllib3!=1.25.0,!=1.25.1,<1.26,>=1.21.1 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from requests->openlm-hub>=0.1.17) (1.25.11)
+Requirement already satisfied: certifi>=2017.4.17 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from requests->openlm-hub>=0.1.17) (2026.1.4)
+Requirement already satisfied: annotated-types>=0.6.0 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from pydantic->openlm-hub>=0.1.17) (0.7.0)
+Requirement already satisfied: pydantic-core==2.41.5 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from pydantic->openlm-hub>=0.1.17) (2.41.5)
+Requirement already satisfied: typing-extensions>=4.14.1 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from pydantic->openlm-hub>=0.1.17) (4.15.0)
+Requirement already satisfied: typing-inspection>=0.4.2 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from pydantic->openlm-hub>=0.1.17) (0.4.2)
+Requirement already satisfied: aiohttp<4,>=3.9.1 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from aiooss2>=0.2.11->ossfs->openlm-hub>=0.1.17) (3.13.3)
+Requirement already satisfied: aiohappyeyeballs>=2.5.0 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from aiohttp<4,>=3.9.1->aiooss2>=0.2.11->ossfs->openlm-hub>=0.1.17) (2.6.1)
+Requirement already satisfied: aiosignal>=1.4.0 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from aiohttp<4,>=3.9.1->aiooss2>=0.2.11->ossfs->openlm-hub>=0.1.17) (1.4.0)
+Requirement already satisfied: async-timeout<6.0,>=4.0 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from aiohttp<4,>=3.9.1->aiooss2>=0.2.11->ossfs->openlm-hub>=0.1.17) (5.0.1)
+Requirement already satisfied: attrs>=17.3.0 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from aiohttp<4,>=3.9.1->aiooss2>=0.2.11->ossfs->openlm-hub>=0.1.17) (25.4.0)
+Requirement already satisfied: frozenlist>=1.1.1 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from aiohttp<4,>=3.9.1->aiooss2>=0.2.11->ossfs->openlm-hub>=0.1.17) (1.8.0)
+Requirement already satisfied: multidict<7.0,>=4.5 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from aiohttp<4,>=3.9.1->aiooss2>=0.2.11->ossfs->openlm-hub>=0.1.17) (6.7.1)
+Requirement already satisfied: propcache>=0.2.0 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from aiohttp<4,>=3.9.1->aiooss2>=0.2.11->ossfs->openlm-hub>=0.1.17) (0.4.1)
+Requirement already satisfied: yarl<2.0,>=1.17.0 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from aiohttp<4,>=3.9.1->aiooss2>=0.2.11->ossfs->openlm-hub>=0.1.17) (1.22.0)
+Requirement already satisfied: jmespath<1.0.0,>=0.9.3 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from aliyun-python-sdk-core>=2.13.12->oss2==2.18.4->ossfs->openlm-hub>=0.1.17) (0.10.0)
+Requirement already satisfied: cryptography>=3.0.0 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from aliyun-python-sdk-core>=2.13.12->oss2==2.18.4->ossfs->openlm-hub>=0.1.17) (46.0.4)
+Requirement already satisfied: cffi>=2.0.0 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from cryptography>=3.0.0->aliyun-python-sdk-core>=2.13.12->oss2==2.18.4->ossfs->openlm-hub>=0.1.17) (2.0.0)
+Requirement already satisfied: pycparser in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from cffi>=2.0.0->cryptography>=3.0.0->aliyun-python-sdk-core>=2.13.12->oss2==2.18.4->ossfs->openlm-hub>=0.1.17) (3.0)
+Installing collected packages: openlm-hub
+  Attempting uninstall: openlm-hub
+    Found existing installation: openlm_hub 0.0.56
+    Uninstalling openlm_hub-0.0.56:
+      Successfully uninstalled openlm_hub-0.0.56
+Successfully installed openlm-hub-0.1.32
+Looking in indexes: http://yum.tbsite.net/pypi/simple/, http://yum.tbsite.net/aliyun-pypi/simple/, http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+[32m[Dragonfly][0m P2P download plugin enabled (via environment variable)
+[32m[Dragonfly][0m Minimum file size: 0MB
+Collecting alluxio-pfs>=0.1.6a17
+--2026-09-27 12:21:11--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/alluxio-pfs/0.1.6a18/alluxio_pfs-0.1.6a18-py2.py3-none-any.whl
+dfget version: v2.0.9-ali-rc.8
+current user: root
+output path: /tmp/alluxio_pfs-0.1.6a18-py2.py3-none-any.whl
+init success and start to download
+taskID: e19db77ec5ab3062ad5ece4eba9b48e8b4c778f074928d68c4d36b6c3db22a16
+finish total length 63933 bytes
+download SUCCESS,  cost: 15 ms
+[32m[Dragonfly][0m Downloading 'alluxio_pfs-0.1.6a18-py2.py3-none-any.whl' via P2P network...
+[36m[Dragonfly][0m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/alluxio-pfs/0.1.6a18/alluxio_pfs-0.1.6a18-py2.py3-none-any.whl -o /tmp/alluxio_pfs-0.1.6a18-py2.py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][0m Successfully downloaded 'alluxio_pfs-0.1.6a18-py2.py3-none-any.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/alluxio-pfs/0.1.6a18/alluxio_pfs-0.1.6a18-py2.py3-none-any.whl
+     - 63.9 kB 749.1 MB/s 0:00:00
+Requirement already satisfied: six in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from alluxio-pfs>=0.1.6a17) (1.14.0)
+Requirement already satisfied: requests in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from alluxio-pfs>=0.1.6a17) (2.22.0)
+Requirement already satisfied: fsspec in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from alluxio-pfs>=0.1.6a17) (2026.2.0)
+Collecting mmh3 (from alluxio-pfs>=0.1.6a17)
+--2026-09-27 12:21:11--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/e5/2b/8c7400a305c7f7180bf72476473decd15db7ad93f1283dc80177659ac433/mmh3-5.3.0-cp310-cp310-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl
+dfget version: v2.0.9-ali-rc.8
+current user: root
+output path: /tmp/mmh3-5.3.0-cp310-cp310-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl
+init success and start to download
+taskID: c52716db01264c43f0ed941ed580a58441aec17a48889b91c266852987b52328
+finish total length 101127 bytes
+download SUCCESS,  cost: 16 ms
+[32m[Dragonfly][0m Downloading 'mmh3-5.3.0-cp310-cp310-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl' via P2P network...
+[36m[Dragonfly][0m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/e5/2b/8c7400a305c7f7180bf72476473decd15db7ad93f1283dc80177659ac433/mmh3-5.3.0-cp310-cp310-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl -o /tmp/mmh3-5.3.0-cp310-cp310-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl --callsystem pypi --notbs
+[32m[Dragonfly][0m Successfully downloaded 'mmh3-5.3.0-cp310-cp310-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/e5/2b/8c7400a305c7f7180bf72476473decd15db7ad93f1283dc80177659ac433/mmh3-5.3.0-cp310-cp310-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl
+     - 101.1 kB 664.9 MB/s 0:00:00
+Requirement already satisfied: chardet<3.1.0,>=3.0.2 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from requests->alluxio-pfs>=0.1.6a17) (3.0.4)
+Requirement already satisfied: idna<2.9,>=2.5 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from requests->alluxio-pfs>=0.1.6a17) (2.8)
+Requirement already satisfied: urllib3!=1.25.0,!=1.25.1,<1.26,>=1.21.1 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from requests->alluxio-pfs>=0.1.6a17) (1.25.11)
+Requirement already satisfied: certifi>=2017.4.17 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from requests->alluxio-pfs>=0.1.6a17) (2026.1.4)
+Installing collected packages: mmh3, alluxio-pfs
+Successfully installed alluxio-pfs-0.1.6a18 mmh3-5.3.0
+Looking in indexes: http://yum.tbsite.net/pypi/simple/, http://yum.tbsite.net/aliyun-pypi/simple/, http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+[32m[Dragonfly][0m P2P download plugin enabled (via environment variable)
+[32m[Dragonfly][0m Minimum file size: 0MB
+Collecting alibabacloud-metastore20250609-inner==1.0.3
+--2026-09-27 12:21:14--  http://sample-lake.cn-beijing.oss.aliyuncs.com/paimon_test/alibabacloud_metastore20250609_inner-1.0.3-py3-none-any.whl
+dfget version: v2.0.9-ali-rc.8
+current user: root
+output path: /tmp/alibabacloud_metastore20250609_inner-1.0.3-py3-none-any.whl
+init success and start to download
+taskID: 07da037d515300d97cc708a69a906c49619114fda07639599aa3dd54d1196513
+finish total length 29314 bytes
+download SUCCESS,  cost: 8 ms
+[32m[Dragonfly][0m Downloading 'alibabacloud_metastore20250609_inner-1.0.3-py3-none-any.whl' via P2P network...
+[36m[Dragonfly][0m Command: /home/staragent/plugins/dragonfly/dfget -u http://sample-lake.cn-beijing.oss.aliyuncs.com/paimon_test/alibabacloud_metastore20250609_inner-1.0.3-py3-none-any.whl -o /tmp/alibabacloud_metastore20250609_inner-1.0.3-py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][0m Successfully downloaded 'alibabacloud_metastore20250609_inner-1.0.3-py3-none-any.whl' via P2P
+  Downloading http://sample-lake.cn-beijing.oss.aliyuncs.com/paimon_test/alibabacloud_metastore20250609_inner-1.0.3-py3-none-any.whl
+     - 29.3 kB 494.8 MB/s 0:00:00
+Collecting alibabacloud-tea-util<1.0.0,>=0.3.13 (from alibabacloud-metastore20250609-inner==1.0.3)
+--2026-09-27 12:21:14--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/6b/29/6d05604c74f3b1326c317727c532e9054f56dca5299ff5b645f73425680d/alibabacloud_tea_util-0.3.15-py3-none-any.whl
+dfget version: v2.0.9-ali-rc.8
+current user: root
+output path: /tmp/alibabacloud_tea_util-0.3.15-py3-none-any.whl
+init success and start to download
+taskID: 54c9d0ada46183a4988d18a6a44477d3a60fa849ff0c9be6516fc65b548a4cf6
+finish total length 6709 bytes
+download SUCCESS,  cost: 26 ms
+[32m[Dragonfly][0m Downloading 'alibabacloud_tea_util-0.3.15-py3-none-any.whl' via P2P network...
+[36m[Dragonfly][0m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/6b/29/6d05604c74f3b1326c317727c532e9054f56dca5299ff5b645f73425680d/alibabacloud_tea_util-0.3.15-py3-none-any.whl -o /tmp/alibabacloud_tea_util-0.3.15-py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][0m Successfully downloaded 'alibabacloud_tea_util-0.3.15-py3-none-any.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/6b/29/6d05604c74f3b1326c317727c532e9054f56dca5299ff5b645f73425680d/alibabacloud_tea_util-0.3.15-py3-none-any.whl
+     - 6.7 kB ? 0:00:00
+Collecting alibabacloud-tea-openapi<1.0.0,>=0.3.16 (from alibabacloud-metastore20250609-inner==1.0.3)
+--2026-09-27 12:21:14--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/35/00/2f534f5884e5f299d9cb3a1e8be2def8071bc6a6e2a192ba4ff2a8cd5e02/alibabacloud_tea_openapi-0.4.6-py3-none-any.whl
+dfget version: v2.0.9-ali-rc.8
+current user: root
+output path: /tmp/alibabacloud_tea_openapi-0.4.6-py3-none-any.whl
+init success and start to download
+taskID: 1b18921d50af8539781c6f43d866a8fc1802c294d253c995cd47ca4cb8569080
+finish total length 33448 bytes
+download SUCCESS,  cost: 24 ms
+[32m[Dragonfly][0m Downloading 'alibabacloud_tea_openapi-0.4.6-py3-none-any.whl' via P2P network...
+[36m[Dragonfly][0m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/35/00/2f534f5884e5f299d9cb3a1e8be2def8071bc6a6e2a192ba4ff2a8cd5e02/alibabacloud_tea_openapi-0.4.6-py3-none-any.whl -o /tmp/alibabacloud_tea_openapi-0.4.6-py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][0m Successfully downloaded 'alibabacloud_tea_openapi-0.4.6-py3-none-any.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/35/00/2f534f5884e5f299d9cb3a1e8be2def8071bc6a6e2a192ba4ff2a8cd5e02/alibabacloud_tea_openapi-0.4.6-py3-none-any.whl
+     - 33.4 kB 624.0 MB/s 0:00:00
+Collecting alibabacloud-openapi-util<1.0.0,>=0.2.2 (from alibabacloud-metastore20250609-inner==1.0.3)
+--2026-09-27 12:21:14--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/08/46/9b217343648b366eb93447f5d93116e09a61956005794aed5ef95a2e9e2e/alibabacloud_openapi_util-0.2.4-py3-none-any.whl
+dfget version: v2.0.9-ali-rc.8
+current user: root
+output path: /tmp/alibabacloud_openapi_util-0.2.4-py3-none-any.whl
+init success and start to download
+taskID: b0dc5eba9a904471e3e01bbdde452b94484416f83c4f46bda46d3b1d5245f86d
+finish total length 7661 bytes
+download SUCCESS,  cost: 20 ms
+[32m[Dragonfly][0m Downloading 'alibabacloud_openapi_util-0.2.4-py3-none-any.whl' via P2P network...
+[36m[Dragonfly][0m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/08/46/9b217343648b366eb93447f5d93116e09a61956005794aed5ef95a2e9e2e/alibabacloud_openapi_util-0.2.4-py3-none-any.whl -o /tmp/alibabacloud_openapi_util-0.2.4-py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][0m Successfully downloaded 'alibabacloud_openapi_util-0.2.4-py3-none-any.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/08/46/9b217343648b366eb93447f5d93116e09a61956005794aed5ef95a2e9e2e/alibabacloud_openapi_util-0.2.4-py3-none-any.whl
+     - 7.7 kB ? 0:00:00
+Collecting alibabacloud-endpoint-util<1.0.0,>=0.0.4 (from alibabacloud-metastore20250609-inner==1.0.3)
+--2026-09-27 12:21:14--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/92/7d/8cc92a95c920e344835b005af6ea45a0db98763ad6ad19299d26892e6c8d/alibabacloud_endpoint_util-0.0.4.tar.gz
+dfget version: v2.0.9-ali-rc.8
+current user: root
+output path: /tmp/alibabacloud_endpoint_util-0.0.4.tar.gz
+init success and start to download
+taskID: 97886eed934bfbb34dbdddc7c95065ce1593c32fe6f8a6c93c7db1e647ecb1ba
+finish total length 2813 bytes
+download SUCCESS,  cost: 15 ms
+[32m[Dragonfly][0m Downloading 'alibabacloud_endpoint_util-0.0.4.tar.gz' via P2P network...
+[36m[Dragonfly][0m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/92/7d/8cc92a95c920e344835b005af6ea45a0db98763ad6ad19299d26892e6c8d/alibabacloud_endpoint_util-0.0.4.tar.gz -o /tmp/alibabacloud_endpoint_util-0.0.4.tar.gz --callsystem pypi --notbs
+[32m[Dragonfly][0m Successfully downloaded 'alibabacloud_endpoint_util-0.0.4.tar.gz' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/92/7d/8cc92a95c920e344835b005af6ea45a0db98763ad6ad19299d26892e6c8d/alibabacloud_endpoint_util-0.0.4.tar.gz
+     - 2.8 kB ? 0:00:00
+  Preparing metadata (setup.py): started
+  Preparing metadata (setup.py): finished with status 'done'
+Requirement already satisfied: cryptography>=3.0.0 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from alibabacloud-openapi-util<1.0.0,>=0.2.2->alibabacloud-metastore20250609-inner==1.0.3) (46.0.4)
+Collecting alibabacloud-credentials<2.0.0,>=1.0.2 (from alibabacloud-tea-openapi<1.0.0,>=0.3.16->alibabacloud-metastore20250609-inner==1.0.3)
+--2026-09-27 12:21:15--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/89/40/8efa0f2efb400876f9355bde104fe98b621648182d4f076150f26c64e770/alibabacloud_credentials-1.0.12-py3-none-any.whl
+dfget version: v2.0.9-ali-rc.8
+current user: root
+output path: /tmp/alibabacloud_credentials-1.0.12-py3-none-any.whl
+init success and start to download
+taskID: 5112d17724fbe87633de58948a446da702c8374ed40636e7fee24ec87f52f9e4
+finish total length 52000 bytes
+download SUCCESS,  cost: 17 ms
+[32m[Dragonfly][0m Downloading 'alibabacloud_credentials-1.0.12-py3-none-any.whl' via P2P network...
+[36m[Dragonfly][0m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/89/40/8efa0f2efb400876f9355bde104fe98b621648182d4f076150f26c64e770/alibabacloud_credentials-1.0.12-py3-none-any.whl -o /tmp/alibabacloud_credentials-1.0.12-py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][0m Successfully downloaded 'alibabacloud_credentials-1.0.12-py3-none-any.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/89/40/8efa0f2efb400876f9355bde104fe98b621648182d4f076150f26c64e770/alibabacloud_credentials-1.0.12-py3-none-any.whl
+     - 52.0 kB 700.4 MB/s 0:00:00
+Collecting alibabacloud-gateway-spi<1.0.0,>=0.0.2 (from alibabacloud-tea-openapi<1.0.0,>=0.3.16->alibabacloud-metastore20250609-inner==1.0.3)
+--2026-09-27 12:21:15--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/45/85/81170c45e9d1240736f9776a1c690b958c975509381221b5f8d960b5376d/alibabacloud_gateway_spi-0.0.4-py3-none-any.whl
+dfget version: v2.0.9-ali-rc.8
+current user: root
+output path: /tmp/alibabacloud_gateway_spi-0.0.4-py3-none-any.whl
+init success and start to download
+taskID: 32b71b66f573e8a09b41c3c5160cefb7cc3f46fbdb549db90dc93425857e4b42
+finish total length 4290 bytes
+download SUCCESS,  cost: 29 ms
+[32m[Dragonfly][0m Downloading 'alibabacloud_gateway_spi-0.0.4-py3-none-any.whl' via P2P network...
+[36m[Dragonfly][0m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/45/85/81170c45e9d1240736f9776a1c690b958c975509381221b5f8d960b5376d/alibabacloud_gateway_spi-0.0.4-py3-none-any.whl -o /tmp/alibabacloud_gateway_spi-0.0.4-py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][0m Successfully downloaded 'alibabacloud_gateway_spi-0.0.4-py3-none-any.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/45/85/81170c45e9d1240736f9776a1c690b958c975509381221b5f8d960b5376d/alibabacloud_gateway_spi-0.0.4-py3-none-any.whl
+     - 4.3 kB ? 0:00:00
+Collecting darabonba-core<2.0.0,>=1.0.8 (from alibabacloud-tea-openapi<1.0.0,>=0.3.16->alibabacloud-metastore20250609-inner==1.0.3)
+--2026-09-27 12:21:15--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/7a/da/756ee6c61192057c0140d67614e4db3b038c30c0ee8f7b3f3200d2c49bff/darabonba_core-1.0.9-py3-none-any.whl
+dfget version: v2.0.9-ali-rc.8
+current user: root
+output path: /tmp/darabonba_core-1.0.9-py3-none-any.whl
+init success and start to download
+taskID: 7487043bcb2966e4d3a0eec453da371d5b3656de8a8990974ceba099ab319d46
+finish total length 31336 bytes
+download SUCCESS,  cost: 8 ms
+[32m[Dragonfly][0m Downloading 'darabonba_core-1.0.9-py3-none-any.whl' via P2P network...
+[36m[Dragonfly][0m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/7a/da/756ee6c61192057c0140d67614e4db3b038c30c0ee8f7b3f3200d2c49bff/darabonba_core-1.0.9-py3-none-any.whl -o /tmp/darabonba_core-1.0.9-py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][0m Successfully downloaded 'darabonba_core-1.0.9-py3-none-any.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/7a/da/756ee6c61192057c0140d67614e4db3b038c30c0ee8f7b3f3200d2c49bff/darabonba_core-1.0.9-py3-none-any.whl
+     - 31.3 kB 601.4 MB/s 0:00:00
+Collecting alibabacloud-tea>=0.3.3 (from alibabacloud-tea-util<1.0.0,>=0.3.13->alibabacloud-metastore20250609-inner==1.0.3)
+--2026-09-27 12:21:15--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/9a/7d/b22cb9a0d4f396ee0f3f9d7f26b76b9ed93d4101add7867a2c87ed2534f5/alibabacloud-tea-0.4.3.tar.gz
+dfget version: v2.0.9-ali-rc.8
+current user: root
+output path: /tmp/alibabacloud-tea-0.4.3.tar.gz
+init success and start to download
+taskID: 508a5786da68e6484234dcfa71bc9f6d4167564914f9044f3b23b32ebf3d48a0
+finish total length 8785 bytes
+download SUCCESS,  cost: 37 ms
+[32m[Dragonfly][0m Downloading 'alibabacloud-tea-0.4.3.tar.gz' via P2P network...
+[36m[Dragonfly][0m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/9a/7d/b22cb9a0d4f396ee0f3f9d7f26b76b9ed93d4101add7867a2c87ed2534f5/alibabacloud-tea-0.4.3.tar.gz -o /tmp/alibabacloud-tea-0.4.3.tar.gz --callsystem pypi --notbs
+[32m[Dragonfly][0m Successfully downloaded 'alibabacloud-tea-0.4.3.tar.gz' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/9a/7d/b22cb9a0d4f396ee0f3f9d7f26b76b9ed93d4101add7867a2c87ed2534f5/alibabacloud-tea-0.4.3.tar.gz
+     - 8.8 kB ? 0:00:00
+  Preparing metadata (setup.py): started
+  Preparing metadata (setup.py): finished with status 'done'
+Collecting APScheduler<4.0.0,>=3.10.0 (from alibabacloud-credentials<2.0.0,>=1.0.2->alibabacloud-tea-openapi<1.0.0,>=0.3.16->alibabacloud-metastore20250609-inner==1.0.3)
+--2026-09-27 12:21:15--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/42/c9/8638db32514dbb9157b3d82680c6faea89283523edf9ed2415ea3884f2ae/apscheduler-3.11.3-py3-none-any.whl
+dfget version: v2.0.9-ali-rc.8
+current user: root
+output path: /tmp/apscheduler-3.11.3-py3-none-any.whl
+init success and start to download
+taskID: 3a326275ba6a877ce8b99f89497268ed474150ec69d16403cde881ba75fae9dd
+finish total length 66024 bytes
+download SUCCESS,  cost: 21 ms
+[32m[Dragonfly][0m Downloading 'apscheduler-3.11.3-py3-none-any.whl' via P2P network...
+[36m[Dragonfly][0m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/42/c9/8638db32514dbb9157b3d82680c6faea89283523edf9ed2415ea3884f2ae/apscheduler-3.11.3-py3-none-any.whl -o /tmp/apscheduler-3.11.3-py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][0m Successfully downloaded 'apscheduler-3.11.3-py3-none-any.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/42/c9/8638db32514dbb9157b3d82680c6faea89283523edf9ed2415ea3884f2ae/apscheduler-3.11.3-py3-none-any.whl
+     - 66.0 kB 631.7 MB/s 0:00:00
+Collecting aiofiles<25.0.0,>=22.1.0 (from alibabacloud-credentials<2.0.0,>=1.0.2->alibabacloud-tea-openapi<1.0.0,>=0.3.16->alibabacloud-metastore20250609-inner==1.0.3)
+--2026-09-27 12:21:16--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/a5/45/30bb92d442636f570cb5651bc661f52b610e2eec3f891a5dc3a4c3667db0/aiofiles-24.1.0-py3-none-any.whl
+dfget version: v2.0.9-ali-rc.8
+current user: root
+output path: /tmp/aiofiles-24.1.0-py3-none-any.whl
+init success and start to download
+taskID: 593706897440c55a2dc00092f99458f469680e65081f76bb61790193cc12e382
+finish total length 15896 bytes
+download SUCCESS,  cost: 27 ms
+[32m[Dragonfly][0m Downloading 'aiofiles-24.1.0-py3-none-any.whl' via P2P network...
+[36m[Dragonfly][0m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/a5/45/30bb92d442636f570cb5651bc661f52b610e2eec3f891a5dc3a4c3667db0/aiofiles-24.1.0-py3-none-any.whl -o /tmp/aiofiles-24.1.0-py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][0m Successfully downloaded 'aiofiles-24.1.0-py3-none-any.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/a5/45/30bb92d442636f570cb5651bc661f52b610e2eec3f891a5dc3a4c3667db0/aiofiles-24.1.0-py3-none-any.whl
+     - 15.9 kB 442.6 MB/s 0:00:00
+Collecting alibabacloud-credentials-api<2.0.0,>=1.0.0 (from alibabacloud-credentials<2.0.0,>=1.0.2->alibabacloud-tea-openapi<1.0.0,>=0.3.16->alibabacloud-metastore20250609-inner==1.0.3)
+--2026-09-27 12:21:16--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/0b/49/ff401af96d77d40ab918096d831bd3360f3eec60f10e65125e5789c4e617/alibabacloud_credentials_api-1.0.1-py3-none-any.whl
+dfget version: v2.0.9-ali-rc.8
+current user: root
+output path: /tmp/alibabacloud_credentials_api-1.0.1-py3-none-any.whl
+init success and start to download
+taskID: c6dc2eaf9c79208ca83fcf641c36b810c178fa245db02a25094a983f3f51d09a
+finish total length 2230 bytes
+download SUCCESS,  cost: 15 ms
+[32m[Dragonfly][0m Downloading 'alibabacloud_credentials_api-1.0.1-py3-none-any.whl' via P2P network...
+[36m[Dragonfly][0m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/0b/49/ff401af96d77d40ab918096d831bd3360f3eec60f10e65125e5789c4e617/alibabacloud_credentials_api-1.0.1-py3-none-any.whl -o /tmp/alibabacloud_credentials_api-1.0.1-py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][0m Successfully downloaded 'alibabacloud_credentials_api-1.0.1-py3-none-any.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/0b/49/ff401af96d77d40ab918096d831bd3360f3eec60f10e65125e5789c4e617/alibabacloud_credentials_api-1.0.1-py3-none-any.whl
+     - 2.2 kB ? 0:00:00
+Requirement already satisfied: requests<3.0.0,>=2.21.0 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from alibabacloud-tea>=0.3.3->alibabacloud-tea-util<1.0.0,>=0.3.13->alibabacloud-metastore20250609-inner==1.0.3) (2.22.0)
+Requirement already satisfied: aiohttp<4.0.0,>=3.7.0 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from alibabacloud-tea>=0.3.3->alibabacloud-tea-util<1.0.0,>=0.3.13->alibabacloud-metastore20250609-inner==1.0.3) (3.13.3)
+Requirement already satisfied: cffi>=2.0.0 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from cryptography>=3.0.0->alibabacloud-openapi-util<1.0.0,>=0.2.2->alibabacloud-metastore20250609-inner==1.0.3) (2.0.0)
+Requirement already satisfied: typing-extensions>=4.13.2 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from cryptography>=3.0.0->alibabacloud-openapi-util<1.0.0,>=0.2.2->alibabacloud-metastore20250609-inner==1.0.3) (4.15.0)
+Collecting websocket-client<2.0.0,>=1.6.0 (from darabonba-core<2.0.0,>=1.0.8->alibabacloud-tea-openapi<1.0.0,>=0.3.16->alibabacloud-metastore20250609-inner==1.0.3)
+--2026-09-27 12:21:16--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/d5/d2/cc4dc1271e464942db7ee278baae2daa99ee77cb2af744025c04da585a3e/websocket_client-1.9.2-py3-none-any.whl
+dfget version: v2.0.9-ali-rc.8
+current user: root
+output path: /tmp/websocket_client-1.9.2-py3-none-any.whl
+init success and start to download
+taskID: 56901f3ad182e83fbc673d5141fdf83739f4e79783a5f96cb53d162c01fba05e
+finish total length 95786 bytes
+download SUCCESS,  cost: 29 ms
+[32m[Dragonfly][0m Downloading 'websocket_client-1.9.2-py3-none-any.whl' via P2P network...
+[36m[Dragonfly][0m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/d5/d2/cc4dc1271e464942db7ee278baae2daa99ee77cb2af744025c04da585a3e/websocket_client-1.9.2-py3-none-any.whl -o /tmp/websocket_client-1.9.2-py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][0m Successfully downloaded 'websocket_client-1.9.2-py3-none-any.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/d5/d2/cc4dc1271e464942db7ee278baae2daa99ee77cb2af744025c04da585a3e/websocket_client-1.9.2-py3-none-any.whl
+     - 95.8 kB 780.7 MB/s 0:00:00
+Requirement already satisfied: aiohappyeyeballs>=2.5.0 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from aiohttp<4.0.0,>=3.7.0->alibabacloud-tea>=0.3.3->alibabacloud-tea-util<1.0.0,>=0.3.13->alibabacloud-metastore20250609-inner==1.0.3) (2.6.1)
+Requirement already satisfied: aiosignal>=1.4.0 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from aiohttp<4.0.0,>=3.7.0->alibabacloud-tea>=0.3.3->alibabacloud-tea-util<1.0.0,>=0.3.13->alibabacloud-metastore20250609-inner==1.0.3) (1.4.0)
+Requirement already satisfied: async-timeout<6.0,>=4.0 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from aiohttp<4.0.0,>=3.7.0->alibabacloud-tea>=0.3.3->alibabacloud-tea-util<1.0.0,>=0.3.13->alibabacloud-metastore20250609-inner==1.0.3) (5.0.1)
+Requirement already satisfied: attrs>=17.3.0 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from aiohttp<4.0.0,>=3.7.0->alibabacloud-tea>=0.3.3->alibabacloud-tea-util<1.0.0,>=0.3.13->alibabacloud-metastore20250609-inner==1.0.3) (25.4.0)
+Requirement already satisfied: frozenlist>=1.1.1 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from aiohttp<4.0.0,>=3.7.0->alibabacloud-tea>=0.3.3->alibabacloud-tea-util<1.0.0,>=0.3.13->alibabacloud-metastore20250609-inner==1.0.3) (1.8.0)
+Requirement already satisfied: multidict<7.0,>=4.5 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from aiohttp<4.0.0,>=3.7.0->alibabacloud-tea>=0.3.3->alibabacloud-tea-util<1.0.0,>=0.3.13->alibabacloud-metastore20250609-inner==1.0.3) (6.7.1)
+Requirement already satisfied: propcache>=0.2.0 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from aiohttp<4.0.0,>=3.7.0->alibabacloud-tea>=0.3.3->alibabacloud-tea-util<1.0.0,>=0.3.13->alibabacloud-metastore20250609-inner==1.0.3) (0.4.1)
+Requirement already satisfied: yarl<2.0,>=1.17.0 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from aiohttp<4.0.0,>=3.7.0->alibabacloud-tea>=0.3.3->alibabacloud-tea-util<1.0.0,>=0.3.13->alibabacloud-metastore20250609-inner==1.0.3) (1.22.0)
+Collecting tzlocal>=3.0 (from APScheduler<4.0.0,>=3.10.0->alibabacloud-credentials<2.0.0,>=1.0.2->alibabacloud-tea-openapi<1.0.0,>=0.3.16->alibabacloud-metastore20250609-inner==1.0.3)
+--2026-09-27 12:21:16--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/9e/a4/017a7a6cbe387d961a688ec31364ae60a5c4e22c96ae9921b79a947c855d/tzlocal-5.4.4-py3-none-any.whl
+dfget version: v2.0.9-ali-rc.8
+current user: root
+output path: /tmp/tzlocal-5.4.4-py3-none-any.whl
+init success and start to download
+taskID: d1a0b34b2ab0221a4e61a09e7c1143847d584d91a296fda8d7e339a6fc9b31bf
+finish total length 18115 bytes
+download SUCCESS,  cost: 22 ms
+[32m[Dragonfly][0m Downloading 'tzlocal-5.4.4-py3-none-any.whl' via P2P network...
+[36m[Dragonfly][0m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/9e/a4/017a7a6cbe387d961a688ec31364ae60a5c4e22c96ae9921b79a947c855d/tzlocal-5.4.4-py3-none-any.whl -o /tmp/tzlocal-5.4.4-py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][0m Successfully downloaded 'tzlocal-5.4.4-py3-none-any.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/9e/a4/017a7a6cbe387d961a688ec31364ae60a5c4e22c96ae9921b79a947c855d/tzlocal-5.4.4-py3-none-any.whl
+     - 18.1 kB 308.2 MB/s 0:00:00
+Requirement already satisfied: pycparser in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from cffi>=2.0.0->cryptography>=3.0.0->alibabacloud-openapi-util<1.0.0,>=0.2.2->alibabacloud-metastore20250609-inner==1.0.3) (3.0)
+Requirement already satisfied: chardet<3.1.0,>=3.0.2 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from requests<3.0.0,>=2.21.0->alibabacloud-tea>=0.3.3->alibabacloud-tea-util<1.0.0,>=0.3.13->alibabacloud-metastore20250609-inner==1.0.3) (3.0.4)
+Requirement already satisfied: idna<2.9,>=2.5 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from requests<3.0.0,>=2.21.0->alibabacloud-tea>=0.3.3->alibabacloud-tea-util<1.0.0,>=0.3.13->alibabacloud-metastore20250609-inner==1.0.3) (2.8)
+Requirement already satisfied: urllib3!=1.25.0,!=1.25.1,<1.26,>=1.21.1 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from requests<3.0.0,>=2.21.0->alibabacloud-tea>=0.3.3->alibabacloud-tea-util<1.0.0,>=0.3.13->alibabacloud-metastore20250609-inner==1.0.3) (1.25.11)
+Requirement already satisfied: certifi>=2017.4.17 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from requests<3.0.0,>=2.21.0->alibabacloud-tea>=0.3.3->alibabacloud-tea-util<1.0.0,>=0.3.13->alibabacloud-metastore20250609-inner==1.0.3) (2026.1.4)
+Building wheels for collected packages: alibabacloud-endpoint-util, alibabacloud-tea
+  Building wheel for alibabacloud-endpoint-util (setup.py): started
+  Building wheel for alibabacloud-endpoint-util (setup.py): finished with status 'done'
+  Created wheel for alibabacloud-endpoint-util: filename=alibabacloud_endpoint_util-0.0.4-py3-none-any.whl size=2699 sha256=67f640b34f455bd3663923e28c4dc569b84d680b467244772338a106ead971eb
+  Stored in directory: /root/.cache/pip/wheels/11/df/1c/64d3c1787cede9ed659e79b8588e36caac1c056fddab9746ae
+  Building wheel for alibabacloud-tea (setup.py): started
+  Building wheel for alibabacloud-tea (setup.py): finished with status 'done'
+  Created wheel for alibabacloud-tea: filename=alibabacloud_tea-0.4.3-py3-none-any.whl size=8443 sha256=277c31ed56fdf49a66bd5140c3a41e4743b9ce53789956a5a57b20e9af54dfd1
+  Stored in directory: /root/.cache/pip/wheels/92/e3/c4/6ca7997291e9b2c41f39e460ffffa4b1ff26d0a46d3808fb8f
+Successfully built alibabacloud-endpoint-util alibabacloud-tea
+Installing collected packages: alibabacloud-endpoint-util, websocket-client, tzlocal, alibabacloud-credentials-api, aiofiles, APScheduler, alibabacloud-tea, darabonba-core, alibabacloud-tea-util, alibabacloud-credentials, alibabacloud-openapi-util, alibabacloud-gateway-spi, alibabacloud-tea-openapi, alibabacloud-metastore20250609-inner
+Successfully installed APScheduler-3.11.3 aiofiles-24.1.0 alibabacloud-credentials-1.0.12 alibabacloud-credentials-api-1.0.1 alibabacloud-endpoint-util-0.0.4 alibabacloud-gateway-spi-0.0.4 alibabacloud-metastore20250609-inner-1.0.3 alibabacloud-openapi-util-0.2.4 alibabacloud-tea-0.4.3 alibabacloud-tea-openapi-0.4.6 alibabacloud-tea-util-0.3.15 darabonba-core-1.0.9 tzlocal-5.4.4 websocket-client-1.9.2
+Looking in indexes: http://yum.tbsite.net/pypi/simple/, http://yum.tbsite.net/aliyun-pypi/simple/, http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+[32m[Dragonfly][0m P2P download plugin enabled (via environment variable)
+[32m[Dragonfly][0m Minimum file size: 0MB
+Collecting pypaimon_ali==1.5.dev0
+--2026-09-27 12:21:20--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/pypaimon-ali/1.5.dev0/pypaimon_ali-1.5.dev0-py3-none-any.whl
+dfget version: v2.0.9-ali-rc.8
+current user: root
+output path: /tmp/pypaimon_ali-1.5.dev0-py3-none-any.whl
+init success and start to download
+taskID: e54d27273a774d53adfd7f0505350600d509956bbe4e3994204f5bd603a702ec
+finish total length 812570 bytes
+download SUCCESS,  cost: 39 ms
+[32m[Dragonfly][0m Downloading 'pypaimon_ali-1.5.dev0-py3-none-any.whl' via P2P network...
+[36m[Dragonfly][0m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/pypaimon-ali/1.5.dev0/pypaimon_ali-1.5.dev0-py3-none-any.whl -o /tmp/pypaimon_ali-1.5.dev0-py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][0m Successfully downloaded 'pypaimon_ali-1.5.dev0-py3-none-any.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/pypaimon-ali/1.5.dev0/pypaimon_ali-1.5.dev0-py3-none-any.whl
+     - 812.6 kB 745.4 MB/s 0:00:00
+Collecting fastavro<2,>=1.4 (from pypaimon_ali==1.5.dev0)
+--2026-09-27 12:21:20--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/ee/e4/26512b52f58305b9d2194169de2e82c16d5131f0a0b6359e50d34faf4021/fastavro-1.12.2-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl
+dfget version: v2.0.9-ali-rc.8
+current user: root
+output path: /tmp/fastavro-1.12.2-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl
+init success and start to download
+taskID: c49cf8d4d78bfe7338f85b23f2947de2e38a8da47cfaa924784c0c19f156d3c2
+finish total length 3196799 bytes
+download SUCCESS,  cost: 40 ms
+[32m[Dragonfly][0m Downloading 'fastavro-1.12.2-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl' via P2P network...
+[36m[Dragonfly][0m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/ee/e4/26512b52f58305b9d2194169de2e82c16d5131f0a0b6359e50d34faf4021/fastavro-1.12.2-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl -o /tmp/fastavro-1.12.2-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl --callsystem pypi --notbs
+[32m[Dragonfly][0m Successfully downloaded 'fastavro-1.12.2-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/ee/e4/26512b52f58305b9d2194169de2e82c16d5131f0a0b6359e50d34faf4021/fastavro-1.12.2-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl
+     - 3.2 MB 815.9 MB/s 0:00:00
+Collecting packaging<26,>=21 (from pypaimon_ali==1.5.dev0)
+--2026-09-27 12:21:21--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/20/12/38679034af332785aac8774540895e234f4d07f7545804097de4b666afd8/packaging-25.0-py3-none-any.whl
+dfget version: v2.0.9-ali-rc.8
+current user: root
+output path: /tmp/packaging-25.0-py3-none-any.whl
+init success and start to download
+taskID: 1665c7edd5bba18efd63203372ebf5e553f6804c01cf3c5ffb3aedadd0d196ee
+finish total length 66469 bytes
+download SUCCESS,  cost: 30 ms
+[32m[Dragonfly][0m Downloading 'packaging-25.0-py3-none-any.whl' via P2P network...
+[36m[Dragonfly][0m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/20/12/38679034af332785aac8774540895e234f4d07f7545804097de4b666afd8/packaging-25.0-py3-none-any.whl -o /tmp/packaging-25.0-py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][0m Successfully downloaded 'packaging-25.0-py3-none-any.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/20/12/38679034af332785aac8774540895e234f4d07f7545804097de4b666afd8/packaging-25.0-py3-none-any.whl
+     - 66.5 kB 630.6 MB/s 0:00:00
+Collecting readerwriterlock<2,>=1 (from pypaimon_ali==1.5.dev0)
+--2026-09-27 12:21:21--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/c2/5a/2f2e7fc026d5e64b5408aa3fbe0296a6407b8481196cae4daacacb3a3ae0/readerwriterlock-1.0.9-py3-none-any.whl
+dfget version: v2.0.9-ali-rc.8
+current user: root
+output path: /tmp/readerwriterlock-1.0.9-py3-none-any.whl
+init success and start to download
+taskID: 8ed84736aa93fd5d8cf86813d8a09397bb238de34fd0699b2ac918d1f4020be6
+finish total length 9999 bytes
+download SUCCESS,  cost: 26 ms
+[32m[Dragonfly][0m Downloading 'readerwriterlock-1.0.9-py3-none-any.whl' via P2P network...
+[36m[Dragonfly][0m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/c2/5a/2f2e7fc026d5e64b5408aa3fbe0296a6407b8481196cae4daacacb3a3ae0/readerwriterlock-1.0.9-py3-none-any.whl -o /tmp/readerwriterlock-1.0.9-py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][0m Successfully downloaded 'readerwriterlock-1.0.9-py3-none-any.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/c2/5a/2f2e7fc026d5e64b5408aa3fbe0296a6407b8481196cae4daacacb3a3ae0/readerwriterlock-1.0.9-py3-none-any.whl
+     - 10.0 kB ? 0:00:00
+Collecting zstandard<1,>=0.19 (from pypaimon_ali==1.5.dev0)
+--2026-09-27 12:21:21--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/fd/e5/6d36f92a197c3c17729a2125e29c169f460538a7d939a27eaaa6dcfcba8e/zstandard-0.25.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl
+dfget version: v2.0.9-ali-rc.8
+current user: root
+output path: /tmp/zstandard-0.25.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl
+init success and start to download
+taskID: 949734d08f1a73332535c1c18950ee1de28741d2baa045df7aa626d3c8e3e1e5
+finish total length 5556583 bytes
+download SUCCESS,  cost: 75 ms
+[32m[Dragonfly][0m Downloading 'zstandard-0.25.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl' via P2P network...
+[36m[Dragonfly][0m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/fd/e5/6d36f92a197c3c17729a2125e29c169f460538a7d939a27eaaa6dcfcba8e/zstandard-0.25.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl -o /tmp/zstandard-0.25.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl --callsystem pypi --notbs
+[32m[Dragonfly][0m Successfully downloaded 'zstandard-0.25.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/fd/e5/6d36f92a197c3c17729a2125e29c169f460538a7d939a27eaaa6dcfcba8e/zstandard-0.25.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl
+     - 5.6 MB 803.6 MB/s 0:00:00
+Requirement already satisfied: pyyaml<7,>=5.4 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from pypaimon_ali==1.5.dev0) (6.0.3)
+Collecting pangudfs-client==1.1.2+lightsdk1.1.52 (from pypaimon_ali==1.5.dev0)
+--2026-09-27 12:21:22--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/pangudfs-client/1.1.2%2Blightsdk1.1.52/pangudfs_client-1.1.2%2Blightsdk1.1.52-py3-none-linux_x86_64.whl
+dfget version: v2.0.9-ali-rc.8
+current user: root
+output path: /tmp/pangudfs_client-1.1.2%2Blightsdk1.1.52-py3-none-linux_x86_64.whl
+init success and start to download
+taskID: 7ad16da2482c756825f2f297e7e3ef12d034f71438d311b76780db8146abbd7c
+finish total length 20325069 bytes
+download SUCCESS,  cost: 97 ms
+[32m[Dragonfly][0m Downloading 'pangudfs_client-1.1.2%2Blightsdk1.1.52-py3-none-linux_x86_64.whl' via P2P network...
+[36m[Dragonfly][0m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/pangudfs-client/1.1.2%2Blightsdk1.1.52/pangudfs_client-1.1.2%2Blightsdk1.1.52-py3-none-linux_x86_64.whl -o /tmp/pangudfs_client-1.1.2%2Blightsdk1.1.52-py3-none-linux_x86_64.whl --callsystem pypi --notbs
+[32m[Dragonfly][0m Successfully downloaded 'pangudfs_client-1.1.2%2Blightsdk1.1.52-py3-none-linux_x86_64.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/pangudfs-client/1.1.2%2Blightsdk1.1.52/pangudfs_client-1.1.2%2Blightsdk1.1.52-py3-none-linux_x86_64.whl
+     - 20.3 MB 796.0 MB/s 0:00:00
+Requirement already satisfied: alibabacloud-metastore20250609-inner==1.0.3 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from pypaimon_ali==1.5.dev0) (1.0.3)
+Collecting cachetools<6,>=5 (from pypaimon_ali==1.5.dev0)
+--2026-09-27 12:21:22--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/72/76/20fa66124dbe6be5cafeb312ece67de6b61dd91a0247d1ea13db4ebb33c2/cachetools-5.5.2-py3-none-any.whl
+dfget version: v2.0.9-ali-rc.8
+current user: root
+output path: /tmp/cachetools-5.5.2-py3-none-any.whl
+init success and start to download
+taskID: 94c77900073a737b195f89432127f19ce173be0583fc829a4d9ce23671f107c4
+finish total length 10080 bytes
+download SUCCESS,  cost: 11 ms
+[32m[Dragonfly][0m Downloading 'cachetools-5.5.2-py3-none-any.whl' via P2P network...
+[36m[Dragonfly][0m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/72/76/20fa66124dbe6be5cafeb312ece67de6b61dd91a0247d1ea13db4ebb33c2/cachetools-5.5.2-py3-none-any.whl -o /tmp/cachetools-5.5.2-py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][0m Successfully downloaded 'cachetools-5.5.2-py3-none-any.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/72/76/20fa66124dbe6be5cafeb312ece67de6b61dd91a0247d1ea13db4ebb33c2/cachetools-5.5.2-py3-none-any.whl
+     - 10.1 kB ? 0:00:00
+Collecting cramjam<3,>=1.3.0 (from pypaimon_ali==1.5.dev0)
+--2026-09-27 12:21:23--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/db/7e/4f6ca98a4b474348e965a529b359184785d1119ab7c4c9ec1280b8bea50a/cramjam-2.11.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+dfget version: v2.0.9-ali-rc.8
+current user: root
+output path: /tmp/cramjam-2.11.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+init success and start to download
+taskID: 6c4f871e7ab194e094232a7876cb222da6c7d8656f54920449ac8919c61f4c8e
+finish total length 1981523 bytes
+download SUCCESS,  cost: 43 ms
+[32m[Dragonfly][0m Downloading 'cramjam-2.11.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl' via P2P network...
+[36m[Dragonfly][0m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/db/7e/4f6ca98a4b474348e965a529b359184785d1119ab7c4c9ec1280b8bea50a/cramjam-2.11.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl -o /tmp/cramjam-2.11.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl --callsystem pypi --notbs
+[32m[Dragonfly][0m Successfully downloaded 'cramjam-2.11.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/db/7e/4f6ca98a4b474348e965a529b359184785d1119ab7c4c9ec1280b8bea50a/cramjam-2.11.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+     - 2.0 MB 799.1 MB/s 0:00:00
+Collecting fsspec<2026,>=2023 (from pypaimon_ali==1.5.dev0)
+--2026-09-27 12:21:23--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/51/c7/b64cae5dba3a1b138d7123ec36bb5ccd39d39939f18454407e5468f4763f/fsspec-2025.12.0-py3-none-any.whl
+dfget version: v2.0.9-ali-rc.8
+current user: root
+output path: /tmp/fsspec-2025.12.0-py3-none-any.whl
+init success and start to download
+taskID: ba8af94a557d47f7bef4461767f2eea3e14cae19be7e31ee35e4930c21f1f96c
+finish total length 201422 bytes
+download SUCCESS,  cost: 34 ms
+[32m[Dragonfly][0m Downloading 'fsspec-2025.12.0-py3-none-any.whl' via P2P network...
+[36m[Dragonfly][0m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/51/c7/b64cae5dba3a1b138d7123ec36bb5ccd39d39939f18454407e5468f4763f/fsspec-2025.12.0-py3-none-any.whl -o /tmp/fsspec-2025.12.0-py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][0m Successfully downloaded 'fsspec-2025.12.0-py3-none-any.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/51/c7/b64cae5dba3a1b138d7123ec36bb5ccd39d39939f18454407e5468f4763f/fsspec-2025.12.0-py3-none-any.whl
+     - 201.4 kB 713.4 MB/s 0:00:00
+Collecting polars<2,>=1 (from pypaimon_ali==1.5.dev0)
+--2026-09-27 12:21:24--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/51/6d/3014112c7f717d1253223faa13b6db3ac3a64ed00ab2a3bc1b942bc9cdd4/polars-1.44.2-py3-none-any.whl
+dfget version: v2.0.9-ali-rc.8
+current user: root
+output path: /tmp/polars-1.44.2-py3-none-any.whl
+init success and start to download
+taskID: 50381df1f50ba79ab1dd69d36b2f9170d9e038afbea48c38527b15898182b076
+finish total length 865768 bytes
+download SUCCESS,  cost: 23 ms
+[32m[Dragonfly][0m Downloading 'polars-1.44.2-py3-none-any.whl' via P2P network...
+[36m[Dragonfly][0m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/51/6d/3014112c7f717d1253223faa13b6db3ac3a64ed00ab2a3bc1b942bc9cdd4/polars-1.44.2-py3-none-any.whl -o /tmp/polars-1.44.2-py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][0m Successfully downloaded 'polars-1.44.2-py3-none-any.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/51/6d/3014112c7f717d1253223faa13b6db3ac3a64ed00ab2a3bc1b942bc9cdd4/polars-1.44.2-py3-none-any.whl
+     - 865.8 kB 801.1 MB/s 0:00:00
+Collecting pyarrow<20,>=16 (from pypaimon_ali==1.5.dev0)
+--2026-09-27 12:21:24--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/ef/c9/68ab123ee1528699c4d5055f645ecd1dd68ff93e4699527249d02f55afeb/pyarrow-19.0.1-cp310-cp310-manylinux_2_28_x86_64.whl
+dfget version: v2.0.9-ali-rc.8
+current user: root
+output path: /tmp/pyarrow-19.0.1-cp310-cp310-manylinux_2_28_x86_64.whl
+init success and start to download
+taskID: c39dbdf8b151b2c33e53d45359b63a6a3107054f9dcf81a063d843100d49b360
+finish total length 42069036 bytes
+download SUCCESS,  cost: 161 ms
+[32m[Dragonfly][0m Downloading 'pyarrow-19.0.1-cp310-cp310-manylinux_2_28_x86_64.whl' via P2P network...
+[36m[Dragonfly][0m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/ef/c9/68ab123ee1528699c4d5055f645ecd1dd68ff93e4699527249d02f55afeb/pyarrow-19.0.1-cp310-cp310-manylinux_2_28_x86_64.whl -o /tmp/pyarrow-19.0.1-cp310-cp310-manylinux_2_28_x86_64.whl --callsystem pypi --notbs
+[32m[Dragonfly][0m Successfully downloaded 'pyarrow-19.0.1-cp310-cp310-manylinux_2_28_x86_64.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/ef/c9/68ab123ee1528699c4d5055f645ecd1dd68ff93e4699527249d02f55afeb/pyarrow-19.0.1-cp310-cp310-manylinux_2_28_x86_64.whl
+     - 42.1 MB 795.4 MB/s 0:00:00
+Collecting pyroaring>=1.0.0 (from pypaimon_ali==1.5.dev0)
+--2026-09-27 12:21:25--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/87/f0/82c4335651ae243eed411daa8e5acc1c62179a3e90350e4785c487e643a7/pyroaring-1.1.0-cp310-cp310-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl
+dfget version: v2.0.9-ali-rc.8
+current user: root
+output path: /tmp/pyroaring-1.1.0-cp310-cp310-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl
+init success and start to download
+taskID: c87779947ef8a1657d045b708a284c944835c3cd088ba0b7bc966bf1c8a334d2
+finish total length 2171600 bytes
+download SUCCESS,  cost: 138 ms
+[32m[Dragonfly][0m Downloading 'pyroaring-1.1.0-cp310-cp310-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl' via P2P network...
+[36m[Dragonfly][0m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/87/f0/82c4335651ae243eed411daa8e5acc1c62179a3e90350e4785c487e643a7/pyroaring-1.1.0-cp310-cp310-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl -o /tmp/pyroaring-1.1.0-cp310-cp310-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl --callsystem pypi --notbs
+[32m[Dragonfly][0m Successfully downloaded 'pyroaring-1.1.0-cp310-cp310-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/87/f0/82c4335651ae243eed411daa8e5acc1c62179a3e90350e4785c487e643a7/pyroaring-1.1.0-cp310-cp310-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl
+     - 2.2 MB 818.9 MB/s 0:00:00
+Requirement already satisfied: pandas<3,>=1.5 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from pypaimon_ali==1.5.dev0) (1.5.3)
+Requirement already satisfied: alibabacloud-tea-util<1.0.0,>=0.3.13 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from alibabacloud-metastore20250609-inner==1.0.3->pypaimon_ali==1.5.dev0) (0.3.15)
+Requirement already satisfied: alibabacloud-tea-openapi<1.0.0,>=0.3.16 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from alibabacloud-metastore20250609-inner==1.0.3->pypaimon_ali==1.5.dev0) (0.4.6)
+Requirement already satisfied: alibabacloud-openapi-util<1.0.0,>=0.2.2 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from alibabacloud-metastore20250609-inner==1.0.3->pypaimon_ali==1.5.dev0) (0.2.4)
+Requirement already satisfied: alibabacloud-endpoint-util<1.0.0,>=0.0.4 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from alibabacloud-metastore20250609-inner==1.0.3->pypaimon_ali==1.5.dev0) (0.0.4)
+Requirement already satisfied: python-dateutil>=2.8.1 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from pandas<3,>=1.5->pypaimon_ali==1.5.dev0) (2.9.0.post0)
+Requirement already satisfied: pytz>=2020.1 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from pandas<3,>=1.5->pypaimon_ali==1.5.dev0) (2025.2)
+Requirement already satisfied: numpy>=1.21.0 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from pandas<3,>=1.5->pypaimon_ali==1.5.dev0) (1.26.4)
+Collecting polars-runtime-32==1.44.2 (from polars<2,>=1->pypaimon_ali==1.5.dev0)
+--2026-09-27 12:21:25--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/e9/24/ed9982657c446dd5491b089370eea196725673570cfc61f7225a9fdd7ef0/polars_runtime_32-1.44.2-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+dfget version: v2.0.9-ali-rc.8
+current user: root
+output path: /tmp/polars_runtime_32-1.44.2-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+init success and start to download
+taskID: 4690776e1250215545b34e2a3b67e67a2086958c8efe5b282933a4c8a8b25376
+finish total length 49912258 bytes
+download SUCCESS,  cost: 136 ms
+[32m[Dragonfly][0m Downloading 'polars_runtime_32-1.44.2-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl' via P2P network...
+[36m[Dragonfly][0m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/e9/24/ed9982657c446dd5491b089370eea196725673570cfc61f7225a9fdd7ef0/polars_runtime_32-1.44.2-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl -o /tmp/polars_runtime_32-1.44.2-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl --callsystem pypi --notbs
+[32m[Dragonfly][0m Successfully downloaded 'polars_runtime_32-1.44.2-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/e9/24/ed9982657c446dd5491b089370eea196725673570cfc61f7225a9fdd7ef0/polars_runtime_32-1.44.2-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+     - 49.9 MB 757.2 MB/s 0:00:00
+Requirement already satisfied: typing-extensions in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from readerwriterlock<2,>=1->pypaimon_ali==1.5.dev0) (4.15.0)
+Requirement already satisfied: cryptography>=3.0.0 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from alibabacloud-openapi-util<1.0.0,>=0.2.2->alibabacloud-metastore20250609-inner==1.0.3->pypaimon_ali==1.5.dev0) (46.0.4)
+Requirement already satisfied: alibabacloud-credentials<2.0.0,>=1.0.2 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from alibabacloud-tea-openapi<1.0.0,>=0.3.16->alibabacloud-metastore20250609-inner==1.0.3->pypaimon_ali==1.5.dev0) (1.0.12)
+Requirement already satisfied: alibabacloud-gateway-spi<1.0.0,>=0.0.2 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from alibabacloud-tea-openapi<1.0.0,>=0.3.16->alibabacloud-metastore20250609-inner==1.0.3->pypaimon_ali==1.5.dev0) (0.0.4)
+Requirement already satisfied: darabonba-core<2.0.0,>=1.0.8 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from alibabacloud-tea-openapi<1.0.0,>=0.3.16->alibabacloud-metastore20250609-inner==1.0.3->pypaimon_ali==1.5.dev0) (1.0.9)
+Requirement already satisfied: alibabacloud-tea>=0.3.3 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from alibabacloud-tea-util<1.0.0,>=0.3.13->alibabacloud-metastore20250609-inner==1.0.3->pypaimon_ali==1.5.dev0) (0.4.3)
+Requirement already satisfied: six>=1.5 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from python-dateutil>=2.8.1->pandas<3,>=1.5->pypaimon_ali==1.5.dev0) (1.14.0)
+Requirement already satisfied: APScheduler<4.0.0,>=3.10.0 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from alibabacloud-credentials<2.0.0,>=1.0.2->alibabacloud-tea-openapi<1.0.0,>=0.3.16->alibabacloud-metastore20250609-inner==1.0.3->pypaimon_ali==1.5.dev0) (3.11.3)
+Requirement already satisfied: aiofiles<25.0.0,>=22.1.0 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from alibabacloud-credentials<2.0.0,>=1.0.2->alibabacloud-tea-openapi<1.0.0,>=0.3.16->alibabacloud-metastore20250609-inner==1.0.3->pypaimon_ali==1.5.dev0) (24.1.0)
+Requirement already satisfied: alibabacloud-credentials-api<2.0.0,>=1.0.0 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from alibabacloud-credentials<2.0.0,>=1.0.2->alibabacloud-tea-openapi<1.0.0,>=0.3.16->alibabacloud-metastore20250609-inner==1.0.3->pypaimon_ali==1.5.dev0) (1.0.1)
+Requirement already satisfied: requests<3.0.0,>=2.21.0 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from alibabacloud-tea>=0.3.3->alibabacloud-tea-util<1.0.0,>=0.3.13->alibabacloud-metastore20250609-inner==1.0.3->pypaimon_ali==1.5.dev0) (2.22.0)
+Requirement already satisfied: aiohttp<4.0.0,>=3.7.0 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from alibabacloud-tea>=0.3.3->alibabacloud-tea-util<1.0.0,>=0.3.13->alibabacloud-metastore20250609-inner==1.0.3->pypaimon_ali==1.5.dev0) (3.13.3)
+Requirement already satisfied: cffi>=2.0.0 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from cryptography>=3.0.0->alibabacloud-openapi-util<1.0.0,>=0.2.2->alibabacloud-metastore20250609-inner==1.0.3->pypaimon_ali==1.5.dev0) (2.0.0)
+Requirement already satisfied: websocket-client<2.0.0,>=1.6.0 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from darabonba-core<2.0.0,>=1.0.8->alibabacloud-tea-openapi<1.0.0,>=0.3.16->alibabacloud-metastore20250609-inner==1.0.3->pypaimon_ali==1.5.dev0) (1.9.2)
+Requirement already satisfied: aiohappyeyeballs>=2.5.0 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from aiohttp<4.0.0,>=3.7.0->alibabacloud-tea>=0.3.3->alibabacloud-tea-util<1.0.0,>=0.3.13->alibabacloud-metastore20250609-inner==1.0.3->pypaimon_ali==1.5.dev0) (2.6.1)
+Requirement already satisfied: aiosignal>=1.4.0 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from aiohttp<4.0.0,>=3.7.0->alibabacloud-tea>=0.3.3->alibabacloud-tea-util<1.0.0,>=0.3.13->alibabacloud-metastore20250609-inner==1.0.3->pypaimon_ali==1.5.dev0) (1.4.0)
+Requirement already satisfied: async-timeout<6.0,>=4.0 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from aiohttp<4.0.0,>=3.7.0->alibabacloud-tea>=0.3.3->alibabacloud-tea-util<1.0.0,>=0.3.13->alibabacloud-metastore20250609-inner==1.0.3->pypaimon_ali==1.5.dev0) (5.0.1)
+Requirement already satisfied: attrs>=17.3.0 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from aiohttp<4.0.0,>=3.7.0->alibabacloud-tea>=0.3.3->alibabacloud-tea-util<1.0.0,>=0.3.13->alibabacloud-metastore20250609-inner==1.0.3->pypaimon_ali==1.5.dev0) (25.4.0)
+Requirement already satisfied: frozenlist>=1.1.1 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from aiohttp<4.0.0,>=3.7.0->alibabacloud-tea>=0.3.3->alibabacloud-tea-util<1.0.0,>=0.3.13->alibabacloud-metastore20250609-inner==1.0.3->pypaimon_ali==1.5.dev0) (1.8.0)
+Requirement already satisfied: multidict<7.0,>=4.5 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from aiohttp<4.0.0,>=3.7.0->alibabacloud-tea>=0.3.3->alibabacloud-tea-util<1.0.0,>=0.3.13->alibabacloud-metastore20250609-inner==1.0.3->pypaimon_ali==1.5.dev0) (6.7.1)
+Requirement already satisfied: propcache>=0.2.0 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from aiohttp<4.0.0,>=3.7.0->alibabacloud-tea>=0.3.3->alibabacloud-tea-util<1.0.0,>=0.3.13->alibabacloud-metastore20250609-inner==1.0.3->pypaimon_ali==1.5.dev0) (0.4.1)
+Requirement already satisfied: yarl<2.0,>=1.17.0 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from aiohttp<4.0.0,>=3.7.0->alibabacloud-tea>=0.3.3->alibabacloud-tea-util<1.0.0,>=0.3.13->alibabacloud-metastore20250609-inner==1.0.3->pypaimon_ali==1.5.dev0) (1.22.0)
+Requirement already satisfied: tzlocal>=3.0 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from APScheduler<4.0.0,>=3.10.0->alibabacloud-credentials<2.0.0,>=1.0.2->alibabacloud-tea-openapi<1.0.0,>=0.3.16->alibabacloud-metastore20250609-inner==1.0.3->pypaimon_ali==1.5.dev0) (5.4.4)
+Requirement already satisfied: pycparser in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from cffi>=2.0.0->cryptography>=3.0.0->alibabacloud-openapi-util<1.0.0,>=0.2.2->alibabacloud-metastore20250609-inner==1.0.3->pypaimon_ali==1.5.dev0) (3.0)
+Requirement already satisfied: chardet<3.1.0,>=3.0.2 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from requests<3.0.0,>=2.21.0->alibabacloud-tea>=0.3.3->alibabacloud-tea-util<1.0.0,>=0.3.13->alibabacloud-metastore20250609-inner==1.0.3->pypaimon_ali==1.5.dev0) (3.0.4)
+Requirement already satisfied: idna<2.9,>=2.5 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from requests<3.0.0,>=2.21.0->alibabacloud-tea>=0.3.3->alibabacloud-tea-util<1.0.0,>=0.3.13->alibabacloud-metastore20250609-inner==1.0.3->pypaimon_ali==1.5.dev0) (2.8)
+Requirement already satisfied: urllib3!=1.25.0,!=1.25.1,<1.26,>=1.21.1 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from requests<3.0.0,>=2.21.0->alibabacloud-tea>=0.3.3->alibabacloud-tea-util<1.0.0,>=0.3.13->alibabacloud-metastore20250609-inner==1.0.3->pypaimon_ali==1.5.dev0) (1.25.11)
+Requirement already satisfied: certifi>=2017.4.17 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from requests<3.0.0,>=2.21.0->alibabacloud-tea>=0.3.3->alibabacloud-tea-util<1.0.0,>=0.3.13->alibabacloud-metastore20250609-inner==1.0.3->pypaimon_ali==1.5.dev0) (2026.1.4)
+Installing collected packages: pyroaring, zstandard, readerwriterlock, pyarrow, polars-runtime-32, packaging, fsspec, fastavro, cramjam, cachetools, polars, pangudfs-client, pypaimon_ali
+  Attempting uninstall: pyarrow
+    Found existing installation: pyarrow 23.0.0
+    Uninstalling pyarrow-23.0.0:
+      Successfully uninstalled pyarrow-23.0.0
+  Attempting uninstall: packaging
+    Found existing installation: packaging 26.0
+    Uninstalling packaging-26.0:
+      Successfully uninstalled packaging-26.0
+  Attempting uninstall: fsspec
+    Found existing installation: fsspec 2026.2.0
+    Uninstalling fsspec-2026.2.0:
+      Successfully uninstalled fsspec-2026.2.0
+  Attempting uninstall: cachetools
+    Found existing installation: cachetools 7.0.0
+    Uninstalling cachetools-7.0.0:
+      Successfully uninstalled cachetools-7.0.0
+  Attempting uninstall: pangudfs-client
+    Found existing installation: pangudfs-client 1.0.27+lightsdk1.1.28
+    Uninstalling pangudfs-client-1.0.27+lightsdk1.1.28:
+      Successfully uninstalled pangudfs-client-1.0.27+lightsdk1.1.28
+Successfully installed cachetools-5.5.2 cramjam-2.11.0 fastavro-1.12.2 fsspec-2025.12.0 packaging-25.0 pangudfs-client-1.1.2+lightsdk1.1.52 polars-1.44.2 polars-runtime-32-1.44.2 pyarrow-19.0.1 pypaimon_ali-1.5.dev0 pyroaring-1.1.0 readerwriterlock-1.0.9 zstandard-0.25.0
+Looking in indexes: http://yum.tbsite.net/pypi/simple/, http://yum.tbsite.net/aliyun-pypi/simple/, http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+[32m[Dragonfly][0m P2P download plugin enabled (via environment variable)
+[32m[Dragonfly][0m Minimum file size: 0MB
+Collecting mdl==0.3.4
+--2026-09-27 12:21:33--  https://nebula-cv.cn-zhangjiakou.oss.aliyuncs.com/docker_image/mdl_packages/mdl-0.3.4-py3-none-any.whl
+dfget version: v2.0.9-ali-rc.8
+current user: root
+output path: /tmp/mdl-0.3.4-py3-none-any.whl
+init success and start to download
+taskID: e3b8feb42716c7b6b91b34f892e749ea663e5b5ace2caad92c095b30833443aa
+finish total length 140066 bytes
+download SUCCESS,  cost: 23 ms
+[32m[Dragonfly][0m Downloading 'mdl-0.3.4-py3-none-any.whl' via P2P network...
+[36m[Dragonfly][0m Command: /home/staragent/plugins/dragonfly/dfget -u https://nebula-cv.cn-zhangjiakou.oss.aliyuncs.com/docker_image/mdl_packages/mdl-0.3.4-py3-none-any.whl -o /tmp/mdl-0.3.4-py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][0m Successfully downloaded 'mdl-0.3.4-py3-none-any.whl' via P2P
+  Downloading https://nebula-cv.cn-zhangjiakou.oss.aliyuncs.com/docker_image/mdl_packages/mdl-0.3.4-py3-none-any.whl
+     - 140.1 kB 730.0 MB/s 0:00:00
+Installing collected packages: mdl
+  Attempting uninstall: mdl
+    Found existing installation: mdl 0.3.1
+    Uninstalling mdl-0.3.1:
+      Successfully uninstalled mdl-0.3.1
+Successfully installed mdl-0.3.4
+Looking in indexes: http://yum.tbsite.net/pypi/simple/, http://yum.tbsite.net/aliyun-pypi/simple/, http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+[32m[Dragonfly][0m P2P download plugin enabled (via environment variable)
+[32m[Dragonfly][0m Minimum file size: 0MB
+Collecting common-io==0.8.26
+--2026-09-27 12:21:35--  http://nebula-cv.cn-zhangjiakou.oss.aliyuncs.com/docker_image/common_io/release/common_io-0.8.26-cp310-cp310-linux_x86_64.whl
+dfget version: v2.0.9-ali-rc.8
+current user: root
+output path: /tmp/common_io-0.8.26-cp310-cp310-linux_x86_64.whl
+init success and start to download
+taskID: 06296e7fe946bdc4adb3852a0fed5e8cc994242cb51981efa8dde179df896028
+finish total length 3504399 bytes
+download SUCCESS,  cost: 28 ms
+[32m[Dragonfly][0m Downloading 'common_io-0.8.26-cp310-cp310-linux_x86_64.whl' via P2P network...
+[36m[Dragonfly][0m Command: /home/staragent/plugins/dragonfly/dfget -u http://nebula-cv.cn-zhangjiakou.oss.aliyuncs.com/docker_image/common_io/release/common_io-0.8.26-cp310-cp310-linux_x86_64.whl -o /tmp/common_io-0.8.26-cp310-cp310-linux_x86_64.whl --callsystem pypi --notbs
+[32m[Dragonfly][0m Successfully downloaded 'common_io-0.8.26-cp310-cp310-linux_x86_64.whl' via P2P
+  Downloading http://nebula-cv.cn-zhangjiakou.oss.aliyuncs.com/docker_image/common_io/release/common_io-0.8.26-cp310-cp310-linux_x86_64.whl
+     - 3.5 MB 828.8 MB/s 0:00:00
+Requirement already satisfied: pyodps==0.12.3 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from common-io==0.8.26) (0.12.3)
+Requirement already satisfied: requests>=2.4.0 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from pyodps==0.12.3->common-io==0.8.26) (2.22.0)
+Requirement already satisfied: pyarrow>=2.0.0 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from pyodps==0.12.3->common-io==0.8.26) (19.0.1)
+Requirement already satisfied: chardet<3.1.0,>=3.0.2 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from requests>=2.4.0->pyodps==0.12.3->common-io==0.8.26) (3.0.4)
+Requirement already satisfied: idna<2.9,>=2.5 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from requests>=2.4.0->pyodps==0.12.3->common-io==0.8.26) (2.8)
+Requirement already satisfied: urllib3!=1.25.0,!=1.25.1,<1.26,>=1.21.1 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from requests>=2.4.0->pyodps==0.12.3->common-io==0.8.26) (1.25.11)
+Requirement already satisfied: certifi>=2017.4.17 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from requests>=2.4.0->pyodps==0.12.3->common-io==0.8.26) (2026.1.4)
+Installing collected packages: common-io
+  Attempting uninstall: common-io
+    Found existing installation: common_io 0.8.19
+    Uninstalling common_io-0.8.19:
+      Successfully uninstalled common_io-0.8.19
+Successfully installed common-io-0.8.26
+Looking in indexes: http://yum.tbsite.net/pypi/simple/, http://yum.tbsite.net/aliyun-pypi/simple/, http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+[32m[Dragonfly][0m P2P download plugin enabled (via environment variable)
+[32m[Dragonfly][0m Minimum file size: 0MB
+Collecting lake-py-lib==0.1.16
+--2026-09-27 12:21:50--  http://yum.tbsite.net/aliyun-pypi/packages/lake-py-lib/lake_py_lib-0.1.16-py3.10-none-any.whl
+dfget version: v2.0.9-ali-rc.8
+current user: root
+output path: /tmp/lake_py_lib-0.1.16-py3.10-none-any.whl
+init success and start to download
+taskID: cd47879ab7f87602efc4858773a8c6b4988e24f5d165824c376dd8d50b80cffb
+finish total length 101980711 bytes
+download SUCCESS,  cost: 494 ms
+[32m[Dragonfly][0m Downloading 'lake_py_lib-0.1.16-py3.10-none-any.whl' via P2P network...
+[36m[Dragonfly][0m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/aliyun-pypi/packages/lake-py-lib/lake_py_lib-0.1.16-py3.10-none-any.whl -o /tmp/lake_py_lib-0.1.16-py3.10-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][0m Successfully downloaded 'lake_py_lib-0.1.16-py3.10-none-any.whl' via P2P
+  Downloading http://yum.tbsite.net/aliyun-pypi/packages/lake-py-lib/lake_py_lib-0.1.16-py3.10-none-any.whl
+     \ 102.0 MB 753.7 MB/s 0:00:00
+Requirement already satisfied: redis in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from lake-py-lib==0.1.16) (7.3.0)
+Requirement already satisfied: thrift in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from lake-py-lib==0.1.16) (0.16.0)
+Requirement already satisfied: lru-dict in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from lake-py-lib==0.1.16) (1.4.1)
+Requirement already satisfied: protobuf==3.20.3 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from lake-py-lib==0.1.16) (3.20.3)
+Requirement already satisfied: async-timeout>=4.0.3 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from redis->lake-py-lib==0.1.16) (5.0.1)
+Requirement already satisfied: six>=1.7.2 in /opt/conda/envs/python3.10.13/lib/python3.10/site-packages (from thrift->lake-py-lib==0.1.16) (1.14.0)
+/opt/conda/envs/python3.10.13/bin/python: [/opt/conda/envs/python3.10.13/bin/python]
+ai_scheduler_wrapper_ok: [1]
+/opt/conda/envs/python3.10.13/bin/python -m ai_scheduler.wrapper --run_mode=dist --task_name=scheduler --app_id=xdl-6ab898d05045 --zk_addr=zfs://ad-ea120-xdl-common-new.vip.tbsite.net:2187/psplus/xdl-6ab898d05045 --config=../_nop_user_config.json --task_index=0
+[2026-09-27 12:21:56,400] [INFO] [AiScheduler#1] [ai_wrapper.py:59] Start execution
+[2026-09-27 12:21:56,400] [INFO] [AiScheduler#1] [cluster_util.py:49] zk_address: [ad-ea120-xdl-common-new.vip.tbsite.net:2187]
+[2026-09-27 12:21:56,403] [INFO] [AiScheduler#1] [executor.py:104] Initializing Executor and redirect print.
+[2026-09-27 12:21:56,403] [INFO] [AiScheduler#1] [executor.py:105] Executor RunningMode: [CurrentMode.Online] TaskName: [scheduler] TaskIndex: [0] PanguCluster: [AY118F]
+[2026-09-27 12:21:56,403] [INFO] [AiScheduler#1] [executor.py:109] ProcessRestart enabled: [False], max_local_fail_times: [0], max_local_restart_times: [1000], max_failover_times: [0]
+RedirectLogger initializing task_index: [0]
+Start execution
+should_run_planner RUN_PLANNER: False
+[2026-09-27 12:21:56,409] [INFO] [AiScheduler#2565] [scheduler_httpserver_main.py:89] scheduler XDL_CONFIG: {'cluster': {'scheduler': ['xdl-6ab898d05045-scheduler-0:2222'], 'worker': ['xdl-6ab898d05045-worker-0:2222']}, 'task': {'type': 'scheduler', 'index': 0, 'port': 28761}, 'worker_size': 1}
+[2026-09-27 12:21:56,502] [INFO] [AiScheduler#2565] [rank_status_detector.py:124] [RankStatusDetector] init success! world size is 1, max_failover_times is 0
+should_run_planner RUN_PLANNER: False
+[2026-09-27 12:21:56,503] [INFO] [AiScheduler#2565] [heartbeat.py:108] [HeartBeatListener] init done.
+[2026-09-27 12:21:56,503] [INFO] [AiScheduler#2565] [singleton.py:42] Initialized <class 'ai_scheduler.scheduler.worker_status.heartbeat.HeartBeatListener'> for the first time.
+[2026-09-27 12:21:56,506] [INFO] [AiScheduler#2565] [pvc_runner.py:280] 包版本管理: 未配置 PACKAGE_VERSION_CONTROL_CONFIG，跳过
+[2026-09-27 12:21:56,513] [INFO] [AiScheduler#2565] [scheduler_httpserver_main.py:175] Scheduler ip_version: 4, ip: 33.97.226.77, port: 28761
+[2026-09-27 12:21:56,513] [INFO] [AiScheduler#2565] [cluster_util.py:49] zk_address: [ad-ea120-xdl-common-new.vip.tbsite.net:2187]
+[2026-09-27 12:21:56,520] [INFO] [AiScheduler#2565] [connection.py:650] Connecting to ad-ea120-xdl-common-new.vip.tbsite.net(33.89.108.16):2187, use_ssl: False
+[2026-09-27 12:21:56,601] [INFO] [AiScheduler#2565] [client.py:532] Zookeeper connection established, state: CONNECTED
+[2026-09-27 12:21:56,601] [INFO] [AiScheduler#2565] [zk_service.py:79] ✅ Connected to ZK: ad-ea120-xdl-common-new.vip.tbsite.net:2187
+[2026-09-27 12:21:56,601] [INFO] [AiScheduler#2565] [zk_service.py:125] 🛡️ Background ephemeral node keeper started.
+[2026-09-27 12:21:56,762] [INFO] [AiScheduler#2565] [zk_service.py:189] ✨ Created ephemeral node: /ai_scheduler_info/xdl-6ab898d05045
+[2026-09-27 12:21:56,762] [INFO] [AiScheduler#2565] [scheduler_httpserver_main.py:190] Scheduler: Initialization done. Node info: 33.97.226.77:28761, ZkPath: /ai_scheduler_info/xdl-6ab898d05045
+should_run_planner RUN_PLANNER: False
+[2026-09-27 12:22:15,176] [INFO] [AiScheduler#2565] [heartbeat.py:162] Scheduler/WorkerStatus: Discovered new worker: 0-0-0-worker-xdl-6ab898d05045-1-1790482916-33.97.226.77
+[2026-09-27 12:22:15,176] [INFO] [AiScheduler#2565] [rank_status_detector.py:346] [RankStatusDetector] discover new pod in rank 0
+[2026-09-27 12:22:15,176] [INFO] [AiScheduler#2565] [rendezvous.py:390] world info ready with size 1 with current version 0
+[2026-09-27 12:22:15,176] [INFO] [AiScheduler#2565] [rendezvous.py:260] add_worker role_name: [worker]  rank: [0]  restart_version: [0]  ip: [33.97.226.77]  port: [54665]  container_id: [xdl-6ab898d05045-worker1790482785-0]  asw_id: []  pod_group_info: [{}]  length worker_list: [1]  ready_count: [1]  world_size: [1]  is_world_info_ready: [True]
+[2026-09-27 12:22:15,176] [INFO] [AiScheduler#2565] [rendezvous.py:271] unready worker index list: []
+[2026-09-27 12:22:15,177] [INFO] [AiScheduler#2565] [rendezvous.py:453] report_rank_to_nop_info: [{'rank_info': [0], 'restart_version': 0, 'extra': {'stdout_offset': [112054], 'stderr_offset': [49153]}, 'task_id': '01a0e114ee465bc61c841e5b4dd0af8c', 'app_id': 'xdl-6ab898d05045', 'container_id': 'xdl-6ab898d05045-worker1790482785-0'}]
+[2026-09-27 12:22:15,177] [INFO] [AiScheduler#2565] [rendezvous.py:374] [ALLOC_RANK=]  allocated_master: 0 - 33.97.226.77:54665  allocated_tail: 0 - 33.97.226.77:54665  rank_allocate_map size: 1  
+[2026-09-27 12:22:15,177] [INFO] [AiScheduler#2565] [rendezvous.py:175] _broadcast_master: Notified 1
+[2026-09-27 12:22:15,178] [INFO] [AiScheduler#2565] [pykmonitor_reporter.py:50] ai_scheduler KMonitor initialized
+[2026-09-27 12:22:15,178] [INFO] [AiScheduler#2565] [pykmonitor_reporter.py:57] ai_scheduler KMonitor metrics registered successfully
+[2026-09-27 12:22:15,408] [INFO] [AiScheduler#2565] [communication_api.py:414] report_rank_to_nop SUCCESS!
+[2026-09-27 12:23:03,335] [INFO] [AiScheduler#2565] [rank_status_detector.py:272] [RankStatusDetector] set_pod_return_code doing!pod_id:0-0-0-worker-xdl-6ab898d05045-1-1790482916-33.97.226.77 allocated_rank:0 return_code:0 
+[2026-09-27 12:23:03,335] [INFO] [AiScheduler#2565] [rank_status_detector.py:293] [RankStatusDetector] set_pod_return_code success!pod_id:0-0-0-worker-xdl-6ab898d05045-1-1790482916-33.97.226.77 allocated_rank:0 return_code:0 
+[2026-09-27 12:23:03,335] [INFO] [AiScheduler#2565] [rank_status_detector.py:146] [RankStatusDetector] all worker success! usable_ranks=[0]
+[2026-09-27 12:23:05,434] [INFO] [AiScheduler#2565] [heartbeat.py:176] [HeartBeatListener] worker_unique_id: 0-0-0-worker-xdl-6ab898d05045-1-1790482916-33.97.226.77 received dead_signal
+[2026-09-27 12:23:05,434] [INFO] [AiScheduler#2565] [rank_status_detector.py:371] [RankStatusDetector] on_heart_beat_dead doing!pod_id:0-0-0-worker-xdl-6ab898d05045-1-1790482916-33.97.226.77 
+[2026-09-27 12:23:44,473] [INFO] [AiScheduler#1] [executor.py:53] Received SIGTERM, will exit.

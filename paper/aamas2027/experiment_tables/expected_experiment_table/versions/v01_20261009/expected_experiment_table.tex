@@ -1,0 +1,244 @@
+% Expected experiment matrix for the AAMAS 2027 paper.
+% This file contains planning targets only. It is never a measured result.
+\documentclass[10pt]{article}
+\usepackage[letterpaper,margin=0.66in]{geometry}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\definecolor{Blue}{HTML}{2E5DA1}
+\definecolor{Ink}{HTML}{27313D}
+\definecolor{Gray}{HTML}{687585}
+\definecolor{Watermark}{HTML}{E5E9EE}
+\definecolor{Target}{HTML}{F5F8FC}
+\hypersetup{colorlinks=true,linkcolor=Blue,urlcolor=Blue}
+\newcommand{\notrun}{\textemdash}
+\newcommand{\targetcell}[1]{\textbf{#1}}
+\newcommand{\smallnote}[1]{{\footnotesize\color{Gray}#1}}
+\newcommand{\pp}[1]{#1\,pp}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\renewcommand{\arraystretch}{1.16}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\footnotesize\color{Gray}MIRA-Relay · expected experiment matrix v01}
+\fancyhead[R]{\footnotesize\color{Watermark}EXPECTED TARGET — NOT MEASURED}
+\fancyfoot[C]{\footnotesize\color{Gray}\thepage/\pageref{LastPage}}
+\begin{document}
+
+{\color{Blue}\Large\bfseries Expected Experiment Table}\par
+{\color{Ink}\large A one-to-one planning target for the current paper tables}\par
+\smallnote{Version v01 · 2026-10-09 · status: target only, not a result, not a claim, not for citation.}
+
+\begin{minipage}{\linewidth}
+\small
+\textbf{How to read this file.} Each numbered table follows the table order and row semantics of the current paper PDF. The numbers are conservative target values for planning the real runs. They are anchored to the current measured table, the current task contract, and the public cross-domain magnitude references in \texttt{~/work/reasonable\_results}; they are not copied public results. A target interval is a planning interval, not an observed confidence interval. The real paper may replace every cell only with a candidate-specific raw receipt and independently recovered statistic.
+
+\textbf{Consistency rule.} The target keeps the intended pattern: natural routing is near Frozen and may be slightly worse; controlled feedback is where the proposed relay should beat matched Online SGD, with a positive margin at every declared delay; the ablation is weaker under the same pressure; heavier baselines may be slower; and the evaluator-only controls do not enter the deployable ranking.
+\end{minipage}
+
+\vspace{4pt}
+{\color{Ink}\bfseries Source binding}\par
+\small
+This matrix is bound to \texttt{paper/aamas2027/main.tex} SHA-256
+\texttt{0377e70fe9aec39158651b25bff6a898dbc9f4f13957cd478ec2cc1b02226930}.
+If the main PDF changes table order, labels, denominators, or metric definitions, this expected matrix must receive a new version before any target is used.
+
+\section*{Table 1 · Comparators under the common routing contract}
+\begin{tabularx}{\linewidth}{@{}p{0.22\linewidth}X@{}}
+\toprule
+Role & Expected roster and role boundary \\
+\midrule
+Anchors & Random; fit-only Best Fixed; evaluator-only Retrospective Best Fixed$^{\dagger}$ \\
+Matched updates & Frozen; MIRA-Relative; Online SGD; Replay SGD \\
+Online controls & Greedy LinUCB; BayesianRouter-adapted \\
+Proposed & MIRA-Relay (\texttt{mira\_context\_reliability}) \\
+Mechanism & Fixed cyclic permutation credit \\
+Audit only & Pooled-feedback static recentering; direct-property predictor; incompatible external routers \\
+\bottomrule
+\end{tabularx}
+\smallnote{$^{\dagger}$ Retrospective Best Fixed is a headroom reference. It must never be ranked as a deployable policy. Every primary row is expected to have the same menu, feature, selected-only feedback, delay, budget, seed and live raw receipt.}
+
+\section*{Table 2 · Experimental map}
+\begin{tabularx}{\linewidth}{@{}p{0.10\linewidth}p{0.25\linewidth}X@{}}
+\toprule
+ID & Question & One-to-one evidence in the expected matrix \\
+\midrule
+E1 & Adaptation and drift & Table 3 and Figure 3: natural versus controlled selected-only feedback. \\
+E2 & Source-aligned credit & Table 4 and the order/stream companion in Table 10. \\
+E3 & Initial selection & Table 5: cold-start headroom and objective choice. \\
+E4 & Scale and centering & Table 6: score scale versus update rule. \\
+E5 & Policy cost / validity & Table 8: overhead, calls, failure accounting and replay. \\
+E6 & Frozen confirmation & Table 9: final sealed cohort after all choices are frozen. \\
+\bottomrule
+\end{tabularx}
+\smallnote{Table 10 is the expected numeric companion for the paper's delay figure; it is included here so the delay-wise closure target is explicit rather than hidden in a plotted curve.}
+
+\clearpage
+\section*{Table 3 · Selected correctness (\%) — expected target}
+\smallnote{Same columns and row order as the current main PDF. The controlled columns are evaluator-side correctness drift; an em dash means that the corresponding paper condition is not in the roster, not a zero.}
+\begin{tabularx}{\linewidth}{@{}lrrrr@{}}
+\toprule
+& \multicolumn{2}{c}{Natural} & \multicolumn{2}{c}{Controlled drift} \\
+\cmidrule(lr){2-3}\cmidrule(l){4-5}
+Method & Original & 128-order mean & Original & 128-order mean \\
+\midrule
+Random & 83.76 & 86.45 & \notrun & \notrun \\
+Best Fixed & 88.15 & 88.15 & \notrun & \notrun \\
+Frozen & 89.81 & 89.81 & 73.40 & 75.80 \\
+MIRA-Relative & 89.70 & 89.75 & \notrun & \notrun \\
+\midrule
+Online SGD & 89.30 & 89.15 & 83.90 & 82.80 \\
+Replay SGD & 89.35 & 89.20 & 84.10 & 83.00 \\
+Greedy LinUCB & 89.65 & 89.65 & 81.40 & 78.20 \\
+BayesianRouter & 89.55 & 89.70 & 80.90 & 79.80 \\
+\textbf{MIRA-Relay} & \targetcell{89.75} & \targetcell{89.70} & \targetcell{87.20} & \targetcell{86.80} \\
+\midrule
+Fixed-permutation credit & \notrun & 89.70 & \notrun & 71.00 \\
+\midrule
+Retrospective Best Fixed$^{\dagger}$ & 90.45 & 90.45 & \notrun & \notrun \\
+\bottomrule
+\end{tabularx}
+\smallnote{Target logic: the natural target is within one percentage point of Frozen and does not claim generic stationary improvement. Under controlled drift, the proposed method is expected to beat matched Online SGD by about 3.8--4.0 pp while staying below the evaluator-only ceiling. The final run must report paired intervals and rescued/harmed counts beside this table.}
+
+\section*{Table 4 · Source-aligned attribution — expected target}
+\begin{tabularx}{\linewidth}{@{}lrr@{}}
+\toprule
+Contrast & Natural $\Delta$ [planning 95\% band] & Controlled $\Delta$ [planning 95\% band] \\
+\midrule
+Local $-$ Frozen & $+0.05\;[-0.95,+1.05]$ & $+13.80\;[+10.10,+17.20]$ \\
+Permutation $-$ Frozen & $+0.20\;[-0.70,+1.10]$ & $-1.10\;[-3.50,+1.00]$ \\
+\textbf{Local $-$ Permutation} & $-0.15\;[-1.20,+0.90]$ & \targetcell{$+14.90\;[+11.20,+18.30]$} \\
+\bottomrule
+\end{tabularx}
+\smallnote{The natural interval is deliberately allowed to cross zero. The controlled target gives the source-aligned update a clear positive attribution over the permutation control without pretending that every switch is helpful.}
+
+\clearpage
+\section*{Table 5 · Cold-start accuracy on BBB development — expected target}
+\begin{tabularx}{\linewidth}{@{}lr@{}}
+\toprule
+Selector & Accuracy (\%) \\
+\midrule
+Best Fixed & 79.22 \\
+Raw Frozen & 79.36 \\
+Corrected Frozen & \targetcell{80.19} \\
+\midrule
+BCE + auxiliary CLS & 79.95 / 80.20 \\
+BT + auxiliary CLS & \targetcell{80.10 / 80.25} \\
+\midrule
+Per-molecule oracle$^{\dagger}$ & 85.60 \\
+\bottomrule
+\end{tabularx}
+\smallnote{The two values are paired fit seeds 0/1. The target expects only a modest offline gain; the large oracle gap remains and motivates online adaptation. $^{\dagger}$ uses unselected outputs and is evaluator-only.}
+
+\section*{Table 6 · Score scale and update rule — expected target}
+\begin{tabularx}{\linewidth}{@{}llrr@{}}
+\toprule
+Score & Update & Natural & Drift \\
+\midrule
+\multirow{3}{*}{Raw} & Frozen & 79.36 & 69.11 \\
+& Marginal & 79.20 & 77.00 \\
+& Query & 79.00 & 76.20 \\
+\midrule
+\multirow{3}{*}{Corrected} & Frozen & 80.19 & 63.30 \\
+& Marginal & 79.85 & 78.20 \\
+& Query & \targetcell{80.25} & \targetcell{78.90} \\
+\bottomrule
+\end{tabularx}
+\smallnote{The query-relative update is expected to help under drift, but its natural gain is intentionally small. Score correction changes exposure to the intervention, so the final report must keep scale and update effects separate.}
+
+\section*{Table 7 · Post-call refusal — expected target}
+\begin{tabularx}{\linewidth}{@{}lrrr@{}}
+\toprule
+Policy & Coverage (\%) & Accepted accuracy (\%) & Utility \\
+\midrule
+Always accept & 100.00 & 88.15 & $-0.1285$ \\
+Confidence refuse & 84.50 & \targetcell{94.40} & \targetcell{$-0.0945$} \\
+Always refuse & 0.00 & \notrun & $-0.2600$ \\
+\midrule
+Same-coverage random$^{\dagger}$ & 84.50 & 88.70 & $-0.1440$ \\
+\bottomrule
+\end{tabularx}
+\smallnote{Secondary analysis only. The expected gate trades coverage for fewer accepted errors; it is not evidence that the routing learner verifies an answer inside the delayed loop. $^{\dagger}$ is an evaluator-side conditional null.}
+
+\clearpage
+\section*{Table 8 · CPU policy overhead — expected target}
+\smallnote{Expected mean of stream-level p95 timings in $\mu$s. Provider inference, I/O and service latency remain separate.}
+\begin{tabularx}{\linewidth}{@{}lrrr@{}}
+\toprule
+& \multicolumn{2}{c}{Natural menu} & Controlled \\
+\cmidrule(lr){2-3}\cmidrule(l){4-4}
+Method & Selection & Update & Update \\
+\midrule
+Random & 67.1 & 5.4 & \notrun \\
+Best Fixed & 5.8 & 0.7 & \notrun \\
+Frozen & 15.9 & 1.3 & 1.5 \\
+MIRA-Relative & 42.0 & 73.0 & \notrun \\
+\midrule
+Online SGD & 14.2 & 19.6 & 20.1 \\
+Greedy LinUCB & 128.6 & 90.9 & 92.3 \\
+BayesianRouter & 133.7 & 89.0 & 92.6 \\
+\textbf{MIRA-Relay} & \targetcell{28.0} & \targetcell{3.1} & \targetcell{3.8} \\
+\bottomrule
+\end{tabularx}
+\smallnote{The target keeps MIRA-Relay below twice Frozen's selection-plus-update overhead and below 100 $\mu$s. The final table must add memory, restart/replay status and end-to-end provider time; kernel-only speed cannot close E5 by itself.}
+
+\section*{Table 8b · E5 closure fields — expected target}
+\begin{tabularx}{\linewidth}{@{}p{0.48\linewidth}X@{}}
+\toprule
+Field & Expected relation \\
+\midrule
+Calls per input & 1.00 for every primary method; no hidden probe or escalation. \\
+Policy memory & Fixed heads plus $2K$ selected-provider counters; no unselected output cache in online state. \\
+Replay / restart & 100\% of complete streams recover the same action, release order and final state hash. \\
+Failure / unknown & Separate denominators; no silent conversion to chemical correctness. \\
+End-to-end provider time & Method-independent provider call time reported separately from policy overhead. \\
+\bottomrule
+\end{tabularx}
+\smallnote{These are acceptance targets for the fields that the current paper table does not yet display. They are not a claim that the current artifact has measured them.}
+
+\clearpage
+\section*{Table 9 · Final sealed confirmation — expected target}
+\smallnote{Planned addition to the main PDF before closure. The cohort must be newly sealed or accompanied by a passing exposure receipt; these values are not the historical 157-row result.}
+\begin{tabularx}{\linewidth}{@{}lrrr@{}}
+\toprule
+Method & Natural correctness (\%) & Controlled correctness (\%) & Controlled $\Delta$ vs matched SGD (pp) \\
+\midrule
+Random & 83.6\;[81.9,85.2] & \notrun & \notrun \\
+Best Fixed & 88.0\;[86.5,89.5] & \notrun & \notrun \\
+Frozen & 89.3\;[87.8,90.7] & 73.5\;[71.4,75.6] & \notrun \\
+Matched Online SGD & 88.9\;[87.4,90.4] & 82.9\;[80.9,84.9] & \text{reference} \\
+Replay SGD & 89.0\;[87.5,90.5] & 83.2\;[81.2,85.1] & +0.3 \\
+Greedy LinUCB & 89.0\;[87.5,90.4] & 81.1\;[79.0,83.2] & -1.8 \\
+BayesianRouter & 88.8\;[87.2,90.3] & 80.8\;[78.7,82.9] & -2.1 \\
+\textbf{MIRA-Relay} & \targetcell{89.4\;[87.9,90.8]} & \targetcell{85.7\;[83.7,87.6]} & \targetcell{+2.8} \\
+\bottomrule
+\end{tabularx}
+\smallnote{The controlled target is deliberately above the E2 margin but below any perfect-policy ceiling. The natural target is only a small improvement over matched SGD; if its paired interval crosses zero, the paper should keep the natural result as non-inferiority rather than claim generic superiority.}
+
+\section*{Table 10 · Delay and pressure companion — expected target}
+\begin{tabularx}{\linewidth}{@{}lrrrrr@{}}
+\toprule
+Delay $D$ & Frozen & Online SGD & Greedy LinUCB & BayesianRouter & MIRA-Relay \\
+\midrule
+0 & 73.4 & 84.3 & 81.4 & 80.9 & \targetcell{87.0} \\
+1 & 73.4 & 83.8 & 81.0 & 80.7 & \targetcell{86.7} \\
+4 & 73.4 & 82.9 & 80.3 & 80.1 & \targetcell{85.5} \\
+\midrule
+MIRA $-$ Online SGD & \notrun & \notrun & \notrun & \notrun & \targetcell{+2.7 / +2.9 / +2.6} \\
+\bottomrule
+\end{tabularx}
+\smallnote{Expected adjusted paired CI lower bounds for the three MIRA-minus-Online-SGD contrasts are approximately $+0.8$, $+0.9$ and $+0.5$ pp, respectively. Each delay must be judged separately; a positive pooled value cannot rescue a failed delay.}
+
+\vfill
+\begin{center}
+{\color{Watermark}\rule{0.8\linewidth}{0.5pt}}\\[-2pt]
+{\footnotesize\color{Gray}EXPECTED TARGET ONLY · Replace with candidate-specific raw evidence before writing any result.}
+\end{center}
+\end{document}

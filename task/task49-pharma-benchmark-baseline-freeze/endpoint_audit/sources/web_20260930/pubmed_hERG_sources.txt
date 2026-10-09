@@ -1,0 +1,193 @@
+
+PMID- 27379394
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20171020
+LR  - 20171220
+IS  - 1543-8392 (Electronic)
+IS  - 1543-8384 (Linking)
+VI  - 13
+IP  - 8
+DP  - 2016 Aug 1
+TI  - ADMET Evaluation in Drug Discovery. 16. Predicting hERG Blockers by Combining 
+      Multiple Pharmacophores and Machine Learning Approaches.
+PG  - 2855-66
+LID - 10.1021/acs.molpharmaceut.6b00471 [doi]
+AB  - Blockade of human ether-a-go-go related gene (hERG) channel by compounds may lead 
+      to drug-induced QT prolongation, arrhythmia, and Torsades de Pointes (TdP), and 
+      therefore reliable prediction of hERG liability in the early stages of drug 
+      design is quite important to reduce the risk of cardiotoxicity-related attritions 
+      in the later development stages. In this study, pharmacophore modeling and 
+      machine learning approaches were combined to construct classification models to 
+      distinguish hERG active from inactive compounds based on a diverse data set. 
+      First, an optimal ensemble of pharmacophore hypotheses that had good capability 
+      to differentiate hERG active from inactive compounds was identified by the 
+      recursive partitioning (RP) approach. Then, the naive Bayesian classification 
+      (NBC) and support vector machine (SVM) approaches were employed to construct 
+      classification models by integrating multiple important pharmacophore hypotheses. 
+      The integrated classification models showed improved predictive capability over 
+      any single pharmacophore hypothesis, suggesting that the broad binding 
+      polyspecificity of hERG can only be well characterized by multiple 
+      pharmacophores. The best SVM model achieved the prediction accuracies of 84.7% 
+      for the training set and 82.1% for the external test set. Notably, the accuracies 
+      for the hERG blockers and nonblockers in the test set reached 83.6% and 78.2%, 
+      respectively. Analysis of significant pharmacophores helps to understand the 
+      multimechanisms of action of hERG blockers. We believe that the combination of 
+      pharmacophore modeling and SVM is a powerful strategy to develop reliable 
+      theoretical models for the prediction of potential hERG liability.
+FAU - Wang, Shuangquan
+AU  - Wang S
+AD  - College of Pharmaceutical Sciences, Zhejiang University , Hangzhou, Zhejiang 
+      310058, China.
+FAU - Sun, Huiyong
+AU  - Sun H
+AD  - College of Pharmaceutical Sciences, Zhejiang University , Hangzhou, Zhejiang 
+      310058, China.
+FAU - Liu, Hui
+AU  - Liu H
+AD  - College of Pharmaceutical Sciences, Zhejiang University , Hangzhou, Zhejiang 
+      310058, China.
+FAU - Li, Dan
+AU  - Li D
+AD  - College of Pharmaceutical Sciences, Zhejiang University , Hangzhou, Zhejiang 
+      310058, China.
+FAU - Li, Youyong
+AU  - Li Y
+AD  - Institute of Functional Nano & Soft Materials (FUNSOM), Soochow University , 
+      Suzhou, Jiangsu 215123, China.
+FAU - Hou, Tingjun
+AU  - Hou T
+AD  - College of Pharmaceutical Sciences, Zhejiang University , Hangzhou, Zhejiang 
+      310058, China.
+AD  - State Key Lab of CAD&CG, Zhejiang University , Hangzhou, Zhejiang 310058, P. R. 
+      China.
+LA  - eng
+PT  - Journal Article
+PT  - Research Support, Non-U.S. Gov't
+DEP - 20160718
+PL  - United States
+TA  - Mol Pharm
+JT  - Molecular pharmaceutics
+JID - 101197791
+RN  - 0 (Potassium Channel Blockers)
+SB  - IM
+MH  - Bayes Theorem
+MH  - Cluster Analysis
+MH  - Drug Discovery
+MH  - *Machine Learning
+MH  - Models, Molecular
+MH  - Potassium Channel Blockers/chemistry
+MH  - Quantitative Structure-Activity Relationship
+MH  - *Support Vector Machine
+OTO - NOTNLM
+OT  - ADMET
+OT  - SVM
+OT  - hERG
+OT  - machine learning
+OT  - pharmacophore
+OT  - recursive partitioning
+OT  - support vector machine
+EDAT- 2016/07/06 06:00
+MHDA- 2017/10/21 06:00
+CRDT- 2016/07/06 06:00
+PHST- 2016/07/06 06:00 [entrez]
+PHST- 2016/07/06 06:00 [pubmed]
+PHST- 2017/10/21 06:00 [medline]
+AID - 10.1021/acs.molpharmaceut.6b00471 [doi]
+PST - ppublish
+SO  - Mol Pharm. 2016 Aug 1;13(8):2855-66. doi: 10.1021/acs.molpharmaceut.6b00471. Epub 
+      2016 Jul 18.
+
+PMID- 33259212
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20210617
+LR  - 20210617
+IS  - 1549-960X (Electronic)
+IS  - 1549-9596 (Linking)
+VI  - 60
+IP  - 12
+DP  - 2020 Dec 28
+TI  - Critical Assessment of Artificial Intelligence Methods for Prediction of hERG 
+      Channel Inhibition in the "Big Data" Era.
+PG  - 6007-6019
+LID - 10.1021/acs.jcim.0c00884 [doi]
+AB  - The rise of novel artificial intelligence (AI) methods necessitates their 
+      benchmarking against classical machine learning for a typical drug-discovery 
+      project. Inhibition of the potassium ion channel, whose alpha subunit is encoded 
+      by the human ether-a-go-go-related gene (hERG), leads to a prolonged QT interval 
+      of the cardiac action potential and is a significant safety pharmacology target 
+      for the development of new medicines. Several computational approaches have been 
+      employed to develop prediction models for the assessment of hERG liabilities of 
+      small molecules including recent work using deep learning methods. Here, we 
+      perform a comprehensive comparison of hERG effect prediction models based on 
+      classical approaches (random forests and gradient boosting) and modern AI methods 
+      [deep neural networks (DNNs) and recurrent neural networks (RNNs)]. The training 
+      set ( approximately 9000 compounds) was compiled by integrating the hERG bioactivity data from 
+      the ChEMBL database with experimental data generated from an in-house, 
+      high-throughput thallium flux assay. We utilized different molecular descriptors 
+      including the latent descriptors, which are real-value continuous vectors derived 
+      from chemical autoencoders trained on a large chemical space (>1.5 million 
+      compounds). The models were prospectively validated on  approximately 840 in-house compounds 
+      screened in the same thallium flux assay. The best results were obtained with the 
+      XGBoost method and RDKit descriptors. The comparison of models based only on 
+      latent descriptors revealed that the DNNs performed significantly better than the 
+      classical methods. The RNNs that operate on SMILES provided the highest model 
+      sensitivity. The best models were merged into a consensus model that offered 
+      superior performance compared to reference models from academic and commercial 
+      domains. Furthermore, we shed light on the potential of AI methods to exploit the 
+      big data in chemistry and generate novel chemical representations useful in 
+      predictive modeling and tailoring a new chemical space.
+FAU - Siramshetty, Vishal B
+AU  - Siramshetty VB
+AUID- ORCID: 0000-0002-5980-8288
+AD  - National Center for Advancing Translational Sciences (NCATS), 9800 Medical Center 
+      Drive, Rockville, Maryland 20850, United States.
+FAU - Nguyen, Dac-Trung
+AU  - Nguyen DT
+AD  - National Center for Advancing Translational Sciences (NCATS), 9800 Medical Center 
+      Drive, Rockville, Maryland 20850, United States.
+FAU - Martinez, Natalia J
+AU  - Martinez NJ
+AD  - National Center for Advancing Translational Sciences (NCATS), 9800 Medical Center 
+      Drive, Rockville, Maryland 20850, United States.
+FAU - Southall, Noel T
+AU  - Southall NT
+AD  - National Center for Advancing Translational Sciences (NCATS), 9800 Medical Center 
+      Drive, Rockville, Maryland 20850, United States.
+FAU - Simeonov, Anton
+AU  - Simeonov A
+AD  - National Center for Advancing Translational Sciences (NCATS), 9800 Medical Center 
+      Drive, Rockville, Maryland 20850, United States.
+FAU - Zakharov, Alexey V
+AU  - Zakharov AV
+AUID- ORCID: 0000-0003-2466-1711
+AD  - National Center for Advancing Translational Sciences (NCATS), 9800 Medical Center 
+      Drive, Rockville, Maryland 20850, United States.
+LA  - eng
+PT  - Journal Article
+PT  - Research Support, N.I.H., Intramural
+DEP - 20201201
+PL  - United States
+TA  - J Chem Inf Model
+JT  - Journal of chemical information and modeling
+JID - 101230060
+RN  - 0 (Ether-A-Go-Go Potassium Channels)
+RN  - 0 (Potassium Channel Blockers)
+SB  - IM
+MH  - Artificial Intelligence
+MH  - Big Data
+MH  - Drug Discovery
+MH  - *Ether-A-Go-Go Potassium Channels
+MH  - Humans
+MH  - *Potassium Channel Blockers/pharmacology
+EDAT- 2020/12/02 06:00
+MHDA- 2021/06/22 06:00
+CRDT- 2020/12/01 17:08
+PHST- 2020/12/02 06:00 [pubmed]
+PHST- 2021/06/22 06:00 [medline]
+PHST- 2020/12/01 17:08 [entrez]
+AID - 10.1021/acs.jcim.0c00884 [doi]
+PST - ppublish
+SO  - J Chem Inf Model. 2020 Dec 28;60(12):6007-6019. doi: 10.1021/acs.jcim.0c00884. 
+      Epub 2020 Dec 1.

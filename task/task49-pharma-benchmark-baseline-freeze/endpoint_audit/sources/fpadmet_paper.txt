@@ -1,0 +1,891 @@
+FP-ADMET: a compendium of fingerprint-based ADMET prediction models | Journal of Cheminformatics | Springer Nature Link
+Skip to main content
+Advertisement
+BMC journals have moved to Springer Nature Link.
+Learn more about website changes.
+Log in
+Menu
+Find a journal
+Publish with us
+Track your research
+Search
+Saved research
+Cart
+Home
+Journal of Cheminformatics
+Article
+FP-ADMET: a compendium of fingerprint-based ADMET prediction models
+Research article
+Open access
+Published:
+28 September 2021
+Volume 13
+, article number
+75
+(
+2021
+)
+Cite this article
+You have full access to this
+open access
+article
+Download PDF
+Save article
+View saved research
+Journal of Cheminformatics
+Aims and scope
+Submit manuscript
+FP-ADMET: a compendium of fingerprint-based ADMET prediction models
+Download PDF
+Vishwesh Venkatraman
+ORCID:
+orcid.org/0000-0001-7609-2245
+1
+17k
+Accesses
+136
+Citations
+1
+Altmetric
+Explore all metrics
+Abstract
+Motivation
+The absorption, distribution, metabolism, excretion, and toxicity (ADMET) of drugs plays a key role in determining which among the potential candidates are to be prioritized. In silico approaches based on machine learning methods are becoming increasing popular, but are nonetheless limited by the availability of data. With a view to making both data and models available to the scientific community, we have developed FPADMET which is a repository of molecular fingerprint-based predictive models for ADMET properties.
+Summary
+In this article, we have examined the efficacy of fingerprint-based machine learning models for a large number of ADMET-related properties. The predictive ability of a set of 20 different binary fingerprints (based on substructure keys, atom pairs, local path environments, as well as custom fingerprints such as all-shortest paths) for over 50 ADMET and ADMET-related endpoints have been evaluated as part of the study. We find that for a majority of the properties, fingerprint-based random forest models yield comparable or better performance compared with traditional 2D/3D molecular descriptors.
+Availability
+The models are made available as part of open access software that can be downloaded from
+https://gitlab.com/vishsoft/fpadmet
+.
+Similar content being viewed by others
+DCPM-ADMET: fusion of dual-component pre-trained model and molecular fingerprints to enhance drug ADMET properties prediction
+Article
+Open access
+20 June 2026
+ADMETboost: a web server for accurate ADMET prediction
+Article
+01 December 2022
+Machine Learning for In Silico ADMET Prediction
+Chapter
+© 2022
+Explore related subjects
+Discover the latest articles, books and news in related subjects, suggested using machine learning.
+Compound Screening
+Protein structure predictions
+Structure-Based Drug Design
+Structure Prediction
+Virtual Drug Screening
+Predictive markers
+Computational Drug Discovery and Design Strategies
+Introduction
+Properties such as absorption, distribution, metabolism, excretion and toxicity (ADMET), are an important component of pharmaceutical drug design. It is often reported that the failure to meet requisite ADMET criteria are a common cause for the high attrition rates of drug candidates [
+1
+]. Early ADMET profiling is indeed desirable so as to mitigate the risk of attrition. Various medium and high-throughput in vitro ADMET screens have therefore been developed, that have contributed to the available experimental data. These are nonetheless quite expensive especially when thousands of compounds are involved. Furthermore, reducing animal testing has now become a priority.
+With the aim of facilitating rapid and inexpensive means of ADMET profiling, various in silico tools have been developed [
+2
+]. Using databases of experimentally measured ADMET properties [
+3
+], various quantitative structure-activity/property relationship (QSAR/QSPR) models have been generated that can predict a range of ADMET properties for novel chemical entities. Other efforts have made use of ADMET predictions to evaluate drug-likeness of a compound [
+4
+,
+5
+]. While some of the models are available as part of commercial software packages based on proprietary datasets, there has been a significant push for open source software and web services [
+6
+,
+7
+,
+8
+,
+9
+,
+10
+,
+11
+,
+12
+].
+Among the popular services, ADMETLab [
+12
+] offers 53 prediction models that are calculated using a multi-task graph attention network and operates on graph-structured data. The method is able to generate customized fingerprints from the general features for a specific task. Another web tool, SwissADME [
+9
+] evaluates pharmacokinetics, drug-likeness of small molecules. The predictions are based on a combination of fragmental methods (for solubility), as well as machine-learning based binary classification methods for other ADMET properties (cytochrome-P450 inhibitor, P-glycoprotein substrate). In ADMETSar [
+11
+], models for applications in both drug discovery and environmental risk assessment are built using MACCS and Morgan fingerprints. The toxicity models used in ProTox [
+13
+] are developed based on chemical similarities between compounds with known toxic effects and the presence of toxic fragments. Other models for hepatotoxicity, cytotoxicity, mutagenicity, and carcinogenicity rely on fingerprints (MACCS/Morgan). Extended connectivity fingerprints form the basis for the prediction of 15 ADMET properties in the vNN server [
+10
+] where models are trained using variable nearest neighbourhood method. pkCSM [
+6
+], on the other hand, uses graph-based signatures to develop predictive models of central ADMET properties. Other software such as MDCKPred [
+14
+], CarcinoPred-EL [
+15
+], CapsCarcino [
+16
+] focus on a single property such as the prediction of permeability coefficient and carcinogenic compounds. Overall, the molecular representations underlying these models include various molecular and physicochemical descriptors such as fingerprints, graph signatures, and other 2D/3D indices [
+17
+,
+18
+]. Among these, fingerprint representations which are seen as an alternative to descriptors for QSPR studies, have been quite popular given their ease of computation and predictive value.
+A number of fingerprints ranging from substructure/path to feature-class/circular have been proposed many of which are used in similarity searching [
+19
+,
+20
+]. For ADMET studies however, the fingerprints studied so far have largely been restricted to a select few. In this study, we have evaluated the predictive efficacy of 20 different fingerprints ranging from substructure and extended/functional connectivity fingerprints to various path based encodings (depth-first search, shortest path, local path environments) [
+21
+]. The fingerprint-based regression/classification models were calculated for over 50 ADMET and ADMET-related endpoints (using data collated from various literature sources) and is to our knowledge one of the most comprehensive compilations analysed. For a majority of the endpoints, the prediction results were found to be comparable with more sophisticated descriptor formulations. Although the pharmacophore fingerprints yielded consistently poor results, others such as the PUBCHEM, MACCS and ECFP/FCFP encodings were found to yield the best results for most properties. The models and related software have been bundled into a downloadable package and is released under the GNU license.
+Approach
+Molecular representation
+In this study, we have examined 20 different fingerprints (see Table
+1
+) that are routinely used as similarity search tools in drug discovery. The ECFP- and FCFP-class fingerprints are circular topological fingerprints, where the former focuses on the atom properties (e.g. atomic number, charge, hydrogen count), whereas in the functional connectivity FPs, the emphasis is on properties that relate to ligand binding (e.g. hydrogen donor/acceptor, polarity, aromaticity). MACCS and PUBCHEM fingerprints are substructure fingerprints that cover a wide range of features such as element counts and ring systems, atom pairing, or atom environment etc. Other fingerprints include path based fingerprints such as the depth-first search fingerprints (DFS), all-shortest path encoding (ASP), radial fingerprints (Molprint2D), topological atom pairs (AP2D) and triplets (AT2D), pharmacophore pair and triplet encodings as well as local path environments [
+21
+]. Fingerprint calculations were performed using in-house code written in Java and makes use of the Chemistry Development Kit library [
+22
+]. The software merges existing fingerprints in the library with those calculated by the software
+jCompoundMapper
+[
+21
+].
+Table 1 Fingerprints used in this study to model different ADMET related properties
+Full size table
+Data curation
+Data for different endpoints were collected from previously published articles and databases with a primary source being the Online Chemical Database (OCHEM) [
+3
+]. The molecules were subsequently cleaned and duplicates (where present) were removed. Tables
+2
+and
+3
+lists the various endpoints and associated data sources considered in this study. Brief descriptions of the endpoints and the results from previous modelling efforts are provided in Additional file
+1
+. Since, early identification of severe toxicity is a key requirement for the safety evaluation of drug candidates, we have evaluated a number of toxicity models covering a range of endpoints such as cardiac, hepatotoxicity, endocrine, urinary tract, carcinogenicity and cytotoxicity. While a majority of the models are binary classification models, for some endpoints such the metabolic intrinsic clearance, acute oral toxicity in rats, plasma protein binding and elimination half-life, multiclass models are proposed.
+Table 2 Summary of the ADMET endpoints studied
+Full size table
+Table 3 Summary of the ADMET and other endpoints for which fingerprint-based regression models were evaluated
+Full size table
+For other endpoints, regression models have been evaluated (see Table
+3
+). These include the CACO-2 permeability which is commonly used to predict the absorption of orally administered drugs and other xenobiotics, the fraction of unbound drug in plasma, the liver microsomal clearance (typically used to predict hepatic clearance in humans), in vitro human skin permeability and the cancer potency. Models for other ADMET-related properties have also been studied. For instance, properties such as the dissociation constant (
+\(\text {pK}_a\)
+) affect solubility (
+\(\log\)
+S), permeability, distribution coefficient (
+\(\log\)
+D) and oral absorption. These in turn along with other properties such as the human serum albumin (HSA) binding impact pharmacokinetic behaviour and drug bioavailability.
+Modelling
+In order to build the models, the Random Forest algorithm [
+23
+] was chosen which is an ensemble learning method for both classification and regression. The algorithm makes use of bagging and feature randomness to build multiple decision trees (each trained on a random subset of data) and merges them together. The models were trained using the ranger [
+24
+] library in the statistical computing environment
+R
+[
+25
+]. The number of trees used to compute the final average predicted value was set to 500. For each endpoint, the data was split randomly into separate training (80%) and test (20%) sets. A fivefold cross-validation was used to identify the best performing model. In order to rule out any selection bias, we repeated random splitting 3 times and the results were averaged to gain an understanding of the variability. Furthermore,
+y
+-randomization tests were conducted to assess the robustness of the final model. To address the problem with unequal distribution of samples between classes, data augmentation of the minority class was carried out using the synthetic minority oversampling technique (SMOTE) [
+26
+].
+For regression models, the performance was assessed using the squared regression coefficient (
+\(R^2\)
+) for the correlation between experimental and predicted values. the root mean squared error (RMSE) and the mean absolute error (MAE). For classification models, metrics that are sensitive to the class imbalance have been used. These include the balanced accuracy (BACC) given by:
+$$BACC = \frac{1}{m} \sum _i^m \frac{k_i}{n_i}$$
+(1)
+where
+\(k_i\)
+is the number of correct predictions in class
+i
+,
+m
+is the number of classes and
+\(n_i\)
+is the number of examples in class
+i
+. In addition, other metrics such as the overall accuracy, the sensitivity (the true positive rate—TPR) and specificity (the true negative rate—TNR) and the area under the curve (AUC) are also reported (see Additional file
+1
+).
+Every model has a finite applicability domain (AD) within which its predictions can be trusted. For regression models, we quantify the prediction intervals (95%) using the quantile regression forests approach [
+27
+]. Here, a shorter prediction interval indicates the higher stability of prediction. In the case of classification, two values: confidence and credibility are associated with the predicted label based on the conformal prediction framework [
+28
+,
+29
+]. While the confidence provides a measure of how likely a prediction is compared to all other possible classifications, the credibility measure (equal to the highest
+p
+-value of any one of the possible classifications being the true label) provides an indication of how good the training set is for classifying the given example.
+Results and discussion
+For the various endpoints, the relevant performance metrics associated with the best fingerprint-based models are summarized in Tables
+4
+(for classification models) and
+5
+(for regression models). The complete performance summary for the training and validations sets is listed in Additional file
+1
+: Tables S1 and S2. For all cases, permutation tests confirmed (p-values < 0.001) that the probability that the model was obtained by chance is quite low. Overall, high classification accuracies (
+\(BACC > 0.80\)
+) are obtained for the blood brain barrier permeability, plasma protein binding, CYP450 inhibition (3A4/2C19/1A2/2C9/2C8 isoforms), human intestinal absorption, breast cancer resistance protein inhibition, p-glycoprotein inhibitor/substrate and hemolytic/respiratory toxicity. For some of the other endpoints such as the mitochondrial/urinary tract toxicity, human liver microsomal stability, metabolic intrinsic clearance, AMES mutagenecity, cytotoxicity (multiple cell lines), hERG cardiotoxicity/liability, drug induced liver injury, myelotoxicity, phospholipidosis, rhabdomyolysis, OATP1B1/OATP1B3 inhibition, BSEP and OCT2 inhibition, moderate (
+\(BACC = 0.71 \;\text{to}\; -0.78\)
+) performances were observed. Properties such as skin sensitization, acute oral toxicity, phototoxicity in humans, ototoxicity, choleostasis, hepatic steatosis, and carcinogenecity yielded somewhat average results. In the case of regression models, performances were largely on the poorer side with the exception of
+\(\text {pK}_a\)
+,
+\(\log\)
+S,
+\(\log\)
+D, human serum albumin and skin penetration,
+\(R^2_{cv} > 0.70\)
+.
+Table 4 Performance metrics for the best performing fingerprint-based classification models
+Full size table
+Table 5 Performance metrics for the best performing fingerprint-based regression models
+Full size table
+To identify which of the fingerprints perform well on the different datasets, we plotted heatmaps (see Figs.
+1
+and
+2
+) of the balanced accuracies (for classification models) and squared correlations (in the case of regression) obtained for the different endpoints. While the pharmacaphore fingerprints (2PPHAR/3PPHAR) perform poorly on all datasets, fingerprints based on substructure keys (PUBCHEM, MACCS, KR) show moderate to high accuracies for a majority of the modelled endpoints. Although the performances for regression models are somewhat less encouraging, here too the
+\(R^2_{cv}\)
+for PUBCHEM, ECFP4, and ASP fingerprints yield better models than the other fingerprints tested.
+Fig. 1
+Full size image
+Heatmap showing the cross-validated balanced accuracies (average of 3 independent runs) achieved by different fingerprint-based models for the endpoints studied
+Fig. 2
+Full size image
+Heatmap showing the cross-validated correlation coefficients (average of 3 independent runs) achieved by different fingerprint-based models for the endpoints studied
+We further compared the performances achieved by the fingerprint models with those obtained for the 2D/3D descriptor based approaches. The barplots in Fig.
+3
+compare the accuracies achieved by the fingerprint models with values reported by the models published earlier. While results for most properties are comparable, for some endpoints such as myelotoxicity, ototoxicity, myopathy accuracies obtained using 2D/3D descriptors are only marginally better. Indeed better results are obtained for rhabdomyolysis, phospholipidosis, phototoxicity with other descriptor based models. For phototoxicity in particular, quantum chemistry-based 3D descriptors are used which can add to the time taken. It must however be pointed out that some of the better performing models take advantage of deep learning. Attempts to improve results for selected properties were carried out using support vector machines. However, the models were not always found to improve on the random forest approach.
+Fig. 3
+Full size image
+Comparison of the accuracies achieved by the fingerprint based models in this study (“Current”) with those created using standard molecular graph based descriptors (“Original”) published in the literature. For OATP inhibtion, descriptors consist of constitutional, geometrical, electrostatic, and physicochemical indices. For phototoxicity, descriptors contain HOMO-LUMO gaps, spectral integrals, ionization potential, electron affinity and CATS descriptors. For properties such as toxic myopathy and MATE1 inhibition, the values compared are the accuracies and AUCs respectively
+For the regression models calculated for selected properties:
+\(\text {pK}_a\)
+,
+\(\log\)
+S,
+\(\log\)
+D, skin penetration, human serum albumin, MDCK permeability
+\(\text {HD}_{{50}}\)
+, we assessed the prediction reliability based on the prediction intervals. Plots of the prediction intervals with respect to the observed response values for the test sets (see Additional file
+1
+: Figure S1) showed that most of the samples lie within the 95% prediction interval which indicates that the constructed prediction intervals are reliable. For classification models, we focused on excluding compounds whose labels are predicted with low confidence and credibility. Thus, different thresholds for
+p
+-values (0.5, 0.6, 0.7, 0.8, 0.9) were applied and the corresponding fraction of molecules that would be withheld from further testing was recorded. A plot of the overall error rates and the percentage reduction in compounds excluded from further processing (see Additional file
+1
+: Figure S2) shows that for many of the endpoints modelled, the predictive performance is not significantly impacted even at cutoffs of 0.50. Such a strategy that allows for compound selection based on static thresholds for the confidence/credibility offer a way to reduce the number of compounds that typically undergo experimental testing.
+Software usage
+FP-ADMET is available as open access software (GNU GPL v3.0) and can be downloaded from
+https://gitlab.com/vishsoft/fpadmet
+. Use of FP-ADMET proceeds in two steps (i) fingerprint calculation followed by (ii) predicting the ADMET endpoint of interest. The software is command line driven and is governed by a shell script (
+runadmet.sh
+) that can be run as:
+bash runadmet.sh -f molecule.smi -p ## -a
+The input to the script is a file (
+molecule.smi
+) containing SMILES strings. The
+##
+is a number between 1 (predict Anticommensal Effect) and 56 (predict skin penetration) and corresponds to the prediction task. The results are written to a text file where each line contains molecule name and the predicted response. The “-a” option allows for the calculation of prediction intervals (in the case of regression) and confidence (for classification). For classification, conformal prediction is used to calculate a confidence (how certain the model is that the prediction is a singleton) and a credibility. For example, predicting AMES mutagenecity (task number 4) for a series of molecules produces the following results (see Table
+6
+). The label “inactive” for compound G00001 suggests that the compound is predicted to be non-mutagenic. A confidence value of 0.95 suggests that the classifier is quite certain that the prediction is likely to be a single label. A relatively low value of credibility (0.57) suggests that the compounds like G00001 are not sufficiently represented in the training set and that the user needs to treat the prediction with caution. In the case of regression, a 95% prediction interval (predictions at the 0.025 and 97.5 percentiles for
+\(pK_a\)
+) is calculated and provides a range for the predictions on an individual observation. Narrow prediction intervals indicate a lower uncertainty associated with the prediction.
+Table 6 Example showing the property (
+\(pK_a\)
+and anticommensal effect) predictions and associated uncertainties for 3 molecules
+Full size table
+Conclusion
+In this article, we have evaluated the performance of various molecular fingerprints for predicting a number of ADMET and ADMET-related endpoints. A total of 1500 models were analysed spanning 75 responses and 20 fingerprints. The results show that the machine learning performance using the different fingerprint encodings rival those of traditional descriptor-based methods. Future work will focus on combining different data sets in a multitask modeling approach which has been shown to yield statistically superior results compared with single-task models [
+12
+,
+30
+]. In order to facilitate ADMET evaluation, the best performing models have been compiled into an open access software package called FPADMET that can be downloaded from
+https://gitlab.com/vishsoft/fpadmet
+.
+References
+Ferreira LLG, Andricopulo AD (2019) ADMET modeling approaches in drug discovery. Drug Discov Today 24(5):1157–1165.
+https://doi.org/10.1016/j.drudis.2019.03.015
+Article
+CAS
+PubMed
+Google Scholar
+Kar S, Leszczynski J (2020) Open access in silico tools to predict the ADMET profiling of drug candidates. Expert Opin Drug Discov 15(12):1473–1487.
+https://doi.org/10.1080/17460441.2020.1798926
+Article
+CAS
+PubMed
+Google Scholar
+Sushko I, Novotarskyi S, Körner R, Pandey AK, Rupp M, Teetz W, Brandmaier S, Abdelaziz A, Prokopenko VV, Tanchuk VY, Todeschini R, Varnek A, Marcou G, Ertl P, Potemkin V, Grishina M, Gasteiger J, Schwab C, Baskin II, Palyulin VA, Radchenko EV, Welsh WJ, Kholodovych V, Chekmarev D, Cherkasov A, Aires-de-Sousa J, Zhang Q-Y, Bender A, Nigsch F, Patiny L, Williams A, Tkachenko V, Tetko IV (2011) Online chemical modeling environment (OCHEM): web platform for data storage, model development and publishing of chemical information. J Comput Aided Mol Des 25(6):533–554.
+https://doi.org/10.1007/s10822-011-9440-2
+Article
+CAS
+PubMed
+PubMed Central
+Google Scholar
+Guan L, Yang H, Cai Y, Sun L, Di P, Li W, Liu G, Tang Y (2019) ADMET-score—a comprehensive scoring function for evaluation of chemical drug-likeness. MedChemComm 10(1):148–157.
+https://doi.org/10.1039/c8md00472b
+Article
+CAS
+PubMed
+Google Scholar
+Jia C-Y, Li J-Y, Hao G-F, Yang G-F (2020) A drug-likeness toolbox facilitates ADMET study in drug discovery. Drug Discov Today 25(1):248–258.
+https://doi.org/10.1016/j.drudis.2019.10.014
+Article
+CAS
+PubMed
+Google Scholar
+Pires DEV, Blundell TL, Ascher DB (2015) pkCSM: predicting small-molecule pharmacokinetic and toxicity properties using graph-based signatures. J Med Chem 58(9):4066–4072.
+https://doi.org/10.1021/acs.jmedchem.5b00104
+Article
+CAS
+PubMed
+PubMed Central
+Google Scholar
+Clark AM, Dole K, Coulon-Spektor A, McNutt A, Grass G, Freundlich JS, Reynolds RC, Ekins S (2015) Open source Bayesian models. 1. Application to ADME/Tox and drug discovery datasets. J Chem Inf Model 55(6):1231–1245.
+https://doi.org/10.1021/acs.jcim.5b00143
+Article
+CAS
+PubMed
+PubMed Central
+Google Scholar
+Lagorce D, Bouslama L, Becot J, Miteva MA, Villoutreix BO (2017) FAF-drugs4: free ADME-Tox filtering computations for chemical biology and early stages drug discovery. Bioinformatics 33(22):3658–3660.
+https://doi.org/10.1093/bioinformatics/btx491
+Article
+CAS
+PubMed
+Google Scholar
+Daina A, Michielin O, Zoete V (2017) SwissADME: a free web tool to evaluate pharmacokinetics, drug-likeness and medicinal chemistry friendliness of small molecules. Sci Rep.
+https://doi.org/10.1038/srep42717
+Article
+PubMed
+PubMed Central
+Google Scholar
+Schyman P, Liu R, Desai V, Wallqvist A (2017) vNN web server for ADMET predictions. Front Pharmacol.
+https://doi.org/10.3389/fphar.2017.00889
+Article
+PubMed
+PubMed Central
+Google Scholar
+Yang H, Lou C, Sun L, Li J, Cai Y, Wang Z, Li W, Liu G, Tang Y (2018) admetSAR 2.0: web-service for prediction and optimization of chemical ADMET properties. Bioinformatics 35(6):1067–1069.
+https://doi.org/10.1093/bioinformatics/bty707
+Article
+CAS
+Google Scholar
+Xiong G, Wu Z, Yi J, Fu L, Yang Z, Hsieh C, Yin M, Zeng X, Wu C, Lu A, Chen X, Hou T, Cao D (2021) ADMETlab 2.0: an integrated online platform for accurate and comprehensive predictions of ADMET properties. Nucleic Acids Res 49(W1):5–14.
+https://doi.org/10.1093/nar/gkab255
+Article
+CAS
+Google Scholar
+Banerjee P, Eckert AO, Schrey AK, Preissner R (2018) ProTox-II: a webserver for the prediction of toxicity of chemicals. Nucleic Acids Res 46(W1):257–263.
+https://doi.org/10.1093/nar/gky318
+Article
+CAS
+Google Scholar
+Patel RD, Kumar SP, Pandya HA, Solanki HA (2018) MDCKpred: a web-tool to calculate MDCK permeability coefficient of small molecule using membrane-interaction chemical features. Toxicol Mech Methods 28(9):685–698.
+https://doi.org/10.1080/15376516.2018.1499840
+Article
+CAS
+PubMed
+Google Scholar
+Zhang L, Ai H, Chen W, Yin Z, Hu H, Zhu J, Zhao J, Zhao Q, Liu H (2017) CarcinoPred-EL: novel models for predicting the carcinogenicity of chemicals using molecular fingerprints and ensemble learning methods. Sci Rep.
+https://doi.org/10.1038/s41598-017-02365-0
+Article
+PubMed
+PubMed Central
+Google Scholar
+Wang Y-W, Huang L, Jiang S-W, Li K, Zou J, Yang S-Y (2020) CapsCarcino: a novel sparse data deep learning tool for predicting carcinogens. Food Chem Toxicol 135:110921.
+https://doi.org/10.1016/j.fct.2019.110921
+Article
+CAS
+PubMed
+Google Scholar
+Yap CW (2010) PaDEL-descriptor: an open source software to calculate molecular descriptors and fingerprints. J Comp Chem 32(7):1466–1474.
+https://doi.org/10.1002/jcc.21707
+Article
+CAS
+Google Scholar
+Venkatraman V, Alsberg BK (2016) KRAKENX: software for the generation of alignment-independent 3D descriptors. J Mol Model.
+https://doi.org/10.1007/s00894-016-2957-5
+Article
+PubMed
+Google Scholar
+Muegge I, Mukherjee P (2015) An overview of molecular fingerprint similarity search in virtual screening. Expert Opin Drug Discov 11(2):137–148.
+https://doi.org/10.1517/17460441.2016.1117070
+Article
+CAS
+PubMed
+Google Scholar
+Cereto-Massagué A, Ojeda MJ, Valls C, Mulero M, Garcia-Vallvé S, Pujadas G (2015) Molecular fingerprint similarity search in virtual screening. Methods 71:58–63.
+https://doi.org/10.1016/j.ymeth.2014.08.005
+Article
+CAS
+Google Scholar
+Hinselmann G, Rosenbaum L, Jahn A, Fechner N, Zell A (2011) jCompoundMapper: an open source java library and command-line tool for chemical fingerprints. J Cheminf.
+https://doi.org/10.1186/1758-2946-3-3
+Article
+Google Scholar
+Willighagen EL, Mayfield JW, Alvarsson J, Berg A, Carlsson L, Jeliazkova N, Kuhn S, Pluskal T, Rojas-Chertó M, Spjuth O, Torrance G, Evelo CT, Guha R, Steinbeck C (2017) The chemistry development kit (CDK) v2.0: atom typing, depiction, molecular formulas, and substructure searching. J Cheminf.
+https://doi.org/10.1186/s13321-017-0220-4
+Article
+Google Scholar
+Breiman L (2001) Random forests. Mach Learn 45(1):5–32.
+https://doi.org/10.1023/a:1010933404324
+Article
+Google Scholar
+Wright MN, Ziegler A (2017) ranger: a fast implementation of random forests for high dimensional data in C++ and R. J Stat Soft 77(1):1–17.
+https://doi.org/10.18637/jss.v077.i01
+Article
+Google Scholar
+R Core Team (2020) R: a language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria. R Foundation for Statistical Computing.
+https://www.R-project.org/
+Chawla NV, Bowyer KW, Hall LO, Kegelmeyer WP (2002) SMOTE synthetic minority over-sampling technique. J Artif Intell Res 16:321–357.
+https://doi.org/10.1613/jair.953
+Article
+Google Scholar
+Meinshausen N (2006) Quantile regression forests. J Mach Learn Res 7(35):983–999
+Google Scholar
+Papadopoulos H (2008) Chap. 18. Inductive conformal prediction: theory and application to neural networks. In: Fritzsche P (ed) Tools in artificial intelligence. IntechOpen, Rijeka.
+https://doi.org/10.5772/6078
+Chapter
+Google Scholar
+Ahlberg E, Hammar O, Bendtsen C, Carlsson L (2017) Current application of conformal prediction in drug discovery. Ann Math Artif Intell 81(1–2):145–154.
+https://doi.org/10.1007/s10472-017-9550-1
+Article
+Google Scholar
+Wenzel J, Matter H, Schmidt F (2019) Predictive multitask deep neural network models for ADME-Tox properties: learning from large data sets. J Chem Inf Model 59(3):1253–1268.
+https://doi.org/10.1021/acs.jcim.8b00785
+Article
+CAS
+PubMed
+Google Scholar
+Shaker B, Yu M-S, Song JS, Ahn S, Ryu JY, Oh K-S, Na D (2020) LightBBB: computational prediction model of blood–brain-barrier penetration based on LightGBM. Bioinformatics.
+https://doi.org/10.1093/bioinformatics/btaa918
+Article
+Google Scholar
+Falcón-Cano G, Molina C, Cabrera-Pérez MÁ (2020) ADME prediction with KNIME: development and validation of a publicly available workflow for the prediction of human oral bioavailability. J Chem Inf Model 60(6):2660–2667.
+https://doi.org/10.1021/acs.jcim.0c00019
+Article
+CAS
+PubMed
+Google Scholar
+Maier L, Pruteanu M, Kuhn M, Zeller G, Telzerow A, Anderson EE, Brochado AR, Fernandez KC, Dose H, Mori H, Patil KR, Bork P, Typas A (2018) Extensive impact of non-antibiotic drugs on human gut bacteria. Nature 555(7698):623–628.
+https://doi.org/10.1038/nature25979
+Article
+CAS
+PubMed
+PubMed Central
+Google Scholar
+Zheng S, Chang W, Liu W, Liang G, Xu Y, Lin F (2018) Computational prediction of a new ADMET endpoint for small molecules: anticommensal effect on human gut microbiota. J Chem Inf Model 59(3):1215–1220.
+https://doi.org/10.1021/acs.jcim.8b00600
+Article
+CAS
+PubMed
+Google Scholar
+Veith H, Southall N, Huang R, James T, Fayne D, Artemenko N, Shen M, Inglese J, Austin CP, Lloyd DG, Auld DS (2009) Comprehensive characterization of cytochrome p450 isozyme selectivity across chemical libraries. Nat Biotechnol 27(11):1050–1055.
+https://doi.org/10.1038/nbt.1581
+Article
+CAS
+PubMed
+PubMed Central
+Google Scholar
+Zhang X, Zhao P, Wang Z, Xu X, Liu G, Tang Y, Li W (2021) In silico prediction of CYP2c8 inhibition with machine-learning methods. Chem Res Toxicol 34(8):1850–1859.
+https://doi.org/10.1021/acs.chemrestox.1c00078
+Article
+CAS
+PubMed
+Google Scholar
+Wang N-N, Huang C, Dong J, Yao Z-J, Zhu M-F, Deng Z-K, Lv B, Lu A-P, Chen AF, Cao D-S (2017) Predicting human intestinal absorption with modified random forest approach: a comprehensive evaluation of molecular representation, unbalanced data, and applicability domain issues. RSC Adv 7(31):19007–19018.
+https://doi.org/10.1039/c6ra28442f
+Article
+CAS
+Google Scholar
+Jiang D, Lei T, Wang Z, Shen C, Cao D, Hou T (2020) ADMET evaluation in drug discovery. 20. Prediction of breast cancer resistance protein inhibition through machine learning. J Cheminf.
+https://doi.org/10.1186/s13321-020-00421-y
+Article
+Google Scholar
+Esaki T, Watanabe R, Kawashima H, Ohashi R, Natsume-Kitatani Y, Nagao C, Mizuguchi K (2018) Data curation can improve the prediction accuracy of metabolic intrinsic clearance. Mol Inf 38(1–2):1800086.
+https://doi.org/10.1002/minf.201800086
+Article
+CAS
+Google Scholar
+Liu R, Schyman P, Wallqvist A (2015) Critically assessing the predictive power of QSAR models for human liver microsomal stability. J Chem Inf Model 55(8):1566–1575.
+https://doi.org/10.1021/acs.jcim.5b00255
+Article
+CAS
+PubMed
+Google Scholar
+Wang P-H, Tu Y-S, Tseng YJ (2019) PgpRules: a decision tree based prediction server for p-glycoprotein substrates and inhibitors. Bioinformatics 35(20):4193–4195.
+https://doi.org/10.1093/bioinformatics/btz213
+Article
+CAS
+PubMed
+Google Scholar
+Tetko IV, Novotarskyi S, Sushko I, Ivanov V, Petrenko AE, Dieden R, Lebon F, Mathieu B (2013) Development of dimethyl sulfoxide solubility models using 163000 molecules: using a domain applicability metric to select more reliable predictions. J Chem Inf Model 53(8):1990–2000.
+https://doi.org/10.1021/ci400213d
+Article
+CAS
+PubMed
+PubMed Central
+Google Scholar
+Perryman AL, Inoyama D, Patel JS, Ekins S, Freundlich JS (2020) Pruned machine learning models to predict aqueous solubility. ACS Omega 5(27):16562–16567.
+https://doi.org/10.1021/acsomega.0c01251
+Article
+CAS
+PubMed
+PubMed Central
+Google Scholar
+Borba JVB, Braga RC, Alves VM, Muratov EN, Kleinstreuer N, Tropsha A, Andrade CH (2020) Pred-skin: a web portal for accurate prediction of human skin sensitizers. Chem Res Toxicol.
+https://doi.org/10.1021/acs.chemrestox.0c00186
+Article
+PubMed
+Google Scholar
+Gadaleta D, Vuković K, Toma C, Lavado GJ, Karmaus AL, Mansouri K, Kleinstreuer NC, Benfenati E, Roncaglioni A (2019) SAR and QSAR modeling of a large collection of LD50 rat acute oral toxicity data. J Cheminf.
+https://doi.org/10.1186/s13321-019-0383-2
+Article
+Google Scholar
+Xu C, Cheng F, Chen L, Du Z, Li W, Liu G, Lee PW, Tang Y (2012) In silico prediction of chemical Ames mutagenicity. J Chem Inf Model 52(11):2840–2847.
+https://doi.org/10.1021/ci300400a
+Article
+CAS
+PubMed
+Google Scholar
+Sun H, Wang Y, Cheff DM, Hall MD, Shen M (2020) Predictive models for estimating cytotoxicity on the basis of chemical structures. Bioorg Med Chem 28(10):115422.
+https://doi.org/10.1016/j.bmc.2020.115422
+Article
+CAS
+PubMed
+PubMed Central
+Google Scholar
+Mora JR, Marrero-Ponce Y, García-Jacas CR, Causado AS (2020) Ensemble models based on QuBiLS-MAS features and shallow learning for the prediction of drug-induced liver toxicity: improving deep learning and traditional approaches. Chem Res Toxicol 33(7):1855–1873.
+https://doi.org/10.1021/acs.chemrestox.0c00030
+Article
+CAS
+PubMed
+Google Scholar
+Zheng S, Wang Y, Liu W, Chang W, Liang G, Xu Y, Lin F (2019) In silico prediction of hemolytic toxicity on the human erythrocytes for small molecules by machine-learning and genetic algorithm. J Med Chem 63(12):6499–6512.
+https://doi.org/10.1021/acs.jmedchem.9b00853
+Article
+CAS
+PubMed
+Google Scholar
+Cai C, Guo P, Zhou Y, Zhou J, Wang Q, Zhang F, Fang J, Cheng F (2019) Deep learning-based prediction of drug-induced cardiotoxicity. J Chem Inf Model 59(3):1073–1084.
+https://doi.org/10.1021/acs.jcim.8b00769
+Article
+CAS
+PubMed
+PubMed Central
+Google Scholar
+Siramshetty VB, Nguyen D-T, Martinez NJ, Southall NT, Simeonov A, Zakharov AV (2020) Critical assessment of artificial intelligence methods for prediction of hERG channel inhibition in the “big data” era. J Chem Inf Model 60(12):6007–6019.
+https://doi.org/10.1021/acs.jcim.0c00884
+Article
+CAS
+PubMed
+Google Scholar
+Hemmerich J, Troger F, Füzi B, Ecker FG (2020) Using machine learning methods and structural alerts for prediction of mitochondrial toxicity. Mol Inf 39(5):2000005.
+https://doi.org/10.1002/minf.202000005
+Article
+CAS
+Google Scholar
+Lei T, Sun H, Kang Y, Zhu F, Liu H, Zhou W, Wang Z, Li D, Li Y, Hou T (2017) ADMET evaluation in drug discovery. 18. Reliable prediction of chemical-induced urinary tract toxicity by boosting machine learning approaches. Mol Pharm 14(11):3935–3953.
+https://doi.org/10.1021/acs.molpharmaceut.7b00631
+Article
+CAS
+PubMed
+Google Scholar
+Zhang H, Ren J-X, Ma J-X, Ding L (2018) Development of an in silico prediction model for chemical-induced urinary tract toxicity by using Naïve Bayes classifier. Mol Divers 23(2):381–392.
+https://doi.org/10.1007/s11030-018-9882-8
+Article
+CAS
+PubMed
+Google Scholar
+Schmidt F, Wenzel J, Halland N, Güssregen S, Delafoy L, Czich A (2019) Computational investigation of drug phototoxicity: photosafety assessment, photo-toxophore identification, and machine learning. Chem Res Toxicol 32(11):2338–2352.
+https://doi.org/10.1021/acs.chemrestox.9b00338
+Article
+CAS
+PubMed
+Google Scholar
+Hu X, Yan A (2011) In silico models to discriminate compounds inducing and noninducing toxic myopathy. Mol Inf 31(1):27–39.
+https://doi.org/10.1002/minf.201100067
+Article
+CAS
+Google Scholar
+Zhang H, Yu P, Zhang T-G, Kang Y-L, Zhao X, Li Y-Y, He J-H, Zhang J (2015) In silico prediction of drug-induced myelotoxicity by using Naïve Bayes method. Mol Divers 19(4):945–953.
+https://doi.org/10.1007/s11030-015-9613-3
+Article
+CAS
+PubMed
+Google Scholar
+Fusani L, Brown M, Chen H, Ahlberg E, Noeske T (2017) Predicting the risk of phospholipidosis with in silico models and an image-based in vitro screen. Mol Pharm 14(12):4346–4352.
+https://doi.org/10.1021/acs.molpharmaceut.7b00388
+Article
+CAS
+PubMed
+Google Scholar
+Kotsampasakou E, Ecker GF (2017) Predicting drug-induced cholestasis with the help of hepatic transporters—an in silico modeling approach. J Chem Inf Model 57(3):608–615.
+https://doi.org/10.1021/acs.jcim.6b00518
+Article
+CAS
+PubMed
+PubMed Central
+Google Scholar
+Cui X, Liu J, Zhang J, Wu Q, Li X (2019) In silico prediction of drug-induced rhabdomyolysis with machine-learning models and structural alerts. J Appl Toxicol 39(8):1224–1232.
+https://doi.org/10.1002/jat.3808
+Article
+CAS
+PubMed
+Google Scholar
+Zhang H, Ma J-X, Liu C-T, Ren J-X, Ding L (2018) Development and evaluation of in silico prediction model for drug-induced respiratory toxicity by using Naïve Bayes classifier method. Food Chem Toxicol 121:593–603.
+https://doi.org/10.1016/j.fct.2018.09.051
+Article
+CAS
+PubMed
+Google Scholar
+Zhang H, Liu C-T, Mao J, Shen C, Xie R-L, Mu B (2020) Development of novel in silico prediction model for drug-induced ototoxicity by using Naïve Bayes classifier approach. Toxicol In Vitro 65:104812.
+https://doi.org/10.1016/j.tiv.2020.104812
+Article
+CAS
+PubMed
+Google Scholar
+Wittwer MB, Zur AA, Khuri N, Kido Y, Kosaka A, Zhang X, Morrissey KM, Sali A, Huang Y, Giacomini KM (2013) Discovery of potent, selective multidrug and toxin extrusion transporter 1 (MATE1, SLC47a1) inhibitors through prescription drug profiling and computational modeling. J Med Chem 56(3):781–795.
+https://doi.org/10.1021/jm301302s
+Article
+CAS
+PubMed
+PubMed Central
+Google Scholar
+Jain S, Norinder U, Escher SE, Zdrazil B (2020) Combining in vivo data with in silico predictions for modeling hepatic steatosis by using stratified bagging and conformal prediction. Chem Res Toxicol.
+https://doi.org/10.1021/acs.chemrestox.0c00511
+Article
+PubMed
+PubMed Central
+Google Scholar
+Türková A, Jain S, Zdrazil B (2018) Integrative data mining, scaffold analysis, and sequential binary classification models for exploring ligand profiles of hepatic organic anion transporting polypeptides. J Chem Inf Model 59(5):1811–1825.
+https://doi.org/10.1021/acs.jcim.8b00466
+Article
+CAS
+PubMed
+PubMed Central
+Google Scholar
+McLoughlin KS, Jeong CG, Sweitzer TD, Minnich AJ, Tse MJ, Bennion BJ, Allen JE, Calad-Thomson S, Rush TS, Brase JM (2021) Machine learning models to predict inhibition of the bile salt export pump. J Chem Inf Model 61(2):587–602.
+https://doi.org/10.1021/acs.jcim.0c00950
+Article
+CAS
+PubMed
+Google Scholar
+Kido Y, Matsson P, Giacomini KM (2011) Profiling of a prescription drug library for potential renal drug–drug interactions mediated by the organic cation transporter 2. J Med Chem 54(13):4548–4558.
+https://doi.org/10.1021/jm2001629
+Article
+CAS
+PubMed
+PubMed Central
+Google Scholar
+Yuan Y, Chang S, Zhang Z, Li Z, Li S, Xie P, Yau W-P, Lin H, Cai W, Zhang Y, Xiang X (2020) A novel strategy for prediction of human plasma protein binding using machine learning techniques. Chemom Intell Lab Syst 199:103962.
+https://doi.org/10.1016/j.chemolab.2020.103962
+Article
+CAS
+Google Scholar
+Podlewska S, Kafel R (2018) MetStabOn—online platform for metabolic stability predictions. Int J Mol Sci 19(4):1040.
+https://doi.org/10.3390/ijms19041040
+Article
+CAS
+PubMed Central
+Google Scholar
+Sorkun MC, Khetan A, Er S (2019) AqSolDB, a curated reference set of aqueous solubility and 2D descriptors for a diverse set of compounds. Sci Data.
+https://doi.org/10.1038/s41597-019-0151-1
+Article
+PubMed
+PubMed Central
+Google Scholar
+Hsiao Y-W, Fagerholm U, Norinder U (2013) In silico categorization of in vivo intrinsic clearance using machine learning. Mol Pharm 10(4):1318–1321.
+https://doi.org/10.1021/mp300484r
+Article
+CAS
+PubMed
+Google Scholar
+Lindh M, Karlén A, Norinder U (2017) Predicting the rate of skin penetration using an aggregated conformal prediction framework. Mol Pharm 14(5):1571–1576.
+https://doi.org/10.1021/acs.molpharmaceut.7b00007
+Article
+CAS
+PubMed
+Google Scholar
+Serra A, Önlü S, Coretto P, Greco D (2019) An integrated quantitative structure and mechanism of action-activity relationship model of human serum albumin binding. J Cheminf.
+https://doi.org/10.1186/s13321-019-0359-2
+Article
+Google Scholar
+Ciura K, Ulenberg S, Kapica H, Kawczak P, Belka M, Bączek T (2020) Drug affinity to human serum albumin prediction by retention of cetyltrimethylammonium bromide pseudostationary phase in micellar electrokinetic chromatography and chemically advanced template search descriptors. J Pharm Biomed 188:113423.
+https://doi.org/10.1016/j.jpba.2020.113423
+Article
+CAS
+Google Scholar
+Giaginis C, Zira A, Theocharis S, Tsantili-Kakoulidou A (2009) Application of quantitative structure activity relationships for modeling drug and chemical transport across the human placenta barrier: a multivariate data analysis approach. J Appl Toxicol 29(8):724–733.
+https://doi.org/10.1002/jat.1466
+Article
+CAS
+PubMed
+Google Scholar
+Bercu JP, Morton SM, Deahl JT, Gombar VK, Callis CM, van Lier RBL (2010) In silico approaches to predicting cancer potency for risk assessment of genotoxic impurities in drug substances. Regul Toxicol Pharmacol 57(2):300–306.
+https://doi.org/10.1016/j.yrtph.2010.03.010
+Article
+CAS
+PubMed
+Google Scholar
+Simeon S, Montanari D, Gleeson MP (2019) Investigation of factors affecting the performance of in silico volume distribution QSAR models for human, rat, mouse, dog & monkey. Mol Inf 38(10):1900059.
+https://doi.org/10.1002/minf.201900059
+Article
+CAS
+Google Scholar
+Fu L, Liu L, Yang Z-J, Li P, Ding J-J, Yun Y-H, Lu A-P, Hou T-J, Cao D-S (2019) Systematic modeling of
+\(log D_7.4\)
+based on ensemble machine learning, group contribution, and matched molecular pair analysis. J Chem Inf Model 60(1):63–76.
+https://doi.org/10.1021/acs.jcim.9b00718
+Article
+CAS
+Google Scholar
+Watanabe R, Esaki T, Kawashima H, Natsume-Kitatani Y, Nagao C, Ohashi R, Mizuguchi K (2018) Predicting fraction unbound in human plasma from chemical structure: improved accuracy in the low value ranges. Mol Pharm 15(11):5302–5311.
+https://doi.org/10.1021/acs.molpharmaceut.8b00785
+Article
+CAS
+PubMed
+Google Scholar
+Esaki T, Ohashi R, Watanabe R, Natsume-Kitatani Y, Kawashima H, Nagao C, Mizuguchi K (2019) Computational model to predict the fraction of unbound drug in the brain. J Chem Inf Model 59(7):3251–3261.
+https://doi.org/10.1021/acs.jcim.9b00180
+Article
+CAS
+PubMed
+Google Scholar
+Lu Y, Anand S, Shirley W, Gedeck P, Kelley BP, Skolnik S, Rodde S, Nguyen M, Lindvall M, Jia W (2019) Prediction of p
+K
+a
+using machine learning methods with rooted topological torsion fingerprints: application to aliphatic amines. J Chem Inf Model 59(11):4706–4719.
+https://doi.org/10.1021/acs.jcim.9b00498
+Article
+CAS
+PubMed
+Google Scholar
+Mansouri K, Cariello NF, Korotcov A, Tkachenko V, Grulke CM, Sprankle CS, Allen D, Casey WM, Kleinstreuer NC, Williams AJ (2019) Open-source QSAR models for pKa prediction using multiple machine learning approaches. J Cheminf.
+https://doi.org/10.1186/s13321-019-0384-1
+Article
+Google Scholar
+Chen J, Yang H, Zhu L, Wu Z, Li W, Tang Y, Liu G (2020) In silico prediction of human renal clearance of compounds using quantitative structure-pharmacokinetic relationship models. Chem Res Toxicol 33(2):640–650.
+https://doi.org/10.1021/acs.chemrestox.9b00447
+Article
+CAS
+PubMed
+Google Scholar
+Zheng S, Xiong J, Wang Y, Liang G, Xu Y, Lin F (2020) Quantitative prediction of hemolytic toxicity for small molecules and their potential hemolytic fragments by mach. learn. and recursive fragmentation methods. J Chem Inf Model 60(6):3231–3245.
+https://doi.org/10.1021/acs.jcim.0c00102
+Article
+CAS
+PubMed
+Google Scholar
+Download references
+Acknowledgements
+The author thanks Dr. Amitava Roy (NIH) and Assoc. Prof. Travis Wheeler (University of Montana) for fruitful discussions.
+Funding
+This work was supported through a grant (Grant No. 262152) from the Research Council of Norway.
+Author information
+Authors and Affiliations
+Norwegian University of Science and Technology, Realfagbygget, Gløshaugen, Høgskoleringen, 7491, Trondheim, Norway
+Vishwesh Venkatraman
+Authors
+Vishwesh Venkatraman
+View author publications
+Search author on:
+PubMed
+Google Scholar
+Contributions
+VV conceived and designed the study, performed the data analysis and wrote the paper. The author read and approved the final manuscript.
+Corresponding author
+Correspondence to
+Vishwesh Venkatraman
+.
+Ethics declarations
+Competing interests
+The authors declare that they have no competing interests.
+Additional information
+Publisher's Note
+Springer Nature remains neutral with regard to jurisdictional claims in published maps and institutional affiliations.
+Supplementary Information
+Additional file 1.
+(download PDF
+)
+File contains brief descriptions of the properties modelled, additional performance statistics and figures referred to in the text.
+Rights and permissions
+Open Access
+This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons licence, and indicate if changes were made. The images or other third party material in this article are included in the article's Creative Commons licence, unless indicated otherwise in a credit line to the material. If material is not included in the article's Creative Commons licence and your intended use is not permitted by statutory regulation or exceeds the permitted use, you will need to obtain permission directly from the copyright holder. To view a copy of this licence, visit
+http://creativecommons.org/licenses/by/4.0/
+. The Creative Commons Public Domain Dedication waiver (
+http://creativecommons.org/publicdomain/zero/1.0/
+) applies to the data made available in this article, unless otherwise stated in a credit line to the data.
+Reprints and permissions
+About this article
+Cite this article
+Venkatraman, V. FP-ADMET: a compendium of fingerprint-based ADMET prediction models.
+J Cheminform
+13
+, 75 (2021). https://doi.org/10.1186/s13321-021-00557-5
+Download citation
+Received
+:
+07 April 2021
+Accepted
+:
+20 September 2021
+Published
+:
+28 September 2021
+Version of record
+:
+28 September 2021
+DOI
+:
+https://doi.org/10.1186/s13321-021-00557-5
+Share this article
+Anyone you share the following link with will be able to read this content:
+Get shareable link
+Sorry, a shareable link is not currently available for this article.
+Copy shareable link to clipboard
+Provided by the Springer Nature SharedIt content-sharing initiative
+Keywords
+ADMET
+Machine learning
+Molecular fingerprints
+Advertisement
+Search
+Search by keyword or author
+Search
+Navigation
+Find a journal
+Publish with us
+Track your research
+Footer Navigation
+Discover content
+Journals A-Z
+Books A-Z
+Subjects A-Z
+Publish with us
+Journal finder
+Publish your research
+Language editing
+Open access publishing
+Products and services
+Our products
+Librarians
+Societies
+Partners and advertisers
+Our brands
+Springer
+Nature Portfolio
+BMC
+Palgrave Macmillan
+Apress
+Discover
+Corporate Navigation
+Your privacy choices/Manage cookies
+Your US state privacy rights
+Accessibility statement
+Terms and conditions
+Privacy policy
+Help and support
+Legal notice
+Cancel contracts here
+122.231.251.132
+Not affiliated
+© 2026 Springer Nature

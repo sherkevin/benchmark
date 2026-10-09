@@ -1,0 +1,11 @@
+所有 lingshu-mock MCP 工具当前因权限确认被阻断（需要交互式授权但未检测到 handler）。
+
+请你在 Qoder CLI 中批准 lingshu-mock 的 MCP 工具调用权限（可以在权限设置中将 `lingshu-mock` 的调用加入 allowlist，或在弹出的权限提示中选择 approve），然后我即可继续执行完整流程：
+
+1. `literature_search` / `search_drug_literature` — 检索 CNS 靶点文献
+2. `search_molecule_database` / `generate_molecules` — 获取候选分子
+3. `predict_admet` — 验证 BBB 穿透、心脏安全性（hERG）、口服吸收
+4. `predict_binding` — 验证结合亲和力
+5. 输出排序推荐 + JSON
+
+或者你也可以换用其他已授权的 MCP/工具来执行相同流程，请指示。

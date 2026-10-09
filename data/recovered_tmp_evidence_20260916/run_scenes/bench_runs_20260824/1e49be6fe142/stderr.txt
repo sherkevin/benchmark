@@ -1,0 +1,5 @@
+Could not parse message into JSON: {"code":"InvalidParameter","message":"encryption header error","request_id":"b3e1a322-15fd-9002-bced-d667ac717f31"}
+{"type": "content_block_stop", "index": 0}
+From chunk: [ "id:6", ":HTTP_STATUS/400", "data:{\"code\":\"InvalidParameter\",\"message\":\"encryption header error\",\"request_id\":\"b3e1a322-15fd-9002-bced-d667ac717f31\"}",
+  "id:7", ":HTTP_STATUS/200", "event: content_block_stop", "data: {\"type\": \"content_block_stop\", \"index\": 0}"
+]

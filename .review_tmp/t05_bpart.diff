@@ -1,0 +1,72 @@
+commit c0b41a39cb9830550ab1c5ea486ae6bcddd5e968
+Author: Jing Wu <jingwu.wu@alibaba-inc.com>
+Date:   Fri Aug 7 15:13:06 2026 +0800
+
+    task-05 §2（任务 #53）：grounding 条件③改组成多重集比对（保留 dummy 规范化）
+    
+    四条裁定口径逐字落地：
+    1. edit_op 遵 ADR-0018 §5 H6 升版：算子集 {+n e, −n e}，detail 扩为
+       <token>|<token>*<n> 可携带计数 n；answer_schema 0.2.0→0.3.0 登记
+       （operator enum 5 元收敛 add_atom/remove_atom，工具面 5 元集不变）。
+    2. occupancy 小数计数固定容差 ε=0.02 写死（COMPOSITION_EPSILON，
+       0.019 过 / 0.021 拒边界用例在场）。
+    3. 保留前置：trace 须有 edit_molecule applied=True 行且三元组相符，
+       组成比对在其之上叠加（现有负例语义保持）。
+    4. 跳数 = 编辑序列累计算子总数 ≤2（COMPOSITION_HOP_LIMIT；网关侧
+       edit_molecule 无跳数口径，无冲突）。
+    
+    实现：
+    - evaluate.py 新增纯函数组（#54 E5 质量门复用接口）：composition_of
+      （四形态解析：式串/材料键前段/实体 ID/SMILES，分子侧 SMILES 载体
+      口径剥隐式 H）、apply_composition_edit、composition_equal、
+      parse_edit_detail、_edit_op_hops；条件③身份判据从结构 canonical
+      相等改组成多重集相等，details 落 composition 诊断。
+    - b_partition.json 新增 case_fixture_isolation_v2（组成自洽金标准
+      fixture：aa+F 实跑产物），金标准测试切 v2；v1 与隔离组零改动。
+    - 新增 test_grounding_composition_task05.py（composition_ 组 11 用例：
+      四形态解析/detail 文法/变换正确性/ε 边界/正例/同分异构判相等 H8/
+      差一原子拒/缺 applied 拒/跳数 2 过 3 拒/材料域正例与容差边界）。
+    - 实跑证据 rehearsal_logs/task-05_condition3_composition_realdata.log
+      （分子域 aa+F 真实网关实跑 + 材料域真实晶体键 occupancy 小数）。
+    
+    回归：176 passed + 1 skipped；唯一失败 test_material_key_recompute
+    系他人材料侧在途数据改动（key 列 5,771→17,252），保持 #52 对照口径不动。
+
+diff --git a/dag_poc/mcp_mock_server/b_partition.json b/dag_poc/mcp_mock_server/b_partition.json
+index fbcc06e..4067ef0 100644
+--- a/dag_poc/mcp_mock_server/b_partition.json
++++ b/dag_poc/mcp_mock_server/b_partition.json
+@@ -4,7 +4,7 @@
+     "members": "B 成员集合（存在性接口定义域）。exists 严格等价 m ∈ members：A 内分子与库外分子一律 False（goal §2b⑤）。成员记录形状 {id, case_ref, provenance}，字段集对齐 E1《后端库规格契约》§3.2 B 侧。",
+     "g_b": "B 侧合格集 G_B（goal §2b①：终态须命中 G_B 且经 B 侧性质复核，评分由评测机在 B 侧执行，不经存在性接口）。G_B ⊆ members，且 G_B 成员必带 case_ref（契约 §3.4：B 侧 case_ref 必填）。",
+     "cases": "per-case 分区（任务 #13）：cases[case_id] = {key_space, members[], g_b[]}。case_id 对应 dag_poc/templates/**/case_*.json 的文件名（去扩展名）。加载规则见 _note 与 gateway.BPartitionJsonReader。",
+-    "placeholder_warning": "顶层 members/g_b 与 cases.case_fixture_isolation_v1 均为 fixture/占位数据，仅用于网关语义与可证伪隔离测试；真实 B 侧内容待 E5 造题冻结 G_B、E1 入库 backend/*_B.jsonl 后替换（届时换 BPartitionReader 实现，不改 Gateway 接口）。隔离验证以 rehearsal_logs 为准，本文件不构成隔离已验证依据。"
++    "placeholder_warning": "顶层 members/g_b 与 cases.case_fixture_isolation_v1 / case_fixture_isolation_v2 均为 fixture/占位数据，仅用于网关语义与可证伪隔离测试；真实 B 侧内容待 E5 造题冻结 G_B、E1 入库 backend/*_B.jsonl 后替换（届时换 BPartitionReader 实现，不改 Gateway 接口）。隔离验证以 rehearsal_logs 为准，本文件不构成隔离已验证依据。"
+   },
+   "cases": {
+     "case_fixture_isolation_v1": {
+@@ -34,6 +34,24 @@
+       "g_b": [
+         "[16*][16*](=[22*])[22*][16*]1:[16*]:[16*]:[16*]:[16*]:[16*]:1[16*]([22*])=[22*]"
+       ]
++    },
++    "case_fixture_isolation_v2": {
++      "key_space": "过渡期 fixture 口径（占位数据，task-05 §2 / 任务 #53 新增）：组成自洽金标准 fixture——G_B 成员 = 匿名域 edit_molecule 分支 2 真实产物 canonical SMILES（aa + add_atom F 的 RDKit 实跑产物，与顶层成员 1 同键）。条件③改组成多重集相等判法（ADR-0018 §5 H7，ε=0.02）后，composition(aa)+F == 本键组成成立（实跑证据 rehearsal_logs/task-05_condition3_composition_realdata.log），供金标准/三门闭环测试使用；v1（阿司匹林 fixture，与 aa 无组成方程关系）保留不动供隔离组测试。目标口径同 v1：InChIKey 列待 E5 冻结时回填；本 case 非真实出题。",
++      "members": [
++        {
++          "id": "[16*][16*]([16*])[81*][16*][16*]([22*])[16*][22*][16*]1:[16*]:[16*]:[16*]([16*][16*][22*][16*]F):[16*]:[16*]:1",
++          "case_ref": "case_fixture_isolation_v2",
++          "provenance": {
++            "source_db": "manual_annotation",
++            "source_url": "https://example.org/e3/fixture/isolation-v2#aa-plus-F-anon",
++            "source_paper_doi": "N/A（task-05 §2 组成自洽金标准 fixture，非真实出题；构造：A 内分子 aa 经 edit_molecule add_atom F 的 RDKit 实跑产物 canonical SMILES，即顶层成员 1。组成方程：comp(aa 载体 -H)={16:15,22:3,81:1} + {7:1} == 本键组成 {7:1,16:15,22:3,81:1}）",
++            "note": "组成自洽金标准 fixture（G_B 成员）：条件③组成多重集判法下 aa+F 变换 == 本键组成"
++          }
++        }
++      ],
++      "g_b": [
++        "[16*][16*]([16*])[81*][16*][16*]([22*])[16*][22*][16*]1:[16*]:[16*]:[16*]([16*][16*][22*][16*]F):[16*]:[16*]:1"
++      ]
+     }
+   },
+   "members": [

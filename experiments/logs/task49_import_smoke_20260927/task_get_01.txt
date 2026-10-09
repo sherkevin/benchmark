@@ -1,0 +1,36 @@
+  Task ID         01a0e08c2763e629234f90694bfd9149
+  Status          READY
+  Application ID  --
+  Project         damo_genomic_gene
+  Queue           --
+  Cluster         --
+  Queue Location  --
+  Card Type       H20
+  Worker          --
+  PS              --
+  Image           --
+  Custom Image    否
+  Git Path        git@gitlab.alibaba-inc.com:jingwu.jw/benchmark.git
+  Git Branch      --
+  Commit ID       fbc6749897013322f817696bdd1c3dae50a5a2f0
+  User            景午
+  Source          NEBULACTL
+  Storage         pangu
+  Created         9/27/2026, 9:47:57 AM
+  Updated         9/27/2026, 9:47:57 AM
+  Logview         https://nebula2.alibaba-inc.com/log/logview/xdl/view?task_id=01a0e08c2763e629234f90694bfd9149
+  提交命令行           nebula-cli run mdl --user_params="--input=task/task49-pharma-benchmark-baseline-freeze/fingerprint_diagnostic_v1/inputs.json  --input-sha256=a73f1cfcc0ccb7f3d607cbcfbd19d2dfacfb8539a775123af414a61c404e3bdf  --code-commit=fbc6749897013322f817696bdd1c3dae50a5a2f0  --folds=1  --seeds=0  --delays=0  --epochs=2" --queue=damo_genomic_gene_a800 --job_name=jingwu_task49_import_smoke_001 --algo_name=pytorch280 --worker_count=1 --entry=src/probe_headless/nebula_fingerprint_online_diagnostic.py --file.cluster_file=.neb_submit_yrq1q16t/cluster.json --git_path=git@gitlab.alibaba-inc.com:jingwu.jw/benchmark.git --commit_id=fbc6749897013322f817696bdd1c3dae50a5a2f0
+
+  🔧 Application
+  ────────────────────────────────────────────────────────
+  Application ID  undefined
+  Status          --
+  Created         --
+
+  📊 Timeline
+  ────────────────────────────────────────────────────────
+[2m+-------+---------+-----------------------+----------+[0m
+[1m[36m| Phase | Message | Time                  | Duration |[0m
+[2m+-------+---------+-----------------------+----------+[0m
+| Init  | init    | 9/27/2026, 9:47:56 AM | 0s       |
+[2m+-------+---------+-----------------------+----------+[0m

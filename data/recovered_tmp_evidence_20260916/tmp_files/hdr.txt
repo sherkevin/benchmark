@@ -1,0 +1,11 @@
+HTTP/2 206 
+date: Tue, 08 Sep 2026 10:15:36 GMT
+content-type: text/html
+content-length: 256
+server: nginx/1.31.5
+last-modified: Mon, 07 Sep 2026 08:06:51 GMT
+vary: Accept-Encoding
+etag: "6a9e709b-5979"
+cache-control: max-age=60, public
+content-range: bytes 0-255/22905
+

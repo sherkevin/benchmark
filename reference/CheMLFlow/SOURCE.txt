@@ -1,0 +1,5 @@
+arXiv:2608.04942
+abs: https://arxiv.org/abs/2608.04942
+pdf: https://arxiv.org/pdf/2608.04942
+topic: 化学信息学工作流
+pulled: 2026-08-09 via arxiv MCP (arxiv_get_metadata / arxiv_read_paper)

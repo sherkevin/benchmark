@@ -1,0 +1,5 @@
+arXiv:2606.18789
+abs: https://arxiv.org/abs/2606.18789
+pdf: https://arxiv.org/pdf/2606.18789
+topic: 电力系统证据链
+pulled: 2026-08-09 via arxiv MCP (arxiv_get_metadata / arxiv_read_paper)

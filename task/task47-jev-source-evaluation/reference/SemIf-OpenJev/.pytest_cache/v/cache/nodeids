@@ -1,0 +1,14 @@
+[
+  "tests/test_calibrate.py::test_apply_validates_all_rows_before_creating_output",
+  "tests/test_calibrate.py::test_argmax_invariant_under_temperature",
+  "tests/test_calibrate.py::test_bad_temperature_rejected",
+  "tests/test_calibrate.py::test_duplicate_gold_row_rejected",
+  "tests/test_calibrate.py::test_fixed_temperature_cli_does_not_fit",
+  "tests/test_calibrate.py::test_non_finite_logits_rejected",
+  "tests/test_calibrate.py::test_option_set_mismatch_rejected",
+  "tests/test_core.py::test_direct_prompt_excludes_extra_fields",
+  "tests/test_core.py::test_duplicate_options_rejected",
+  "tests/test_core.py::test_nonfinite_structured_state_is_rejected",
+  "tests/test_core.py::test_softmax_is_finite_and_normalized",
+  "tests/test_core.py::test_structured_json_state_is_supported"
+]

@@ -1,0 +1,8 @@
+[
+  "tests/test_core.py::test_calibration",
+  "tests/test_core.py::test_conservation",
+  "tests/test_core.py::test_interruption_classify",
+  "tests/test_core.py::test_judge",
+  "tests/test_core.py::test_metrics_machine",
+  "tests/test_core.py::test_passhatk"
+]

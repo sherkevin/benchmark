@@ -1,0 +1,119 @@
+Thu Aug 27 09:42:04 UTC 2026: Starting clean download of 3317216130 bytes in 4 chunks
+Thu Aug 27 09:42:04 UTC 2026: Started chunk_0: bytes 2027725950-2857029981 (791M)
+Thu Aug 27 09:42:04 UTC 2026: Started chunk_1: bytes 2857029982-3686334013 (791M)
+Thu Aug 27 09:42:04 UTC 2026: Started chunk_2: bytes 3686334014-4515638045 (791M)
+Thu Aug 27 09:42:04 UTC 2026: Started chunk_3: bytes 4515638046-5344942079 (791M)
+Terminated
+Terminated
+Terminated
+Terminated
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_2: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_1: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_3: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_0: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_2: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_1: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_3: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_0: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_2: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_1: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_3: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_0: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_2: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_1: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_3: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_0: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_2: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_1: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_3: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_0: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_1: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_3: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_2: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_0: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_1: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_3: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_2: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_0: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_1: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_3: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_2: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_0: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_1: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_3: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_2: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_0: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_1: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_3: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_2: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_0: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_1: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_3: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_2: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_0: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_1: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_3: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_2: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_0: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_1: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_3: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_2: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_0: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_1: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_3: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_2: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_0: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_3: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_1: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_2: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_0: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_3: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_1: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_2: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_0: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_3: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_1: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_2: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_0: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_3: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_1: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_2: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_0: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_3: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_1: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_2: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_0: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_3: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_1: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_0: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_2: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_3: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_1: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_0: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_2: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_3: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_1: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_0: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_2: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_3: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_0: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_1: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_2: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_3: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_0: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_1: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_2: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_3: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_1: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_0: No such file or directory
+/tmp/clean_parallel_dl.sh: line 33: /tmp/gse230348_v2/chunk_2: No such file or directory
+chunk_3: FAILED after 50 attempts
+chunk_0: FAILED after 50 attempts
+chunk_1: FAILED after 50 attempts
+chunk_2: FAILED after 50 attempts
+Thu Aug 27 10:56:42 UTC 2026: All downloads finished, verifying...
+chunk_0: SIZE MISMATCH (0 != 829304032)
+chunk_1: SIZE MISMATCH (0 != 829304032)
+chunk_2: SIZE MISMATCH (0 != 829304032)
+chunk_3: SIZE MISMATCH (0 != 829304034)
+ERROR: Some chunks have wrong sizes

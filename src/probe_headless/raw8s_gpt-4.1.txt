@@ -1,0 +1,9 @@
+{
+  "O6.240Ca1Cu2Ba2Hg1": "high",
+  "O4.058Cu1Ba2Hg1": "high",
+  "O4.066Cu1Ba2Hg1": "high",
+  "O4.162Cu1Ba2Hg1": "high",
+  "O8.190Ca1Cu2Sr2Bi2": "high",
+  "O7Cu3Y0.200Ba2La0.800": "low",
+  "O8Ca1Fe0.020Cu1.980Ba2Tl2": "high"
+}

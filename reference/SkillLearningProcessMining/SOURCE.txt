@@ -1,0 +1,6 @@
+arXiv:2410.12870
+abs: https://arxiv.org/abs/2410.12870
+pdf: https://arxiv.org/pdf/2410.12870
+topic: 【反例】ICPM 2024, 用conformance checking做技能检索, 明确支持并行执行
+pulled: 2026-08-09 反向证伪搜索(主动找反例)
+see: research/差异点证伪复核-20260809.md

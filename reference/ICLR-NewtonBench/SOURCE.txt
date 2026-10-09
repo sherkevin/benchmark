@@ -1,0 +1,6 @@
+conference: ICLR 2026
+title: NewtonBench: Benchmarking Generalizable Scientific Law Discovery in LLM Agents
+arxiv_id: 2510.07172v3
+arxiv_abs: http://arxiv.org/abs/2510.07172v3
+pdf_url: https://arxiv.org/pdf/2510.07172v3
+matched_arxiv_title: NewtonBench: Benchmarking Generalizable Scientific Law Discovery in LLM Agents

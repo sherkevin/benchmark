@@ -1,0 +1,1655 @@
+载入 backend：/mnt/ai4sci_develop_fast/jingwu/benchmark/dag_poc/data/backend（全载 A 侧，只读）
+  [case_dh_drug_01] ✓ A6.target_prop_valid: target.prop=logS ∈ 支持集 ['logS', 'tc']
+------------------------------------------------------------------------
+A1 [case_dh_drug_01] gt 不得出现在自己的可见集内（硬要求 2）
+  [case_dh_drug_01] ✓ A1.gt_invisible: entity_ref∉白名单 且 组成无碰撞
+  [case_dh_drug_01] ✓ A1.gt_comp_form: gt.composition 可作组成核（键 ['16', '19', '22']）
+  [case_dh_drug_01] ✓ A1.gt_invisible_probe: 注入同组成实体 z000749（式 'C9H8O'）后扫查报 1 条违规（原 0 条）⇒ 组成扫查确实在查
+  [case_dh_drug_01] ✓ A1.gt_exists_in_full_lib: gt=z001542 全库存在（A 侧演示形态；存在才使负例非平凡——防恒真陷阱）
+    BEFORE(无视图): get_entity(z001542) → 返回记录（泄漏面真实存在）
+    AFTER (视图层): get_entity(z001542) → UNKNOWN_ENTITY
+  [case_dh_drug_01] ✓ A1.before_after: BEFORE 可触达 gt / AFTER 一律 UNKNOWN_ENTITY
+------------------------------------------------------------------------
+A2 [case_dh_drug_01] get_entity：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_drug_01] ✓ A2.positive: 正例 get_entity(z001374) → 查得到
+  [case_dh_drug_01] ✓ A2.negative: 负例 get_entity(c00001∈全库∉白名单) → UNKNOWN_ENTITY
+  [case_dh_drug_01] ✓ A2.sweep_subset: 全白名单 30 个实体逐一取件，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A3 [case_dh_drug_01] get_property：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_drug_01] ✓ A3.positive: 正例 get_property(z001374,['atom_count', 'bbb']) → 返回 2 值
+  [case_dh_drug_01] ✓ A3.negative: 负例 get_property(c00001) → UNKNOWN_ENTITY
+  [case_dh_drug_01] ✓ A3.sweep_subset: 全白名单 30 个实体逐一查证，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A4 [case_dh_drug_01] search_candidates：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_drug_01] ✓ A4.sweep_subset: 按可见集 filter_props 扫查键（类别 []、数值 []）穷尽扫查，返回 0 个 id 全部 ⊆ 白名单
+    BEFORE(无视图): 全库 logS∈[-1.2803868403,0.62] 扫查 → 白名单外命中 503 个（如 ['z000013', 'z000274', 'z000275']，泄漏面真实存在）
+  [case_dh_drug_01] ✓ A4.positive: 正例（B1 性质轴 logS∈[-1.2803868403,0.62]）：族内序列全员可被穷举触达 ['z001184', 'z001374', 'z003632', 'z006799', 'z018571'] / BEFORE 同值域有白名单外命中
+    BEFORE(无视图): 组成==gt.composition 全库扫查 → 13 个实体（如 ['z000749', 'z001542', 'z003411']，含 gt 组成实体）
+    AFTER (视图层): enumerate(composition=gt.composition) → 0 个
+  [case_dh_drug_01] ✓ A4.negative_gt_absent: 负例：按 gt.composition 组成约束扫查，BEFORE 命中 13 个（泄漏面真实存在）/ AFTER 视图内返回为空
+------------------------------------------------------------------------
+A5 [case_dh_drug_01] literature_search：返回集 ⊆ 文献白名单（硬要求 3）
+    BEFORE(无视图): query='calculation' → 命中 90 篇（白名单外，泄漏面真实存在）
+    AFTER (视图层): query='calculation' → EMPTY_RESULT
+  [case_dh_drug_01] ✓ A5.negative: 负例：只命中白名单外文献的查询 → BEFORE 有命中 / AFTER EMPTY_RESULT
+------------------------------------------------------------------------
+A6 [case_dh_drug_01] 穷举接口：A 内无不劣于 gt 的解（硬要求 5）
+  [case_dh_drug_01] ✓ A6.quality_gate_empty: enumerate(logS≤-1.9688182578) 于可见集 → 0 个（须为 0）
+  [case_dh_drug_01] ✓ A6.nontrivial: 宽松阈值对照：enumerate(logS>-2.7156000000000002) → 30 个（穷举本身有效，非恒真）
+  [case_dh_drug_01] ✓ A6.composition_empty: enumerate(composition=gt 组成) → 0 个（须为 0）
+  [case_dh_drug_01] ✓ A6.composition_probe: 注入同组成实体 z000749 后 enumerate → 1 个（原 0 个）⇒ 组成穷举确实在筛
+------------------------------------------------------------------------
+A7 [case_dh_drug_01] 视图文件匿名红线（沿用 check_agent_visible_anonymity 口径）
+  [case_dh_drug_01] ✓ A7.anonymity: InChIKey=0 元素符号=0 真名=0 真实公式=0（须全 0）
+  [case_dh_drug_02] ✓ A6.target_prop_valid: target.prop=logS ∈ 支持集 ['logS', 'tc']
+------------------------------------------------------------------------
+A1 [case_dh_drug_02] gt 不得出现在自己的可见集内（硬要求 2）
+  [case_dh_drug_02] ✓ A1.gt_invisible: entity_ref∉白名单 且 组成无碰撞
+  [case_dh_drug_02] ✓ A1.gt_comp_form: gt.composition 可作组成核（键 ['16', '19', '22']）
+  [case_dh_drug_02] ✓ A1.gt_invisible_probe: 注入同组成实体 z000703（式 'C6H14O4'）后扫查报 1 条违规（原 0 条）⇒ 组成扫查确实在查
+  [case_dh_drug_02] ✓ A1.gt_exists_in_full_lib: gt=z044151 全库存在（A 侧演示形态；存在才使负例非平凡——防恒真陷阱）
+    BEFORE(无视图): get_entity(z044151) → 返回记录（泄漏面真实存在）
+    AFTER (视图层): get_entity(z044151) → UNKNOWN_ENTITY
+  [case_dh_drug_02] ✓ A1.before_after: BEFORE 可触达 gt / AFTER 一律 UNKNOWN_ENTITY
+------------------------------------------------------------------------
+A2 [case_dh_drug_02] get_entity：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_drug_02] ✓ A2.positive: 正例 get_entity(z003910) → 查得到
+  [case_dh_drug_02] ✓ A2.negative: 负例 get_entity(c00001∈全库∉白名单) → UNKNOWN_ENTITY
+  [case_dh_drug_02] ✓ A2.sweep_subset: 全白名单 30 个实体逐一取件，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A3 [case_dh_drug_02] get_property：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_drug_02] ✓ A3.positive: 正例 get_property(z003910,['atom_count', 'element_count']) → 返回 2 值
+  [case_dh_drug_02] ✓ A3.negative: 负例 get_property(c00001) → UNKNOWN_ENTITY
+  [case_dh_drug_02] ✓ A3.sweep_subset: 全白名单 30 个实体逐一查证，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A4 [case_dh_drug_02] search_candidates：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_drug_02] ✓ A4.sweep_subset: 按可见集 filter_props 扫查键（类别 []、数值 []）穷尽扫查，返回 0 个 id 全部 ⊆ 白名单
+    BEFORE(无视图): 全库 logS∈[-3.81,-0.3602] 扫查 → 白名单外命中 1348 个（如 ['z000007', 'z000012', 'z000017']，泄漏面真实存在）
+  [case_dh_drug_02] ✓ A4.positive: 正例（B1 性质轴 logS∈[-3.81,-0.3602]）：族内序列全员可被穷举触达 ['z002964', 'z003910', 'z011457', 'z018415', 'z064701'] / BEFORE 同值域有白名单外命中
+    BEFORE(无视图): 组成==gt.composition 全库扫查 → 3 个实体（如 ['z000703', 'z007680', 'z044151']，含 gt 组成实体）
+    AFTER (视图层): enumerate(composition=gt.composition) → 0 个
+  [case_dh_drug_02] ✓ A4.negative_gt_absent: 负例：按 gt.composition 组成约束扫查，BEFORE 命中 3 个（泄漏面真实存在）/ AFTER 视图内返回为空
+------------------------------------------------------------------------
+A5 [case_dh_drug_02] literature_search：返回集 ⊆ 文献白名单（硬要求 3）
+    BEFORE(无视图): query='calculation' → 命中 90 篇（白名单外，泄漏面真实存在）
+    AFTER (视图层): query='calculation' → EMPTY_RESULT
+  [case_dh_drug_02] ✓ A5.negative: 负例：只命中白名单外文献的查询 → BEFORE 有命中 / AFTER EMPTY_RESULT
+------------------------------------------------------------------------
+A6 [case_dh_drug_02] 穷举接口：A 内无不劣于 gt 的解（硬要求 5）
+  [case_dh_drug_02] ✓ A6.quality_gate_empty: enumerate(logS≥0.8234052513) 于可见集 → 0 个（须为 0）
+  [case_dh_drug_02] ✓ A6.nontrivial: 宽松阈值对照：enumerate(logS>-5.1718) → 30 个（穷举本身有效，非恒真）
+  [case_dh_drug_02] ✓ A6.composition_empty: enumerate(composition=gt 组成) → 0 个（须为 0）
+  [case_dh_drug_02] ✓ A6.composition_probe: 注入同组成实体 z000703 后 enumerate → 1 个（原 0 个）⇒ 组成穷举确实在筛
+------------------------------------------------------------------------
+A7 [case_dh_drug_02] 视图文件匿名红线（沿用 check_agent_visible_anonymity 口径）
+  [case_dh_drug_02] ✓ A7.anonymity: InChIKey=0 元素符号=0 真名=0 真实公式=0（须全 0）
+  [case_dh_drug_03] ✓ A6.target_prop_valid: target.prop=logS ∈ 支持集 ['logS', 'tc']
+------------------------------------------------------------------------
+A1 [case_dh_drug_03] gt 不得出现在自己的可见集内（硬要求 2）
+  [case_dh_drug_03] ✓ A1.gt_invisible: entity_ref∉白名单 且 组成无碰撞
+  [case_dh_drug_03] ✓ A1.gt_comp_form: gt.composition 可作组成核（键 ['16', '19', '22']）
+  [case_dh_drug_03] ✓ A1.gt_invisible_probe: 注入同组成实体 z011114（式 'C13H16O'）后扫查报 2 条违规（原 0 条）⇒ 组成扫查确实在查
+  [case_dh_drug_03] ✓ A1.gt_exists_in_full_lib: gt=z011114 全库存在（A 侧演示形态；存在才使负例非平凡——防恒真陷阱）
+    BEFORE(无视图): get_entity(z011114) → 返回记录（泄漏面真实存在）
+    AFTER (视图层): get_entity(z011114) → UNKNOWN_ENTITY
+  [case_dh_drug_03] ✓ A1.before_after: BEFORE 可触达 gt / AFTER 一律 UNKNOWN_ENTITY
+------------------------------------------------------------------------
+A2 [case_dh_drug_03] get_entity：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_drug_03] ✓ A2.positive: 正例 get_entity(z061421) → 查得到
+  [case_dh_drug_03] ✓ A2.negative: 负例 get_entity(c00001∈全库∉白名单) → UNKNOWN_ENTITY
+  [case_dh_drug_03] ✓ A2.sweep_subset: 全白名单 29 个实体逐一取件，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A3 [case_dh_drug_03] get_property：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_drug_03] ✓ A3.positive: 正例 get_property(z061421,['atom_count', 'element_count']) → 返回 2 值
+  [case_dh_drug_03] ✓ A3.negative: 负例 get_property(c00001) → UNKNOWN_ENTITY
+  [case_dh_drug_03] ✓ A3.sweep_subset: 全白名单 29 个实体逐一查证，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A4 [case_dh_drug_03] search_candidates：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_drug_03] ✓ A4.sweep_subset: 按可见集 filter_props 扫查键（类别 []、数值 []）穷尽扫查，返回 0 个 id 全部 ⊆ 白名单
+    BEFORE(无视图): 全库 logS∈[-3.468,-1.6471414631999999] 扫查 → 白名单外命中 777 个（如 ['z000012', 'z000017', 'z000018']，泄漏面真实存在）
+  [case_dh_drug_03] ✓ A4.positive: 正例（B1 性质轴 logS∈[-3.468,-1.6471414631999999]）：族内序列全员可被穷举触达 ['z003777', 'z010246', 'z018590', 'z061421'] / BEFORE 同值域有白名单外命中
+    BEFORE(无视图): 组成==gt.composition 全库扫查 → 5 个实体（如 ['z011114', 'z020227', 'z032449']，含 gt 组成实体）
+    AFTER (视图层): enumerate(composition=gt.composition) → 0 个
+  [case_dh_drug_03] ✓ A4.negative_gt_absent: 负例：按 gt.composition 组成约束扫查，BEFORE 命中 5 个（泄漏面真实存在）/ AFTER 视图内返回为空
+------------------------------------------------------------------------
+A5 [case_dh_drug_03] literature_search：返回集 ⊆ 文献白名单（硬要求 3）
+    BEFORE(无视图): query='calculation' → 命中 90 篇（白名单外，泄漏面真实存在）
+    AFTER (视图层): query='calculation' → EMPTY_RESULT
+  [case_dh_drug_03] ✓ A5.negative: 负例：只命中白名单外文献的查询 → BEFORE 有命中 / AFTER EMPTY_RESULT
+------------------------------------------------------------------------
+A6 [case_dh_drug_03] 穷举接口：A 内无不劣于 gt 的解（硬要求 5）
+  [case_dh_drug_03] ✓ A6.quality_gate_empty: enumerate(logS≤-4.014709734599999) 于可见集 → 0 个（须为 0）
+  [case_dh_drug_03] ✓ A6.nontrivial: 宽松阈值对照：enumerate(logS>-4.537) → 29 个（穷举本身有效，非恒真）
+  [case_dh_drug_03] ✓ A6.composition_empty: enumerate(composition=gt 组成) → 0 个（须为 0）
+  [case_dh_drug_03] ✓ A6.composition_probe: 注入同组成实体 z011114 后 enumerate → 1 个（原 0 个）⇒ 组成穷举确实在筛
+------------------------------------------------------------------------
+A7 [case_dh_drug_03] 视图文件匿名红线（沿用 check_agent_visible_anonymity 口径）
+  [case_dh_drug_03] ✓ A7.anonymity: InChIKey=0 元素符号=0 真名=0 真实公式=0（须全 0）
+  [case_dh_drug_04] ✓ A6.target_prop_valid: target.prop=logS ∈ 支持集 ['logS', 'tc']
+------------------------------------------------------------------------
+A1 [case_dh_drug_04] gt 不得出现在自己的可见集内（硬要求 2）
+  [case_dh_drug_04] ✓ A1.gt_invisible: entity_ref∉白名单 且 组成无碰撞
+  [case_dh_drug_04] ✓ A1.gt_comp_form: gt.composition 可作组成核（键 ['16', '19']）
+  [case_dh_drug_04] ✓ A1.gt_invisible_probe: 注入同组成实体 z010206（式 'C12H12'）后扫查报 1 条违规（原 0 条）⇒ 组成扫查确实在查
+  [case_dh_drug_04] ✓ A1.gt_exists_in_full_lib: gt=z010207 全库存在（A 侧演示形态；存在才使负例非平凡——防恒真陷阱）
+    BEFORE(无视图): get_entity(z010207) → 返回记录（泄漏面真实存在）
+    AFTER (视图层): get_entity(z010207) → UNKNOWN_ENTITY
+  [case_dh_drug_04] ✓ A1.before_after: BEFORE 可触达 gt / AFTER 一律 UNKNOWN_ENTITY
+------------------------------------------------------------------------
+A2 [case_dh_drug_04] get_entity：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_drug_04] ✓ A2.positive: 正例 get_entity(z065585) → 查得到
+  [case_dh_drug_04] ✓ A2.negative: 负例 get_entity(c00001∈全库∉白名单) → UNKNOWN_ENTITY
+  [case_dh_drug_04] ✓ A2.sweep_subset: 全白名单 29 个实体逐一取件，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A3 [case_dh_drug_04] get_property：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_drug_04] ✓ A3.positive: 正例 get_property(z065585,['atom_count', 'element_count']) → 返回 2 值
+  [case_dh_drug_04] ✓ A3.negative: 负例 get_property(c00001) → UNKNOWN_ENTITY
+  [case_dh_drug_04] ✓ A3.sweep_subset: 全白名单 29 个实体逐一查证，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A4 [case_dh_drug_04] search_candidates：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_drug_04] ✓ A4.sweep_subset: 按可见集 filter_props 扫查键（类别 []、数值 []）穷尽扫查，返回 0 个 id 全部 ⊆ 白名单
+    BEFORE(无视图): 全库 logS∈[-3.5673681389,-3.2261] 扫查 → 白名单外命中 99 个（如 ['z001243', 'z001272', 'z001292']，泄漏面真实存在）
+  [case_dh_drug_04] ✓ A4.positive: 正例（B1 性质轴 logS∈[-3.5673681389,-3.2261]）：族内序列全员可被穷举触达 ['z001319', 'z043951', 'z065585', 'z065596'] / BEFORE 同值域有白名单外命中
+    BEFORE(无视图): 组成==gt.composition 全库扫查 → 2 个实体（如 ['z010206', 'z010207']，含 gt 组成实体）
+    AFTER (视图层): enumerate(composition=gt.composition) → 0 个
+  [case_dh_drug_04] ✓ A4.negative_gt_absent: 负例：按 gt.composition 组成约束扫查，BEFORE 命中 2 个（泄漏面真实存在）/ AFTER 视图内返回为空
+------------------------------------------------------------------------
+A5 [case_dh_drug_04] literature_search：返回集 ⊆ 文献白名单（硬要求 3）
+    BEFORE(无视图): query='calculation' → 命中 90 篇（白名单外，泄漏面真实存在）
+    AFTER (视图层): query='calculation' → EMPTY_RESULT
+  [case_dh_drug_04] ✓ A5.negative: 负例：只命中白名单外文献的查询 → BEFORE 有命中 / AFTER EMPTY_RESULT
+------------------------------------------------------------------------
+A6 [case_dh_drug_04] 穷举接口：A 内无不劣于 gt 的解（硬要求 5）
+  [case_dh_drug_04] ✓ A6.quality_gate_empty: enumerate(logS≤-4.8927) 于可见集 → 0 个（须为 0）
+  [case_dh_drug_04] ✓ A6.nontrivial: 宽松阈值对照：enumerate(logS>-5.3901) → 29 个（穷举本身有效，非恒真）
+  [case_dh_drug_04] ✓ A6.composition_empty: enumerate(composition=gt 组成) → 0 个（须为 0）
+  [case_dh_drug_04] ✓ A6.composition_probe: 注入同组成实体 z010206 后 enumerate → 1 个（原 0 个）⇒ 组成穷举确实在筛
+------------------------------------------------------------------------
+A7 [case_dh_drug_04] 视图文件匿名红线（沿用 check_agent_visible_anonymity 口径）
+  [case_dh_drug_04] ✓ A7.anonymity: InChIKey=0 元素符号=0 真名=0 真实公式=0（须全 0）
+  [case_dh_drug_05] ✓ A6.target_prop_valid: target.prop=logS ∈ 支持集 ['logS', 'tc']
+------------------------------------------------------------------------
+A1 [case_dh_drug_05] gt 不得出现在自己的可见集内（硬要求 2）
+  [case_dh_drug_05] ✓ A1.gt_invisible: entity_ref∉白名单 且 组成无碰撞
+  [case_dh_drug_05] ✓ A1.gt_comp_form: gt.composition 可作组成核（键 ['16', '19', '22']）
+  [case_dh_drug_05] ✓ A1.gt_invisible_probe: 注入同组成实体 z060857（式 'C2H5NO3'）后扫查报 2 条违规（原 0 条）⇒ 组成扫查确实在查
+  [case_dh_drug_05] ✓ A1.gt_exists_in_full_lib: gt=z060857 全库存在（A 侧演示形态；存在才使负例非平凡——防恒真陷阱）
+    BEFORE(无视图): get_entity(z060857) → 返回记录（泄漏面真实存在）
+    AFTER (视图层): get_entity(z060857) → UNKNOWN_ENTITY
+  [case_dh_drug_05] ✓ A1.before_after: BEFORE 可触达 gt / AFTER 一律 UNKNOWN_ENTITY
+------------------------------------------------------------------------
+A2 [case_dh_drug_05] get_entity：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_drug_05] ✓ A2.positive: 正例 get_entity(z003209) → 查得到
+  [case_dh_drug_05] ✓ A2.negative: 负例 get_entity(c00001∈全库∉白名单) → UNKNOWN_ENTITY
+  [case_dh_drug_05] ✓ A2.sweep_subset: 全白名单 29 个实体逐一取件，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A3 [case_dh_drug_05] get_property：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_drug_05] ✓ A3.positive: 正例 get_property(z003209,['atom_count', 'element_count']) → 返回 2 值
+  [case_dh_drug_05] ✓ A3.negative: 负例 get_property(c00001) → UNKNOWN_ENTITY
+  [case_dh_drug_05] ✓ A3.sweep_subset: 全白名单 29 个实体逐一查证，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A4 [case_dh_drug_05] search_candidates：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_drug_05] ✓ A4.sweep_subset: 按可见集 filter_props 扫查键（类别 []、数值 []）穷尽扫查，返回 0 个 id 全部 ⊆ 白名单
+    BEFORE(无视图): 全库 logS∈[-2.7354179060000003,0.2672] 扫查 → 白名单外命中 1096 个（如 ['z000007', 'z000013', 'z000017']，泄漏面真实存在）
+  [case_dh_drug_05] ✓ A4.positive: 正例（B1 性质轴 logS∈[-2.7354179060000003,0.2672]）：族内序列全员可被穷举触达 ['z003209', 'z003478', 'z003491', 'z031415'] / BEFORE 同值域有白名单外命中
+    BEFORE(无视图): 组成==gt.composition 全库扫查 → 1 个实体（如 ['z060857']，含 gt 组成实体）
+    AFTER (视图层): enumerate(composition=gt.composition) → 0 个
+  [case_dh_drug_05] ✓ A4.negative_gt_absent: 负例：按 gt.composition 组成约束扫查，BEFORE 命中 1 个（泄漏面真实存在）/ AFTER 视图内返回为空
+------------------------------------------------------------------------
+A5 [case_dh_drug_05] literature_search：返回集 ⊆ 文献白名单（硬要求 3）
+    BEFORE(无视图): query='calculation' → 命中 90 篇（白名单外，泄漏面真实存在）
+    AFTER (视图层): query='calculation' → EMPTY_RESULT
+  [case_dh_drug_05] ✓ A5.negative: 负例：只命中白名单外文献的查询 → BEFORE 有命中 / AFTER EMPTY_RESULT
+------------------------------------------------------------------------
+A6 [case_dh_drug_05] 穷举接口：A 内无不劣于 gt 的解（硬要求 5）
+  [case_dh_drug_05] ✓ A6.quality_gate_empty: enumerate(logS≥1.0406) 于可见集 → 0 个（须为 0）
+  [case_dh_drug_05] ✓ A6.nontrivial: 宽松阈值对照：enumerate(logS>-7.5580902807) → 29 个（穷举本身有效，非恒真）
+  [case_dh_drug_05] ✓ A6.composition_empty: enumerate(composition=gt 组成) → 0 个（须为 0）
+  [case_dh_drug_05] ✓ A6.composition_probe: 注入同组成实体 z060857 后 enumerate → 1 个（原 0 个）⇒ 组成穷举确实在筛
+------------------------------------------------------------------------
+A7 [case_dh_drug_05] 视图文件匿名红线（沿用 check_agent_visible_anonymity 口径）
+  [case_dh_drug_05] ✓ A7.anonymity: InChIKey=0 元素符号=0 真名=0 真实公式=0（须全 0）
+  [case_dh_drug_06] ✓ A6.target_prop_valid: target.prop=logS ∈ 支持集 ['logS', 'tc']
+------------------------------------------------------------------------
+A1 [case_dh_drug_06] gt 不得出现在自己的可见集内（硬要求 2）
+  [case_dh_drug_06] ✓ A1.gt_invisible: entity_ref∉白名单 且 组成无碰撞
+  [case_dh_drug_06] ✓ A1.gt_comp_form: gt.composition 可作组成核（键 ['16', '19', '22']）
+  [case_dh_drug_06] ✓ A1.gt_invisible_probe: 注入同组成实体 z002799（式 'C17H15NO3'）后扫查报 2 条违规（原 0 条）⇒ 组成扫查确实在查
+  [case_dh_drug_06] ✓ A1.gt_exists_in_full_lib: gt=z002799 全库存在（A 侧演示形态；存在才使负例非平凡——防恒真陷阱）
+    BEFORE(无视图): get_entity(z002799) → 返回记录（泄漏面真实存在）
+    AFTER (视图层): get_entity(z002799) → UNKNOWN_ENTITY
+  [case_dh_drug_06] ✓ A1.before_after: BEFORE 可触达 gt / AFTER 一律 UNKNOWN_ENTITY
+------------------------------------------------------------------------
+A2 [case_dh_drug_06] get_entity：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_drug_06] ✓ A2.positive: 正例 get_entity(z037081) → 查得到
+  [case_dh_drug_06] ✓ A2.negative: 负例 get_entity(c00001∈全库∉白名单) → UNKNOWN_ENTITY
+  [case_dh_drug_06] ✓ A2.sweep_subset: 全白名单 28 个实体逐一取件，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A3 [case_dh_drug_06] get_property：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_drug_06] ✓ A3.positive: 正例 get_property(z037081,['atom_count', 'element_count']) → 返回 2 值
+  [case_dh_drug_06] ✓ A3.negative: 负例 get_property(c00001) → UNKNOWN_ENTITY
+  [case_dh_drug_06] ✓ A3.sweep_subset: 全白名单 28 个实体逐一查证，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A4 [case_dh_drug_06] search_candidates：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_drug_06] ✓ A4.sweep_subset: 按可见集 filter_props 扫查键（类别 []、数值 []）穷尽扫查，返回 0 个 id 全部 ⊆ 白名单
+    BEFORE(无视图): 全库 logS∈[-4.09,0.8262602859999999] 扫查 → 白名单外命中 1677 个（如 ['z000007', 'z000012', 'z000013']，泄漏面真实存在）
+  [case_dh_drug_06] ✓ A4.positive: 正例（B1 性质轴 logS∈[-4.09,0.8262602859999999]）：族内序列全员可被穷举触达 ['z003139', 'z034534', 'z037081'] / BEFORE 同值域有白名单外命中
+    BEFORE(无视图): 组成==gt.composition 全库扫查 → 13 个实体（如 ['z002799', 'z005914', 'z005916']，含 gt 组成实体）
+    AFTER (视图层): enumerate(composition=gt.composition) → 0 个
+  [case_dh_drug_06] ✓ A4.negative_gt_absent: 负例：按 gt.composition 组成约束扫查，BEFORE 命中 13 个（泄漏面真实存在）/ AFTER 视图内返回为空
+------------------------------------------------------------------------
+A5 [case_dh_drug_06] literature_search：返回集 ⊆ 文献白名单（硬要求 3）
+    BEFORE(无视图): query='calculation' → 命中 90 篇（白名单外，泄漏面真实存在）
+    AFTER (视图层): query='calculation' → EMPTY_RESULT
+  [case_dh_drug_06] ✓ A5.negative: 负例：只命中白名单外文献的查询 → BEFORE 有命中 / AFTER EMPTY_RESULT
+------------------------------------------------------------------------
+A6 [case_dh_drug_06] 穷举接口：A 内无不劣于 gt 的解（硬要求 5）
+  [case_dh_drug_06] ✓ A6.quality_gate_empty: enumerate(logS≤-4.72) 于可见集 → 0 个（须为 0）
+  [case_dh_drug_06] ✓ A6.nontrivial: 宽松阈值对照：enumerate(logS>-5.3495) → 28 个（穷举本身有效，非恒真）
+  [case_dh_drug_06] ✓ A6.composition_empty: enumerate(composition=gt 组成) → 0 个（须为 0）
+  [case_dh_drug_06] ✓ A6.composition_probe: 注入同组成实体 z002799 后 enumerate → 1 个（原 0 个）⇒ 组成穷举确实在筛
+------------------------------------------------------------------------
+A7 [case_dh_drug_06] 视图文件匿名红线（沿用 check_agent_visible_anonymity 口径）
+  [case_dh_drug_06] ✓ A7.anonymity: InChIKey=0 元素符号=0 真名=0 真实公式=0（须全 0）
+  [case_dh_drug_07] ✓ A6.target_prop_valid: target.prop=logS ∈ 支持集 ['logS', 'tc']
+------------------------------------------------------------------------
+A1 [case_dh_drug_07] gt 不得出现在自己的可见集内（硬要求 2）
+  [case_dh_drug_07] ✓ A1.gt_invisible: entity_ref∉白名单 且 组成无碰撞
+  [case_dh_drug_07] ✓ A1.gt_comp_form: gt.composition 可作组成核（键 ['16', '19', '22']）
+  [case_dh_drug_07] ✓ A1.gt_invisible_probe: 注入同组成实体 z000016（式 'C4H11NO2'）后扫查报 2 条违规（原 0 条）⇒ 组成扫查确实在查
+  [case_dh_drug_07] ✓ A1.gt_exists_in_full_lib: gt=z000016 全库存在（A 侧演示形态；存在才使负例非平凡——防恒真陷阱）
+    BEFORE(无视图): get_entity(z000016) → 返回记录（泄漏面真实存在）
+    AFTER (视图层): get_entity(z000016) → UNKNOWN_ENTITY
+  [case_dh_drug_07] ✓ A1.before_after: BEFORE 可触达 gt / AFTER 一律 UNKNOWN_ENTITY
+------------------------------------------------------------------------
+A2 [case_dh_drug_07] get_entity：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_drug_07] ✓ A2.positive: 正例 get_entity(z003648) → 查得到
+  [case_dh_drug_07] ✓ A2.negative: 负例 get_entity(c00001∈全库∉白名单) → UNKNOWN_ENTITY
+  [case_dh_drug_07] ✓ A2.sweep_subset: 全白名单 28 个实体逐一取件，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A3 [case_dh_drug_07] get_property：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_drug_07] ✓ A3.positive: 正例 get_property(z003648,['atom_count', 'element_count']) → 返回 2 值
+  [case_dh_drug_07] ✓ A3.negative: 负例 get_property(c00001) → UNKNOWN_ENTITY
+  [case_dh_drug_07] ✓ A3.sweep_subset: 全白名单 28 个实体逐一查证，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A4 [case_dh_drug_07] search_candidates：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_drug_07] ✓ A4.sweep_subset: 按可见集 filter_props 扫查键（类别 []、数值 []）穷尽扫查，返回 0 个 id 全部 ⊆ 白名单
+    BEFORE(无视图): 全库 logS∈[-1.2403,0.38403159229999995] 扫查 → 白名单外命中 449 个（如 ['z000013', 'z000274', 'z000276']，泄漏面真实存在）
+  [case_dh_drug_07] ✓ A4.positive: 正例（B1 性质轴 logS∈[-1.2403,0.38403159229999995]）：族内序列全员可被穷举触达 ['z003648', 'z014958', 'z034716'] / BEFORE 同值域有白名单外命中
+    BEFORE(无视图): 组成==gt.composition 全库扫查 → 8 个实体（如 ['z000016', 'z038393', 'z044173']，含 gt 组成实体）
+    AFTER (视图层): enumerate(composition=gt.composition) → 0 个
+  [case_dh_drug_07] ✓ A4.negative_gt_absent: 负例：按 gt.composition 组成约束扫查，BEFORE 命中 8 个（泄漏面真实存在）/ AFTER 视图内返回为空
+------------------------------------------------------------------------
+A5 [case_dh_drug_07] literature_search：返回集 ⊆ 文献白名单（硬要求 3）
+    BEFORE(无视图): query='calculation' → 命中 90 篇（白名单外，泄漏面真实存在）
+    AFTER (视图层): query='calculation' → EMPTY_RESULT
+  [case_dh_drug_07] ✓ A5.negative: 负例：只命中白名单外文献的查询 → BEFORE 有命中 / AFTER EMPTY_RESULT
+------------------------------------------------------------------------
+A6 [case_dh_drug_07] 穷举接口：A 内无不劣于 gt 的解（硬要求 5）
+  [case_dh_drug_07] ✓ A6.quality_gate_empty: enumerate(logS≥0.9577927941) 于可见集 → 0 个（须为 0）
+  [case_dh_drug_07] ✓ A6.nontrivial: 宽松阈值对照：enumerate(logS>-11.0169999307) → 28 个（穷举本身有效，非恒真）
+  [case_dh_drug_07] ✓ A6.composition_empty: enumerate(composition=gt 组成) → 0 个（须为 0）
+  [case_dh_drug_07] ✓ A6.composition_probe: 注入同组成实体 z000016 后 enumerate → 1 个（原 0 个）⇒ 组成穷举确实在筛
+------------------------------------------------------------------------
+A7 [case_dh_drug_07] 视图文件匿名红线（沿用 check_agent_visible_anonymity 口径）
+  [case_dh_drug_07] ✓ A7.anonymity: InChIKey=0 元素符号=0 真名=0 真实公式=0（须全 0）
+  [case_dh_drug_08] ✓ A6.target_prop_valid: target.prop=logS ∈ 支持集 ['logS', 'tc']
+------------------------------------------------------------------------
+A1 [case_dh_drug_08] gt 不得出现在自己的可见集内（硬要求 2）
+  [case_dh_drug_08] ✓ A1.gt_invisible: entity_ref∉白名单 且 组成无碰撞
+  [case_dh_drug_08] ✓ A1.gt_comp_form: gt.composition 可作组成核（键 ['16', '19', '22']）
+  [case_dh_drug_08] ✓ A1.gt_invisible_probe: 注入同组成实体 z000019（式 'C10H18O'）后扫查报 2 条违规（原 0 条）⇒ 组成扫查确实在查
+  [case_dh_drug_08] ✓ A1.gt_exists_in_full_lib: gt=z000019 全库存在（A 侧演示形态；存在才使负例非平凡——防恒真陷阱）
+    BEFORE(无视图): get_entity(z000019) → 返回记录（泄漏面真实存在）
+    AFTER (视图层): get_entity(z000019) → UNKNOWN_ENTITY
+  [case_dh_drug_08] ✓ A1.before_after: BEFORE 可触达 gt / AFTER 一律 UNKNOWN_ENTITY
+------------------------------------------------------------------------
+A2 [case_dh_drug_08] get_entity：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_drug_08] ✓ A2.positive: 正例 get_entity(z021363) → 查得到
+  [case_dh_drug_08] ✓ A2.negative: 负例 get_entity(c00001∈全库∉白名单) → UNKNOWN_ENTITY
+  [case_dh_drug_08] ✓ A2.sweep_subset: 全白名单 28 个实体逐一取件，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A3 [case_dh_drug_08] get_property：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_drug_08] ✓ A3.positive: 正例 get_property(z021363,['atom_count', 'element_count']) → 返回 2 值
+  [case_dh_drug_08] ✓ A3.negative: 负例 get_property(c00001) → UNKNOWN_ENTITY
+  [case_dh_drug_08] ✓ A3.sweep_subset: 全白名单 28 个实体逐一查证，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A4 [case_dh_drug_08] search_candidates：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_drug_08] ✓ A4.sweep_subset: 按可见集 filter_props 扫查键（类别 []、数值 []）穷尽扫查，返回 0 个 id 全部 ⊆ 白名单
+    BEFORE(无视图): 全库 logS∈[-3.0052489876,-2.6959998037] 扫查 → 白名单外命中 132 个（如 ['z000012', 'z000608', 'z001308']，泄漏面真实存在）
+  [case_dh_drug_08] ✓ A4.positive: 正例（B1 性质轴 logS∈[-3.0052489876,-2.6959998037]）：族内序列全员可被穷举触达 ['z010943', 'z021363', 'z062571'] / BEFORE 同值域有白名单外命中
+    BEFORE(无视图): 组成==gt.composition 全库扫查 → 25 个实体（如 ['z000019', 'z000913', 'z001548']，含 gt 组成实体）
+    AFTER (视图层): enumerate(composition=gt.composition) → 0 个
+  [case_dh_drug_08] ✓ A4.negative_gt_absent: 负例：按 gt.composition 组成约束扫查，BEFORE 命中 25 个（泄漏面真实存在）/ AFTER 视图内返回为空
+------------------------------------------------------------------------
+A5 [case_dh_drug_08] literature_search：返回集 ⊆ 文献白名单（硬要求 3）
+    BEFORE(无视图): query='calculation' → 命中 90 篇（白名单外，泄漏面真实存在）
+    AFTER (视图层): query='calculation' → EMPTY_RESULT
+  [case_dh_drug_08] ✓ A5.negative: 负例：只命中白名单外文献的查询 → BEFORE 有命中 / AFTER EMPTY_RESULT
+------------------------------------------------------------------------
+A6 [case_dh_drug_08] 穷举接口：A 内无不劣于 gt 的解（硬要求 5）
+  [case_dh_drug_08] ✓ A6.quality_gate_empty: enumerate(logS≥-2.3206011661000003) 于可见集 → 0 个（须为 0）
+  [case_dh_drug_08] ✓ A6.nontrivial: 宽松阈值对照：enumerate(logS>-8.9737155354) → 28 个（穷举本身有效，非恒真）
+  [case_dh_drug_08] ✓ A6.composition_empty: enumerate(composition=gt 组成) → 0 个（须为 0）
+  [case_dh_drug_08] ✓ A6.composition_probe: 注入同组成实体 z000019 后 enumerate → 1 个（原 0 个）⇒ 组成穷举确实在筛
+------------------------------------------------------------------------
+A7 [case_dh_drug_08] 视图文件匿名红线（沿用 check_agent_visible_anonymity 口径）
+  [case_dh_drug_08] ✓ A7.anonymity: InChIKey=0 元素符号=0 真名=0 真实公式=0（须全 0）
+  [case_dh_drug_09] ✓ A6.target_prop_valid: target.prop=logS ∈ 支持集 ['logS', 'tc']
+------------------------------------------------------------------------
+A1 [case_dh_drug_09] gt 不得出现在自己的可见集内（硬要求 2）
+  [case_dh_drug_09] ✓ A1.gt_invisible: entity_ref∉白名单 且 组成无碰撞
+  [case_dh_drug_09] ✓ A1.gt_comp_form: gt.composition 可作组成核（键 ['16', '19', '22']）
+  [case_dh_drug_09] ✓ A1.gt_invisible_probe: 注入同组成实体 z009017（式 'C10H8O3'）后扫查报 1 条违规（原 0 条）⇒ 组成扫查确实在查
+  [case_dh_drug_09] ✓ A1.gt_exists_in_full_lib: gt=z012484 全库存在（A 侧演示形态；存在才使负例非平凡——防恒真陷阱）
+    BEFORE(无视图): get_entity(z012484) → 返回记录（泄漏面真实存在）
+    AFTER (视图层): get_entity(z012484) → UNKNOWN_ENTITY
+  [case_dh_drug_09] ✓ A1.before_after: BEFORE 可触达 gt / AFTER 一律 UNKNOWN_ENTITY
+------------------------------------------------------------------------
+A2 [case_dh_drug_09] get_entity：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_drug_09] ✓ A2.positive: 正例 get_entity(z023616) → 查得到
+  [case_dh_drug_09] ✓ A2.negative: 负例 get_entity(c00001∈全库∉白名单) → UNKNOWN_ENTITY
+  [case_dh_drug_09] ✓ A2.sweep_subset: 全白名单 28 个实体逐一取件，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A3 [case_dh_drug_09] get_property：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_drug_09] ✓ A3.positive: 正例 get_property(z023616,['atom_count', 'element_count']) → 返回 2 值
+  [case_dh_drug_09] ✓ A3.negative: 负例 get_property(c00001) → UNKNOWN_ENTITY
+  [case_dh_drug_09] ✓ A3.sweep_subset: 全白名单 28 个实体逐一查证，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A4 [case_dh_drug_09] search_candidates：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_drug_09] ✓ A4.sweep_subset: 按可见集 filter_props 扫查键（类别 []、数值 []）穷尽扫查，返回 0 个 id 全部 ⊆ 白名单
+    BEFORE(无视图): 全库 logS∈[-2.3984,-1.1887] 扫查 → 白名单外命中 545 个（如 ['z000007', 'z000017', 'z000018']，泄漏面真实存在）
+  [case_dh_drug_09] ✓ A4.positive: 正例（B1 性质轴 logS∈[-2.3984,-1.1887]）：族内序列全员可被穷举触达 ['z011907', 'z018371', 'z023616'] / BEFORE 同值域有白名单外命中
+    BEFORE(无视图): 组成==gt.composition 全库扫查 → 15 个实体（如 ['z009017', 'z009983', 'z011235']，含 gt 组成实体）
+    AFTER (视图层): enumerate(composition=gt.composition) → 0 个
+  [case_dh_drug_09] ✓ A4.negative_gt_absent: 负例：按 gt.composition 组成约束扫查，BEFORE 命中 15 个（泄漏面真实存在）/ AFTER 视图内返回为空
+------------------------------------------------------------------------
+A5 [case_dh_drug_09] literature_search：返回集 ⊆ 文献白名单（硬要求 3）
+    BEFORE(无视图): query='calculation' → 命中 90 篇（白名单外，泄漏面真实存在）
+    AFTER (视图层): query='calculation' → EMPTY_RESULT
+  [case_dh_drug_09] ✓ A5.negative: 负例：只命中白名单外文献的查询 → BEFORE 有命中 / AFTER EMPTY_RESULT
+------------------------------------------------------------------------
+A6 [case_dh_drug_09] 穷举接口：A 内无不劣于 gt 的解（硬要求 5）
+  [case_dh_drug_09] ✓ A6.quality_gate_empty: enumerate(logS≤-3.1221) 于可见集 → 0 个（须为 0）
+  [case_dh_drug_09] ✓ A6.nontrivial: 宽松阈值对照：enumerate(logS>-3.8611137345) → 28 个（穷举本身有效，非恒真）
+  [case_dh_drug_09] ✓ A6.composition_empty: enumerate(composition=gt 组成) → 0 个（须为 0）
+  [case_dh_drug_09] ✓ A6.composition_probe: 注入同组成实体 z009017 后 enumerate → 1 个（原 0 个）⇒ 组成穷举确实在筛
+------------------------------------------------------------------------
+A7 [case_dh_drug_09] 视图文件匿名红线（沿用 check_agent_visible_anonymity 口径）
+  [case_dh_drug_09] ✓ A7.anonymity: InChIKey=0 元素符号=0 真名=0 真实公式=0（须全 0）
+  [case_dh_drug_10] ✓ A6.target_prop_valid: target.prop=logS ∈ 支持集 ['logS', 'tc']
+------------------------------------------------------------------------
+A1 [case_dh_drug_10] gt 不得出现在自己的可见集内（硬要求 2）
+  [case_dh_drug_10] ✓ A1.gt_invisible: entity_ref∉白名单 且 组成无碰撞
+  [case_dh_drug_10] ✓ A1.gt_comp_form: gt.composition 可作组成核（键 ['16', '19', '22']）
+  [case_dh_drug_10] ✓ A1.gt_invisible_probe: 注入同组成实体 z003921（式 'C6H14O2'）后扫查报 2 条违规（原 0 条）⇒ 组成扫查确实在查
+  [case_dh_drug_10] ✓ A1.gt_exists_in_full_lib: gt=z003921 全库存在（A 侧演示形态；存在才使负例非平凡——防恒真陷阱）
+    BEFORE(无视图): get_entity(z003921) → 返回记录（泄漏面真实存在）
+    AFTER (视图层): get_entity(z003921) → UNKNOWN_ENTITY
+  [case_dh_drug_10] ✓ A1.before_after: BEFORE 可触达 gt / AFTER 一律 UNKNOWN_ENTITY
+------------------------------------------------------------------------
+A2 [case_dh_drug_10] get_entity：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_drug_10] ✓ A2.positive: 正例 get_entity(z062812) → 查得到
+  [case_dh_drug_10] ✓ A2.negative: 负例 get_entity(c00001∈全库∉白名单) → UNKNOWN_ENTITY
+  [case_dh_drug_10] ✓ A2.sweep_subset: 全白名单 28 个实体逐一取件，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A3 [case_dh_drug_10] get_property：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_drug_10] ✓ A3.positive: 正例 get_property(z062812,['atom_count', 'element_count']) → 返回 2 值
+  [case_dh_drug_10] ✓ A3.negative: 负例 get_property(c00001) → UNKNOWN_ENTITY
+  [case_dh_drug_10] ✓ A3.sweep_subset: 全白名单 28 个实体逐一查证，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A4 [case_dh_drug_10] search_candidates：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_drug_10] ✓ A4.sweep_subset: 按可见集 filter_props 扫查键（类别 []、数值 []）穷尽扫查，返回 0 个 id 全部 ⊆ 白名单
+    BEFORE(无视图): 全库 logS∈[-1.77,-1.0522193787] 扫查 → 白名单外命中 299 个（如 ['z000007', 'z000308', 'z000312']，泄漏面真实存在）
+  [case_dh_drug_10] ✓ A4.positive: 正例（B1 性质轴 logS∈[-1.77,-1.0522193787]）：族内序列全员可被穷举触达 ['z006751', 'z062751', 'z062812'] / BEFORE 同值域有白名单外命中
+    BEFORE(无视图): 组成==gt.composition 全库扫查 → 7 个实体（如 ['z003921', 'z008509', 'z023496']，含 gt 组成实体）
+    AFTER (视图层): enumerate(composition=gt.composition) → 0 个
+  [case_dh_drug_10] ✓ A4.negative_gt_absent: 负例：按 gt.composition 组成约束扫查，BEFORE 命中 7 个（泄漏面真实存在）/ AFTER 视图内返回为空
+------------------------------------------------------------------------
+A5 [case_dh_drug_10] literature_search：返回集 ⊆ 文献白名单（硬要求 3）
+    BEFORE(无视图): query='calculation' → 命中 90 篇（白名单外，泄漏面真实存在）
+    AFTER (视图层): query='calculation' → EMPTY_RESULT
+  [case_dh_drug_10] ✓ A5.negative: 负例：只命中白名单外文献的查询 → BEFORE 有命中 / AFTER EMPTY_RESULT
+------------------------------------------------------------------------
+A6 [case_dh_drug_10] 穷举接口：A 内无不劣于 gt 的解（硬要求 5）
+  [case_dh_drug_10] ✓ A6.quality_gate_empty: enumerate(logS≥-0.77) 于可见集 → 0 个（须为 0）
+  [case_dh_drug_10] ✓ A6.nontrivial: 宽松阈值对照：enumerate(logS>-11.098913562) → 28 个（穷举本身有效，非恒真）
+  [case_dh_drug_10] ✓ A6.composition_empty: enumerate(composition=gt 组成) → 0 个（须为 0）
+  [case_dh_drug_10] ✓ A6.composition_probe: 注入同组成实体 z003921 后 enumerate → 1 个（原 0 个）⇒ 组成穷举确实在筛
+------------------------------------------------------------------------
+A7 [case_dh_drug_10] 视图文件匿名红线（沿用 check_agent_visible_anonymity 口径）
+  [case_dh_drug_10] ✓ A7.anonymity: InChIKey=0 元素符号=0 真名=0 真实公式=0（须全 0）
+  [case_dh_drug_11] ✓ A6.target_prop_valid: target.prop=logS ∈ 支持集 ['logS', 'tc']
+------------------------------------------------------------------------
+A1 [case_dh_drug_11] gt 不得出现在自己的可见集内（硬要求 2）
+  [case_dh_drug_11] ✓ A1.gt_invisible: entity_ref∉白名单 且 组成无碰撞
+  [case_dh_drug_11] ✓ A1.gt_comp_form: gt.composition 可作组成核（键 ['16', '19', '22']）
+  [case_dh_drug_11] ✓ A1.gt_invisible_probe: 注入同组成实体 z001424（式 'C6H6O4'）后扫查报 1 条违规（原 0 条）⇒ 组成扫查确实在查
+  [case_dh_drug_11] ✓ A1.gt_exists_in_full_lib: gt=z001457 全库存在（A 侧演示形态；存在才使负例非平凡——防恒真陷阱）
+    BEFORE(无视图): get_entity(z001457) → 返回记录（泄漏面真实存在）
+    AFTER (视图层): get_entity(z001457) → UNKNOWN_ENTITY
+  [case_dh_drug_11] ✓ A1.before_after: BEFORE 可触达 gt / AFTER 一律 UNKNOWN_ENTITY
+------------------------------------------------------------------------
+A2 [case_dh_drug_11] get_entity：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_drug_11] ✓ A2.positive: 正例 get_entity(z000309) → 查得到
+  [case_dh_drug_11] ✓ A2.negative: 负例 get_entity(c00001∈全库∉白名单) → UNKNOWN_ENTITY
+  [case_dh_drug_11] ✓ A2.sweep_subset: 全白名单 28 个实体逐一取件，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A3 [case_dh_drug_11] get_property：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_drug_11] ✓ A3.positive: 正例 get_property(z000309,['atom_count', 'element_count']) → 返回 2 值
+  [case_dh_drug_11] ✓ A3.negative: 负例 get_property(c00001) → UNKNOWN_ENTITY
+  [case_dh_drug_11] ✓ A3.sweep_subset: 全白名单 28 个实体逐一查证，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A4 [case_dh_drug_11] search_candidates：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_drug_11] ✓ A4.sweep_subset: 按可见集 filter_props 扫查键（类别 []、数值 []）穷尽扫查，返回 0 个 id 全部 ⊆ 白名单
+    BEFORE(无视图): 全库 logS∈[-1.05,-0.04] 扫查 → 白名单外命中 271 个（如 ['z000274', 'z000363', 'z000364']，泄漏面真实存在）
+  [case_dh_drug_11] ✓ A4.positive: 正例（B1 性质轴 logS∈[-1.05,-0.04]）：族内序列全员可被穷举触达 ['z000013', 'z000309', 'z012259'] / BEFORE 同值域有白名单外命中
+    BEFORE(无视图): 组成==gt.composition 全库扫查 → 7 个实体（如 ['z001424', 'z001457', 'z013265']，含 gt 组成实体）
+    AFTER (视图层): enumerate(composition=gt.composition) → 0 个
+  [case_dh_drug_11] ✓ A4.negative_gt_absent: 负例：按 gt.composition 组成约束扫查，BEFORE 命中 7 个（泄漏面真实存在）/ AFTER 视图内返回为空
+------------------------------------------------------------------------
+A5 [case_dh_drug_11] literature_search：返回集 ⊆ 文献白名单（硬要求 3）
+    BEFORE(无视图): query='calculation' → 命中 90 篇（白名单外，泄漏面真实存在）
+    AFTER (视图层): query='calculation' → EMPTY_RESULT
+  [case_dh_drug_11] ✓ A5.negative: 负例：只命中白名单外文献的查询 → BEFORE 有命中 / AFTER EMPTY_RESULT
+------------------------------------------------------------------------
+A6 [case_dh_drug_11] 穷举接口：A 内无不劣于 gt 的解（硬要求 5）
+  [case_dh_drug_11] ✓ A6.quality_gate_empty: enumerate(logS≤-2.8516) 于可见集 → 0 个（须为 0）
+  [case_dh_drug_11] ✓ A6.nontrivial: 宽松阈值对照：enumerate(logS>-3.4657) → 28 个（穷举本身有效，非恒真）
+  [case_dh_drug_11] ✓ A6.composition_empty: enumerate(composition=gt 组成) → 0 个（须为 0）
+  [case_dh_drug_11] ✓ A6.composition_probe: 注入同组成实体 z001424 后 enumerate → 1 个（原 0 个）⇒ 组成穷举确实在筛
+------------------------------------------------------------------------
+A7 [case_dh_drug_11] 视图文件匿名红线（沿用 check_agent_visible_anonymity 口径）
+  [case_dh_drug_11] ✓ A7.anonymity: InChIKey=0 元素符号=0 真名=0 真实公式=0（须全 0）
+  [case_dh_drug_12] ✓ A6.target_prop_valid: target.prop=logS ∈ 支持集 ['logS', 'tc']
+------------------------------------------------------------------------
+A1 [case_dh_drug_12] gt 不得出现在自己的可见集内（硬要求 2）
+  [case_dh_drug_12] ✓ A1.gt_invisible: entity_ref∉白名单 且 组成无碰撞
+  [case_dh_drug_12] ✓ A1.gt_comp_form: gt.composition 可作组成核（键 ['16', '19', '22']）
+  [case_dh_drug_12] ✓ A1.gt_invisible_probe: 注入同组成实体 z000285（式 'C2H5NO2'）后扫查报 1 条违规（原 0 条）⇒ 组成扫查确实在查
+  [case_dh_drug_12] ✓ A1.gt_exists_in_full_lib: gt=z000871 全库存在（A 侧演示形态；存在才使负例非平凡——防恒真陷阱）
+    BEFORE(无视图): get_entity(z000871) → 返回记录（泄漏面真实存在）
+    AFTER (视图层): get_entity(z000871) → UNKNOWN_ENTITY
+  [case_dh_drug_12] ✓ A1.before_after: BEFORE 可触达 gt / AFTER 一律 UNKNOWN_ENTITY
+------------------------------------------------------------------------
+A2 [case_dh_drug_12] get_entity：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_drug_12] ✓ A2.positive: 正例 get_entity(z045328) → 查得到
+  [case_dh_drug_12] ✓ A2.negative: 负例 get_entity(c00001∈全库∉白名单) → UNKNOWN_ENTITY
+  [case_dh_drug_12] ✓ A2.sweep_subset: 全白名单 29 个实体逐一取件，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A3 [case_dh_drug_12] get_property：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_drug_12] ✓ A3.positive: 正例 get_property(z045328,['atom_count', 'element_count']) → 返回 2 值
+  [case_dh_drug_12] ✓ A3.negative: 负例 get_property(c00001) → UNKNOWN_ENTITY
+  [case_dh_drug_12] ✓ A3.sweep_subset: 全白名单 29 个实体逐一查证，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A4 [case_dh_drug_12] search_candidates：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_drug_12] ✓ A4.sweep_subset: 按可见集 filter_props 扫查键（类别 []、数值 []）穷尽扫查，返回 0 个 id 全部 ⊆ 白名单
+    BEFORE(无视图): 全库 logS∈[-2.0885,-0.0666] 扫查 → 白名单外命中 731 个（如 ['z000007', 'z000013', 'z000274']，泄漏面真实存在）
+  [case_dh_drug_12] ✓ A4.positive: 正例（B1 性质轴 logS∈[-2.0885,-0.0666]）：族内序列全员可被穷举触达 ['z000900', 'z011833', 'z011844', 'z045328'] / BEFORE 同值域有白名单外命中
+    BEFORE(无视图): 组成==gt.composition 全库扫查 → 3 个实体（如 ['z000285', 'z000871', 'z019051']，含 gt 组成实体）
+    AFTER (视图层): enumerate(composition=gt.composition) → 0 个
+  [case_dh_drug_12] ✓ A4.negative_gt_absent: 负例：按 gt.composition 组成约束扫查，BEFORE 命中 3 个（泄漏面真实存在）/ AFTER 视图内返回为空
+------------------------------------------------------------------------
+A5 [case_dh_drug_12] literature_search：返回集 ⊆ 文献白名单（硬要求 3）
+    BEFORE(无视图): query='calculation' → 命中 90 篇（白名单外，泄漏面真实存在）
+    AFTER (视图层): query='calculation' → EMPTY_RESULT
+  [case_dh_drug_12] ✓ A5.negative: 负例：只命中白名单外文献的查询 → BEFORE 有命中 / AFTER EMPTY_RESULT
+------------------------------------------------------------------------
+A6 [case_dh_drug_12] 穷举接口：A 内无不劣于 gt 的解（硬要求 5）
+  [case_dh_drug_12] ✓ A6.quality_gate_empty: enumerate(logS≥0.92) 于可见集 → 0 个（须为 0）
+  [case_dh_drug_12] ✓ A6.nontrivial: 宽松阈值对照：enumerate(logS>-9.6280505595) → 29 个（穷举本身有效，非恒真）
+  [case_dh_drug_12] ✓ A6.composition_empty: enumerate(composition=gt 组成) → 0 个（须为 0）
+  [case_dh_drug_12] ✓ A6.composition_probe: 注入同组成实体 z000285 后 enumerate → 1 个（原 0 个）⇒ 组成穷举确实在筛
+------------------------------------------------------------------------
+A7 [case_dh_drug_12] 视图文件匿名红线（沿用 check_agent_visible_anonymity 口径）
+  [case_dh_drug_12] ✓ A7.anonymity: InChIKey=0 元素符号=0 真名=0 真实公式=0（须全 0）
+  [case_dh_drug_13] ✓ A6.target_prop_valid: target.prop=logS ∈ 支持集 ['logS', 'tc']
+------------------------------------------------------------------------
+A1 [case_dh_drug_13] gt 不得出现在自己的可见集内（硬要求 2）
+  [case_dh_drug_13] ✓ A1.gt_invisible: entity_ref∉白名单 且 组成无碰撞
+  [case_dh_drug_13] ✓ A1.gt_comp_form: gt.composition 可作组成核（键 ['16', '19', '22']）
+  [case_dh_drug_13] ✓ A1.gt_invisible_probe: 注入同组成实体 z002820（式 'C10H15NO2'）后扫查报 2 条违规（原 0 条）⇒ 组成扫查确实在查
+  [case_dh_drug_13] ✓ A1.gt_exists_in_full_lib: gt=z002820 全库存在（A 侧演示形态；存在才使负例非平凡——防恒真陷阱）
+    BEFORE(无视图): get_entity(z002820) → 返回记录（泄漏面真实存在）
+    AFTER (视图层): get_entity(z002820) → UNKNOWN_ENTITY
+  [case_dh_drug_13] ✓ A1.before_after: BEFORE 可触达 gt / AFTER 一律 UNKNOWN_ENTITY
+------------------------------------------------------------------------
+A2 [case_dh_drug_13] get_entity：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_drug_13] ✓ A2.positive: 正例 get_entity(z006911) → 查得到
+  [case_dh_drug_13] ✓ A2.negative: 负例 get_entity(c00001∈全库∉白名单) → UNKNOWN_ENTITY
+  [case_dh_drug_13] ✓ A2.sweep_subset: 全白名单 28 个实体逐一取件，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A3 [case_dh_drug_13] get_property：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_drug_13] ✓ A3.positive: 正例 get_property(z006911,['atom_count', 'element_count']) → 返回 2 值
+  [case_dh_drug_13] ✓ A3.negative: 负例 get_property(c00001) → UNKNOWN_ENTITY
+  [case_dh_drug_13] ✓ A3.sweep_subset: 全白名单 28 个实体逐一查证，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A4 [case_dh_drug_13] search_candidates：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_drug_13] ✓ A4.sweep_subset: 按可见集 filter_props 扫查键（类别 []、数值 []）穷尽扫查，返回 0 个 id 全部 ⊆ 白名单
+    BEFORE(无视图): 全库 logS∈[-2.3,-1.0911] 扫查 → 白名单外命中 537 个（如 ['z000007', 'z000018', 'z000308']，泄漏面真实存在）
+  [case_dh_drug_13] ✓ A4.positive: 正例（B1 性质轴 logS∈[-2.3,-1.0911]）：族内序列全员可被穷举触达 ['z001339', 'z002750', 'z006911'] / BEFORE 同值域有白名单外命中
+    BEFORE(无视图): 组成==gt.composition 全库扫查 → 24 个实体（如 ['z002820', 'z010404', 'z011499']，含 gt 组成实体）
+    AFTER (视图层): enumerate(composition=gt.composition) → 0 个
+  [case_dh_drug_13] ✓ A4.negative_gt_absent: 负例：按 gt.composition 组成约束扫查，BEFORE 命中 24 个（泄漏面真实存在）/ AFTER 视图内返回为空
+------------------------------------------------------------------------
+A5 [case_dh_drug_13] literature_search：返回集 ⊆ 文献白名单（硬要求 3）
+    BEFORE(无视图): query='calculation' → 命中 90 篇（白名单外，泄漏面真实存在）
+    AFTER (视图层): query='calculation' → EMPTY_RESULT
+  [case_dh_drug_13] ✓ A5.negative: 负例：只命中白名单外文献的查询 → BEFORE 有命中 / AFTER EMPTY_RESULT
+------------------------------------------------------------------------
+A6 [case_dh_drug_13] 穷举接口：A 内无不劣于 gt 的解（硬要求 5）
+  [case_dh_drug_13] ✓ A6.quality_gate_empty: enumerate(logS≤-3.4541026398000003) 于可见集 → 0 个（须为 0）
+  [case_dh_drug_13] ✓ A6.nontrivial: 宽松阈值对照：enumerate(logS>-4.1727) → 28 个（穷举本身有效，非恒真）
+  [case_dh_drug_13] ✓ A6.composition_empty: enumerate(composition=gt 组成) → 0 个（须为 0）
+  [case_dh_drug_13] ✓ A6.composition_probe: 注入同组成实体 z002820 后 enumerate → 1 个（原 0 个）⇒ 组成穷举确实在筛
+------------------------------------------------------------------------
+A7 [case_dh_drug_13] 视图文件匿名红线（沿用 check_agent_visible_anonymity 口径）
+  [case_dh_drug_13] ✓ A7.anonymity: InChIKey=0 元素符号=0 真名=0 真实公式=0（须全 0）
+  [case_dh_drug_14] ✓ A6.target_prop_valid: target.prop=logS ∈ 支持集 ['logS', 'tc']
+------------------------------------------------------------------------
+A1 [case_dh_drug_14] gt 不得出现在自己的可见集内（硬要求 2）
+  [case_dh_drug_14] ✓ A1.gt_invisible: entity_ref∉白名单 且 组成无碰撞
+  [case_dh_drug_14] ✓ A1.gt_comp_form: gt.composition 可作组成核（键 ['16', '19', '22']）
+  [case_dh_drug_14] ✓ A1.gt_invisible_probe: 注入同组成实体 z004086（式 'C11H9NO3'）后扫查报 1 条违规（原 0 条）⇒ 组成扫查确实在查
+  [case_dh_drug_14] ✓ A1.gt_exists_in_full_lib: gt=z019576 全库存在（A 侧演示形态；存在才使负例非平凡——防恒真陷阱）
+    BEFORE(无视图): get_entity(z019576) → 返回记录（泄漏面真实存在）
+    AFTER (视图层): get_entity(z019576) → UNKNOWN_ENTITY
+  [case_dh_drug_14] ✓ A1.before_after: BEFORE 可触达 gt / AFTER 一律 UNKNOWN_ENTITY
+------------------------------------------------------------------------
+A2 [case_dh_drug_14] get_entity：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_drug_14] ✓ A2.positive: 正例 get_entity(z000873) → 查得到
+  [case_dh_drug_14] ✓ A2.negative: 负例 get_entity(c00001∈全库∉白名单) → UNKNOWN_ENTITY
+  [case_dh_drug_14] ✓ A2.sweep_subset: 全白名单 28 个实体逐一取件，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A3 [case_dh_drug_14] get_property：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_drug_14] ✓ A3.positive: 正例 get_property(z000873,['atom_count', 'element_count']) → 返回 2 值
+  [case_dh_drug_14] ✓ A3.negative: 负例 get_property(c00001) → UNKNOWN_ENTITY
+  [case_dh_drug_14] ✓ A3.sweep_subset: 全白名单 28 个实体逐一查证，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A4 [case_dh_drug_14] search_candidates：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_drug_14] ✓ A4.sweep_subset: 按可见集 filter_props 扫查键（类别 []、数值 []）穷尽扫查，返回 0 个 id 全部 ⊆ 白名单
+    BEFORE(无视图): 全库 logS∈[-2.2815,0.4758] 扫查 → 白名单外命中 925 个（如 ['z000007', 'z000013', 'z000018']，泄漏面真实存在）
+  [case_dh_drug_14] ✓ A4.positive: 正例（B1 性质轴 logS∈[-2.2815,0.4758]）：族内序列全员可被穷举触达 ['z000873', 'z001366', 'z011133'] / BEFORE 同值域有白名单外命中
+    BEFORE(无视图): 组成==gt.composition 全库扫查 → 35 个实体（如 ['z004086', 'z004244', 'z005479']，含 gt 组成实体）
+    AFTER (视图层): enumerate(composition=gt.composition) → 0 个
+  [case_dh_drug_14] ✓ A4.negative_gt_absent: 负例：按 gt.composition 组成约束扫查，BEFORE 命中 35 个（泄漏面真实存在）/ AFTER 视图内返回为空
+------------------------------------------------------------------------
+A5 [case_dh_drug_14] literature_search：返回集 ⊆ 文献白名单（硬要求 3）
+    BEFORE(无视图): query='calculation' → 命中 90 篇（白名单外，泄漏面真实存在）
+    AFTER (视图层): query='calculation' → EMPTY_RESULT
+  [case_dh_drug_14] ✓ A5.negative: 负例：只命中白名单外文献的查询 → BEFORE 有命中 / AFTER EMPTY_RESULT
+------------------------------------------------------------------------
+A6 [case_dh_drug_14] 穷举接口：A 内无不劣于 gt 的解（硬要求 5）
+  [case_dh_drug_14] ✓ A6.quality_gate_empty: enumerate(logS≤-4.36) 于可见集 → 0 个（须为 0）
+  [case_dh_drug_14] ✓ A6.nontrivial: 宽松阈值对照：enumerate(logS>-4.7960463334) → 28 个（穷举本身有效，非恒真）
+  [case_dh_drug_14] ✓ A6.composition_empty: enumerate(composition=gt 组成) → 0 个（须为 0）
+  [case_dh_drug_14] ✓ A6.composition_probe: 注入同组成实体 z004086 后 enumerate → 1 个（原 0 个）⇒ 组成穷举确实在筛
+------------------------------------------------------------------------
+A7 [case_dh_drug_14] 视图文件匿名红线（沿用 check_agent_visible_anonymity 口径）
+  [case_dh_drug_14] ✓ A7.anonymity: InChIKey=0 元素符号=0 真名=0 真实公式=0（须全 0）
+  [case_dh_drug_15] ✓ A6.target_prop_valid: target.prop=logS ∈ 支持集 ['logS', 'tc']
+------------------------------------------------------------------------
+A1 [case_dh_drug_15] gt 不得出现在自己的可见集内（硬要求 2）
+  [case_dh_drug_15] ✓ A1.gt_invisible: entity_ref∉白名单 且 组成无碰撞
+  [case_dh_drug_15] ✓ A1.gt_comp_form: gt.composition 可作组成核（键 ['16', '19', '22']）
+  [case_dh_drug_15] ✓ A1.gt_invisible_probe: 注入同组成实体 z003922（式 'C7H16O3'）后扫查报 2 条违规（原 0 条）⇒ 组成扫查确实在查
+  [case_dh_drug_15] ✓ A1.gt_exists_in_full_lib: gt=z003922 全库存在（A 侧演示形态；存在才使负例非平凡——防恒真陷阱）
+    BEFORE(无视图): get_entity(z003922) → 返回记录（泄漏面真实存在）
+    AFTER (视图层): get_entity(z003922) → UNKNOWN_ENTITY
+  [case_dh_drug_15] ✓ A1.before_after: BEFORE 可触达 gt / AFTER 一律 UNKNOWN_ENTITY
+------------------------------------------------------------------------
+A2 [case_dh_drug_15] get_entity：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_drug_15] ✓ A2.positive: 正例 get_entity(z018592) → 查得到
+  [case_dh_drug_15] ✓ A2.negative: 负例 get_entity(c00001∈全库∉白名单) → UNKNOWN_ENTITY
+  [case_dh_drug_15] ✓ A2.sweep_subset: 全白名单 28 个实体逐一取件，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A3 [case_dh_drug_15] get_property：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_drug_15] ✓ A3.positive: 正例 get_property(z018592,['atom_count', 'element_count']) → 返回 2 值
+  [case_dh_drug_15] ✓ A3.negative: 负例 get_property(c00001) → UNKNOWN_ENTITY
+  [case_dh_drug_15] ✓ A3.sweep_subset: 全白名单 28 个实体逐一查证，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A4 [case_dh_drug_15] search_candidates：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_drug_15] ✓ A4.sweep_subset: 按可见集 filter_props 扫查键（类别 []、数值 []）穷尽扫查，返回 0 个 id 全部 ⊆ 白名单
+    BEFORE(无视图): 全库 logS∈[-4.3087,-1.3066747459999999] 扫查 → 白名单外命中 1168 个（如 ['z000007', 'z000012', 'z000017']，泄漏面真实存在）
+  [case_dh_drug_15] ✓ A4.positive: 正例（B1 性质轴 logS∈[-4.3087,-1.3066747459999999]）：族内序列全员可被穷举触达 ['z012240', 'z015533', 'z018592'] / BEFORE 同值域有白名单外命中
+    BEFORE(无视图): 组成==gt.composition 全库扫查 → 3 个实体（如 ['z003922', 'z033282', 'z043936']，含 gt 组成实体）
+    AFTER (视图层): enumerate(composition=gt.composition) → 0 个
+  [case_dh_drug_15] ✓ A4.negative_gt_absent: 负例：按 gt.composition 组成约束扫查，BEFORE 命中 3 个（泄漏面真实存在）/ AFTER 视图内返回为空
+------------------------------------------------------------------------
+A5 [case_dh_drug_15] literature_search：返回集 ⊆ 文献白名单（硬要求 3）
+    BEFORE(无视图): query='calculation' → 命中 90 篇（白名单外，泄漏面真实存在）
+    AFTER (视图层): query='calculation' → EMPTY_RESULT
+  [case_dh_drug_15] ✓ A5.negative: 负例：只命中白名单外文献的查询 → BEFORE 有命中 / AFTER EMPTY_RESULT
+------------------------------------------------------------------------
+A6 [case_dh_drug_15] 穷举接口：A 内无不劣于 gt 的解（硬要求 5）
+  [case_dh_drug_15] ✓ A6.quality_gate_empty: enumerate(logS≥0.8291459354999999) 于可见集 → 0 个（须为 0）
+  [case_dh_drug_15] ✓ A6.nontrivial: 宽松阈值对照：enumerate(logS>-8.1886381337) → 28 个（穷举本身有效，非恒真）
+  [case_dh_drug_15] ✓ A6.composition_empty: enumerate(composition=gt 组成) → 0 个（须为 0）
+  [case_dh_drug_15] ✓ A6.composition_probe: 注入同组成实体 z003922 后 enumerate → 1 个（原 0 个）⇒ 组成穷举确实在筛
+------------------------------------------------------------------------
+A7 [case_dh_drug_15] 视图文件匿名红线（沿用 check_agent_visible_anonymity 口径）
+  [case_dh_drug_15] ✓ A7.anonymity: InChIKey=0 元素符号=0 真名=0 真实公式=0（须全 0）
+  [case_dh_material_01] ✓ A6.target_prop_valid: target.prop=tc ∈ 支持集 ['logS', 'tc']
+------------------------------------------------------------------------
+A1 [case_dh_material_01] gt 不得出现在自己的可见集内（硬要求 2）
+  [case_dh_material_01] ✓ A1.gt_invisible: entity_ref∉白名单 且 组成无碰撞
+  [case_dh_material_01] ✓ A1.gt_comp_form: gt.composition 可作组成核（键 ['22', '33', '34']）
+  [case_dh_material_01] ✓ A1.gt_invisible_probe: 注入同组成实体 c10196（式 'Y1Ba2Cu2.95Fe0.05O6.79'）后扫查报 2 条违规（原 0 条）⇒ 组成扫查确实在查
+  [case_dh_material_01] ✓ A1.gt_exists_in_full_lib: gt=c10196 全库存在（A 侧演示形态；存在才使负例非平凡——防恒真陷阱）
+    BEFORE(无视图): get_entity(c10196) → 返回记录（泄漏面真实存在）
+    AFTER (视图层): get_entity(c10196) → UNKNOWN_ENTITY
+  [case_dh_material_01] ✓ A1.before_after: BEFORE 可触达 gt / AFTER 一律 UNKNOWN_ENTITY
+------------------------------------------------------------------------
+A2 [case_dh_material_01] get_entity：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_material_01] ✓ A2.positive: 正例 get_entity(c10191) → 查得到
+  [case_dh_material_01] ✓ A2.negative: 负例 get_entity(c00001∈全库∉白名单) → UNKNOWN_ENTITY
+  [case_dh_material_01] ✓ A2.sweep_subset: 全白名单 30 个实体逐一取件，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A3 [case_dh_material_01] get_property：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_material_01] ✓ A3.positive: 正例 get_property(c10191,['condition', 'element_count']) → 返回 2 值
+  [case_dh_material_01] ✓ A3.negative: 负例 get_property(c00001) → UNKNOWN_ENTITY
+  [case_dh_material_01] ✓ A3.sweep_subset: 全白名单 30 个实体逐一查证，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A4 [case_dh_material_01] search_candidates：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_material_01] ✓ A4.sweep_subset: 按可见集 filter_props 扫查键（类别 ['sc_class']、数值 []）穷尽扫查，返回 30 个 id 全部 ⊆ 白名单
+  [case_dh_material_01] ✓ A4.positive: 正例：族内序列全员可被检索触达 ['c10191', 'c10192', 'c10193', 'c10194', 'c10195']
+    BEFORE(无视图): 组成==gt.composition 全库扫查 → 1 个实体（如 ['c10196']，含 gt 组成实体）；扫查键同查询另触达白名单外实体 17137 个
+    AFTER (视图层): enumerate(composition=gt.composition) → 0 个
+  [case_dh_material_01] ✓ A4.negative_gt_absent: 负例：按 gt.composition 组成约束扫查，BEFORE 命中 1 个（泄漏面真实存在）/ AFTER 视图内返回为空
+------------------------------------------------------------------------
+A5 [case_dh_material_01] literature_search：返回集 ⊆ 文献白名单（硬要求 3）
+  [case_dh_material_01] ✓ A5.positive: 正例：query='bcs theory' 命中白名单文献 10.1002/9781118343180.app1
+  [case_dh_material_01] ✓ A5.sweep_subset: 该查询返回 2 篇全部 ⊆ 文献白名单
+    BEFORE(无视图): query='calculation' → 命中 90 篇（白名单外，泄漏面真实存在）
+    AFTER (视图层): query='calculation' → EMPTY_RESULT
+  [case_dh_material_01] ✓ A5.negative: 负例：只命中白名单外文献的查询 → BEFORE 有命中 / AFTER EMPTY_RESULT
+------------------------------------------------------------------------
+A6 [case_dh_material_01] 穷举接口：A 内无不劣于 gt 的解（硬要求 5）
+  [case_dh_material_01] ✓ A6.quality_gate_empty: enumerate(tc≥67.6) 于可见集 → 0 个（须为 0）
+  [case_dh_material_01] ✓ A6.nontrivial: 宽松阈值对照：enumerate(tc>-1.0) → 30 个（穷举本身有效，非恒真）
+  [case_dh_material_01] ✓ A6.composition_empty: enumerate(composition=gt 组成) → 0 个（须为 0）
+  [case_dh_material_01] ✓ A6.composition_probe: 注入同组成实体 c10196 后 enumerate → 1 个（原 0 个）⇒ 组成穷举确实在筛
+------------------------------------------------------------------------
+A7 [case_dh_material_01] 视图文件匿名红线（沿用 check_agent_visible_anonymity 口径）
+  [case_dh_material_01] ✓ A7.anonymity: InChIKey=0 元素符号=0 真名=0 真实公式=0（须全 0）
+  [case_dh_material_02] ✓ A6.target_prop_valid: target.prop=tc ∈ 支持集 ['logS', 'tc']
+------------------------------------------------------------------------
+A1 [case_dh_material_02] gt 不得出现在自己的可见集内（硬要求 2）
+  [case_dh_material_02] ✓ A1.gt_invisible: entity_ref∉白名单 且 组成无碰撞
+  [case_dh_material_02] ✓ A1.gt_comp_form: gt.composition 可作组成核（键 ['22', '39', '60']）
+  [case_dh_material_02] ✓ A1.gt_invisible_probe: 注入同组成实体 c08112（式 'La1.25Ba1.45Ca0.3Cu3O7.15'）后扫查报 2 条违规（原 0 条）⇒ 组成扫查确实在查
+  [case_dh_material_02] ✓ A1.gt_exists_in_full_lib: gt=c08112 全库存在（A 侧演示形态；存在才使负例非平凡——防恒真陷阱）
+    BEFORE(无视图): get_entity(c08112) → 返回记录（泄漏面真实存在）
+    AFTER (视图层): get_entity(c08112) → UNKNOWN_ENTITY
+  [case_dh_material_02] ✓ A1.before_after: BEFORE 可触达 gt / AFTER 一律 UNKNOWN_ENTITY
+------------------------------------------------------------------------
+A2 [case_dh_material_02] get_entity：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_material_02] ✓ A2.positive: 正例 get_entity(c08107) → 查得到
+  [case_dh_material_02] ✓ A2.negative: 负例 get_entity(c00001∈全库∉白名单) → UNKNOWN_ENTITY
+  [case_dh_material_02] ✓ A2.sweep_subset: 全白名单 29 个实体逐一取件，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A3 [case_dh_material_02] get_property：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_material_02] ✓ A3.positive: 正例 get_property(c08107,['condition', 'element_count']) → 返回 2 值
+  [case_dh_material_02] ✓ A3.negative: 负例 get_property(c00001) → UNKNOWN_ENTITY
+  [case_dh_material_02] ✓ A3.sweep_subset: 全白名单 29 个实体逐一查证，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A4 [case_dh_material_02] search_candidates：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_material_02] ✓ A4.sweep_subset: 按可见集 filter_props 扫查键（类别 ['sc_class']、数值 []）穷尽扫查，返回 29 个 id 全部 ⊆ 白名单
+  [case_dh_material_02] ✓ A4.positive: 正例：族内序列全员可被检索触达 ['c08107', 'c08108', 'c08109', 'c08110']
+    BEFORE(无视图): 组成==gt.composition 全库扫查 → 2 个实体（如 ['c08112', 'c08113']，含 gt 组成实体）；扫查键同查询另触达白名单外实体 16379 个
+    AFTER (视图层): enumerate(composition=gt.composition) → 0 个
+  [case_dh_material_02] ✓ A4.negative_gt_absent: 负例：按 gt.composition 组成约束扫查，BEFORE 命中 2 个（泄漏面真实存在）/ AFTER 视图内返回为空
+------------------------------------------------------------------------
+A5 [case_dh_material_02] literature_search：返回集 ⊆ 文献白名单（硬要求 3）
+  [case_dh_material_02] ✓ A5.positive: 正例：query='bcs theory' 命中白名单文献 10.1002/9781118343180.app1
+  [case_dh_material_02] ✓ A5.sweep_subset: 该查询返回 2 篇全部 ⊆ 文献白名单
+    BEFORE(无视图): query='calculation' → 命中 90 篇（白名单外，泄漏面真实存在）
+    AFTER (视图层): query='calculation' → EMPTY_RESULT
+  [case_dh_material_02] ✓ A5.negative: 负例：只命中白名单外文献的查询 → BEFORE 有命中 / AFTER EMPTY_RESULT
+------------------------------------------------------------------------
+A6 [case_dh_material_02] 穷举接口：A 内无不劣于 gt 的解（硬要求 5）
+  [case_dh_material_02] ✓ A6.quality_gate_empty: enumerate(tc≥75.2) 于可见集 → 0 个（须为 0）
+  [case_dh_material_02] ✓ A6.nontrivial: 宽松阈值对照：enumerate(tc>-1.0) → 29 个（穷举本身有效，非恒真）
+  [case_dh_material_02] ✓ A6.composition_empty: enumerate(composition=gt 组成) → 0 个（须为 0）
+  [case_dh_material_02] ✓ A6.composition_probe: 注入同组成实体 c08112 后 enumerate → 1 个（原 0 个）⇒ 组成穷举确实在筛
+------------------------------------------------------------------------
+A7 [case_dh_material_02] 视图文件匿名红线（沿用 check_agent_visible_anonymity 口径）
+  [case_dh_material_02] ✓ A7.anonymity: InChIKey=0 元素符号=0 真名=0 真实公式=0（须全 0）
+  [case_dh_material_03] ✓ A6.target_prop_valid: target.prop=tc ∈ 支持集 ['logS', 'tc']
+------------------------------------------------------------------------
+A1 [case_dh_material_03] gt 不得出现在自己的可见集内（硬要求 2）
+  [case_dh_material_03] ✗ A1.gt_invisible: ["可见集实体 c09641 的组成与 gt.composition 相同（式子 'Hg0.9Re0.1Ba2Cu1O4.41'）"]
+  [case_dh_material_03] ✓ A1.gt_comp_form: gt.composition 可作组成核（键 ['22', '39', '50']）
+  [case_dh_material_03] ✗ A1.gt_invisible_probe: 注入同组成实体 c09641（式 'Hg0.9Re0.1Ba2Cu1O4.41'）后扫查报 1 条违规（原 1 条）⇒ 组成扫查确实在查
+  [case_dh_material_03] ✓ A1.gt_exists_in_full_lib: gt=c09642 全库存在（A 侧演示形态；存在才使负例非平凡——防恒真陷阱）
+    BEFORE(无视图): get_entity(c09642) → 返回记录（泄漏面真实存在）
+    AFTER (视图层): get_entity(c09642) → UNKNOWN_ENTITY
+  [case_dh_material_03] ✓ A1.before_after: BEFORE 可触达 gt / AFTER 一律 UNKNOWN_ENTITY
+------------------------------------------------------------------------
+A2 [case_dh_material_03] get_entity：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_material_03] ✓ A2.positive: 正例 get_entity(c09639) → 查得到
+  [case_dh_material_03] ✓ A2.negative: 负例 get_entity(c00001∈全库∉白名单) → UNKNOWN_ENTITY
+  [case_dh_material_03] ✓ A2.sweep_subset: 全白名单 28 个实体逐一取件，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A3 [case_dh_material_03] get_property：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_material_03] ✓ A3.positive: 正例 get_property(c09639,['condition', 'element_count']) → 返回 2 值
+  [case_dh_material_03] ✓ A3.negative: 负例 get_property(c00001) → UNKNOWN_ENTITY
+  [case_dh_material_03] ✓ A3.sweep_subset: 全白名单 28 个实体逐一查证，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A4 [case_dh_material_03] search_candidates：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_material_03] ✓ A4.sweep_subset: 按可见集 filter_props 扫查键（类别 ['sc_class']、数值 []）穷尽扫查，返回 28 个 id 全部 ⊆ 白名单
+  [case_dh_material_03] ✓ A4.positive: 正例：族内序列全员可被检索触达 ['c09639', 'c09640', 'c09641']
+    BEFORE(无视图): 组成==gt.composition 全库扫查 → 3 个实体（如 ['c09641', 'c09642', 'c09643']，含 gt 组成实体）；扫查键同查询另触达白名单外实体 16707 个
+    AFTER (视图层): enumerate(composition=gt.composition) → 1 个
+  [case_dh_material_03] ✗ A4.negative_gt_absent: 负例：按 gt.composition 组成约束扫查，BEFORE 命中 3 个（泄漏面真实存在）/ AFTER 视图内返回为空
+------------------------------------------------------------------------
+A5 [case_dh_material_03] literature_search：返回集 ⊆ 文献白名单（硬要求 3）
+  [case_dh_material_03] ✓ A5.positive: 正例：query='bcs theory' 命中白名单文献 10.1002/9781118343180.app1
+  [case_dh_material_03] ✓ A5.sweep_subset: 该查询返回 2 篇全部 ⊆ 文献白名单
+    BEFORE(无视图): query='calculation' → 命中 90 篇（白名单外，泄漏面真实存在）
+    AFTER (视图层): query='calculation' → EMPTY_RESULT
+  [case_dh_material_03] ✓ A5.negative: 负例：只命中白名单外文献的查询 → BEFORE 有命中 / AFTER EMPTY_RESULT
+------------------------------------------------------------------------
+A6 [case_dh_material_03] 穷举接口：A 内无不劣于 gt 的解（硬要求 5）
+  [case_dh_material_03] ✓ A6.quality_gate_empty: enumerate(tc≥95.0) 于可见集 → 0 个（须为 0）
+  [case_dh_material_03] ✓ A6.nontrivial: 宽松阈值对照：enumerate(tc>-1.0) → 28 个（穷举本身有效，非恒真）
+  [case_dh_material_03] ✗ A6.composition_empty: enumerate(composition=gt 组成) → 1 个（须为 0）
+  [case_dh_material_03] ✗ A6.composition_probe: 注入同组成实体 c09641 后 enumerate → 1 个（原 1 个）⇒ 组成穷举确实在筛
+------------------------------------------------------------------------
+A7 [case_dh_material_03] 视图文件匿名红线（沿用 check_agent_visible_anonymity 口径）
+  [case_dh_material_03] ✓ A7.anonymity: InChIKey=0 元素符号=0 真名=0 真实公式=0（须全 0）
+  [case_dh_material_04] ✓ A6.target_prop_valid: target.prop=tc ∈ 支持集 ['logS', 'tc']
+------------------------------------------------------------------------
+A1 [case_dh_material_04] gt 不得出现在自己的可见集内（硬要求 2）
+  [case_dh_material_04] ✓ A1.gt_invisible: entity_ref∉白名单 且 组成无碰撞
+  [case_dh_material_04] ✓ A1.gt_comp_form: gt.composition 可作组成核（键 ['1', '16', '24']）
+  [case_dh_material_04] ✓ A1.gt_invisible_probe: 注入同组成实体 c12889（式 'Mo0.95Hf0.05C0.73'）后扫查报 1 条违规（原 0 条）⇒ 组成扫查确实在查
+  [case_dh_material_04] ✓ A1.gt_exists_in_full_lib: gt=c12890 全库存在（A 侧演示形态；存在才使负例非平凡——防恒真陷阱）
+    BEFORE(无视图): get_entity(c12890) → 返回记录（泄漏面真实存在）
+    AFTER (视图层): get_entity(c12890) → UNKNOWN_ENTITY
+  [case_dh_material_04] ✓ A1.before_after: BEFORE 可触达 gt / AFTER 一律 UNKNOWN_ENTITY
+------------------------------------------------------------------------
+A2 [case_dh_material_04] get_entity：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_material_04] ✓ A2.positive: 正例 get_entity(c12877) → 查得到
+  [case_dh_material_04] ✓ A2.negative: 负例 get_entity(c00001∈全库∉白名单) → UNKNOWN_ENTITY
+  [case_dh_material_04] ✓ A2.sweep_subset: 全白名单 28 个实体逐一取件，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A3 [case_dh_material_04] get_property：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_material_04] ✓ A3.positive: 正例 get_property(c12877,['condition', 'element_count']) → 返回 2 值
+  [case_dh_material_04] ✓ A3.negative: 负例 get_property(c00001) → UNKNOWN_ENTITY
+  [case_dh_material_04] ✓ A3.sweep_subset: 全白名单 28 个实体逐一查证，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A4 [case_dh_material_04] search_candidates：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_material_04] ✓ A4.sweep_subset: 按可见集 filter_props 扫查键（类别 ['sc_class']、数值 []）穷尽扫查，返回 28 个 id 全部 ⊆ 白名单
+  [case_dh_material_04] ✓ A4.positive: 正例：族内序列全员可被检索触达 ['c12877', 'c12878', 'c12886']
+    BEFORE(无视图): 组成==gt.composition 全库扫查 → 3 个实体（如 ['c12889', 'c12890', 'c12895']，含 gt 组成实体）；扫查键同查询另触达白名单外实体 17109 个
+    AFTER (视图层): enumerate(composition=gt.composition) → 0 个
+  [case_dh_material_04] ✓ A4.negative_gt_absent: 负例：按 gt.composition 组成约束扫查，BEFORE 命中 3 个（泄漏面真实存在）/ AFTER 视图内返回为空
+------------------------------------------------------------------------
+A5 [case_dh_material_04] literature_search：返回集 ⊆ 文献白名单（硬要求 3）
+  [case_dh_material_04] ✓ A5.positive: 正例：query='bcs theory' 命中白名单文献 10.1002/9781118343180.app1
+  [case_dh_material_04] ✓ A5.sweep_subset: 该查询返回 2 篇全部 ⊆ 文献白名单
+    BEFORE(无视图): query='calculation' → 命中 90 篇（白名单外，泄漏面真实存在）
+    AFTER (视图层): query='calculation' → EMPTY_RESULT
+  [case_dh_material_04] ✓ A5.negative: 负例：只命中白名单外文献的查询 → BEFORE 有命中 / AFTER EMPTY_RESULT
+------------------------------------------------------------------------
+A6 [case_dh_material_04] 穷举接口：A 内无不劣于 gt 的解（硬要求 5）
+  [case_dh_material_04] ✓ A6.quality_gate_empty: enumerate(tc≥12.4) 于可见集 → 0 个（须为 0）
+  [case_dh_material_04] ✓ A6.nontrivial: 宽松阈值对照：enumerate(tc>-1.0) → 28 个（穷举本身有效，非恒真）
+  [case_dh_material_04] ✓ A6.composition_empty: enumerate(composition=gt 组成) → 0 个（须为 0）
+  [case_dh_material_04] ✓ A6.composition_probe: 注入同组成实体 c12889 后 enumerate → 1 个（原 0 个）⇒ 组成穷举确实在筛
+------------------------------------------------------------------------
+A7 [case_dh_material_04] 视图文件匿名红线（沿用 check_agent_visible_anonymity 口径）
+  [case_dh_material_04] ✓ A7.anonymity: InChIKey=0 元素符号=0 真名=0 真实公式=0（须全 0）
+  [case_dh_material_05] ✓ A6.target_prop_valid: target.prop=tc ∈ 支持集 ['logS', 'tc']
+------------------------------------------------------------------------
+A1 [case_dh_material_05] gt 不得出现在自己的可见集内（硬要求 2）
+  [case_dh_material_05] ✓ A1.gt_invisible: entity_ref∉白名单 且 组成无碰撞
+  [case_dh_material_05] ✓ A1.gt_comp_form: gt.composition 可作组成核（键 ['54', '6']）
+  [case_dh_material_05] ✓ A1.gt_invisible_probe: 注入同组成实体 c16896（式 'Pb1Tl0.27'）后扫查报 2 条违规（原 0 条）⇒ 组成扫查确实在查
+  [case_dh_material_05] ✓ A1.gt_exists_in_full_lib: gt=c16896 全库存在（A 侧演示形态；存在才使负例非平凡——防恒真陷阱）
+    BEFORE(无视图): get_entity(c16896) → 返回记录（泄漏面真实存在）
+    AFTER (视图层): get_entity(c16896) → UNKNOWN_ENTITY
+  [case_dh_material_05] ✓ A1.before_after: BEFORE 可触达 gt / AFTER 一律 UNKNOWN_ENTITY
+------------------------------------------------------------------------
+A2 [case_dh_material_05] get_entity：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_material_05] ✓ A2.positive: 正例 get_entity(c16892) → 查得到
+  [case_dh_material_05] ✓ A2.negative: 负例 get_entity(c00001∈全库∉白名单) → UNKNOWN_ENTITY
+  [case_dh_material_05] ✓ A2.sweep_subset: 全白名单 29 个实体逐一取件，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A3 [case_dh_material_05] get_property：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_material_05] ✓ A3.positive: 正例 get_property(c16892,['condition', 'element_count']) → 返回 2 值
+  [case_dh_material_05] ✓ A3.negative: 负例 get_property(c00001) → UNKNOWN_ENTITY
+  [case_dh_material_05] ✓ A3.sweep_subset: 全白名单 29 个实体逐一查证，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A4 [case_dh_material_05] search_candidates：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_material_05] ✓ A4.sweep_subset: 按可见集 filter_props 扫查键（类别 ['sc_class']、数值 []）穷尽扫查，返回 29 个 id 全部 ⊆ 白名单
+  [case_dh_material_05] ✓ A4.positive: 正例：族内序列全员可被检索触达 ['c16892', 'c16893', 'c16894', 'c16895']
+    BEFORE(无视图): 组成==gt.composition 全库扫查 → 1 个实体（如 ['c16896']，含 gt 组成实体）；扫查键同查询另触达白名单外实体 16773 个
+    AFTER (视图层): enumerate(composition=gt.composition) → 0 个
+  [case_dh_material_05] ✓ A4.negative_gt_absent: 负例：按 gt.composition 组成约束扫查，BEFORE 命中 1 个（泄漏面真实存在）/ AFTER 视图内返回为空
+------------------------------------------------------------------------
+A5 [case_dh_material_05] literature_search：返回集 ⊆ 文献白名单（硬要求 3）
+  [case_dh_material_05] ✓ A5.positive: 正例：query='bcs theory' 命中白名单文献 10.1002/9781118343180.app1
+  [case_dh_material_05] ✓ A5.sweep_subset: 该查询返回 2 篇全部 ⊆ 文献白名单
+    BEFORE(无视图): query='calculation' → 命中 90 篇（白名单外，泄漏面真实存在）
+    AFTER (视图层): query='calculation' → EMPTY_RESULT
+  [case_dh_material_05] ✓ A5.negative: 负例：只命中白名单外文献的查询 → BEFORE 有命中 / AFTER EMPTY_RESULT
+------------------------------------------------------------------------
+A6 [case_dh_material_05] 穷举接口：A 内无不劣于 gt 的解（硬要求 5）
+  [case_dh_material_05] ✓ A6.quality_gate_empty: enumerate(tc≤6.43) 于可见集 → 0 个（须为 0）
+  [case_dh_material_05] ✓ A6.nontrivial: 宽松阈值对照：enumerate(tc>5.73) → 29 个（穷举本身有效，非恒真）
+  [case_dh_material_05] ✓ A6.composition_empty: enumerate(composition=gt 组成) → 0 个（须为 0）
+  [case_dh_material_05] ✓ A6.composition_probe: 注入同组成实体 c16896 后 enumerate → 1 个（原 0 个）⇒ 组成穷举确实在筛
+------------------------------------------------------------------------
+A7 [case_dh_material_05] 视图文件匿名红线（沿用 check_agent_visible_anonymity 口径）
+  [case_dh_material_05] ✓ A7.anonymity: InChIKey=0 元素符号=0 真名=0 真实公式=0（须全 0）
+  [case_dh_material_06] ✓ A6.target_prop_valid: target.prop=tc ∈ 支持集 ['logS', 'tc']
+------------------------------------------------------------------------
+A1 [case_dh_material_06] gt 不得出现在自己的可见集内（硬要求 2）
+  [case_dh_material_06] ✓ A1.gt_invisible: entity_ref∉白名单 且 组成无碰撞
+  [case_dh_material_06] ✓ A1.gt_comp_form: gt.composition 可作组成核（键 ['19', '25', '34']）
+  [case_dh_material_06] ✓ A1.gt_invisible_probe: 注入同组成实体 c06523（式 'La1Fe1As1H0.7'）后扫查报 2 条违规（原 0 条）⇒ 组成扫查确实在查
+  [case_dh_material_06] ✓ A1.gt_exists_in_full_lib: gt=c06523 全库存在（A 侧演示形态；存在才使负例非平凡——防恒真陷阱）
+    BEFORE(无视图): get_entity(c06523) → 返回记录（泄漏面真实存在）
+    AFTER (视图层): get_entity(c06523) → UNKNOWN_ENTITY
+  [case_dh_material_06] ✓ A1.before_after: BEFORE 可触达 gt / AFTER 一律 UNKNOWN_ENTITY
+------------------------------------------------------------------------
+A2 [case_dh_material_06] get_entity：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_material_06] ✓ A2.positive: 正例 get_entity(c06501) → 查得到
+  [case_dh_material_06] ✓ A2.negative: 负例 get_entity(c00001∈全库∉白名单) → UNKNOWN_ENTITY
+  [case_dh_material_06] ✓ A2.sweep_subset: 全白名单 28 个实体逐一取件，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A3 [case_dh_material_06] get_property：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_material_06] ✓ A3.positive: 正例 get_property(c06501,['condition', 'element_count']) → 返回 2 值
+  [case_dh_material_06] ✓ A3.negative: 负例 get_property(c00001) → UNKNOWN_ENTITY
+  [case_dh_material_06] ✓ A3.sweep_subset: 全白名单 28 个实体逐一查证，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A4 [case_dh_material_06] search_candidates：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_material_06] ✓ A4.sweep_subset: 按可见集 filter_props 扫查键（类别 ['sc_class']、数值 []）穷尽扫查，返回 28 个 id 全部 ⊆ 白名单
+  [case_dh_material_06] ✓ A4.positive: 正例：族内序列全员可被检索触达 ['c06501', 'c06510', 'c06519']
+    BEFORE(无视图): 组成==gt.composition 全库扫查 → 1 个实体（如 ['c06523']，含 gt 组成实体）；扫查键同查询另触达白名单外实体 17213 个
+    AFTER (视图层): enumerate(composition=gt.composition) → 0 个
+  [case_dh_material_06] ✓ A4.negative_gt_absent: 负例：按 gt.composition 组成约束扫查，BEFORE 命中 1 个（泄漏面真实存在）/ AFTER 视图内返回为空
+------------------------------------------------------------------------
+A5 [case_dh_material_06] literature_search：返回集 ⊆ 文献白名单（硬要求 3）
+  [case_dh_material_06] ✓ A5.positive: 正例：query='bcs theory' 命中白名单文献 10.1002/9781118343180.app1
+  [case_dh_material_06] ✓ A5.sweep_subset: 该查询返回 2 篇全部 ⊆ 文献白名单
+    BEFORE(无视图): query='calculation' → 命中 90 篇（白名单外，泄漏面真实存在）
+    AFTER (视图层): query='calculation' → EMPTY_RESULT
+  [case_dh_material_06] ✓ A5.negative: 负例：只命中白名单外文献的查询 → BEFORE 有命中 / AFTER EMPTY_RESULT
+------------------------------------------------------------------------
+A6 [case_dh_material_06] 穷举接口：A 内无不劣于 gt 的解（硬要求 5）
+  [case_dh_material_06] ✓ A6.quality_gate_empty: enumerate(tc≥32.5) 于可见集 → 0 个（须为 0）
+  [case_dh_material_06] ✓ A6.nontrivial: 宽松阈值对照：enumerate(tc>-1.0) → 28 个（穷举本身有效，非恒真）
+  [case_dh_material_06] ✓ A6.composition_empty: enumerate(composition=gt 组成) → 0 个（须为 0）
+  [case_dh_material_06] ✓ A6.composition_probe: 注入同组成实体 c06523 后 enumerate → 1 个（原 0 个）⇒ 组成穷举确实在筛
+------------------------------------------------------------------------
+A7 [case_dh_material_06] 视图文件匿名红线（沿用 check_agent_visible_anonymity 口径）
+  [case_dh_material_06] ✓ A7.anonymity: InChIKey=0 元素符号=0 真名=0 真实公式=0（须全 0）
+  [case_dh_material_07] ✓ A6.target_prop_valid: target.prop=tc ∈ 支持集 ['logS', 'tc']
+------------------------------------------------------------------------
+A1 [case_dh_material_07] gt 不得出现在自己的可见集内（硬要求 2）
+  [case_dh_material_07] ✓ A1.gt_invisible: entity_ref∉白名单 且 组成无碰撞
+  [case_dh_material_07] ✓ A1.gt_comp_form: gt.composition 可作组成核（键 ['19', '20', '82']）
+  [case_dh_material_07] ✓ A1.gt_invisible_probe: 注入同组成实体 c15683（式 'H0.12Nb0.8Pd0.2'）后扫查报 2 条违规（原 0 条）⇒ 组成扫查确实在查
+  [case_dh_material_07] ✓ A1.gt_exists_in_full_lib: gt=c15683 全库存在（A 侧演示形态；存在才使负例非平凡——防恒真陷阱）
+    BEFORE(无视图): get_entity(c15683) → 返回记录（泄漏面真实存在）
+    AFTER (视图层): get_entity(c15683) → UNKNOWN_ENTITY
+  [case_dh_material_07] ✓ A1.before_after: BEFORE 可触达 gt / AFTER 一律 UNKNOWN_ENTITY
+------------------------------------------------------------------------
+A2 [case_dh_material_07] get_entity：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_material_07] ✓ A2.positive: 正例 get_entity(c15698) → 查得到
+  [case_dh_material_07] ✓ A2.negative: 负例 get_entity(c00001∈全库∉白名单) → UNKNOWN_ENTITY
+  [case_dh_material_07] ✓ A2.sweep_subset: 全白名单 28 个实体逐一取件，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A3 [case_dh_material_07] get_property：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_material_07] ✓ A3.positive: 正例 get_property(c15698,['condition', 'element_count']) → 返回 2 值
+  [case_dh_material_07] ✓ A3.negative: 负例 get_property(c00001) → UNKNOWN_ENTITY
+  [case_dh_material_07] ✓ A3.sweep_subset: 全白名单 28 个实体逐一查证，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A4 [case_dh_material_07] search_candidates：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_material_07] ✓ A4.sweep_subset: 按可见集 filter_props 扫查键（类别 ['sc_class']、数值 []）穷尽扫查，返回 28 个 id 全部 ⊆ 白名单
+  [case_dh_material_07] ✓ A4.positive: 正例：族内序列全员可被检索触达 ['c15698', 'c15701', 'c15705']
+    BEFORE(无视图): 组成==gt.composition 全库扫查 → 1 个实体（如 ['c15683']，含 gt 组成实体）；扫查键同查询另触达白名单外实体 17139 个
+    AFTER (视图层): enumerate(composition=gt.composition) → 0 个
+  [case_dh_material_07] ✓ A4.negative_gt_absent: 负例：按 gt.composition 组成约束扫查，BEFORE 命中 1 个（泄漏面真实存在）/ AFTER 视图内返回为空
+------------------------------------------------------------------------
+A5 [case_dh_material_07] literature_search：返回集 ⊆ 文献白名单（硬要求 3）
+  [case_dh_material_07] ✓ A5.positive: 正例：query='bcs theory' 命中白名单文献 10.1002/9781118343180.app1
+  [case_dh_material_07] ✓ A5.sweep_subset: 该查询返回 2 篇全部 ⊆ 文献白名单
+    BEFORE(无视图): query='calculation' → 命中 90 篇（白名单外，泄漏面真实存在）
+    AFTER (视图层): query='calculation' → EMPTY_RESULT
+  [case_dh_material_07] ✓ A5.negative: 负例：只命中白名单外文献的查询 → BEFORE 有命中 / AFTER EMPTY_RESULT
+------------------------------------------------------------------------
+A6 [case_dh_material_07] 穷举接口：A 内无不劣于 gt 的解（硬要求 5）
+  [case_dh_material_07] ✓ A6.quality_gate_empty: enumerate(tc≤1.52) 于可见集 → 0 个（须为 0）
+  [case_dh_material_07] ✓ A6.nontrivial: 宽松阈值对照：enumerate(tc>1.8900000000000001) → 28 个（穷举本身有效，非恒真）
+  [case_dh_material_07] ✓ A6.composition_empty: enumerate(composition=gt 组成) → 0 个（须为 0）
+  [case_dh_material_07] ✓ A6.composition_probe: 注入同组成实体 c15683 后 enumerate → 1 个（原 0 个）⇒ 组成穷举确实在筛
+------------------------------------------------------------------------
+A7 [case_dh_material_07] 视图文件匿名红线（沿用 check_agent_visible_anonymity 口径）
+  [case_dh_material_07] ✓ A7.anonymity: InChIKey=0 元素符号=0 真名=0 真实公式=0（须全 0）
+  [case_dh_material_08] ✓ A6.target_prop_valid: target.prop=tc ∈ 支持集 ['logS', 'tc']
+------------------------------------------------------------------------
+A1 [case_dh_material_08] gt 不得出现在自己的可见集内（硬要求 2）
+  [case_dh_material_08] ✓ A1.gt_invisible: entity_ref∉白名单 且 组成无碰撞
+  [case_dh_material_08] ✓ A1.gt_comp_form: gt.composition 可作组成核（键 ['22', '32', '65']）
+  [case_dh_material_08] ✓ A1.gt_invisible_probe: 注入同组成实体 c12338（式 'Bi2Sr2Ca1Cu2I0.03O8.21'）后扫查报 2 条违规（原 0 条）⇒ 组成扫查确实在查
+  [case_dh_material_08] ✓ A1.gt_exists_in_full_lib: gt=c12338 全库存在（A 侧演示形态；存在才使负例非平凡——防恒真陷阱）
+    BEFORE(无视图): get_entity(c12338) → 返回记录（泄漏面真实存在）
+    AFTER (视图层): get_entity(c12338) → UNKNOWN_ENTITY
+  [case_dh_material_08] ✓ A1.before_after: BEFORE 可触达 gt / AFTER 一律 UNKNOWN_ENTITY
+------------------------------------------------------------------------
+A2 [case_dh_material_08] get_entity：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_material_08] ✓ A2.positive: 正例 get_entity(c12341) → 查得到
+  [case_dh_material_08] ✓ A2.negative: 负例 get_entity(c00001∈全库∉白名单) → UNKNOWN_ENTITY
+  [case_dh_material_08] ✓ A2.sweep_subset: 全白名单 28 个实体逐一取件，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A3 [case_dh_material_08] get_property：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_material_08] ✓ A3.positive: 正例 get_property(c12341,['condition', 'element_count']) → 返回 2 值
+  [case_dh_material_08] ✓ A3.negative: 负例 get_property(c00001) → UNKNOWN_ENTITY
+  [case_dh_material_08] ✓ A3.sweep_subset: 全白名单 28 个实体逐一查证，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A4 [case_dh_material_08] search_candidates：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_material_08] ✓ A4.sweep_subset: 按可见集 filter_props 扫查键（类别 ['sc_class']、数值 []）穷尽扫查，返回 28 个 id 全部 ⊆ 白名单
+  [case_dh_material_08] ✓ A4.positive: 正例：族内序列全员可被检索触达 ['c12341', 'c12343', 'c12344']
+    BEFORE(无视图): 组成==gt.composition 全库扫查 → 1 个实体（如 ['c12338']，含 gt 组成实体）；扫查键同查询另触达白名单外实体 16380 个
+    AFTER (视图层): enumerate(composition=gt.composition) → 0 个
+  [case_dh_material_08] ✓ A4.negative_gt_absent: 负例：按 gt.composition 组成约束扫查，BEFORE 命中 1 个（泄漏面真实存在）/ AFTER 视图内返回为空
+------------------------------------------------------------------------
+A5 [case_dh_material_08] literature_search：返回集 ⊆ 文献白名单（硬要求 3）
+  [case_dh_material_08] ✓ A5.positive: 正例：query='bcs theory' 命中白名单文献 10.1002/9781118343180.app1
+  [case_dh_material_08] ✓ A5.sweep_subset: 该查询返回 2 篇全部 ⊆ 文献白名单
+    BEFORE(无视图): query='calculation' → 命中 90 篇（白名单外，泄漏面真实存在）
+    AFTER (视图层): query='calculation' → EMPTY_RESULT
+  [case_dh_material_08] ✓ A5.negative: 负例：只命中白名单外文献的查询 → BEFORE 有命中 / AFTER EMPTY_RESULT
+------------------------------------------------------------------------
+A6 [case_dh_material_08] 穷举接口：A 内无不劣于 gt 的解（硬要求 5）
+  [case_dh_material_08] ✓ A6.quality_gate_empty: enumerate(tc≥86.6) 于可见集 → 0 个（须为 0）
+  [case_dh_material_08] ✓ A6.nontrivial: 宽松阈值对照：enumerate(tc>-1.0) → 28 个（穷举本身有效，非恒真）
+  [case_dh_material_08] ✓ A6.composition_empty: enumerate(composition=gt 组成) → 0 个（须为 0）
+  [case_dh_material_08] ✓ A6.composition_probe: 注入同组成实体 c12338 后 enumerate → 1 个（原 0 个）⇒ 组成穷举确实在筛
+------------------------------------------------------------------------
+A7 [case_dh_material_08] 视图文件匿名红线（沿用 check_agent_visible_anonymity 口径）
+  [case_dh_material_08] ✓ A7.anonymity: InChIKey=0 元素符号=0 真名=0 真实公式=0（须全 0）
+  [case_dh_material_09] ✓ A6.target_prop_valid: target.prop=tc ∈ 支持集 ['logS', 'tc']
+------------------------------------------------------------------------
+A1 [case_dh_material_09] gt 不得出现在自己的可见集内（硬要求 2）
+  [case_dh_material_09] ✓ A1.gt_invisible: entity_ref∉白名单 且 组成无碰撞
+  [case_dh_material_09] ✓ A1.gt_comp_form: gt.composition 可作组成核（键 ['44', '45', '68']）
+  [case_dh_material_09] ✓ A1.gt_invisible_probe: 注入同组成实体 c00086（式 'Al0.185B2Mg0.815'）后扫查报 1 条违规（原 0 条）⇒ 组成扫查确实在查
+  [case_dh_material_09] ✓ A1.gt_exists_in_full_lib: gt=c06024 全库存在（A 侧演示形态；存在才使负例非平凡——防恒真陷阱）
+    BEFORE(无视图): get_entity(c06024) → 返回记录（泄漏面真实存在）
+    AFTER (视图层): get_entity(c06024) → UNKNOWN_ENTITY
+  [case_dh_material_09] ✓ A1.before_after: BEFORE 可触达 gt / AFTER 一律 UNKNOWN_ENTITY
+------------------------------------------------------------------------
+A2 [case_dh_material_09] get_entity：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_material_09] ✓ A2.positive: 正例 get_entity(c05894) → 查得到
+  [case_dh_material_09] ✓ A2.negative: 负例 get_entity(c00001∈全库∉白名单) → UNKNOWN_ENTITY
+  [case_dh_material_09] ✓ A2.sweep_subset: 全白名单 28 个实体逐一取件，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A3 [case_dh_material_09] get_property：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_material_09] ✓ A3.positive: 正例 get_property(c05894,['condition', 'element_count']) → 返回 2 值
+  [case_dh_material_09] ✓ A3.negative: 负例 get_property(c00001) → UNKNOWN_ENTITY
+  [case_dh_material_09] ✓ A3.sweep_subset: 全白名单 28 个实体逐一查证，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A4 [case_dh_material_09] search_candidates：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_material_09] ✓ A4.sweep_subset: 按可见集 filter_props 扫查键（类别 ['sc_class']、数值 []）穷尽扫查，返回 28 个 id 全部 ⊆ 白名单
+  [case_dh_material_09] ✓ A4.positive: 正例：族内序列全员可被检索触达 ['c05894', 'c05954', 'c05955']
+    BEFORE(无视图): 组成==gt.composition 全库扫查 → 5 个实体（如 ['c00086', 'c00089', 'c00105']，含 gt 组成实体）；扫查键同查询另触达白名单外实体 12844 个
+    AFTER (视图层): enumerate(composition=gt.composition) → 0 个
+  [case_dh_material_09] ✓ A4.negative_gt_absent: 负例：按 gt.composition 组成约束扫查，BEFORE 命中 5 个（泄漏面真实存在）/ AFTER 视图内返回为空
+------------------------------------------------------------------------
+A5 [case_dh_material_09] literature_search：返回集 ⊆ 文献白名单（硬要求 3）
+  [case_dh_material_09] ✓ A5.positive: 正例：query='bcs theory' 命中白名单文献 10.1002/9781118343180.app1
+  [case_dh_material_09] ✓ A5.sweep_subset: 该查询返回 2 篇全部 ⊆ 文献白名单
+    BEFORE(无视图): query='calculation' → 命中 90 篇（白名单外，泄漏面真实存在）
+    AFTER (视图层): query='calculation' → EMPTY_RESULT
+  [case_dh_material_09] ✓ A5.negative: 负例：只命中白名单外文献的查询 → BEFORE 有命中 / AFTER EMPTY_RESULT
+------------------------------------------------------------------------
+A6 [case_dh_material_09] 穷举接口：A 内无不劣于 gt 的解（硬要求 5）
+  [case_dh_material_09] ✓ A6.quality_gate_empty: enumerate(tc≤25.7) 于可见集 → 0 个（须为 0）
+  [case_dh_material_09] ✓ A6.nontrivial: 宽松阈值对照：enumerate(tc>25.9) → 28 个（穷举本身有效，非恒真）
+  [case_dh_material_09] ✓ A6.composition_empty: enumerate(composition=gt 组成) → 0 个（须为 0）
+  [case_dh_material_09] ✓ A6.composition_probe: 注入同组成实体 c00086 后 enumerate → 1 个（原 0 个）⇒ 组成穷举确实在筛
+------------------------------------------------------------------------
+A7 [case_dh_material_09] 视图文件匿名红线（沿用 check_agent_visible_anonymity 口径）
+  [case_dh_material_09] ✓ A7.anonymity: InChIKey=0 元素符号=0 真名=0 真实公式=0（须全 0）
+  [case_dh_material_10] ✓ A6.target_prop_valid: target.prop=tc ∈ 支持集 ['logS', 'tc']
+------------------------------------------------------------------------
+A1 [case_dh_material_10] gt 不得出现在自己的可见集内（硬要求 2）
+  [case_dh_material_10] ✓ A1.gt_invisible: entity_ref∉白名单 且 组成无碰撞
+  [case_dh_material_10] ✓ A1.gt_comp_form: gt.composition 可作组成核（键 ['1', '19', '37']）
+  [case_dh_material_10] ✓ A1.gt_invisible_probe: 注入同组成实体 c15718（式 'Hf1V2H1.6'）后扫查报 2 条违规（原 0 条）⇒ 组成扫查确实在查
+  [case_dh_material_10] ✓ A1.gt_exists_in_full_lib: gt=c15718 全库存在（A 侧演示形态；存在才使负例非平凡——防恒真陷阱）
+    BEFORE(无视图): get_entity(c15718) → 返回记录（泄漏面真实存在）
+    AFTER (视图层): get_entity(c15718) → UNKNOWN_ENTITY
+  [case_dh_material_10] ✓ A1.before_after: BEFORE 可触达 gt / AFTER 一律 UNKNOWN_ENTITY
+------------------------------------------------------------------------
+A2 [case_dh_material_10] get_entity：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_material_10] ✓ A2.positive: 正例 get_entity(c15691) → 查得到
+  [case_dh_material_10] ✓ A2.negative: 负例 get_entity(c00001∈全库∉白名单) → UNKNOWN_ENTITY
+  [case_dh_material_10] ✓ A2.sweep_subset: 全白名单 28 个实体逐一取件，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A3 [case_dh_material_10] get_property：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_material_10] ✓ A3.positive: 正例 get_property(c15691,['condition', 'element_count']) → 返回 2 值
+  [case_dh_material_10] ✓ A3.negative: 负例 get_property(c00001) → UNKNOWN_ENTITY
+  [case_dh_material_10] ✓ A3.sweep_subset: 全白名单 28 个实体逐一查证，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A4 [case_dh_material_10] search_candidates：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_material_10] ✓ A4.sweep_subset: 按可见集 filter_props 扫查键（类别 ['sc_class']、数值 []）穷尽扫查，返回 28 个 id 全部 ⊆ 白名单
+  [case_dh_material_10] ✓ A4.positive: 正例：族内序列全员可被检索触达 ['c15691', 'c15695', 'c15714']
+    BEFORE(无视图): 组成==gt.composition 全库扫查 → 1 个实体（如 ['c15718']，含 gt 组成实体）；扫查键同查询另触达白名单外实体 16730 个
+    AFTER (视图层): enumerate(composition=gt.composition) → 0 个
+  [case_dh_material_10] ✓ A4.negative_gt_absent: 负例：按 gt.composition 组成约束扫查，BEFORE 命中 1 个（泄漏面真实存在）/ AFTER 视图内返回为空
+------------------------------------------------------------------------
+A5 [case_dh_material_10] literature_search：返回集 ⊆ 文献白名单（硬要求 3）
+  [case_dh_material_10] ✓ A5.positive: 正例：query='bcs theory' 命中白名单文献 10.1002/9781118343180.app1
+  [case_dh_material_10] ✓ A5.sweep_subset: 该查询返回 2 篇全部 ⊆ 文献白名单
+    BEFORE(无视图): query='calculation' → 命中 90 篇（白名单外，泄漏面真实存在）
+    AFTER (视图层): query='calculation' → EMPTY_RESULT
+  [case_dh_material_10] ✓ A5.negative: 负例：只命中白名单外文献的查询 → BEFORE 有命中 / AFTER EMPTY_RESULT
+------------------------------------------------------------------------
+A6 [case_dh_material_10] 穷举接口：A 内无不劣于 gt 的解（硬要求 5）
+  [case_dh_material_10] ✓ A6.quality_gate_empty: enumerate(tc≤2.2) 于可见集 → 0 个（须为 0）
+  [case_dh_material_10] ✓ A6.nontrivial: 宽松阈值对照：enumerate(tc>1.7000000000000002) → 28 个（穷举本身有效，非恒真）
+  [case_dh_material_10] ✓ A6.composition_empty: enumerate(composition=gt 组成) → 0 个（须为 0）
+  [case_dh_material_10] ✓ A6.composition_probe: 注入同组成实体 c15718 后 enumerate → 1 个（原 0 个）⇒ 组成穷举确实在筛
+------------------------------------------------------------------------
+A7 [case_dh_material_10] 视图文件匿名红线（沿用 check_agent_visible_anonymity 口径）
+  [case_dh_material_10] ✓ A7.anonymity: InChIKey=0 元素符号=0 真名=0 真实公式=0（须全 0）
+  [case_dh_material_11] ✓ A6.target_prop_valid: target.prop=tc ∈ 支持集 ['logS', 'tc']
+------------------------------------------------------------------------
+A1 [case_dh_material_11] gt 不得出现在自己的可见集内（硬要求 2）
+  [case_dh_material_11] ✗ A1.gt_invisible: ["可见集实体 c15680 的组成与 gt.composition 相同（式子 'Zr2Rh1H0.1'）"]
+  [case_dh_material_11] ✓ A1.gt_comp_form: gt.composition 可作组成核（键 ['19', '36', '84']）
+  [case_dh_material_11] ✓ A1.gt_invisible_probe: 注入同组成实体 c15677（式 'Zr2Rh1H0.08'）后扫查报 3 条违规（原 1 条）⇒ 组成扫查确实在查
+  [case_dh_material_11] ✓ A1.gt_exists_in_full_lib: gt=c15677 全库存在（A 侧演示形态；存在才使负例非平凡——防恒真陷阱）
+    BEFORE(无视图): get_entity(c15677) → 返回记录（泄漏面真实存在）
+    AFTER (视图层): get_entity(c15677) → UNKNOWN_ENTITY
+  [case_dh_material_11] ✓ A1.before_after: BEFORE 可触达 gt / AFTER 一律 UNKNOWN_ENTITY
+------------------------------------------------------------------------
+A2 [case_dh_material_11] get_entity：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_material_11] ✓ A2.positive: 正例 get_entity(c15680) → 查得到
+  [case_dh_material_11] ✓ A2.negative: 负例 get_entity(c00001∈全库∉白名单) → UNKNOWN_ENTITY
+  [case_dh_material_11] ✓ A2.sweep_subset: 全白名单 28 个实体逐一取件，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A3 [case_dh_material_11] get_property：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_material_11] ✓ A3.positive: 正例 get_property(c15680,['condition', 'element_count']) → 返回 2 值
+  [case_dh_material_11] ✓ A3.negative: 负例 get_property(c00001) → UNKNOWN_ENTITY
+  [case_dh_material_11] ✓ A3.sweep_subset: 全白名单 28 个实体逐一查证，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A4 [case_dh_material_11] search_candidates：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_material_11] ✓ A4.sweep_subset: 按可见集 filter_props 扫查键（类别 ['sc_class']、数值 []）穷尽扫查，返回 28 个 id 全部 ⊆ 白名单
+  [case_dh_material_11] ✓ A4.positive: 正例：族内序列全员可被检索触达 ['c15680', 'c15686', 'c15706']
+    BEFORE(无视图): 组成==gt.composition 全库扫查 → 2 个实体（如 ['c15677', 'c15680']，含 gt 组成实体）；扫查键同查询另触达白名单外实体 17183 个
+    AFTER (视图层): enumerate(composition=gt.composition) → 1 个
+  [case_dh_material_11] ✗ A4.negative_gt_absent: 负例：按 gt.composition 组成约束扫查，BEFORE 命中 2 个（泄漏面真实存在）/ AFTER 视图内返回为空
+------------------------------------------------------------------------
+A5 [case_dh_material_11] literature_search：返回集 ⊆ 文献白名单（硬要求 3）
+  [case_dh_material_11] ✓ A5.positive: 正例：query='bcs theory' 命中白名单文献 10.1002/9781118343180.app1
+  [case_dh_material_11] ✓ A5.sweep_subset: 该查询返回 2 篇全部 ⊆ 文献白名单
+    BEFORE(无视图): query='calculation' → 命中 90 篇（白名单外，泄漏面真实存在）
+    AFTER (视图层): query='calculation' → EMPTY_RESULT
+  [case_dh_material_11] ✓ A5.negative: 负例：只命中白名单外文献的查询 → BEFORE 有命中 / AFTER EMPTY_RESULT
+------------------------------------------------------------------------
+A6 [case_dh_material_11] 穷举接口：A 内无不劣于 gt 的解（硬要求 5）
+  [case_dh_material_11] ✓ A6.quality_gate_empty: enumerate(tc≥11.1) 于可见集 → 0 个（须为 0）
+  [case_dh_material_11] ✓ A6.nontrivial: 宽松阈值对照：enumerate(tc>-1.0) → 28 个（穷举本身有效，非恒真）
+  [case_dh_material_11] ✗ A6.composition_empty: enumerate(composition=gt 组成) → 1 个（须为 0）
+  [case_dh_material_11] ✓ A6.composition_probe: 注入同组成实体 c15677 后 enumerate → 2 个（原 1 个）⇒ 组成穷举确实在筛
+------------------------------------------------------------------------
+A7 [case_dh_material_11] 视图文件匿名红线（沿用 check_agent_visible_anonymity 口径）
+  [case_dh_material_11] ✓ A7.anonymity: InChIKey=0 元素符号=0 真名=0 真实公式=0（须全 0）
+  [case_dh_material_12] ✓ A6.target_prop_valid: target.prop=tc ∈ 支持集 ['logS', 'tc']
+------------------------------------------------------------------------
+A1 [case_dh_material_12] gt 不得出现在自己的可见集内（硬要求 2）
+  [case_dh_material_12] ✓ A1.gt_invisible: entity_ref∉白名单 且 组成无碰撞
+  [case_dh_material_12] ✓ A1.gt_comp_form: gt.composition 可作组成核（键 ['22', '72', '73']）
+  [case_dh_material_12] ✓ A1.gt_invisible_probe: 注入同组成实体 c13506（式 'Li0.62Cs1Ca2Nb3O10'）后扫查报 2 条违规（原 0 条）⇒ 组成扫查确实在查
+  [case_dh_material_12] ✓ A1.gt_exists_in_full_lib: gt=c13506 全库存在（A 侧演示形态；存在才使负例非平凡——防恒真陷阱）
+    BEFORE(无视图): get_entity(c13506) → 返回记录（泄漏面真实存在）
+    AFTER (视图层): get_entity(c13506) → UNKNOWN_ENTITY
+  [case_dh_material_12] ✓ A1.before_after: BEFORE 可触达 gt / AFTER 一律 UNKNOWN_ENTITY
+------------------------------------------------------------------------
+A2 [case_dh_material_12] get_entity：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_material_12] ✓ A2.positive: 正例 get_entity(c13503) → 查得到
+  [case_dh_material_12] ✓ A2.negative: 负例 get_entity(c00001∈全库∉白名单) → UNKNOWN_ENTITY
+  [case_dh_material_12] ✓ A2.sweep_subset: 全白名单 28 个实体逐一取件，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A3 [case_dh_material_12] get_property：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_material_12] ✓ A3.positive: 正例 get_property(c13503,['condition', 'element_count']) → 返回 2 值
+  [case_dh_material_12] ✓ A3.negative: 负例 get_property(c00001) → UNKNOWN_ENTITY
+  [case_dh_material_12] ✓ A3.sweep_subset: 全白名单 28 个实体逐一查证，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A4 [case_dh_material_12] search_candidates：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_material_12] ✓ A4.sweep_subset: 按可见集 filter_props 扫查键（类别 ['sc_class']、数值 []）穷尽扫查，返回 28 个 id 全部 ⊆ 白名单
+  [case_dh_material_12] ✓ A4.positive: 正例：族内序列全员可被检索触达 ['c13503', 'c13504', 'c13505']
+    BEFORE(无视图): 组成==gt.composition 全库扫查 → 1 个实体（如 ['c13506']，含 gt 组成实体）；扫查键同查询另触达白名单外实体 16380 个
+    AFTER (视图层): enumerate(composition=gt.composition) → 0 个
+  [case_dh_material_12] ✓ A4.negative_gt_absent: 负例：按 gt.composition 组成约束扫查，BEFORE 命中 1 个（泄漏面真实存在）/ AFTER 视图内返回为空
+------------------------------------------------------------------------
+A5 [case_dh_material_12] literature_search：返回集 ⊆ 文献白名单（硬要求 3）
+  [case_dh_material_12] ✓ A5.positive: 正例：query='bcs theory' 命中白名单文献 10.1002/9781118343180.app1
+  [case_dh_material_12] ✓ A5.sweep_subset: 该查询返回 2 篇全部 ⊆ 文献白名单
+    BEFORE(无视图): query='calculation' → 命中 90 篇（白名单外，泄漏面真实存在）
+    AFTER (视图层): query='calculation' → EMPTY_RESULT
+  [case_dh_material_12] ✓ A5.negative: 负例：只命中白名单外文献的查询 → BEFORE 有命中 / AFTER EMPTY_RESULT
+------------------------------------------------------------------------
+A6 [case_dh_material_12] 穷举接口：A 内无不劣于 gt 的解（硬要求 5）
+  [case_dh_material_12] ✓ A6.quality_gate_empty: enumerate(tc≤4.71) 于可见集 → 0 个（须为 0）
+  [case_dh_material_12] ✓ A6.nontrivial: 宽松阈值对照：enumerate(tc>4.1) → 28 个（穷举本身有效，非恒真）
+  [case_dh_material_12] ✓ A6.composition_empty: enumerate(composition=gt 组成) → 0 个（须为 0）
+  [case_dh_material_12] ✓ A6.composition_probe: 注入同组成实体 c13506 后 enumerate → 1 个（原 0 个）⇒ 组成穷举确实在筛
+------------------------------------------------------------------------
+A7 [case_dh_material_12] 视图文件匿名红线（沿用 check_agent_visible_anonymity 口径）
+  [case_dh_material_12] ✓ A7.anonymity: InChIKey=0 元素符号=0 真名=0 真实公式=0（须全 0）
+  [case_dh_material_13] ✓ A6.target_prop_valid: target.prop=tc ∈ 支持集 ['logS', 'tc']
+------------------------------------------------------------------------
+A1 [case_dh_material_13] gt 不得出现在自己的可见集内（硬要求 2）
+  [case_dh_material_13] ✗ A1.gt_invisible: ["可见集实体 c12564 的组成与 gt.composition 相同（式子 'Sr0.065Bi2Se3'）"]
+  [case_dh_material_13] ✓ A1.gt_comp_form: gt.composition 可作组成核（键 ['17', '32', '85']）
+  [case_dh_material_13] ✓ A1.gt_invisible_probe: 注入同组成实体 c12563（式 'Sr0.062Bi2Se3'）后扫查报 3 条违规（原 1 条）⇒ 组成扫查确实在查
+  [case_dh_material_13] ✓ A1.gt_exists_in_full_lib: gt=c12563 全库存在（A 侧演示形态；存在才使负例非平凡——防恒真陷阱）
+    BEFORE(无视图): get_entity(c12563) → 返回记录（泄漏面真实存在）
+    AFTER (视图层): get_entity(c12563) → UNKNOWN_ENTITY
+  [case_dh_material_13] ✓ A1.before_after: BEFORE 可触达 gt / AFTER 一律 UNKNOWN_ENTITY
+------------------------------------------------------------------------
+A2 [case_dh_material_13] get_entity：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_material_13] ✓ A2.positive: 正例 get_entity(c12564) → 查得到
+  [case_dh_material_13] ✓ A2.negative: 负例 get_entity(c00001∈全库∉白名单) → UNKNOWN_ENTITY
+  [case_dh_material_13] ✓ A2.sweep_subset: 全白名单 28 个实体逐一取件，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A3 [case_dh_material_13] get_property：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_material_13] ✓ A3.positive: 正例 get_property(c12564,['condition', 'element_count']) → 返回 2 值
+  [case_dh_material_13] ✓ A3.negative: 负例 get_property(c00001) → UNKNOWN_ENTITY
+  [case_dh_material_13] ✓ A3.sweep_subset: 全白名单 28 个实体逐一查证，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A4 [case_dh_material_13] search_candidates：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_material_13] ✓ A4.sweep_subset: 按可见集 filter_props 扫查键（类别 ['sc_class']、数值 []）穷尽扫查，返回 28 个 id 全部 ⊆ 白名单
+  [case_dh_material_13] ✓ A4.positive: 正例：族内序列全员可被检索触达 ['c12564', 'c12565', 'c12566']
+    BEFORE(无视图): 组成==gt.composition 全库扫查 → 2 个实体（如 ['c12563', 'c12564']，含 gt 组成实体）；扫查键同查询另触达白名单外实体 17139 个
+    AFTER (视图层): enumerate(composition=gt.composition) → 1 个
+  [case_dh_material_13] ✗ A4.negative_gt_absent: 负例：按 gt.composition 组成约束扫查，BEFORE 命中 2 个（泄漏面真实存在）/ AFTER 视图内返回为空
+------------------------------------------------------------------------
+A5 [case_dh_material_13] literature_search：返回集 ⊆ 文献白名单（硬要求 3）
+  [case_dh_material_13] ✓ A5.positive: 正例：query='bcs theory' 命中白名单文献 10.1002/9781118343180.app1
+  [case_dh_material_13] ✓ A5.sweep_subset: 该查询返回 2 篇全部 ⊆ 文献白名单
+    BEFORE(无视图): query='calculation' → 命中 90 篇（白名单外，泄漏面真实存在）
+    AFTER (视图层): query='calculation' → EMPTY_RESULT
+  [case_dh_material_13] ✓ A5.negative: 负例：只命中白名单外文献的查询 → BEFORE 有命中 / AFTER EMPTY_RESULT
+------------------------------------------------------------------------
+A6 [case_dh_material_13] 穷举接口：A 内无不劣于 gt 的解（硬要求 5）
+  [case_dh_material_13] ✓ A6.quality_gate_empty: enumerate(tc≤2.48) 于可见集 → 0 个（须为 0）
+  [case_dh_material_13] ✓ A6.nontrivial: 宽松阈值对照：enumerate(tc>1.6) → 28 个（穷举本身有效，非恒真）
+  [case_dh_material_13] ✗ A6.composition_empty: enumerate(composition=gt 组成) → 1 个（须为 0）
+  [case_dh_material_13] ✓ A6.composition_probe: 注入同组成实体 c12563 后 enumerate → 2 个（原 1 个）⇒ 组成穷举确实在筛
+------------------------------------------------------------------------
+A7 [case_dh_material_13] 视图文件匿名红线（沿用 check_agent_visible_anonymity 口径）
+  [case_dh_material_13] ✓ A7.anonymity: InChIKey=0 元素符号=0 真名=0 真实公式=0（须全 0）
+  [case_dh_material_14] ✓ A6.target_prop_valid: target.prop=tc ∈ 支持集 ['logS', 'tc']
+------------------------------------------------------------------------
+A1 [case_dh_material_14] gt 不得出现在自己的可见集内（硬要求 2）
+  [case_dh_material_14] ✓ A1.gt_invisible: entity_ref∉白名单 且 组成无碰撞
+  [case_dh_material_14] ✓ A1.gt_comp_form: gt.composition 可作组成核（键 ['22', '55', '77']）
+  [case_dh_material_14] ✓ A1.gt_invisible_probe: 注入同组成实体 c03296（式 'Cs0.32W1O3'）后扫查报 1 条违规（原 0 条）⇒ 组成扫查确实在查
+  [case_dh_material_14] ✓ A1.gt_exists_in_full_lib: gt=c03298 全库存在（A 侧演示形态；存在才使负例非平凡——防恒真陷阱）
+    BEFORE(无视图): get_entity(c03298) → 返回记录（泄漏面真实存在）
+    AFTER (视图层): get_entity(c03298) → UNKNOWN_ENTITY
+  [case_dh_material_14] ✓ A1.before_after: BEFORE 可触达 gt / AFTER 一律 UNKNOWN_ENTITY
+------------------------------------------------------------------------
+A2 [case_dh_material_14] get_entity：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_material_14] ✓ A2.positive: 正例 get_entity(c03293) → 查得到
+  [case_dh_material_14] ✓ A2.negative: 负例 get_entity(c00001∈全库∉白名单) → UNKNOWN_ENTITY
+  [case_dh_material_14] ✓ A2.sweep_subset: 全白名单 28 个实体逐一取件，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A3 [case_dh_material_14] get_property：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_material_14] ✓ A3.positive: 正例 get_property(c03293,['condition', 'element_count']) → 返回 2 值
+  [case_dh_material_14] ✓ A3.negative: 负例 get_property(c00001) → UNKNOWN_ENTITY
+  [case_dh_material_14] ✓ A3.sweep_subset: 全白名单 28 个实体逐一查证，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A4 [case_dh_material_14] search_candidates：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_material_14] ✓ A4.sweep_subset: 按可见集 filter_props 扫查键（类别 ['sc_class']、数值 []）穷尽扫查，返回 28 个 id 全部 ⊆ 白名单
+  [case_dh_material_14] ✓ A4.positive: 正例：族内序列全员可被检索触达 ['c03293', 'c03294', 'c03295']
+    BEFORE(无视图): 组成==gt.composition 全库扫查 → 2 个实体（如 ['c03296', 'c03298']，含 gt 组成实体）；扫查键同查询另触达白名单外实体 4702 个
+    AFTER (视图层): enumerate(composition=gt.composition) → 0 个
+  [case_dh_material_14] ✓ A4.negative_gt_absent: 负例：按 gt.composition 组成约束扫查，BEFORE 命中 2 个（泄漏面真实存在）/ AFTER 视图内返回为空
+------------------------------------------------------------------------
+A5 [case_dh_material_14] literature_search：返回集 ⊆ 文献白名单（硬要求 3）
+    BEFORE(无视图): query='calculation' → 命中 90 篇（白名单外，泄漏面真实存在）
+    AFTER (视图层): query='calculation' → EMPTY_RESULT
+  [case_dh_material_14] ✓ A5.negative: 负例：只命中白名单外文献的查询 → BEFORE 有命中 / AFTER EMPTY_RESULT
+------------------------------------------------------------------------
+A6 [case_dh_material_14] 穷举接口：A 内无不劣于 gt 的解（硬要求 5）
+  [case_dh_material_14] ✓ A6.quality_gate_empty: enumerate(tc≤2.0) 于可见集 → 0 个（须为 0）
+  [case_dh_material_14] ✓ A6.nontrivial: 宽松阈值对照：enumerate(tc>1.3199999999999998) → 28 个（穷举本身有效，非恒真）
+  [case_dh_material_14] ✓ A6.composition_empty: enumerate(composition=gt 组成) → 0 个（须为 0）
+  [case_dh_material_14] ✓ A6.composition_probe: 注入同组成实体 c03296 后 enumerate → 1 个（原 0 个）⇒ 组成穷举确实在筛
+------------------------------------------------------------------------
+A7 [case_dh_material_14] 视图文件匿名红线（沿用 check_agent_visible_anonymity 口径）
+  [case_dh_material_14] ✓ A7.anonymity: InChIKey=0 元素符号=0 真名=0 真实公式=0（须全 0）
+  [case_dh_material_15] ✓ A6.target_prop_valid: target.prop=tc ∈ 支持集 ['logS', 'tc']
+------------------------------------------------------------------------
+A1 [case_dh_material_15] gt 不得出现在自己的可见集内（硬要求 2）
+  [case_dh_material_15] ✓ A1.gt_invisible: entity_ref∉白名单 且 组成无碰撞
+  [case_dh_material_15] ✓ A1.gt_comp_form: gt.composition 可作组成核（键 ['22', '32', '39']）
+  [case_dh_material_15] ✓ A1.gt_invisible_probe: 注入同组成实体 c08271（式 'Ba1.6Sr0.4Yb0.75Ca0.25Cu3O6'）后扫查报 2 条违规（原 0 条）⇒ 组成扫查确实在查
+  [case_dh_material_15] ✓ A1.gt_exists_in_full_lib: gt=c08271 全库存在（A 侧演示形态；存在才使负例非平凡——防恒真陷阱）
+    BEFORE(无视图): get_entity(c08271) → 返回记录（泄漏面真实存在）
+    AFTER (视图层): get_entity(c08271) → UNKNOWN_ENTITY
+  [case_dh_material_15] ✓ A1.before_after: BEFORE 可触达 gt / AFTER 一律 UNKNOWN_ENTITY
+------------------------------------------------------------------------
+A2 [case_dh_material_15] get_entity：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_material_15] ✓ A2.positive: 正例 get_entity(c08272) → 查得到
+  [case_dh_material_15] ✓ A2.negative: 负例 get_entity(c00001∈全库∉白名单) → UNKNOWN_ENTITY
+  [case_dh_material_15] ✓ A2.sweep_subset: 全白名单 29 个实体逐一取件，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A3 [case_dh_material_15] get_property：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_material_15] ✓ A3.positive: 正例 get_property(c08272,['condition', 'element_count']) → 返回 2 值
+  [case_dh_material_15] ✓ A3.negative: 负例 get_property(c00001) → UNKNOWN_ENTITY
+  [case_dh_material_15] ✓ A3.sweep_subset: 全白名单 29 个实体逐一查证，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A4 [case_dh_material_15] search_candidates：返回集 ⊆ 白名单（硬要求 3）
+  [case_dh_material_15] ✓ A4.sweep_subset: 按可见集 filter_props 扫查键（类别 ['sc_class']、数值 []）穷尽扫查，返回 29 个 id 全部 ⊆ 白名单
+  [case_dh_material_15] ✓ A4.positive: 正例：族内序列全员可被检索触达 ['c08272', 'c08273', 'c08274', 'c08275']
+    BEFORE(无视图): 组成==gt.composition 全库扫查 → 1 个实体（如 ['c08271']，含 gt 组成实体）；扫查键同查询另触达白名单外实体 16379 个
+    AFTER (视图层): enumerate(composition=gt.composition) → 0 个
+  [case_dh_material_15] ✓ A4.negative_gt_absent: 负例：按 gt.composition 组成约束扫查，BEFORE 命中 1 个（泄漏面真实存在）/ AFTER 视图内返回为空
+------------------------------------------------------------------------
+A5 [case_dh_material_15] literature_search：返回集 ⊆ 文献白名单（硬要求 3）
+  [case_dh_material_15] ✓ A5.positive: 正例：query='bcs theory' 命中白名单文献 10.1002/9781118343180.app1
+  [case_dh_material_15] ✓ A5.sweep_subset: 该查询返回 2 篇全部 ⊆ 文献白名单
+    BEFORE(无视图): query='calculation' → 命中 90 篇（白名单外，泄漏面真实存在）
+    AFTER (视图层): query='calculation' → EMPTY_RESULT
+  [case_dh_material_15] ✓ A5.negative: 负例：只命中白名单外文献的查询 → BEFORE 有命中 / AFTER EMPTY_RESULT
+------------------------------------------------------------------------
+A6 [case_dh_material_15] 穷举接口：A 内无不劣于 gt 的解（硬要求 5）
+  [case_dh_material_15] ✓ A6.quality_gate_empty: enumerate(tc≤22.0) 于可见集 → 0 个（须为 0）
+  [case_dh_material_15] ✓ A6.nontrivial: 宽松阈值对照：enumerate(tc>24.0) → 29 个（穷举本身有效，非恒真）
+  [case_dh_material_15] ✓ A6.composition_empty: enumerate(composition=gt 组成) → 0 个（须为 0）
+  [case_dh_material_15] ✓ A6.composition_probe: 注入同组成实体 c08271 后 enumerate → 1 个（原 0 个）⇒ 组成穷举确实在筛
+------------------------------------------------------------------------
+A7 [case_dh_material_15] 视图文件匿名红线（沿用 check_agent_visible_anonymity 口径）
+  [case_dh_material_15] ✓ A7.anonymity: InChIKey=0 元素符号=0 真名=0 真实公式=0（须全 0）
+  [case_dr_aedit_01] ✓ A6.target_prop_valid: target.prop=logS ∈ 支持集 ['logS', 'tc']
+------------------------------------------------------------------------
+A1 [case_dr_aedit_01] gt 不得出现在自己的可见集内（硬要求 2）
+  [case_dr_aedit_01] ✓ A1.gt_invisible: entity_ref∉白名单 且 组成无碰撞
+  [case_dr_aedit_01] ✓ A1.gt_comp_form: gt.composition 键翻不成匿名标签（['higher', 'lower']）⇒ 组成口径不适用；仅 entity_ref 为空的库外形态允许这么填
+------------------------------------------------------------------------
+A2 [case_dr_aedit_01] get_entity：返回集 ⊆ 白名单（硬要求 3）
+  [case_dr_aedit_01] ✓ A2.positive: 正例 get_entity(z002896) → 查得到
+  [case_dr_aedit_01] ✓ A2.negative: 负例 get_entity(c00001∈全库∉白名单) → UNKNOWN_ENTITY
+  [case_dr_aedit_01] ✓ A2.sweep_subset: 全白名单 469 个实体逐一取件，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A3 [case_dr_aedit_01] get_property：返回集 ⊆ 白名单（硬要求 3）
+  [case_dr_aedit_01] ✓ A3.positive: 正例 get_property(z002896,['atom_count', 'bbb']) → 返回 2 值
+  [case_dr_aedit_01] ✓ A3.negative: 负例 get_property(c00001) → UNKNOWN_ENTITY
+  [case_dr_aedit_01] ✓ A3.sweep_subset: 全白名单 469 个实体逐一查证，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A4 [case_dr_aedit_01] search_candidates：返回集 ⊆ 白名单（硬要求 3）
+  [case_dr_aedit_01] ✓ A4.sweep_subset: 按可见集 filter_props 扫查键（类别 []、数值 []）穷尽扫查，返回 0 个 id 全部 ⊆ 白名单
+    BEFORE(无视图): 全库 logS∈[-5.6635,0.966] 扫查 → 白名单外命中 1622 个（如 ['z000007', 'z000012', 'z000016']，泄漏面真实存在）
+  [case_dr_aedit_01] ✓ A4.positive: 正例（B1 性质轴 logS∈[-5.6635,0.966]）：族内序列全员可被穷举触达 ['z001274', 'z001302', 'z001328', 'z002896', 'z002964', 'z007076', 'z007950', 'z011754', 'z011907', 'z015319', 'z018513', 'z030685', 'z034664', 'z034708', 'z034734', 'z034893', 'z044035', 'z044360', 'z045768', 'z062534'] / BEFORE 同值域有白名单外命中
+  [case_dr_aedit_01] ✓ A4.negative_gt_absent: gt.composition 非组成（键 ['higher', 'lower']）⇒ 组成约束负例不适用；见 A1.gt_comp_form
+------------------------------------------------------------------------
+A5 [case_dr_aedit_01] literature_search：返回集 ⊆ 文献白名单（硬要求 3）
+    BEFORE(无视图): query='calculation' → 命中 90 篇（白名单外，泄漏面真实存在）
+    AFTER (视图层): query='calculation' → EMPTY_RESULT
+  [case_dr_aedit_01] ✓ A5.negative: 负例：只命中白名单外文献的查询 → BEFORE 有命中 / AFTER EMPTY_RESULT
+------------------------------------------------------------------------
+A6 [case_dr_aedit_01] 穷举接口：A 内无不劣于 gt 的解（硬要求 5）
+  [case_dr_aedit_01] ✗ A6.quality_gate_empty: gt.logS 值缺失，无法构造穷举阈值
+------------------------------------------------------------------------
+A7 [case_dr_aedit_01] 视图文件匿名红线（沿用 check_agent_visible_anonymity 口径）
+  [case_dr_aedit_01] ✓ A7.anonymity: InChIKey=0 元素符号=0 真名=0 真实公式=0（须全 0）
+  [e105_example_001] ✓ A6.target_prop_valid: target.prop=tc ∈ 支持集 ['logS', 'tc']
+------------------------------------------------------------------------
+A1 [e105_example_001] gt 不得出现在自己的可见集内（硬要求 2）
+  [e105_example_001] ✓ A1.gt_invisible: entity_ref∉白名单 且 组成无碰撞
+  [e105_example_001] ✓ A1.gt_comp_form: gt.composition 可作组成核（键 ['45', '68']）
+  [e105_example_001] ✓ A1.gt_invisible_probe: 注入同组成实体 c01360（式 'B2Mg0.9'）后扫查报 2 条违规（原 0 条）⇒ 组成扫查确实在查
+  [e105_example_001] ✓ A1.gt_exists_in_full_lib: gt=c01360 全库存在（A 侧演示形态；存在才使负例非平凡——防恒真陷阱）
+    BEFORE(无视图): get_entity(c01360) → 返回记录（泄漏面真实存在）
+    AFTER (视图层): get_entity(c01360) → UNKNOWN_ENTITY
+  [e105_example_001] ✓ A1.before_after: BEFORE 可触达 gt / AFTER 一律 UNKNOWN_ENTITY
+------------------------------------------------------------------------
+A2 [e105_example_001] get_entity：返回集 ⊆ 白名单（硬要求 3）
+  [e105_example_001] ✓ A2.positive: 正例 get_entity(c01350) → 查得到
+  [e105_example_001] ✓ A2.negative: 负例 get_entity(c00001∈全库∉白名单) → UNKNOWN_ENTITY
+  [e105_example_001] ✓ A2.sweep_subset: 全白名单 14 个实体逐一取件，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A3 [e105_example_001] get_property：返回集 ⊆ 白名单（硬要求 3）
+  [e105_example_001] ✓ A3.positive: 正例 get_property(c01350,['condition', 'element_count']) → 返回 2 值
+  [e105_example_001] ✓ A3.negative: 负例 get_property(c00001) → UNKNOWN_ENTITY
+  [e105_example_001] ✓ A3.sweep_subset: 全白名单 14 个实体逐一查证，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A4 [e105_example_001] search_candidates：返回集 ⊆ 白名单（硬要求 3）
+  [e105_example_001] ✓ A4.sweep_subset: 按可见集 filter_props 扫查键（类别 ['sc_class']、数值 []）穷尽扫查，返回 14 个 id 全部 ⊆ 白名单
+  [e105_example_001] ✓ A4.positive: 正例：族内序列全员可被检索触达 ['c01350', 'c01351', 'c01352', 'c01353']
+    BEFORE(无视图): 组成==gt.composition 全库扫查 → 1 个实体（如 ['c01360']，含 gt 组成实体）；扫查键同查询另触达白名单外实体 5199 个
+    AFTER (视图层): enumerate(composition=gt.composition) → 0 个
+  [e105_example_001] ✓ A4.negative_gt_absent: 负例：按 gt.composition 组成约束扫查，BEFORE 命中 1 个（泄漏面真实存在）/ AFTER 视图内返回为空
+------------------------------------------------------------------------
+A5 [e105_example_001] literature_search：返回集 ⊆ 文献白名单（硬要求 3）
+  [e105_example_001] ✓ A5.positive: 正例：query='bcs theory' 命中白名单文献 10.1002/9781118343180.app1
+  [e105_example_001] ✓ A5.sweep_subset: 该查询返回 2 篇全部 ⊆ 文献白名单
+    BEFORE(无视图): query='calculation' → 命中 90 篇（白名单外，泄漏面真实存在）
+    AFTER (视图层): query='calculation' → EMPTY_RESULT
+  [e105_example_001] ✓ A5.negative: 负例：只命中白名单外文献的查询 → BEFORE 有命中 / AFTER EMPTY_RESULT
+------------------------------------------------------------------------
+A6 [e105_example_001] 穷举接口：A 内无不劣于 gt 的解（硬要求 5）
+  [e105_example_001] ✓ A6.quality_gate_empty: enumerate(tc≥38.2) 于可见集 → 0 个（须为 0）
+  [e105_example_001] ✓ A6.nontrivial: 宽松阈值对照：enumerate(tc>-1.0) → 14 个（穷举本身有效，非恒真）
+  [e105_example_001] ✓ A6.composition_empty: enumerate(composition=gt 组成) → 0 个（须为 0）
+  [e105_example_001] ✓ A6.composition_probe: 注入同组成实体 c01360 后 enumerate → 1 个（原 0 个）⇒ 组成穷举确实在筛
+------------------------------------------------------------------------
+A7 [e105_example_001] 视图文件匿名红线（沿用 check_agent_visible_anonymity 口径）
+  [e105_example_001] ✓ A7.anonymity: InChIKey=0 元素符号=0 真名=0 真实公式=0（须全 0）
+  [spare_dh_drug_01] ✓ A6.target_prop_valid: target.prop=logS ∈ 支持集 ['logS', 'tc']
+------------------------------------------------------------------------
+A1 [spare_dh_drug_01] gt 不得出现在自己的可见集内（硬要求 2）
+  [spare_dh_drug_01] ✓ A1.gt_invisible: entity_ref∉白名单 且 组成无碰撞
+  [spare_dh_drug_01] ✓ A1.gt_comp_form: gt.composition 可作组成核（键 ['16', '19', '22']）
+  [spare_dh_drug_01] ✓ A1.gt_invisible_probe: 注入同组成实体 z001371（式 'C6H14O6'）后扫查报 1 条违规（原 0 条）⇒ 组成扫查确实在查
+  [spare_dh_drug_01] ✓ A1.gt_exists_in_full_lib: gt=z043848 全库存在（A 侧演示形态；存在才使负例非平凡——防恒真陷阱）
+    BEFORE(无视图): get_entity(z043848) → 返回记录（泄漏面真实存在）
+    AFTER (视图层): get_entity(z043848) → UNKNOWN_ENTITY
+  [spare_dh_drug_01] ✓ A1.before_after: BEFORE 可触达 gt / AFTER 一律 UNKNOWN_ENTITY
+------------------------------------------------------------------------
+A2 [spare_dh_drug_01] get_entity：返回集 ⊆ 白名单（硬要求 3）
+  [spare_dh_drug_01] ✓ A2.positive: 正例 get_entity(z019317) → 查得到
+  [spare_dh_drug_01] ✓ A2.negative: 负例 get_entity(c00001∈全库∉白名单) → UNKNOWN_ENTITY
+  [spare_dh_drug_01] ✓ A2.sweep_subset: 全白名单 28 个实体逐一取件，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A3 [spare_dh_drug_01] get_property：返回集 ⊆ 白名单（硬要求 3）
+  [spare_dh_drug_01] ✓ A3.positive: 正例 get_property(z019317,['atom_count', 'element_count']) → 返回 2 值
+  [spare_dh_drug_01] ✓ A3.negative: 负例 get_property(c00001) → UNKNOWN_ENTITY
+  [spare_dh_drug_01] ✓ A3.sweep_subset: 全白名单 28 个实体逐一查证，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A4 [spare_dh_drug_01] search_candidates：返回集 ⊆ 白名单（硬要求 3）
+  [spare_dh_drug_01] ✓ A4.sweep_subset: 按可见集 filter_props 扫查键（类别 []、数值 []）穷尽扫查，返回 0 个 id 全部 ⊆ 白名单
+    BEFORE(无视图): 全库 logS∈[-1.3192,0.8234052513] 扫查 → 白名单外命中 575 个（如 ['z000013', 'z000274', 'z000275']，泄漏面真实存在）
+  [spare_dh_drug_01] ✓ A4.positive: 正例（B1 性质轴 logS∈[-1.3192,0.8234052513]）：族内序列全员可被穷举触达 ['z003921', 'z019317', 'z044151'] / BEFORE 同值域有白名单外命中
+    BEFORE(无视图): 组成==gt.composition 全库扫查 → 11 个实体（如 ['z001371', 'z006927', 'z006933']，含 gt 组成实体）
+    AFTER (视图层): enumerate(composition=gt.composition) → 0 个
+  [spare_dh_drug_01] ✓ A4.negative_gt_absent: 负例：按 gt.composition 组成约束扫查，BEFORE 命中 11 个（泄漏面真实存在）/ AFTER 视图内返回为空
+------------------------------------------------------------------------
+A5 [spare_dh_drug_01] literature_search：返回集 ⊆ 文献白名单（硬要求 3）
+    BEFORE(无视图): query='calculation' → 命中 90 篇（白名单外，泄漏面真实存在）
+    AFTER (视图层): query='calculation' → EMPTY_RESULT
+  [spare_dh_drug_01] ✓ A5.negative: 负例：只命中白名单外文献的查询 → BEFORE 有命中 / AFTER EMPTY_RESULT
+------------------------------------------------------------------------
+A6 [spare_dh_drug_01] 穷举接口：A 内无不劣于 gt 的解（硬要求 5）
+  [spare_dh_drug_01] ✓ A6.quality_gate_empty: enumerate(logS≥1.09) 于可见集 → 0 个（须为 0）
+  [spare_dh_drug_01] ✓ A6.nontrivial: 宽松阈值对照：enumerate(logS>-8.1886381337) → 28 个（穷举本身有效，非恒真）
+  [spare_dh_drug_01] ✓ A6.composition_empty: enumerate(composition=gt 组成) → 0 个（须为 0）
+  [spare_dh_drug_01] ✓ A6.composition_probe: 注入同组成实体 z001371 后 enumerate → 1 个（原 0 个）⇒ 组成穷举确实在筛
+------------------------------------------------------------------------
+A7 [spare_dh_drug_01] 视图文件匿名红线（沿用 check_agent_visible_anonymity 口径）
+  [spare_dh_drug_01] ✓ A7.anonymity: InChIKey=0 元素符号=0 真名=0 真实公式=0（须全 0）
+  [spare_dh_drug_02] ✓ A6.target_prop_valid: target.prop=logS ∈ 支持集 ['logS', 'tc']
+------------------------------------------------------------------------
+A1 [spare_dh_drug_02] gt 不得出现在自己的可见集内（硬要求 2）
+  [spare_dh_drug_02] ✓ A1.gt_invisible: entity_ref∉白名单 且 组成无碰撞
+  [spare_dh_drug_02] ✓ A1.gt_comp_form: gt.composition 可作组成核（键 ['16', '19', '22']）
+  [spare_dh_drug_02] ✓ A1.gt_invisible_probe: 注入同组成实体 z001434（式 'C4H10O2'）后扫查报 1 条违规（原 0 条）⇒ 组成扫查确实在查
+  [spare_dh_drug_02] ✓ A1.gt_exists_in_full_lib: gt=z004015 全库存在（A 侧演示形态；存在才使负例非平凡——防恒真陷阱）
+    BEFORE(无视图): get_entity(z004015) → 返回记录（泄漏面真实存在）
+    AFTER (视图层): get_entity(z004015) → UNKNOWN_ENTITY
+  [spare_dh_drug_02] ✓ A1.before_after: BEFORE 可触达 gt / AFTER 一律 UNKNOWN_ENTITY
+------------------------------------------------------------------------
+A2 [spare_dh_drug_02] get_entity：返回集 ⊆ 白名单（硬要求 3）
+  [spare_dh_drug_02] ✓ A2.positive: 正例 get_entity(z063602) → 查得到
+  [spare_dh_drug_02] ✓ A2.negative: 负例 get_entity(c00001∈全库∉白名单) → UNKNOWN_ENTITY
+  [spare_dh_drug_02] ✓ A2.sweep_subset: 全白名单 30 个实体逐一取件，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A3 [spare_dh_drug_02] get_property：返回集 ⊆ 白名单（硬要求 3）
+  [spare_dh_drug_02] ✓ A3.positive: 正例 get_property(z063602,['atom_count', 'element_count']) → 返回 2 值
+  [spare_dh_drug_02] ✓ A3.negative: 负例 get_property(c00001) → UNKNOWN_ENTITY
+  [spare_dh_drug_02] ✓ A3.sweep_subset: 全白名单 30 个实体逐一查证，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A4 [spare_dh_drug_02] search_candidates：返回集 ⊆ 白名单（硬要求 3）
+  [spare_dh_drug_02] ✓ A4.sweep_subset: 按可见集 filter_props 扫查键（类别 []、数值 []）穷尽扫查，返回 0 个 id 全部 ⊆ 白名单
+    BEFORE(无视图): 全库 logS∈[-3.64,-0.490652149] 扫查 → 白名单外命中 1248 个（如 ['z000007', 'z000012', 'z000017']，泄漏面真实存在）
+  [spare_dh_drug_02] ✓ A4.positive: 正例（B1 性质轴 logS∈[-3.64,-0.490652149]）：族内序列全员可被穷举触达 ['z001185', 'z006790', 'z045635', 'z062751', 'z063602'] / BEFORE 同值域有白名单外命中
+    BEFORE(无视图): 组成==gt.composition 全库扫查 → 9 个实体（如 ['z001434', 'z004012', 'z004015']，含 gt 组成实体）
+    AFTER (视图层): enumerate(composition=gt.composition) → 0 个
+  [spare_dh_drug_02] ✓ A4.negative_gt_absent: 负例：按 gt.composition 组成约束扫查，BEFORE 命中 9 个（泄漏面真实存在）/ AFTER 视图内返回为空
+------------------------------------------------------------------------
+A5 [spare_dh_drug_02] literature_search：返回集 ⊆ 文献白名单（硬要求 3）
+    BEFORE(无视图): query='calculation' → 命中 90 篇（白名单外，泄漏面真实存在）
+    AFTER (视图层): query='calculation' → EMPTY_RESULT
+  [spare_dh_drug_02] ✓ A5.negative: 负例：只命中白名单外文献的查询 → BEFORE 有命中 / AFTER EMPTY_RESULT
+------------------------------------------------------------------------
+A6 [spare_dh_drug_02] 穷举接口：A 内无不劣于 gt 的解（硬要求 5）
+  [spare_dh_drug_02] ✓ A6.quality_gate_empty: enumerate(logS≥1.0451691789) 于可见集 → 0 个（须为 0）
+  [spare_dh_drug_02] ✓ A6.nontrivial: 宽松阈值对照：enumerate(logS>-7.5209) → 30 个（穷举本身有效，非恒真）
+  [spare_dh_drug_02] ✓ A6.composition_empty: enumerate(composition=gt 组成) → 0 个（须为 0）
+  [spare_dh_drug_02] ✓ A6.composition_probe: 注入同组成实体 z001434 后 enumerate → 1 个（原 0 个）⇒ 组成穷举确实在筛
+------------------------------------------------------------------------
+A7 [spare_dh_drug_02] 视图文件匿名红线（沿用 check_agent_visible_anonymity 口径）
+  [spare_dh_drug_02] ✓ A7.anonymity: InChIKey=0 元素符号=0 真名=0 真实公式=0（须全 0）
+  [spare_dh_drug_03] ✓ A6.target_prop_valid: target.prop=logS ∈ 支持集 ['logS', 'tc']
+------------------------------------------------------------------------
+A1 [spare_dh_drug_03] gt 不得出现在自己的可见集内（硬要求 2）
+  [spare_dh_drug_03] ✓ A1.gt_invisible: entity_ref∉白名单 且 组成无碰撞
+  [spare_dh_drug_03] ✓ A1.gt_comp_form: gt.composition 可作组成核（键 ['16', '19', '22']）
+  [spare_dh_drug_03] ✓ A1.gt_invisible_probe: 注入同组成实体 z001332（式 'C2H4O2'）后扫查报 2 条违规（原 0 条）⇒ 组成扫查确实在查
+  [spare_dh_drug_03] ✓ A1.gt_exists_in_full_lib: gt=z001332 全库存在（A 侧演示形态；存在才使负例非平凡——防恒真陷阱）
+    BEFORE(无视图): get_entity(z001332) → 返回记录（泄漏面真实存在）
+    AFTER (视图层): get_entity(z001332) → UNKNOWN_ENTITY
+  [spare_dh_drug_03] ✓ A1.before_after: BEFORE 可触达 gt / AFTER 一律 UNKNOWN_ENTITY
+------------------------------------------------------------------------
+A2 [spare_dh_drug_03] get_entity：返回集 ⊆ 白名单（硬要求 3）
+  [spare_dh_drug_03] ✓ A2.positive: 正例 get_entity(z061219) → 查得到
+  [spare_dh_drug_03] ✓ A2.negative: 负例 get_entity(c00001∈全库∉白名单) → UNKNOWN_ENTITY
+  [spare_dh_drug_03] ✓ A2.sweep_subset: 全白名单 28 个实体逐一取件，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A3 [spare_dh_drug_03] get_property：返回集 ⊆ 白名单（硬要求 3）
+  [spare_dh_drug_03] ✓ A3.positive: 正例 get_property(z061219,['atom_count', 'element_count']) → 返回 2 值
+  [spare_dh_drug_03] ✓ A3.negative: 负例 get_property(c00001) → UNKNOWN_ENTITY
+  [spare_dh_drug_03] ✓ A3.sweep_subset: 全白名单 28 个实体逐一查证，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A4 [spare_dh_drug_03] search_candidates：返回集 ⊆ 白名单（硬要求 3）
+  [spare_dh_drug_03] ✓ A4.sweep_subset: 按可见集 filter_props 扫查键（类别 []、数值 []）穷尽扫查，返回 0 个 id 全部 ⊆ 白名单
+    BEFORE(无视图): 全库 logS∈[-0.89,0.7104893861] 扫查 → 白名单外命中 382 个（如 ['z000013', 'z000274', 'z000275']，泄漏面真实存在）
+  [spare_dh_drug_03] ✓ A4.positive: 正例（B1 性质轴 logS∈[-0.89,0.7104893861]）：族内序列全员可被穷举触达 ['z002862', 'z044559', 'z061219'] / BEFORE 同值域有白名单外命中
+    BEFORE(无视图): 组成==gt.composition 全库扫查 → 3 个实体（如 ['z001332', 'z061949', 'z073993']，含 gt 组成实体）
+    AFTER (视图层): enumerate(composition=gt.composition) → 0 个
+  [spare_dh_drug_03] ✓ A4.negative_gt_absent: 负例：按 gt.composition 组成约束扫查，BEFORE 命中 3 个（泄漏面真实存在）/ AFTER 视图内返回为空
+------------------------------------------------------------------------
+A5 [spare_dh_drug_03] literature_search：返回集 ⊆ 文献白名单（硬要求 3）
+    BEFORE(无视图): query='calculation' → 命中 90 篇（白名单外，泄漏面真实存在）
+    AFTER (视图层): query='calculation' → EMPTY_RESULT
+  [spare_dh_drug_03] ✓ A5.negative: 负例：只命中白名单外文献的查询 → BEFORE 有命中 / AFTER EMPTY_RESULT
+------------------------------------------------------------------------
+A6 [spare_dh_drug_03] 穷举接口：A 内无不劣于 gt 的解（硬要求 5）
+  [spare_dh_drug_03] ✓ A6.quality_gate_empty: enumerate(logS≥1.0017178079) 于可见集 → 0 个（须为 0）
+  [spare_dh_drug_03] ✓ A6.nontrivial: 宽松阈值对照：enumerate(logS>-8.355606283) → 28 个（穷举本身有效，非恒真）
+  [spare_dh_drug_03] ✓ A6.composition_empty: enumerate(composition=gt 组成) → 0 个（须为 0）
+  [spare_dh_drug_03] ✓ A6.composition_probe: 注入同组成实体 z001332 后 enumerate → 1 个（原 0 个）⇒ 组成穷举确实在筛
+------------------------------------------------------------------------
+A7 [spare_dh_drug_03] 视图文件匿名红线（沿用 check_agent_visible_anonymity 口径）
+  [spare_dh_drug_03] ✓ A7.anonymity: InChIKey=0 元素符号=0 真名=0 真实公式=0（须全 0）
+  [spare_dh_material_01] ✓ A6.target_prop_valid: target.prop=tc ∈ 支持集 ['logS', 'tc']
+------------------------------------------------------------------------
+A1 [spare_dh_material_01] gt 不得出现在自己的可见集内（硬要求 2）
+  [spare_dh_material_01] ✓ A1.gt_invisible: entity_ref∉白名单 且 组成无碰撞
+  [spare_dh_material_01] ✓ A1.gt_comp_form: gt.composition 可作组成核（键 ['19', '22', '33']）
+  [spare_dh_material_01] ✓ A1.gt_invisible_probe: 注入同组成实体 c10537（式 'H0.38Y1Ba2Cu3O'）后扫查报 2 条违规（原 0 条）⇒ 组成扫查确实在查
+  [spare_dh_material_01] ✓ A1.gt_exists_in_full_lib: gt=c10537 全库存在（A 侧演示形态；存在才使负例非平凡——防恒真陷阱）
+    BEFORE(无视图): get_entity(c10537) → 返回记录（泄漏面真实存在）
+    AFTER (视图层): get_entity(c10537) → UNKNOWN_ENTITY
+  [spare_dh_material_01] ✓ A1.before_after: BEFORE 可触达 gt / AFTER 一律 UNKNOWN_ENTITY
+------------------------------------------------------------------------
+A2 [spare_dh_material_01] get_entity：返回集 ⊆ 白名单（硬要求 3）
+  [spare_dh_material_01] ✓ A2.positive: 正例 get_entity(c10522) → 查得到
+  [spare_dh_material_01] ✓ A2.negative: 负例 get_entity(c00001∈全库∉白名单) → UNKNOWN_ENTITY
+  [spare_dh_material_01] ✓ A2.sweep_subset: 全白名单 28 个实体逐一取件，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A3 [spare_dh_material_01] get_property：返回集 ⊆ 白名单（硬要求 3）
+  [spare_dh_material_01] ✓ A3.positive: 正例 get_property(c10522,['condition', 'element_count']) → 返回 2 值
+  [spare_dh_material_01] ✓ A3.negative: 负例 get_property(c00001) → UNKNOWN_ENTITY
+  [spare_dh_material_01] ✓ A3.sweep_subset: 全白名单 28 个实体逐一查证，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A4 [spare_dh_material_01] search_candidates：返回集 ⊆ 白名单（硬要求 3）
+  [spare_dh_material_01] ✓ A4.sweep_subset: 按可见集 filter_props 扫查键（类别 ['sc_class']、数值 []）穷尽扫查，返回 28 个 id 全部 ⊆ 白名单
+  [spare_dh_material_01] ✓ A4.positive: 正例：族内序列全员可被检索触达 ['c10522', 'c10529', 'c10532']
+    BEFORE(无视图): 组成==gt.composition 全库扫查 → 1 个实体（如 ['c10537']，含 gt 组成实体）；扫查键同查询另触达白名单外实体 12327 个
+    AFTER (视图层): enumerate(composition=gt.composition) → 0 个
+  [spare_dh_material_01] ✓ A4.negative_gt_absent: 负例：按 gt.composition 组成约束扫查，BEFORE 命中 1 个（泄漏面真实存在）/ AFTER 视图内返回为空
+------------------------------------------------------------------------
+A5 [spare_dh_material_01] literature_search：返回集 ⊆ 文献白名单（硬要求 3）
+  [spare_dh_material_01] ✓ A5.positive: 正例：query='bcs theory' 命中白名单文献 10.1002/9781118343180.app1
+  [spare_dh_material_01] ✓ A5.sweep_subset: 该查询返回 2 篇全部 ⊆ 文献白名单
+    BEFORE(无视图): query='calculation' → 命中 90 篇（白名单外，泄漏面真实存在）
+    AFTER (视图层): query='calculation' → EMPTY_RESULT
+  [spare_dh_material_01] ✓ A5.negative: 负例：只命中白名单外文献的查询 → BEFORE 有命中 / AFTER EMPTY_RESULT
+------------------------------------------------------------------------
+A6 [spare_dh_material_01] 穷举接口：A 内无不劣于 gt 的解（硬要求 5）
+  [spare_dh_material_01] ✓ A6.quality_gate_empty: enumerate(tc≤60.7) 于可见集 → 0 个（须为 0）
+  [spare_dh_material_01] ✓ A6.nontrivial: 宽松阈值对照：enumerate(tc>60.0) → 28 个（穷举本身有效，非恒真）
+  [spare_dh_material_01] ✓ A6.composition_empty: enumerate(composition=gt 组成) → 0 个（须为 0）
+  [spare_dh_material_01] ✓ A6.composition_probe: 注入同组成实体 c10537 后 enumerate → 1 个（原 0 个）⇒ 组成穷举确实在筛
+------------------------------------------------------------------------
+A7 [spare_dh_material_01] 视图文件匿名红线（沿用 check_agent_visible_anonymity 口径）
+  [spare_dh_material_01] ✓ A7.anonymity: InChIKey=0 元素符号=0 真名=0 真实公式=0（须全 0）
+  [spare_dh_material_02] ✓ A6.target_prop_valid: target.prop=tc ∈ 支持集 ['logS', 'tc']
+------------------------------------------------------------------------
+A1 [spare_dh_material_02] gt 不得出现在自己的可见集内（硬要求 2）
+  [spare_dh_material_02] ✓ A1.gt_invisible: entity_ref∉白名单 且 组成无碰撞
+  [spare_dh_material_02] ✓ A1.gt_comp_form: gt.composition 可作组成核（键 ['18', '22', '33']）
+  [spare_dh_material_02] ✓ A1.gt_invisible_probe: 注入同组成实体 c10030（式 'Y1Ba2Cu2.9Zn0.1O6.99'）后扫查报 1 条违规（原 0 条）⇒ 组成扫查确实在查
+  [spare_dh_material_02] ✓ A1.gt_exists_in_full_lib: gt=c10069 全库存在（A 侧演示形态；存在才使负例非平凡——防恒真陷阱）
+    BEFORE(无视图): get_entity(c10069) → 返回记录（泄漏面真实存在）
+    AFTER (视图层): get_entity(c10069) → UNKNOWN_ENTITY
+  [spare_dh_material_02] ✓ A1.before_after: BEFORE 可触达 gt / AFTER 一律 UNKNOWN_ENTITY
+------------------------------------------------------------------------
+A2 [spare_dh_material_02] get_entity：返回集 ⊆ 白名单（硬要求 3）
+  [spare_dh_material_02] ✓ A2.positive: 正例 get_entity(c10065) → 查得到
+  [spare_dh_material_02] ✓ A2.negative: 负例 get_entity(c00001∈全库∉白名单) → UNKNOWN_ENTITY
+  [spare_dh_material_02] ✓ A2.sweep_subset: 全白名单 28 个实体逐一取件，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A3 [spare_dh_material_02] get_property：返回集 ⊆ 白名单（硬要求 3）
+  [spare_dh_material_02] ✓ A3.positive: 正例 get_property(c10065,['condition', 'element_count']) → 返回 2 值
+  [spare_dh_material_02] ✓ A3.negative: 负例 get_property(c00001) → UNKNOWN_ENTITY
+  [spare_dh_material_02] ✓ A3.sweep_subset: 全白名单 28 个实体逐一查证，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A4 [spare_dh_material_02] search_candidates：返回集 ⊆ 白名单（硬要求 3）
+  [spare_dh_material_02] ✓ A4.sweep_subset: 按可见集 filter_props 扫查键（类别 ['sc_class']、数值 []）穷尽扫查，返回 28 个 id 全部 ⊆ 白名单
+  [spare_dh_material_02] ✓ A4.positive: 正例：族内序列全员可被检索触达 ['c10065', 'c10066', 'c10067']
+    BEFORE(无视图): 组成==gt.composition 全库扫查 → 8 个实体（如 ['c10030', 'c10033', 'c10038']，含 gt 组成实体）；扫查键同查询另触达白名单外实体 17183 个
+    AFTER (视图层): enumerate(composition=gt.composition) → 0 个
+  [spare_dh_material_02] ✓ A4.negative_gt_absent: 负例：按 gt.composition 组成约束扫查，BEFORE 命中 8 个（泄漏面真实存在）/ AFTER 视图内返回为空
+------------------------------------------------------------------------
+A5 [spare_dh_material_02] literature_search：返回集 ⊆ 文献白名单（硬要求 3）
+  [spare_dh_material_02] ✓ A5.positive: 正例：query='bcs theory' 命中白名单文献 10.1002/9781118343180.app1
+  [spare_dh_material_02] ✓ A5.sweep_subset: 该查询返回 2 篇全部 ⊆ 文献白名单
+    BEFORE(无视图): query='calculation' → 命中 90 篇（白名单外，泄漏面真实存在）
+    AFTER (视图层): query='calculation' → EMPTY_RESULT
+  [spare_dh_material_02] ✓ A5.negative: 负例：只命中白名单外文献的查询 → BEFORE 有命中 / AFTER EMPTY_RESULT
+------------------------------------------------------------------------
+A6 [spare_dh_material_02] 穷举接口：A 内无不劣于 gt 的解（硬要求 5）
+  [spare_dh_material_02] ✓ A6.quality_gate_empty: enumerate(tc≥47.4) 于可见集 → 0 个（须为 0）
+  [spare_dh_material_02] ✓ A6.nontrivial: 宽松阈值对照：enumerate(tc>-1.0) → 28 个（穷举本身有效，非恒真）
+  [spare_dh_material_02] ✓ A6.composition_empty: enumerate(composition=gt 组成) → 0 个（须为 0）
+  [spare_dh_material_02] ✓ A6.composition_probe: 注入同组成实体 c10030 后 enumerate → 1 个（原 0 个）⇒ 组成穷举确实在筛
+------------------------------------------------------------------------
+A7 [spare_dh_material_02] 视图文件匿名红线（沿用 check_agent_visible_anonymity 口径）
+  [spare_dh_material_02] ✓ A7.anonymity: InChIKey=0 元素符号=0 真名=0 真实公式=0（须全 0）
+  [spare_dh_material_03] ✓ A6.target_prop_valid: target.prop=tc ∈ 支持集 ['logS', 'tc']
+------------------------------------------------------------------------
+A1 [spare_dh_material_03] gt 不得出现在自己的可见集内（硬要求 2）
+  [spare_dh_material_03] ✓ A1.gt_invisible: entity_ref∉白名单 且 组成无碰撞
+  [spare_dh_material_03] ✓ A1.gt_comp_form: gt.composition 可作组成核（键 ['22', '32', '33']）
+  [spare_dh_material_03] ✓ A1.gt_invisible_probe: 注入同组成实体 c07580（式 'Sr1.5Ba0.5Y1Cu2.8Ga0.2O7.2'）后扫查报 2 条违规（原 0 条）⇒ 组成扫查确实在查
+  [spare_dh_material_03] ✓ A1.gt_exists_in_full_lib: gt=c07580 全库存在（A 侧演示形态；存在才使负例非平凡——防恒真陷阱）
+    BEFORE(无视图): get_entity(c07580) → 返回记录（泄漏面真实存在）
+    AFTER (视图层): get_entity(c07580) → UNKNOWN_ENTITY
+  [spare_dh_material_03] ✓ A1.before_after: BEFORE 可触达 gt / AFTER 一律 UNKNOWN_ENTITY
+------------------------------------------------------------------------
+A2 [spare_dh_material_03] get_entity：返回集 ⊆ 白名单（硬要求 3）
+  [spare_dh_material_03] ✓ A2.positive: 正例 get_entity(c07576) → 查得到
+  [spare_dh_material_03] ✓ A2.negative: 负例 get_entity(c00001∈全库∉白名单) → UNKNOWN_ENTITY
+  [spare_dh_material_03] ✓ A2.sweep_subset: 全白名单 29 个实体逐一取件，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A3 [spare_dh_material_03] get_property：返回集 ⊆ 白名单（硬要求 3）
+  [spare_dh_material_03] ✓ A3.positive: 正例 get_property(c07576,['condition', 'element_count']) → 返回 2 值
+  [spare_dh_material_03] ✓ A3.negative: 负例 get_property(c00001) → UNKNOWN_ENTITY
+  [spare_dh_material_03] ✓ A3.sweep_subset: 全白名单 29 个实体逐一查证，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A4 [spare_dh_material_03] search_candidates：返回集 ⊆ 白名单（硬要求 3）
+  [spare_dh_material_03] ✓ A4.sweep_subset: 按可见集 filter_props 扫查键（类别 ['sc_class']、数值 []）穷尽扫查，返回 29 个 id 全部 ⊆ 白名单
+  [spare_dh_material_03] ✓ A4.positive: 正例：族内序列全员可被检索触达 ['c07576', 'c07577', 'c07578', 'c07579']
+    BEFORE(无视图): 组成==gt.composition 全库扫查 → 1 个实体（如 ['c07580']，含 gt 组成实体）；扫查键同查询另触达白名单外实体 16699 个
+    AFTER (视图层): enumerate(composition=gt.composition) → 0 个
+  [spare_dh_material_03] ✓ A4.negative_gt_absent: 负例：按 gt.composition 组成约束扫查，BEFORE 命中 1 个（泄漏面真实存在）/ AFTER 视图内返回为空
+------------------------------------------------------------------------
+A5 [spare_dh_material_03] literature_search：返回集 ⊆ 文献白名单（硬要求 3）
+  [spare_dh_material_03] ✓ A5.positive: 正例：query='bcs theory' 命中白名单文献 10.1002/9781118343180.app1
+  [spare_dh_material_03] ✓ A5.sweep_subset: 该查询返回 2 篇全部 ⊆ 文献白名单
+    BEFORE(无视图): query='calculation' → 命中 90 篇（白名单外，泄漏面真实存在）
+    AFTER (视图层): query='calculation' → EMPTY_RESULT
+  [spare_dh_material_03] ✓ A5.negative: 负例：只命中白名单外文献的查询 → BEFORE 有命中 / AFTER EMPTY_RESULT
+------------------------------------------------------------------------
+A6 [spare_dh_material_03] 穷举接口：A 内无不劣于 gt 的解（硬要求 5）
+  [spare_dh_material_03] ✓ A6.quality_gate_empty: enumerate(tc≥61.0) 于可见集 → 0 个（须为 0）
+  [spare_dh_material_03] ✓ A6.nontrivial: 宽松阈值对照：enumerate(tc>-1.0) → 29 个（穷举本身有效，非恒真）
+  [spare_dh_material_03] ✓ A6.composition_empty: enumerate(composition=gt 组成) → 0 个（须为 0）
+  [spare_dh_material_03] ✓ A6.composition_probe: 注入同组成实体 c07580 后 enumerate → 1 个（原 0 个）⇒ 组成穷举确实在筛
+------------------------------------------------------------------------
+A7 [spare_dh_material_03] 视图文件匿名红线（沿用 check_agent_visible_anonymity 口径）
+  [spare_dh_material_03] ✓ A7.anonymity: InChIKey=0 元素符号=0 真名=0 真实公式=0（须全 0）
+------------------------------------------------------------------------
+B 侧 gt 形态测试视图（测试件，case_id=e105_test_b_side_gt，非生产视图）
+  测试视图落盘 → /mnt/ai4sci_develop_fast/jingwu/benchmark/src/data_build/_build_state/tmp_test_view/e105_test_b_side_gt.json（明确标注测试件，不入生产视图目录）
+  [e105_test_b_side_gt] ✓ A6.target_prop_valid: target.prop=tc ∈ 支持集 ['logS', 'tc']
+------------------------------------------------------------------------
+A1 [e105_test_b_side_gt] gt 不得出现在自己的可见集内（硬要求 2）
+  [e105_test_b_side_gt] ✓ A1.gt_invisible: entity_ref∉白名单 且 组成无碰撞
+  [e105_test_b_side_gt] ✓ A1.gt_comp_form: gt.composition 可作组成核（键 ['45', '68']）
+  [e105_test_b_side_gt] ✓ A1.gt_invisible_probe: 注入同组成实体 c01360（式 'B2Mg0.9'）后扫查报 1 条违规（原 0 条）⇒ 组成扫查确实在查
+  [e105_test_b_side_gt] ✓ A1.gt_not_in_A_lib: B 侧生产形态：gt_ref=b00001_test_only ∉ A 全库实体集（A 侧四工具结构上不可能触达 B 侧 ID；组成全等口径与侧无关，已由 A1.gt_invisible 覆盖）
+    BEFORE(无视图): 组成==gt.composition 全库扫查 → 1 个实体（泄漏面真实存在，如 ['c01360']）
+    AFTER (视图层): 同组成扫查限于可见集 → 0 个
+  [e105_test_b_side_gt] ✓ A1.before_after: BEFORE 组成扫查可触达 gt 组成实体 / AFTER 可见集内零碰撞
+------------------------------------------------------------------------
+A2 [e105_test_b_side_gt] get_entity：返回集 ⊆ 白名单（硬要求 3）
+  [e105_test_b_side_gt] ✓ A2.positive: 正例 get_entity(c01350) → 查得到
+  [e105_test_b_side_gt] ✓ A2.negative: 负例 get_entity(c00001∈全库∉白名单) → UNKNOWN_ENTITY
+  [e105_test_b_side_gt] ✓ A2.sweep_subset: 全白名单 14 个实体逐一取件，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A3 [e105_test_b_side_gt] get_property：返回集 ⊆ 白名单（硬要求 3）
+  [e105_test_b_side_gt] ✓ A3.positive: 正例 get_property(c01350,['condition', 'element_count']) → 返回 2 值
+  [e105_test_b_side_gt] ✓ A3.negative: 负例 get_property(c00001) → UNKNOWN_ENTITY
+  [e105_test_b_side_gt] ✓ A3.sweep_subset: 全白名单 14 个实体逐一查证，返回集 ⊆ 白名单
+------------------------------------------------------------------------
+A4 [e105_test_b_side_gt] search_candidates：返回集 ⊆ 白名单（硬要求 3）
+  [e105_test_b_side_gt] ✓ A4.sweep_subset: 按可见集 filter_props 扫查键（类别 ['sc_class']、数值 []）穷尽扫查，返回 14 个 id 全部 ⊆ 白名单
+  [e105_test_b_side_gt] ✓ A4.positive: 正例：族内序列全员可被检索触达 ['c01350', 'c01351', 'c01352', 'c01353']
+    BEFORE(无视图): 组成==gt.composition 全库扫查 → 1 个实体（如 ['c01360']，含 gt 组成实体）；扫查键同查询另触达白名单外实体 5199 个
+    AFTER (视图层): enumerate(composition=gt.composition) → 0 个
+  [e105_test_b_side_gt] ✓ A4.negative_gt_absent: 负例：按 gt.composition 组成约束扫查，BEFORE 命中 1 个（泄漏面真实存在）/ AFTER 视图内返回为空
+------------------------------------------------------------------------
+A5 [e105_test_b_side_gt] literature_search：返回集 ⊆ 文献白名单（硬要求 3）
+  [e105_test_b_side_gt] ✓ A5.positive: 正例：query='superconductor' 命中白名单文献 10.1002/1097-461x(2000)80:3<499::aid-qua20>3.0.co;2-h
+  [e105_test_b_side_gt] ✓ A5.sweep_subset: 该查询返回 2 篇全部 ⊆ 文献白名单
+    BEFORE(无视图): query='calculation' → 命中 90 篇（白名单外，泄漏面真实存在）
+    AFTER (视图层): query='calculation' → EMPTY_RESULT
+  [e105_test_b_side_gt] ✓ A5.negative: 负例：只命中白名单外文献的查询 → BEFORE 有命中 / AFTER EMPTY_RESULT
+------------------------------------------------------------------------
+A6 [e105_test_b_side_gt] 穷举接口：A 内无不劣于 gt 的解（硬要求 5）
+  [e105_test_b_side_gt] ✓ A6.quality_gate_empty: enumerate(tc≥38.2) 于可见集 → 0 个（须为 0）
+  [e105_test_b_side_gt] ✓ A6.nontrivial: 宽松阈值对照：enumerate(tc>-1.0) → 14 个（穷举本身有效，非恒真）
+  [e105_test_b_side_gt] ✓ A6.composition_empty: enumerate(composition=gt 组成) → 0 个（须为 0）
+  [e105_test_b_side_gt] ✓ A6.composition_probe: 注入同组成实体 c01360 后 enumerate → 1 个（原 0 个）⇒ 组成穷举确实在筛
+------------------------------------------------------------------------
+A7 [e105_test_b_side_gt] 视图文件匿名红线（沿用 check_agent_visible_anonymity 口径）
+  [e105_test_b_side_gt] ✓ A7.anonymity: InChIKey=0 元素符号=0 真名=0 真实公式=0（须全 0）
+------------------------------------------------------------------------
+A8 示例生成幂等性（重跑两次逐字节一致）
+  ✗ A8.idempotence: 两次 build_view 序列化字节一致=True（1459 bytes）；与已落盘文件逐字节一致=False
+------------------------------------------------------------------------
+断言失败 ✗：13 项（明细见 /mnt/ai4sci_develop_fast/jingwu/benchmark/src/data_build/_build_state/per_case_view_assert_result.json）

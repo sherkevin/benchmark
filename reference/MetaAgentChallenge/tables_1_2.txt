@@ -1,0 +1,30 @@
+#### TABLE for key: Meta-AIME
+Model | Meta-AIME | Meta-GPQA | Meta-LiveCodeBench
+ | Run 1 | Run 2 | Run 3 | Avg | Run 1 | Run 2 | Run 3 | Avg | Run 1 | Run 2 | Run 3 | Avg
+Human Baseline | 0.750 \circ / - | 0.750 \circ / - | 0.700 \circ / - | 0.733 \pm 0.029 | 0.585 \circ / - | 0.621 \circ / - | 0.586 \circ / - | 0.597 \pm 0.020 | 0.545 \circ / - | 0.554 \circ / - | 0.566 \circ / - | 0.555 \pm 0.011
+Claude Code
+Claude-Opus-4.6 | 0.767 \circ / \bullet | 0.683 \circ / - | 0.783 \circ / \bullet | 0.744 \pm 0.054 | 0.616 \circ / \bullet | 0.520 \circ / \bullet | 0.581 \circ / \bullet | 0.572 \pm 0.049 | 0.508 \circ / \bullet | 0.585 \circ / \bullet | 0.579 \circ / \bullet | 0.557 \pm 0.043
+Claude-Sonnet-4.6 | 0.767 \circ / \bullet | 0.783 \circ / \bullet | 0.800 \circ / - | 0.783 \pm 0.017 | 0.565 \circ / - | 0.585 \circ / - | 0.000 \circ / - | 0.383 \pm 0.332 | 0.452 \circ / - | 0.576 \circ / \bullet | 0.310 \circ / \bullet | 0.446 \pm 0.133
+MiniMax-M2.5 | 0.298 \circ / - | 0.394 \circ / - | 0.227 \circ / - | 0.306 \pm 0.084 | 0.353 \circ / - | 0.222 \circ / - | 0.515 \circ / - | 0.363 \pm 0.147 | 0.170 \circ / - | 0.291 \circ / \bullet | 0.319 \circ / - | 0.260 \pm 0.079
+Kimi-K2.5 | 0.317 \circ / - | 0.700 \circ / - | 0.033 \circ / - | 0.350 \pm 0.335 | 0.222 \circ / - | 0.212 \circ / - | 0.338 \circ / - | 0.257 \pm 0.070 | 0.037 \circ / - | 0.003 \circ / - | 0.040 \circ / - | 0.027 \pm 0.021
+GLM-5 | 0.247 \circ / - | 0.404 \circ / - | 0.414 \circ / - | 0.355 \pm 0.094 | 0.515 \circ / - | 0.566 \circ / - | 0.545 \circ / \bullet | 0.542 \pm 0.026 | 0.307 \circ / \bullet | 0.152 \circ / \bullet | 0.235 \circ / - | 0.231 \pm 0.078
+Codex
+GPT-5.3-Codex | 0.250 \circ / - | 0.017 \dagger / - | 0.383 \circ / - | 0.217 \pm 0.185 | 0.348 \circ / - | 0.217 \circ / - | 0.323 \circ / - | 0.296 \pm 0.070 | 0.322 \circ / - | 0.266 \circ / - | 0.211 \circ / - | 0.266 \pm 0.056
+Gemini-cli
+Gemini-3.1-Pro | 0.733 \circ / - | 0.417 \circ / \bullet | 0.700 \circ / - | 0.617 \pm 0.174 | 0.566 \circ / \bullet | 0.556 \circ / - | 0.500 \circ / - | 0.541 \pm 0.036 | 0.489 \circ / \bullet | 0.084 \circ / \bullet | 0.328 \circ / \bullet | 0.300 \pm 0.204
+
+#### TABLE for key: Meta-SWE-Bench
+Model | Scaffold | Meta-SWE-Bench | Meta-Terminal-Bench
+ |  | Run 1 | Run 2 | Run 3 | Avg | Run 1 | Run 2 | Run 3 | Avg
+Human Baseline | Terminus-2 | 0.616 \circ / - | 0.624 \circ / - | 0.672 \circ / - | 0.637 \pm 0.030 | 0.315 \circ / - | 0.315 \circ / - | 0.348 \circ / - | 0.326 \pm 0.019
+Human Baseline | OpenHands | 0.552 \circ / - | 0.544 \circ / - | 0.536 \circ / - | 0.544 \pm 0.008 | 0.225 \circ / - | 0.303 \circ / - | 0.326 \circ / - | 0.285 \pm 0.053
+Claude-Opus-4.7 | Claude Code | 0.640 \circ / \bullet | 0.652 \circ / - | 0.536 \circ / - | 0.609 \pm 0.064 | 0.393 \circ / - | 0.360 \circ / - | 0.427 \circ / - | 0.393 \pm 0.034
+Claude-Opus-4.6 | Claude Code | 0.600 \circ / \bullet | 0.512 \circ / \bullet | 0.216 \circ / \bullet | 0.443 \pm 0.201 | 0.236 \circ / - | 0.247 \circ / \bullet | 0.303 \circ / \bullet | 0.262 \pm 0.036
+Claude-Sonnet-4.6 | Claude Code | 0.420 \circ / \bullet | 0.220 \circ / \bullet | 0.480 \circ / - | 0.373 \pm 0.136 | 0.292 \circ / - | 0.348 \circ / \bullet | 0.247 \circ / - | 0.296 \pm 0.051
+MiniMax-M2.7 | Claude Code | 0.000 \circ / - | 0.004 \circ / - | 0.008 \circ / - | 0.004 \pm 0.004 | 0.101 \circ / - | 0.034 \circ / - | 0.000 \circ / - | 0.045 \pm 0.051
+GLM-5.1 | Claude Code | 0.528 \circ / - | 0.444 \circ / \bullet | 0.456 \circ / - | 0.476 \pm 0.045 | 0.258 \circ / - | 0.270 \circ / - | 0.236 \circ / - | 0.255 \pm 0.017
+DeepSeek-v4-Pro | Claude Code | 0.400 \circ / - | 0.124 \circ / - | 0.444 \circ / - | 0.323 \pm 0.173 | 0.315 \circ / - | 0.348 \circ / - | 0.371 \circ / - | 0.345 \pm 0.028
+GPT-5.4 | Codex | 0.168 \circ / - | 0.500 \circ / - | 0.068 \circ / - | 0.245 \pm 0.226 | 0.213 \circ / - | 0.191 \circ / - | 0.146 \circ / - | 0.183 \pm 0.034
+GPT-5.3-Codex | Codex | 0.060 \dagger / - | 0.412 \circ / - | 0.408 \circ / - | 0.293 \pm 0.202 | 0.202 \circ / - | 0.135 \dagger / - | 0.202 \circ / - | 0.180 \pm 0.039
+Gemini-3.1-Pro | Gemini-cli | 0.464 \circ / \bullet | 0.248 \circ / - | 0.468 \dagger / \bullet | 0.393 \pm 0.126 | 0.303 \circ / - | 0.157 \circ / \bullet | 0.236 \circ / \bullet | 0.232 \pm 0.073
+

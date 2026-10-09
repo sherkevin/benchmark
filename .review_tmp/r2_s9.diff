@@ -1,0 +1,313 @@
+commit fd29ee8c1b99c625955e48a42fdd87f67a95d5b0
+Author: Jing Wu <jingwu.wu@alibaba-inc.com>
+Date:   Fri Aug 7 21:48:24 2026 +0800
+
+    task-05 §9（任务 #59）：接口 B 降级键 grounding 复算（E5 材料侧堵点）
+    
+    机制根源：键列已扩至 17,252 行（primary 5,771 + degraded 11,481），但
+    gateway 旧现算仅 primary 5,740 键——11,481 条降级键在 evaluate.py 条件②
+    与质量门不可见。
+    
+    gateway.py（并列不替换）：
+    - _load_material_identity_fns 扩返第四个函数 degraded_material_identity_key
+      （E1 纯函数直调，不自写拼装，防口径漂移）；
+    - 新增 _tc_table()：backend get_property_A.jsonl tc 列（judge 全局口径，
+      缺位回落 mock_db crystals tc）；
+    - 新增 _material_key_universe_full()：{key: {'entity_ids', 'key_type'}}
+      覆盖 primary+degraded；缺 tc 跳过并计数留痕（风险 R4 不静默吞）；
+      既有 _material_key_universe() 保留原返回值不动（== 口径消费方零回归）。
+    
+    evaluate.py（判分路径依赖唯一性：硬编码声明，Leader 裁定 F3，不动
+    case/answer schema）：
+    - 条件②材料键通道与质量门 material 路径升级消费 full 全集；
+    - 监工边界「可排除、不可判唯一」：命中 degraded 键一律显式报错
+      DEGRADED_KEY_NOT_UNIQUE（details/failures 留痕命中键与候选实体数），
+      不得静默按相等处理；primary 命中行为不变（31 组重复录入同键判等口径
+      不动）；排除语义不受拦截影响；质量门材料域整体仍 fail-closed
+      （PR-38），只加拦截口径不解封造题。
+    
+    测试：test_degraded_key_grounding_task05.py 9 用例（全量等价复算/full
+    对账/旧函数零变化/条件②三种命中/排除语义/质量门双口径）；#41 两处告警
+    测试机械适配接缝契约变更（三元组→四元组、注入点切 full，语义不放宽）。
+    
+    实跑证据：rehearsal_logs/task-05-section9_degraded_key_realdata.log——
+    17,252 行口径对账（primary 5,740 键 + degraded 11,430 键与键列逐字一致、
+    缺 tc 0 跳过）、11,481 条降级行复算零不一致、F3 拦截条件②/质量门双落点
+    实例。
+    
+    全量回归：290 passed + 1 skipped，5 errors 为预存在基线，零新增失败。
+
+diff --git a/dag_poc/gateway.py b/dag_poc/gateway.py
+index c648ec1..715c641 100644
+--- a/dag_poc/gateway.py
++++ b/dag_poc/gateway.py
+@@ -608,20 +608,26 @@ def _assert_anon_identity_fields(*fields):
+ # 不进任何工具返回值（agent 可见面零增量，E1-04 §4.3）。
+ _SPACEGROUP_RE = re.compile(r'SPACEGROUP:([^;]+)')
+ _MATERIAL_KEY_CACHE = {}
++_MATERIAL_KEY_FULL_CACHE = {}   # task-05 §9（任务 #59）：primary+degraded 全集缓存
+ _SG_NUMBER_CACHE = {}
+ _MATERIAL_IMPORT_WARNED = False
+ 
+ 
+ def _load_material_identity_fns():
+     """E1-04 接口 B 懒加载接缝：返 (material_identity_key,
+-    reduced_formula_anon, sg_symbol_to_number) 三纯函数；import 失败
+-    （模块不在场/pymatgen 缺包）返 (None, None, None)（材料侧 grounding
++    reduced_formula_anon, sg_symbol_to_number, degraded_material_identity_key)
++    四纯函数；import 失败（模块不在场/pymatgen 缺包）返四 None（材料侧 grounding
+     路径回落旧行为，不崩不带病）。src.data_build 在仓库根，网关在
+     dag_poc/，按需补仓库根入 sys.path。
+ 
+     任务 #41 Major4：import 失败不再全程静默——首次失败打一次性
+     logging.warning（含原始异常 repr），防材料 open 题开造后依赖缺失
+-    整批静默判 ungrounded；行为（返 None 回落）不变。"""
++    整批静默判 ungrounded；行为（返 None 回落）不变。
++
++    task-05 §9（任务 #59）：扩返第四个函数 degraded_material_identity_key
++    （E1 已交付，交接说明 §7.1：formula+tc 降级键，零 IO）——降级键复算
++    直调 E1 纯函数，不自写拼装（防口径漂移，与主键侧“接口 B 直调对照”
++    先例同款）。"""
+     global _MATERIAL_IMPORT_WARNED
+     try:
+         import sys
+@@ -629,15 +635,17 @@ def _load_material_identity_fns():
+         if root not in sys.path:
+             sys.path.insert(0, root)
+         from src.data_build.material_identity import (
+-            material_identity_key, reduced_formula_anon, sg_symbol_to_number)
+-        return material_identity_key, reduced_formula_anon, sg_symbol_to_number
++            material_identity_key, reduced_formula_anon, sg_symbol_to_number,
++            degraded_material_identity_key)
++        return (material_identity_key, reduced_formula_anon,
++                sg_symbol_to_number, degraded_material_identity_key)
+     except Exception as e:  # noqa: BLE001 接缝容错：缺依赖不得阻断网关装载
+         if not _MATERIAL_IMPORT_WARNED:
+             _MATERIAL_IMPORT_WARNED = True
+             logging.warning(
+                 '材料侧身份键接口 B（src.data_build.material_identity）装载'
+                 '失败，材料 grounding 通道回落空集：%r', e)
+-        return None, None, None
++        return None, None, None, None
+ 
+ 
+ def material_key_from_record(rec):
+@@ -647,7 +655,7 @@ def material_key_from_record(rec):
+     按符号缓存在进程内（去重后仅 135 种，pymatgen SpaceGroup 单次构造
+     ~20ms，不缓存则全量 5,771 次 ~2 分钟——评分路径不可接受）。
+     解析失败/函数不在场 → None；测试以接口 B 直调对照防拼装漂移。"""
+-    _, reduced_fn, sg_fn = _load_material_identity_fns()
++    _, reduced_fn, sg_fn, _degraded_fn = _load_material_identity_fns()
+     if reduced_fn is None or not isinstance(rec, dict):
+         return None
+     m = _SPACEGROUP_RE.search(rec.get('masked_structure') or '')
+@@ -1434,6 +1442,122 @@ class Gateway:
+         _MATERIAL_KEY_CACHE[root] = keys
+         return keys
+ 
++    def _tc_table(self):
++        """task-05 §9（任务 #59）：A 侧 tc 真值列 {entity_id: tc}，供降级键
++        复算（formula+tc）。数据源：backend get_property/get_property_A.jsonl
++        全量行（judge 侧全局口径，与既有 primary universe 同层，不按 case_ref
++        过滤）；文件不在场回落 mock_db crystals tc（过渡期兼容口径，与
++        其余通道 backend 优先/过渡回落一致）。单行畸形 JSON 跳过不穿透。"""
++        table = {}
++        root = getattr(self, '_a_identity_root', None)
++        if root:
++            path = os.path.join(root, 'get_property', 'get_property_A.jsonl')
++            try:
++                with open(path, encoding='utf-8') as f:
++                    for line in f:
++                        line = line.strip()
++                        if not line:
++                            continue
++                        try:
++                            rec = json.loads(line)
++                        except ValueError:
++                            continue
++                        if rec.get('prop') != 'tc':
++                            continue
++                        eid, val = rec.get('entity_id'), rec.get('value')
++                        if isinstance(eid, str) and isinstance(val, (int, float)):
++                            table[eid] = val
++            except OSError:
++                pass
++        if not table:
++            # 回落：mock_db crystals 旧 POC 键集 tc（过渡 fixture 口径）
++            for cid, entry in self.db.get('crystals', {}).items():
++                if isinstance(entry, dict) and isinstance(entry.get('tc'),
++                                                          (int, float)):
++                    table[cid] = entry['tc']
++        return table
++
++    def _material_key_universe_full(self):
++        """task-05 §9（任务 #59，调研规格②）：材料侧身份键全集（覆盖
++        primary + degraded）：{key: {'entity_ids': frozenset, 'key_type':
++        'primary'|'degraded'}}。
++
++        并列新函数（调研优先口径）：既有 _material_key_universe() 保留原返
++        回值（{key: entity_id}，primary 口径）不动，== 口径消费方零回归。
++
++        复算口径：primary 走 material_key_from_record（需 SPACEGROUP 段）；
++        降级行无空间群段 → 直调 E1 纯函数 degraded_material_identity_key
++        (formula, tc)（不自写拼装，防口径漂移；E1 自检 S6 已实证 A 侧可见
++        字段可独立复算）。缺 tc 的记录跳过并计数留痕（调研风险 R4：不静默
++        吞，stats['skipped_missing_tc']），复算异常同样计数不穿透。
++
++        依赖唯一性声明（Leader 裁定 F3，判分侧硬编码）：降级键判别力弱于
++        主键（E1 交接 §7.1：只能用于排除，不得用于唯一性判定）。凡判定语义
++        需要“该键唯一对应一个实体”的消费方（evaluate.py 条件②材料键通道/
++        质量门 material 路径），命中 degraded 键必须显式报错
++        DEGRADED_KEY_NOT_UNIQUE，不得静默按相等处理——本函数故暴露
++        entity_ids 集合（不折叠为单 id）供消费方判碰撞。
++
++        缓存：模块级 _MATERIAL_KEY_FULL_CACHE（键=backend 根路径，与
++        _MATERIAL_KEY_CACHE 同口径）；stats 存 (universe, stats) 元组并
++        同步到 self._material_universe_full_stats 供对账留痕。"""
++        ent_records, _ = self._a_identity
++        if not ent_records:
++            self._material_universe_full_stats = {}
++            return {}
++        root = getattr(self, '_a_identity_root', None)
++        if root is None:
++            root = id(ent_records)
++        cached = _MATERIAL_KEY_FULL_CACHE.get(root)
++        if cached is not None:
++            self._material_universe_full_stats = cached[1]
++            return cached[0]
++        _, _, _, degraded_fn = _load_material_identity_fns()
++        tc_table = self._tc_table()
++        stats = {'primary_keys': 0, 'primary_entities': 0,
++                 'degraded_keys': 0, 'degraded_entities': 0,
++                 'skipped_missing_tc': 0, 'skipped_recompute_error': 0,
++                 'degraded_fn_unavailable': degraded_fn is None}
++        acc = {}   # key -> [entity_ids set, key_type]
++        for eid, rec in ent_records.items():
++            if rec.get('entity_type') != 'crystal':
++                continue
++            k = material_key_from_record(rec)
++            if k is not None:
++                slot = acc.setdefault(k, [set(), 'primary'])
++                slot[0].add(eid)
++                continue
++            # 降级键复算：formula + tc（E1 纯函数直调）
++            if degraded_fn is None:
++                stats['skipped_missing_tc'] += 1
++                continue
++            formula, tc = rec.get('formula'), tc_table.get(eid)
++            if not formula or tc is None:
++                stats['skipped_missing_tc'] += 1   # 缺 tc（或缺 formula）留痕，不静默吞
++                continue
++            try:
++                dk = degraded_fn(formula, tc)
++            except Exception:  # noqa: BLE001 脏行不得穿透判分路径
++                stats['skipped_recompute_error'] += 1
++                continue
++            slot = acc.setdefault(dk, [set(), 'degraded'])
++            slot[0].add(eid)
++        universe = {k: {'entity_ids': frozenset(ids), 'key_type': kt}
++                    for k, (ids, kt) in acc.items()}
++        stats['primary_keys'] = sum(1 for v in universe.values()
++                                    if v['key_type'] == 'primary')
++        stats['primary_entities'] = sum(len(v['entity_ids'])
++                                        for v in universe.values()
++                                        if v['key_type'] == 'primary')
++        stats['degraded_keys'] = sum(1 for v in universe.values()
++                                     if v['key_type'] == 'degraded')
++        stats['degraded_entities'] = sum(len(v['entity_ids'])
++                                         for v in universe.values()
++                                         if v['key_type'] == 'degraded')
++        _MATERIAL_KEY_FULL_CACHE[root] = (universe, stats)
++        self._material_universe_full_stats = stats
++        return universe
++
+     def _a_universe(self):
+         """A 全集视图：{id: (entity_type, 可查性质投影, structure_hint)}。只含 A 侧内容。
+ 
+diff --git a/src/benchmark/evaluate.py b/src/benchmark/evaluate.py
+index 480a8ed..c2648fc 100644
+--- a/src/benchmark/evaluate.py
++++ b/src/benchmark/evaluate.py
+@@ -839,9 +839,18 @@ def evaluate_grounding(payload, events, gw=None):
+     # SMILES，锚点可为材料身份键形态（<reduced_formula>_SG<号>，接口 B 现算）。
+     # 条件③的 edit_op 材料半边待算子集另定（ADR-0017 §4），此处只接锚点比对。
+     # 任务 #41 Major4：异常回落不再静默——首次失败打一次性告警（判分逻辑不变）。
++    # task-05 §9（任务 #59，调研规格②）：消费面升级 _material_key_universe_full
++    #（覆盖 primary+degraded 17,252 行口径）——降级键在条件②不再不可见。
++    # 【判分路径依赖唯一性：硬编码声明（Leader 裁定 F3，不动 case/answer
++    # schema）】条件② anchor ∈ A 的判定语义依赖“键唯一标识一个实体”；
++    # 降级键判别力弱于主键（E1 交接 §7.1：只能用于排除，不得用于唯一性
++    # 判定）⇒ 命中 degraded 键必须显式报错 DEGRADED_KEY_NOT_UNIQUE，不得
++    # 静默按相等处理（监工边界：可排除、不可判唯一）；primary 命中行为不变
++    #（31 组上游重复录入同键判等是正确行为，既有测试已锁）。排除语义
++    #（键不等即排除）不受拦截影响。详见 _material_key_universe_full docstring。
+     global _material_channel_warned
+     try:
+-        a_material_keys = judge._material_key_universe()
++        a_material_keys = judge._material_key_universe_full()
+     except Exception as e:
+         a_material_keys = {}
+         if not _material_channel_warned:
+@@ -852,8 +861,22 @@ def evaluate_grounding(payload, events, gw=None):
+     if isinstance(anchors, list) and anchors:
+         for a in anchors:
+             if not isinstance(a, str) or a not in a_ids:
+-                if isinstance(a, str) and a in a_material_keys:
+-                    continue    # 材料侧身份键命中（== 口径，整串比对）
++                info = a_material_keys.get(a) if isinstance(a, str) else None
++                if info is not None and info['key_type'] == 'primary':
++                    continue    # 材料主键命中（== 口径，整串比对；行为不变）
++                if info is not None:
++                    # degraded 键命中（F3 拦截）：显式报错 + fail-closed，
++                    # 不静默按相等处理；details 留痕命中键与候选实体数。
++                    n_cand = len(info['entity_ids'])
++                    out['details'].setdefault(
++                        'degraded_key_not_unique', []).append({
++                            'anchor': a,
++                            'error_code': 'DEGRADED_KEY_NOT_UNIQUE',
++                            'n_candidates': n_cand,
++                            'reason': '降级键命中：可排除、不可判唯一'
++                                      '（F3），不得静默按相等处理'})
++                    bad_anchor.append(a)
++                    continue
+                 try:
+                     c = gw.canonical_chemical(a)
+                 except Exception:
+@@ -1082,12 +1105,34 @@ def composition_grounding_gate(case_id, anchor, edit_op, gt, evidence_set,
+     #    全局 A 口径（与 evaluate_grounding 条件②同源：实体 ID 全集 ∪ 材料
+     #    身份键 == ∪ A 分子 canonical SMILES 全集）。──────────────────────
+     a_ids = set(judge.db.get('admet', {})) | set(judge.db.get('structures', {}))
++    # task-05 §9（任务 #59，调研规格②）：消费面升级 _material_key_universe_full
++    #（primary+degraded 全集）。【判分路径依赖唯一性：硬编码声明（Leader
++    # 裁定 F3）】anchor → 实体 ID 映射用于后续可见集/SMILES 比对，依赖键唯一
++    # 标识实体；degraded 键锚点命中必须显式报错 DEGRADED_KEY_NOT_UNIQUE
++    #（details/failures 留痕），不得静默映射到实体（可排除、不可判唯一）；
++    # primary 命中行为不变。材料域整体仍 fail-closed（PR-38/Major-2），本处
++    # 只加降级键拦截口径，不解封材料域造题（解封等编辑面收口，#55 登记）。
+     try:
+-        material_keys = judge._material_key_universe()
++        material_keys_full = judge._material_key_universe_full()
+     except Exception:
+-        material_keys = {}
++        material_keys_full = {}
+     anchor_s = anchor.strip()
+-    anchor_eid = material_keys.get(anchor_s)      # 材料键 → 实体 ID（== 口径）
++    anchor_eid = None
++    m_info = material_keys_full.get(anchor_s)
++    if m_info is not None:
++        if m_info['key_type'] == 'primary':
++            anchor_eid = sorted(m_info['entity_ids'])[0]  # 材料键 → 实体 ID（== 口径）
++        else:
++            # degraded 键锚点（F3 拦截）：显式报错，不静默映射到实体。
++            n_cand = len(m_info['entity_ids'])
++            details['degraded_key_not_unique'] = {
++                'anchor': anchor_s,
++                'error_code': 'DEGRADED_KEY_NOT_UNIQUE',
++                'n_candidates': n_cand}
++            details['failures'].append(
++                'DEGRADED_KEY_NOT_UNIQUE：anchor 为降级材料身份键，命中 '
++                f'{n_cand} 个候选实体，可排除、不可判唯一（Leader 裁定 F3），'
++                '不得静默按相等处理')
+     view = _load_per_case_view(case_id,
+                                getattr(judge, '_a_identity_root', None))
+     if view and isinstance(view.get('visible_entity_ids'), list):

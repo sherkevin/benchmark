@@ -1,0 +1,29 @@
+\begin{abstract}
+Multi-model LLM serving operates in a non-stationary, noisy
+environment: providers revise pricing, model quality can shift or
+regress without notice, and new models arrive regularly. More than a
+dozen recent methods have proposed learned routers to navigate the
+resulting quality--cost tradeoff across portfolios spanning a
+${\sim}\ppPriceRangeX\times$ cost range. Despite this activity, two
+gaps in the current solution space limit routing effectiveness under
+these conditions: no existing router enforces a dollar-denominated cost
+ceiling in closed loop over an open-ended request stream, and none
+provides principled online adaptation to post-deployment shifts in
+pricing or model quality.
+We present \textbf{ParetoBandit}, an open-source adaptive router built
+on cost-aware contextual bandits that addresses both gaps. Its core
+contributions are: (1)~an online primal--dual budget pacer that
+enforces a per-request cost ceiling without a known horizon, and
+(2)~geometric forgetting on sufficient statistics that gives the bandit
+bounded memory for tracking quality and cost shifts. A hot-swap model
+registry further supports runtime model changes with
+budget-controlled exploration.
+On 1,824 benchmark prompts with a three-model portfolio, the router
+maintains budget compliance within $\ppMaxBudgetOvershootPct\%$, adapts
+to price and quality shifts with up to $+\ppMaxQualityLift$ quality
+lift, and integrates a cold-started model within
+${\sim}\ppAdoptionSteps$ steps.
+
+\vskip 6pt
+\noindent\small Code: \url{https://github.com/ParetoBandit/ParetoBandit} \quad\textbar\quad \texttt{pip install paretobandit}
+\end{abstract}

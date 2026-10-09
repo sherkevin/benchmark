@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="900" viewBox="0 0 800 900" role="img" aria-labelledby="title desc">
+<title id="title">Delayed selected-only feedback lifecycle</title>
+<desc id="desc">A vertical timeline. At decision tick t the selector chooses one provider. The call returns output and runtime status. An independent frozen endpoint judge supplies the selected label after termination. The event waits D ticks in a queue, is released at tau t equal to t plus one plus D, and updates the relay before the first visible decision at or after release. An unselected output remains unavailable.</desc>
+<defs>
+<marker id="arrow" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="10" markerHeight="10" orient="auto"><path d="M0 0L12 6L0 12z" fill="#475467"/></marker>
+<marker id="blue" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="10" markerHeight="10" orient="auto"><path d="M0 0L12 6L0 12z" fill="#2E5DA1"/></marker>
+<style>
+.title{font:700 32px Arial,Helvetica,sans-serif;fill:#183B63}.sub{font:400 23px Arial,Helvetica,sans-serif;fill:#667085}.stage{font:700 24px Arial,Helvetica,sans-serif;letter-spacing:.6px;fill:#667085}.label{font:700 29px Arial,Helvetica,sans-serif;fill:#183B63}.body{font:400 26px Arial,Helvetica,sans-serif;fill:#344054}.note{font:400 23px Arial,Helvetica,sans-serif;fill:#667085}.bluebox{fill:#E5EEFB;stroke:#2E5DA1}.graybox{fill:#EEF1F5;stroke:#98A2B3}.amberbox{fill:#FFF2D9;stroke:#C97813}.purplebox{fill:#EEE8F7;stroke:#6B4C9A}.ghost{fill:#FAFAFA;stroke:#98A2B3;stroke-dasharray:8 7}.ghostnote{font:400 18px Arial,Helvetica,sans-serif;fill:#667085}.box{stroke-width:2.5}
+</style></defs>
+<rect x="12" y="12" width="776" height="876" rx="16" fill="#fff" stroke="#D0D5DD" stroke-width="2"/>
+<text x="38" y="50" class="title">Delayed selected-only feedback</text>
+<text x="38" y="79" class="sub">One selected outcome becomes usable only after release.</text>
+<line x1="38" y1="98" x2="762" y2="98" stroke="#D0D5DD" stroke-width="2"/>
+<line x1="108" y1="130" x2="108" y2="812" stroke="#D0D5DD" stroke-width="4"/>
+
+<!-- t -->
+<circle cx="108" cy="150" r="12" fill="#2E5DA1"/>
+<text x="138" y="146" class="stage">DECIDE t</text>
+<rect x="138" y="160" width="520" height="86" rx="13" class="bluebox box"/>
+<text x="164" y="197" class="label">choose aₜ</text>
+<text x="164" y="229" class="body">one eligible provider from menu Aₜ</text>
+
+<!-- call -->
+<line x1="108" y1="162" x2="108" y2="288" stroke="#475467" stroke-width="3" marker-end="url(#arrow)"/>
+<circle cx="108" cy="306" r="12" fill="#98A2B3"/>
+<text x="138" y="302" class="stage">CALL</text>
+<rect x="138" y="316" width="520" height="86" rx="13" class="graybox box"/>
+<text x="164" y="353" class="label">call aₜ</text>
+<text x="164" y="385" class="body">output oₜ + runtime status sₜ</text>
+
+<!-- judge -->
+<line x1="108" y1="318" x2="108" y2="444" stroke="#475467" stroke-width="3" marker-end="url(#arrow)"/>
+<circle cx="108" cy="462" r="12" fill="#C97813"/>
+<text x="138" y="458" class="stage">TERMINAL / JUDGE</text>
+<rect x="138" y="472" width="520" height="130" rx="13" class="amberbox box"/>
+<text x="164" y="507" class="label">runtime verifier +</text><text x="164" y="540" class="label">frozen truth judge</text>
+<text x="164" y="570" class="body">selected label yₜ; failure gives yₜ = 0</text>
+<text x="164" y="600" class="note">chemical label may be null</text>
+
+<!-- queue -->
+<line x1="108" y1="474" x2="108" y2="626" stroke="#C97813" stroke-width="3" stroke-dasharray="8 7" marker-end="url(#arrow)"/>
+<circle cx="108" cy="670" r="12" fill="#6B4C9A"/>
+<text x="138" y="666" class="stage">PENDING D</text>
+<rect x="138" y="680" width="520" height="82" rx="13" class="purplebox box"/>
+<text x="164" y="717" class="label">queued selected event</text>
+<text x="164" y="749" class="body">no label or state update before τₜ</text>
+
+<!-- release & next -->
+<line x1="108" y1="746" x2="108" y2="786" stroke="#6B4C9A" stroke-width="3" marker-end="url(#blue)"/>
+<rect x="138" y="796" width="252" height="88" rx="13" class="purplebox box"/>
+<text x="264" y="833" class="label" text-anchor="middle">RELEASE τₜ</text>
+<text x="264" y="864" class="body" text-anchor="middle">τₜ = t + 1 + D</text>
+<rect x="406" y="796" width="252" height="88" rx="13" class="bluebox box"/>
+<text x="532" y="833" class="label" text-anchor="middle">NEXT ACTION</text>
+<text x="532" y="864" class="body" text-anchor="middle">relay state is visible</text>
+<line x1="390" y1="814" x2="406" y2="814" stroke="#2E5DA1" stroke-width="3" marker-end="url(#blue)"/>
+
+<!-- not observed callout -->
+<rect x="450" y="103" width="208" height="54" rx="11" class="ghost box"/>
+<text x="554" y="125" class="ghostnote" text-anchor="middle">unselected output</text>
+<text x="554" y="148" class="ghostnote" text-anchor="middle">not observed</text>
+<line x1="465" y1="112" x2="643" y2="148" stroke="#98A2B3" stroke-width="2.5"/><line x1="643" y1="112" x2="465" y2="148" stroke="#98A2B3" stroke-width="2.5"/>
+</svg>

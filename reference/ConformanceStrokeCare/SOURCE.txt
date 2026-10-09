@@ -1,0 +1,6 @@
+arXiv:2606.09489
+abs: https://arxiv.org/abs/2606.09489
+pdf: https://arxiv.org/pdf/2606.09489
+topic: 【反例】LLM编排的符合性检查: 抽轨迹→抽规则→翻译成可执行脚本→算Trace Conformance Indicator, 与我方流程同构
+pulled: 2026-08-09 反向证伪搜索(主动找反例)
+see: research/差异点证伪复核-20260809.md

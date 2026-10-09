@@ -1,0 +1,19 @@
+Use the v19 image as the primary visual reference. Preserve its flat vector editorial style, navy/grey/amber/purple semantics, four compact phase tabs, icon language, and clean sans-serif typography. Produce a tighter landscape figure: crop the canvas to the content, reduce the empty top and bottom margins by about 20 percent, bring the phase tabs closer to their modules, and pack the lower feedback chain directly beneath the terminal outcome. Keep medium rounded cards and clear arrowheads; do not add decoration.
+
+Preserve this exact causal topology and labels:
+
+```
+S_t + A_t → selector → one selected provider → call → terminal record → frozen endpoint judge → chemical correctness
+                                      runtime status → system failure ─┐
+                              chemical correctness ──────────────────┤→ terminal outcome → selected outcome → selected-only queue → released outcome → relay update → S_τt → first action at or after τ_t
+```
+
+Terminal outcome is the only merge point and the only source of selected outcome. Draw one short, unobstructed elbow from terminal outcome down-left to selected outcome. The selected outcome card must sit immediately before the purple queue, with one arrow entering the queue and no other arrow entering it. Do not connect terminal outcome, runtime status, system failure, terminal record, or chemical correctness directly to the queue or released outcome.
+
+Keep the upper chain in one compact horizontal band. Put the grey “unselected output / not observed” badge below the input state, aligned under the selector, without a cross-out mark. Put the grey system-failure card under the terminal record, with an arrow from runtime status; let system failure and chemical correctness converge into terminal outcome.
+
+Keep the lower chain as a compact horizontal relay: selected outcome → purple selected-only queue labelled “τ_t = t + 1 + D” → blue released outcome → blue relay update labelled “family residual + provider bias” → blue state cylinder labelled “S_τt” → grey “first action at or after τ_t”. Place “t+1 … τ_t−1” and “hidden until τ_t” above the queue, and a small local circular arrow labelled “future state” above the state cylinder. Keep “D=0: visible before next action” below the state.
+
+Use a white background, dense composition, no grid, no table, no swimlanes, no long bottom loop, no global feedback arrow, no gradients, no 3-D, no shadows, no verifier, refusal, escalation, fallback ledger, diagnostic ledger, or second call. Render only the short labels above; no explanatory paragraphs, no watermark, no extra modules.
+
+Negative prompt: terminal outcome bypassed, terminal outcome directly to queue, terminal outcome directly to released outcome, queue with two incoming arrows, selected outcome disconnected, reverse arrows, upward failure arrow, scattered modules, oversized empty margins, extra prose, current truth before action, same-action feedback, instant learning, a crossed-out card, global loop, duplicated state, unreadable text, watermark.

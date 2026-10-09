@@ -1,0 +1,52 @@
+# 出处：/Users/jingwu/work/benchmark/src/probe_headless/model_workers/rdkit_property_worker.py（CONFIGS：端点 → RDKit 函数类名 + 资产 sha256 锁）
+CONFIGS = {
+    "tpsa": {
+        "model_id": "rdkit_tpsa",
+        "lock_sha256": "76a0d11c2b33b7e8dfa41f039c5265724716926bc4f908234132325f15d4fa91",
+        "model_class": "rdkit.Chem.rdMolDescriptors.CalcTPSA",
+        "asset_sha256": {
+            "rdkit/Chem/rdMolDescriptors.so": "acf2b0f8bcb1ee38b85b316036d87a1b38115d4292383c50896d659bfa888f12"
+        },
+        "endpoint": {
+            "id": "TPSA",
+            "meaning": "topological polar surface area",
+            "task_type": "descriptor",
+            "unit": "Å²",
+            "scale": "linear",
+            "value_range": {"minimum": 0.0, "maximum": None},
+        },
+    },
+    "qed": {
+        "model_id": "rdkit_qed",
+        "lock_sha256": "0d2109f5e9fbbf70fff03d353c1bbb842215b1f034cf395137f47f4227d2e296",
+        "model_class": "rdkit.Chem.QED.qed",
+        "asset_sha256": {
+            "rdkit/Chem/QED.py": "7b788ab1f4a66430b58229cd0dfe1d00e3e8d73bddd8c03f8444214fb19372e1"
+        },
+        "endpoint": {
+            "id": "QED",
+            "meaning": "quantitative estimate of drug-likeness",
+            "task_type": "descriptor",
+            "unit": "dimensionless",
+            "scale": "linear",
+            "value_range": {"minimum": 0.0, "maximum": 1.0},
+        },
+    },
+    "sa_score": {
+        "model_id": "rdkit_sa_score",
+        "lock_sha256": "49db3503831d9b9acc6e927d872dabee62531ab94a7cdaeb57fb4350003a5e3a",
+        "model_class": "rdkit.Contrib.SA_Score.sascorer.calculateScore",
+        "asset_sha256": {
+            "rdkit/Contrib/SA_Score/sascorer.py": "8c191920cb9d011994e5f77a0b54924d20d92967052bf6f6903f6f40c0a6e3a2",
+            "rdkit/Contrib/SA_Score/fpscores.pkl.gz": "10dcef9340c873e7b987924461b0af5365eb8dd96be607203debe8ddf80c1e73",
+        },
+        "endpoint": {
+            "id": "SA_score",
+            "meaning": "synthetic accessibility score",
+            "task_type": "descriptor",
+            "unit": "score",
+            "scale": "linear",
+            "value_range": {"minimum": 1.0, "maximum": 10.0},
+        },
+    },
+}

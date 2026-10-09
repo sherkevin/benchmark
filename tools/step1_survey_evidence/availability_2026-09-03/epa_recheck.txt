@@ -1,0 +1,6 @@
+200 https://www.epa.gov/comptox-tools/toxicity-estimation-software-tool-test size=81576
+  title: Toxicity Estimation Software Tool (TEST) | US EPA
+  has download TEST/ESI link: True
+200 https://www.epa.gov/tsca-screening-tools/download-epi-suitetm-estimation-program-interface-v411 size=58269
+  title: Download EPI Suite™ - Estimation Program Interface v4.11 | US EPA
+  has download TEST/ESI link: True

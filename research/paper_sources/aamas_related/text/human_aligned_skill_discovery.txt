@@ -1,0 +1,910 @@
+                                                        Human-Aligned Skill Discovery: Balancing Behaviour
+                                                                   Exploration and Alignment
+                                                      Maxence Hussonnois                                  Thommen George Karimpanal                                     Santu Rana
+                                                     𝐴2 𝐼 2 , Deakin University                             School of IT, Deakin University      𝐴2 𝐼 2 , Deakin University
+                                                        Geelong, Australia                                        Geelong, Australia                Geelong, Australia
+                                                   m.hussonnois@deakin.edu.au                            thommen.karimpanalgeorge@deakin.edu.au santu.rana@deakin.edu.au
+
+                                         ABSTRACT                                                                                                                                    Possible skills
+                                                                                                                                                                                   discovered without
+                                         Unsupervised skill discovery in Reinforcement Learning aims to                                                                                alignment
+
+                                         mimic humans’ ability to autonomously discover diverse behav-
+
+
+
+
+arXiv:2501.17431v1 [cs.LG] 29 Jan 2025
+                                         iors. However, existing methods are often unconstrained, making
+                                         it difficult to find useful skills, especially in complex environments,
+                                         where discovered skills are frequently unsafe or impractical. We
+                                         address this issue by proposing Human-aligned Skill Discovery -
+                                         HaSD 1 , a framework that incorporates human feedback to discover
+                                         safer, more aligned skills. HaSD simultaneously optimises skill di-                                                                       Skills discovered
+                                                                                                                                                                                  through alignments
+                                         versity and alignment with human values. This approach ensures
+                                         that alignment is maintained throughout the skill discovery process,
+                                         eliminating the inefficiencies associated with exploring unaligned                         Figure 1: Without an alignment signal, discovering desirable
+                                         skills. We demonstrate its effectiveness in both 2D navigation and                         skills in complex environments is like searching for a needle
+                                         SafetyGymnasium environments, showing that HaSD discovers di-                              in a haystack, often leading to skills that achieve tasks in un-
+                                         verse, human-aligned skills that are safe and useful for downstream                        desirable ways, such as carrying a glass of water awkwardly
+                                         tasks. Finally, we extend HaSD by learning a range of configurable                         (red robots). Aligning skills during discovery ensures they
+                                         skills with varying degrees of diversity-alignment trade-offs that                         meet human preferences (blue robots).
+                                         could be useful in practical scenarios.
+
+                                         KEYWORDS
+                                         Skill Diversity, Human Preferences, Reinforcement Learning                                    However, to discover dynamic behaviours these methods rely
+                                         ACM Reference Format:                                                                      on correlating skills with changes in the environment regardless of
+                                         Maxence Hussonnois, Thommen George Karimpanal, and Santu Rana. 2025.                       the underlying safety or desirability of these changes. As illustrated
+                                         Human-Aligned Skill Discovery: Balancing Behaviour Exploration and                         in Figure 1, the same skill, that of delivering a glass of water, can
+                                         Alignment. In Full version of the paper appearing in Proc. of the 24th Interna-            have very different degrees of desirability. Without an alignment
+                                         tional Conference on Autonomous Agents and Multiagent Systems (AAMAS                       objective, although this task may be successfully completed, say,
+                                         2025), Detroit, Michigan, USA, May 19 – 23, 2025, IFAAMAS, 16 pages.
+                                                                                                                                    by the humanoid carrying the glass on its back, such skills are
+                                                                                                                                    in general, not desirable, nor expected. This suggests a need to
+                                         1     INTRODUCTION                                                                         constrain skill discovery with alignment signals from human.
+                                         Deep reinforcement learning [21] aims to solve sequential decision-                           Recent works [15] have suggested relying on expert demon-
+                                         making problems by maximising pre-specified rewards over time.                             strations to guide the agent. Such demonstrations are generally
+                                         Despite its proven success in a number of applications ranging                             expensive and thus not available in large quantities, negatively im-
+                                         from Atari games to robotics [19, 21], the framework is typically                          pacting skill diversity. More generally, Kim et al. [14] introduces the
+                                         task-specific, resulting in agents with poor generalisation abilities.                     problem of safety-aware skill discovery (SASD) , which aims to dis-
+                                            Humans, on the other hand, can autonomously discover diverse                            cover diverse skills that satisfy user-predefined safety constraints.
+                                         and complex skills that can be combined later for better generalisa-                       However, these methods are limited to a user’s domain knowledge.
+                                         tion. In line with this objective, Unsupervised Skill Discovery (USD)                      Therefore, they cannot adapt to unforeseen unsafe scenarios that
+                                         methods [4, 7, 24, 28] aim to learn a library of policies (skills) driven                  the agent may discover. To enable such adaptation, we advocate for
+                                         by an intrinsic reward. In addition to locomotion and manipulation                         the development of an online approach, where a human oversees
+                                         tasks [25], these methods have also demonstrated promising results                         training while providing necessary feedback.
+                                         with pixel-based agents [26].                                                                 In this regard, Human-in-the-loop reinforcement learning [34],
+                                         1 See code here: link to github                                                            in which humans are integrated with the agents’ training to provide
+                                                                                                                                    meaningful feedback, has been able to tackle problems such as safe
+                                         Full version of the paper appearing in Proc. of the 24th International Conference on Au-   reinforcement learning [27] and reward engineering [6] while be-
+                                         tonomous Agents and Multiagent Systems (AAMAS 2025), Y. Vorobeychik, S. Das, A. Nowe       ing practical, scalable and efficient [18]. However, its incorporation
+                                         (eds.), May 19 – 23, 2025, Detroit, Michigan, USA. © 2025 International Foundation for
+                                         Autonomous Agents and Multiagent Systems (www.ifaamas.org). This work is licenced          into unsupervised skill discovery methods remains mostly under-
+                                         under the Creative Commons Attribution 4.0 International (CC-BY 4.0) licence.              explored. In this context, Hussonnois et al. [11] framed the problem
+of controlling skill diversity as restraining goal-based skills to a cer-   through feedback from humans during training. In this regard,
+tain region of the environment deemed more desirable by human               Preference-based RL[6] uses human preferences over agents’ tra-
+preference. However, an agent may reach a desired goal in an un-            jectories to infer a reward model and train an agent with it. Since
+aligned manner as illustrated in Figure 1. This can be remedied only        human preferences are expensive, PEBBLE [18] aimed to mitigate
+by aligning the entire behaviour. To address this issue, we formulate       this via improved sample and feedback efficiency by leveraging ex-
+the problem of discovering diverse skills with aligned behaviour            ploration methods and off-policy learning. SURF [23] and REED [20]
+as a multi-objective problem, where the primary components are a            further improved feedback efficiency by using supervised learning
+skill discovery objective and an alignment objective. We call this          techniques and self-supervised representation learning. We follow
+framework Human-aligned Skill Discovery (HaSD). Additionally,               this line of work to align skills with human preference. However,
+we propose a method to optimise this objective that maximises the           the settings differ in that the agent also optimises a skill discovery
+combination of a skill discovery reward and an alignment reward             reward, which reduces the need for pre-training phases.
+learned with the Preference-Based RL [6] framework. As human
+preferences evolve in response to the discovery of more diverse
+skills, it enables the discovery of increasingly more complex and              Unsupervised Skills Discovery with Preferences. Unsuper-
+aligned skills. Furthermore, we propose 𝛼-HaSD, a more general              vised Skill Discovery with Preferences aims to learn more desirable
+framework that addresses the problem of balancing both rewards by           skills which is still an under-explored area of research. In this re-
+conditioning the skills on the diversity-alignment trade-off variable       gard, Skill Preferences (SkiP) [31] used preferences over an offline
+𝛼. By doing so, 𝛼-HaSD can produce a range of skills corresponding          dataset to extract relevant human-aligned skills. Alternatively, CDP
+to varying degrees of diversity-alignment trade-offs. In summary,           [11] uses preferences in an online setting to first identify rewarding
+the main contributions of this work are:                                    regions of the state space and then learn goal-based skills within
+                                                                            those regions. However aligning goals of goal-based skills do not
+     • Human-aligned Skill Discovery (HaSD), a novel framework
+                                                                            ensure that the entire trajectory of the skills is aligned. To overcome
+        to discover diverse and aligned skills.
+                                                                            this limitation, we align the entire skill’s trajectory by optimising
+     • Configurable Human-Aligned Skills (𝛼-HaSD), to discover di-
+                                                                            both skill discovery and alignment (via preferences) objectives.
+        verse and aligned skills that are conditioned on the diversity-
+        alignment trade-off.
+     • Qualitative and quantitative evaluation of the proposed meth-           Quality-Diversity Policy Optimisation. Quality-Diversity Pol-
+        ods, with suitable comparisons with existing baselines for          icy Optimisation [5, 16, 33] focuses on discovering multiple strate-
+        learning diverse and aligned skills.                                gies for solving a given task. Generally, these methods are based on
+                                                                            a sophisticated combination of diversity reward and task reward
+2    RELATED WORK                                                           from the environment. In SMERL [16] the optimal policies are di-
+   Unsupervised Skill Discovery. In unsupervised skill discovery            versified by adding the DIAYN diversity reward to transitions along
+approaches, the goal is to explore the space of learnable behaviours        trajectories that produce a known optimal return. Alternatively,
+to acquire a set of useful and diversified temporally extended ac-          DGPO [5] and DOMINO [33] achieve better results by alternately
+tions or skills [30] without a reward function. DIAYN [7], VIC              constraining the diversity of the strategies while simultaneously
+[13], VALOR [1] and DADS [28] suggested to maximise mutual                  constraining the extrinsic reward. Similar to our work, these works
+information between states and skills. By maximising skill distin-          combine an extrinsic reward with a diversity reward. However,
+guishability, they learned diverse skills in locomotion environments.       their motivation and approach differ fundamentally from ours, as
+On the other hand, these methods learn to maximise the mutual               they first seek to optimise performance over task reward, then
+information between state and skills with only small state varia-           diversify those performances, whereas we first diversify policies
+tions, resulting in mostly static skills. Thus Park et al. [24] proposed    by discovering skills, then adjust them to fit desirability through
+to maximise state variations with novel distance-maximising skill           human preference. Our approach is set up as such, as unlike the
+discovery objectives that learn more dynamic skills in locomotion           former methods, we do not assume direct access to the task rewards.
+tasks [24], manipulation tasks [25] and pixel-based environments            We thus tackle a more challenging setting where an agent must
+[26]. However, skill discovery methods do not take into account             simultaneously infer this knowledge from human feedback.
+the underlying context of the environment. This results in an inef-
+ficient discovery process that leads to unsafe and unusable skills.
+Our proposed method addresses this issue by integrating Unsuper-            3   APPROACH
+vised Skill Discovery methods with alignment techniques such as
+                                                                            To discover diverse and complex skills that are more aligned with
+preference-based RL [6]. In recent work, Kim et al. [14] examined
+                                                                            human values, agents must be able to adjust the skill discovery pro-
+safety-aware skill discovery, which focused on finding inherently
+                                                                            cess based on human feedback. To this end, we consider the problem
+safe skills. Specifically, they proposed regularising skill discovery
+                                                                            of discovering diverse skills that satisfy humans’ preferences. We
+using a safety critic [29] that learns from any user-defined safety
+                                                                            first detail the problem settings and the resulting Human-aligned
+constraints. In contrast, our work focuses on discovering skills that
+                                                                            Skill Discovery (HaSD) Objective. We then present the details of
+align with human values learned during training.
+                                                                            the optimisation in Section 3.5. Furthermore, in Section 3.6 we pro-
+   Human-in-the-Loop and Preference Based RL. Human in the                  pose an extension of HaSD by learning configurable skills that can
+loop reinforcement learning (HIL-RL) methods focus on learning              produce a range of diversity-alignment trade-offs.
+                                                                                                                                                  HaSD
+                                                                          update
+      Preference data
+
+                                               Preference Learning                               Skill Discovery
+
+
+
+
+                                                                          update
+       Collected data
+
+
+
+
+Figure 2: Illustration of the HaSD reward components. Skill Discovery rewards are computed using the Distance-Maximising
+Skill Discovery (DSD) objective and data collected from interaction with the environment. The reward encourages skills to be
+more dynamic and diverse. Then, we add a 𝑟 𝐻𝑎 human-aligned reward learned with preference learning through data collected
+from interaction with the environment and human preferences. This reward encourages skills to align with human preferences.
+
+
+3.1      Problem Settings                                                          to represent the displacement in the state space under the distance
+We consider a Markov Decision Process (MDP) without a reward                       function 𝑑 while staying aligned with the skill variable 𝑧. Thus, 𝜙’s
+function, defined as M = (S, A, P), where S and A respectively                     objective is the following :
+denote the state and action spaces, and P is the transition function
+                                                                                   𝐽 DSD,𝜙 := E𝑧,𝑠,𝑠 ′ [(𝜙 (𝑠 ′ ) − 𝜙 (𝑠))]𝑇 𝑧   s.t.
+governing the agent-environment interaction dynamics. Consistent
+with prior work [4, 25], we also consider Skills as policies 𝜋 (𝑎|𝑠, 𝑧)                                                          ∥𝜙 (𝑥) − 𝜙 (𝑦) ∥ ≤ 𝑑 (𝑥, 𝑦)
+                                                                                                                         ∀𝑥, 𝑦 ∈ S
+conditioned on latent vector 𝑧 ∈ 𝑍 . Finally, we assume that there                                                                                      (2)
+exists a human in the loop who has an opinion on the desirability                  This constrained objective can be optimised with dual gradient
+of the agent’s behaviour. The human communicates this opinion                      descent [2] as described in Park et al. [25].
+during training to the agent using a set of preferences 𝜁 . We aim                    We then use 𝜙 to train the skills 𝜋 (𝑎|𝑠, 𝑧) in order to generate
+to learn a set of diverse, useful behaviours 𝜋 (𝑎|𝑠, 𝑧) that align with            trajectories with high differences in the latent state space. The
+human preferences 𝜁 .                                                              skill-discovery reward per step is then given by:
+
+                                                                                                         𝑟 DSD = (𝜙 (𝑠 ′ ) − 𝜙 (𝑠))𝑇 𝑧.                  (3)
+3.2      Human-aligned Skill Discovery Objective
+First, for 𝜋 (𝑎|𝑠, 𝑧) to learn diverse skills, we follow previous skill            This reward allows us to discover a continuous set of diverse and
+discovery approaches that rely on maximising the mutual infor-                     dynamic skills.
+mation between S and 𝑍 , denoted as 𝐼 (S; 𝑍 ) Then, to align skills
+with human values, we also want to maximise the probability 𝑃𝑟 of                  3.4     Reward Learning from Preferences
+realising trajectories with the policies 𝜋 (𝑎|𝑠, 𝑧) that satisfy the set of        To maximise 𝑃𝑟 (𝜁 ) with 𝜋 (𝑎|𝑠, 𝑧), we follow prior works in preference-
+preferences 𝜁 . Thus we propose the following novel multi-objective                based RL [6, 18, 32], where a human is presented with two trajectory
+problem:                                                                           segments (state-action sequences) 𝜎 1 and 𝜎 2 and is asked to indicate
+                        max (𝐼 (S; 𝑍 ), 𝑃𝑟 (𝜁 ))),                     (1)         their preference 𝜁𝑖 for one over the other. For instance, a preference
+                         𝜋                                                         for the first segment over the second is denoted as 𝜁𝑖 = 𝜎 1 ≻ 𝜎 2
+where the resulting policies will learn to discover diverse skills with            and would result in the label 𝑦 = (1, 0) and be stored in a buffer D
+a high chance of satisfying human preferences. In the following                    as (𝜎 1, 𝜎 2, 𝑦). Then we model the human’s internal reward function
+section, we describe how each objective will be addressed in our                   𝑟ˆ𝜓 responsible for the indicated preferences via the Bradley-Terry
+method.                                                                            model [3] as follows:
+                                                                                                                   exp( 𝑡 𝑟ˆ𝜓 (𝑠𝑡1, 𝑎𝑡1 ))
+                                                                                                                         Í
+3.3      Distance-Maximising Skill Discovery                                                        1    2
+                                                                                             𝑃𝜓 [𝜎 ≻ 𝜎 ] = Í                                     .     (4)
+                                                                                                               𝑗 ∈ {1,2} exp ( 𝑡 𝑟ˆ𝜓 (𝑠𝑡 , 𝑎𝑡 ))
+                                                                                                                              Í          𝑗 𝑗
+To maximise 𝐼 (S; 𝑍 ) with 𝜋 (𝑎|𝑠, 𝑧), we use the Distance-Maximising
+Skill Discovery (DSD) objectives proposed by Park et al. [24, 25, 26].             As in Lee et al. [18], we model the reward function as a neural
+Although our approach is not limited to a specific skill discovery                 network with parameters 𝜓 , which is updated by minimising the
+method, we chose the DSD objective since it achieves state-of-the-                 following loss:
+art performance in discovering dynamic and diverse skills. Specif-
+ically, instead of maximising 𝐼 (S; 𝑍 ), DSD maximizes 𝐼 𝑤 (S; 𝑍 ),
+which measures the Wasserstein dependency between states and                              L Reward = −E (𝜎 1 ,𝜎 2 ,𝑦)∼D [𝑦 (1) log 𝑃𝜓 [𝜎 1 ≻ 𝜎 2 ]
+skills Ozair et al. [22]. DSD objectives are based on two elements, the                                                 +𝑦 (2) log 𝑃𝜓 [𝜎 2 ≻ 𝜎 1 ]].     (5)
+state-representation function 𝜙 : 𝑆 → 𝑍 as well as a non-negative,
+arbitrary distance function 𝑑 that can be learned or specified (such                  Thus a policy 𝜋 (𝑎|𝑠, 𝑧) maximising the reward function 𝑟ˆ𝜓 would
+as the Euclidean distance as in LSD [24]). The function 𝜙 is trained               also maximise 𝑃𝑟 (𝜁 ).
+3.5    Human-Aligned Skill Discovery (HaSD)                               equivalent to setting 𝛼 dynamically as:
+
+                                                                                                 (
+                                                                                                  0              if 𝑡 ≤ 𝜏
+ Algorithm 1: Human-aligned Skill Discovery (𝛼-HaSD)                                        𝛼=                                              (8)
+                                                                                                  𝑐 (𝑐𝑜𝑛𝑠𝑡𝑎𝑛𝑡)   otherwise
+  Initialise B , 𝜋𝑧 , 𝑟𝜓 , 𝜙 and A ;
+  for each epoch do
+      // Collect data ;                                                   where 𝜏 is a hyper-parameter that indicates the time step from
+      for each episode do                                                 which when we start to elicit and learn from human feedback.
+          Sample 𝑧 ∼ 𝑝 (𝑧) and 𝛼 ∼ A ;
+          Sample trajectory 𝜏 with 𝜋𝜃 (𝑎𝑡 |𝑠𝑡 , 𝑧, 𝛼);                    3.6    Configurable Human-Aligned Skills
+          Store trajectory 𝜏 in B                                                (𝛼-HaSD)
+      end for
+                                                                          Despite the consideration of alignment and skill discovery rewards
+      if it’s time to update the preference then                          𝑟 𝐻𝑎 and 𝑟 𝐷𝑆𝐷 , we may not know what the Diversity-Alignment
+          for each query to instructor do                                 trade-offs across objectives should be. Performing a hyper-parameter
+               Sample (𝜎 0, 𝜎 1 ) ∼ B ;                                   search over 𝛼 would require multiple trials, which would be im-
+               Collect preference from instructor 𝑦 = 𝜎 0 ≻ 𝜎 1 ;         practical, considering the cost associated with collecting human
+               Store transitions D ← D ∪ {(𝜎 0, 𝜎 1, 𝑦)}                  feedback. Additionally, individual users may have different pref-
+          end for                                                         erences and thus it may be useful to learn across the whole range
+          Update 𝑟ˆ𝜓 with gradient descent on L Reward (5);               of trade-offs and let an user choose a trade-off value at run-time.
+      end if                                                              In this case, we can extend HaSD to learn a conditional policy on
+      Update 𝜙 with gradient ascent on 𝐽 DSD ;                            the trade-off value, thereby learning Configurable Human-aligned
+      Update 𝜋𝜃 (𝑎|𝑠, 𝑧, 𝛼) using SAC [9] and TQC [17] with               Skills (𝛼-HaSD) 𝜋 (𝑎|𝑠, 𝑧, 𝛼). Then we could apply any search method
+        reward 𝑟 HaSD ;                                                   over 𝛼 to the trained conditional policy without the need for addi-
+  end for                                                                 tional human feedback. We train this policy by augmenting states
+                                                                          with a variety of trade-offs, corresponding to a range of 𝛼 values
+                                                                          and then optimising the 𝛼-HaSD objective. Our overall method is
+                                                                          described in Algorithm 1.
+   In this section, we present our novel Human-aligned Skill Discov-
+ery (HaSD) method that learns latent-conditioned policies 𝜋 (𝑎|𝑠, 𝑧)
+that maximise the Human-aligned Skill Discovery Objective in              4     EXPERIMENTS
+Equation 1. HaSD linearly combines the skill discovery reward and         In this section, we demonstrate that HaSD discovers diverse skills
+the preference reward as follows:                                         that align with human preferences and that 𝛼-HaSD learns a wide
+                                                                          range of diversity-alignment trade-offs. To this end, we first show
+                        𝑟 HaSD = 𝛼𝑟 Ha + 𝑟 DSD                      (6)
+                                                                          how our method works in simple 2D navigation with safety costs
+where :                                                                   in Section 4.3. Then we demonstrate in Safety-Gymnasium [12]
+                                                                          the scalability of our methods across a variety of robots and envi-
+          𝑟 Ha = 𝑟ˆ𝜓 (𝑠, 𝑎)   and 𝑟 DSD = (𝜙 (𝑠 ′ ) − 𝜙 (𝑠))𝑇 𝑧.    (7)   ronments in higher dimensions. We consider environments with
+                                                                          different types of alignment objectives in Sections 4.6 and 4.7.
+𝛼 is a hyper-parameter that represents diversity-alignment trade-            In one set of experiments, the alignment objective is safety, and
+offs, 𝑟ˆ𝜓 is the reward learned from human feedback as described          in another set of experiments, the alignment objective involves
+in Section 3.4 and 𝜙 is the state-representation function from the        specific interaction with an object. We note that as such, there
+DSD objective presented in Section 3.3.                                   are no inherent prerequisites for an alignment objective-just that
+   Intuition and selecting 𝛼. Intuitively, Equation 1 implies that        a human should be able to indicate their preference in terms of
+agents should learn diverse and dynamic skills in the latent space        this objective, given a pair of trajectories. For each experiment, the
+while maximising some degree of alignment (𝛼) with human values.          alignment objective is described as a sentence that could be given to
+In practice, 𝛼 must not be negative, as it would lead in discovering      a human annotator. Following previous work on preference-based
+skills contrary to human values. Generally, a higher 𝛼 will result in     RL [18], we simulate human preferences with a ground truth reward
+more aligned skills but a less diverse skill set. A lower 𝛼 will have     function which is assumed to reflect human annotator preferences.
+the opposite effect. In the following section, we address the issue       Unless explicitly states, we did not limit human feedback budget
+of selecting a suitable 𝛼 by learning multiple diversity-alignment        to ensure alignment. However, we examine the sensitivity of our
+trade-offs.                                                               method to the number of feedback samples in Section 4.4, and later,
+                                                                          the sensitivity of our method to real human feedback in Section 4.8.
+   Pre-training phase. At the start of training, state coverage or co-    We include in Appendix A.3 and A.4 additional results showing that
+herent behaviours are limited, resulting in non-informative queries       our methods can handle conflicting objectives and how 𝛼-HaSD
+[18]. To mimic the pre-training phase of PEBBLE [18] , we let the         generalises to unseen 𝛼 values. Finally, we provide implementation
+policy be trained only on the skill discovery reward 𝑟 DSD , which is     details in Appendix A.1.
+       (a) DIAYN                 (b) LSD                   (c) CDP             (d) SMERL            (e) SMERL+PbRL            (f) HaSD (Ours)
+
+Figure 3: Skill sets learned from all baselines in the 2D navigation environment. LSD covers a larger region of the environment
+than DIAYN, while HaSD avoids hazardous areas while maintaining good coverage in safe places. SMERL methods are well
+aligned, but the coverage is not optimal.
+
+
+4.1     Baselines                                                           with some safety (alignment) cost. The environment contains four
+We compare HaSD with 5 baselines ranging from using no human                fixed hazardous areas (purple regions in Figure 19a) associated with
+information to using preference information, and finally to hav-            some safety (alignment) cost. The agent begins each episode in the
+ing direct access to human information. Wherever possible, we               center of the room until episode termination, which occurs after 200
+implement baselines over LSD[24], the base for unsupervised skill           steps. The agent accesses internal state and lidar information about
+discovery for our method. We overview the baselines below:                  the hazardous areas. The ground truth reward function is designed
+                                                                            to mimic the following preference ‘Trajectories that travel as far as
+      • Unaligned Skill discovery: We train DIAYN[7] and LSD[24]
+                                                                            possible from the initial position while avoiding unsafe regions and
+        without any information about human preferences, serving
+                                                                            staying in the enclosed area should be preferred ’ - details can be
+        as baselines for unaligned skill discovery.
+                                                                            found in Appendix A.2.
+      • Human-aligned Skill discovery with Complete Infor-
+        mation: We train original SMERL[16] which first maximises           4.2.4 Push-Room. The Push-Room environment as presented in
+        the ground truth rewards, and then diversifies skills, serving      Figure 19b consists of a two-dimensional square room enclosed by
+        as a baseline with complete information.                            walls that do not restrain the agent, but is associated with some
+      • Human-aligned Skill discovery with Preferences: We                  safety (alignment) cost. The environment contains a box in the cen-
+        train CDP[11] and extend SMERL to incorporate human pref-           ter of the room that can be pushed. The agent begins each episode in
+        erences (SMERL+PbRL), serving as a baseline using human             the northeast corner of the room until episode termination, which
+        preferences.                                                        occurs after 400 steps. The agent accesses internal state and lidar
+                                                                            information about the box. The ground truth reward function is
+4.2     Environment Descriptions                                            designed to mimic the following preference ‘Trajectories that make
+4.2.1 Nav2D. The 2D navigation environment consists of a two-               the box travel as far as possible from its initial position should be
+dimensional circular room enclosed by walls that confine the agent          preferred ’ details can be found in Appendix A.2.
+to the circular area. The environment contains 4 fixed hazardous
+areas (red regions in Figure 3) associated with a safety cost. The          4.3    Qualitative and Quantitative Comparisons
+agent begins each episode in the center of the room, until episode                 in Nav2D
+termination, which occurs after 75 steps. The agent only accesses           In this section, we demonstrate that HaSD and 𝛼-HaSD can acquire a
+its horizontal and vertical coordinates (X, Y). It can deterministi-        continuous set of skills that cover the environment while avoiding
+cally change its direction and amplitude of steps to freely move            unsafe regions according to human preference. To this end, we
+in the environment. State and action spaces are continuous. The             sampled 2000 skills from policies trained across 5 seeds with DIAYN,
+ground truth reward function is designed to mimic the following             LSD, SMERL, SMERL+PbRL, CDP HaSD and 𝛼-HaSD, and compared
+preference: ‘Trajectories that travel as far as possible from the initial   them qualitatively and quantitatively.
+position while avoiding unsafe regions should be preferred’. Details            Qualitatively, Figure 3b shows how LSD’s skills cover the en-
+of the corresponding precise ground truth reward function used to           tire room, but ignore the unsafe region. In contrast, HaSD’s skills
+simulate this objective can be found in Appendix A.2.                       as shown in Figure 3f adequately cover the environment while
+4.2.2 Safety Gymnasium Environments. In the Safety Gymnasium                avoiding unsafe areas. On the other hand, 𝛼-HaSD can learn to
+environment, we evaluated our method with five different agents             generate a range of diversity-alignment trade-offs. Figures 4a to 4e
+(point, car, racecar, doggo and ant) shown in Figure 18 across two          illustrates how 𝛼 can be adjusted to zero to produce a skills set
+environments. Each agent has its own state and action space, and            similar to LSD as in Figure 4a, corresponding to a skill set that does
+learning the corresponding agent controller increases in complexity         not consider human preferences. By increasing 𝛼, we gradually lose
+- i.e., point (least complex) to ant (most complex).                        diversity in favour of alignment as seen in the figures 4c and 4e.
+                                                                            Figures 3d and 3e illustrates that SMERL and SMERL+PbRL are also
+4.2.3 Hazardous-Room. The Hazardous-Room environment as pre-                able to learn diverse skills that avoid unsafe areas however they
+sented in Figure 19a consist of a two-dimensional square room               will generally cover less than HaSD as they focus on optimising
+enclosed by walls that doesn’t restrain the agent but is associated         the alignment reward first. CDP successfully uses preferences to
+                (a) 0-HaSD                  (b) 0.1-HaSD                 (c) 0.2-HaSD                               (d) 0.5-HaSD                             (e) 1-HaSD
+
+  Figure 4: Comparing visually skill set obtained with 𝛼-HaSD by changing 𝛼 in the 2D navigation environment. When alpha is
+  set to 0 the skill set is similar to LSD. The higher the 𝛼, the lower the diversity and coverage is.
+
+
+  discover diverse safe goals however it learns to reach some of the              4.4               Sensitivity to Human Feedback Budget
+  desired goals in an unaligned manner as illustrated in Figure 3c.               4.4.1 HaSD and SMERL+PbRL Sensitivity: In this section we anal-
+  We report in Figure 5 each skill set (solutions) obtained with LSD              yse the sensitivity of our methods to available budget feedback.
+                                                                                  The degree to which skills are aligned depends on how well the re-
+                                                                                  ward model captures human values. This naturally depends on the
+            1.0                                                                   availability of feedback labels. As illustrated in Figure 6, we found
+                       Pareto Front                              HaSD
+                                                                 LSD              that as we decreased the number of feedback received, HaSD’s
+            0.9                                                  SMERL            performance over the alignment objective decreased. At the lowest
+                                                                 DIAYN
+            0.8                                                  SMERL            (40 feedback instances), its performance was comparable to that
+
+
+
+Mean Coverage
+                                                                 +PbRL            of LSD. Additionally, we found that HaSD was more robust to a
+            0.7                                                  CDP
+                                                                                  reduction of human feedback instances than SMERL+PbRL. This
+            0.6                                                  -HaSD            is because SMERL’s Objective first seeks to optimise performance
+                                                                  0-HaSD          over task reward, which here is poorly approximated. This illus-
+            0.5                                                   0.1-HaSD
+                                                                  0.2-HaSD        trates the limitations of SMERL’s reward in our situation, where
+            0.4                                                   0.5-HaSD        both rewards and a skill discovery objective are required.
+                                                                  1.0-HaSD
+            0.3                                                                                 1.0                            SMERL+PbRL      HaSD (ours)
+                      0.6        0.7      0.8      0.9     1.0                                                                                                 Unlimited
+                            Mean Normalised Alignment                                           0.9          Pareto Front
+
+
+
+
+                                                                                                                                                                      Feedback Budget
+                                                                                                0.8
+
+
+
+                                                                                    Mean Coverage
+  Figure 5: The approximated Pareto front shows that in the                                                                                                    1400
+  2D navigation environment, LSD solutions achieve high cov-                                    0.7
+  erage with low alignment on the left side. HaSD solutions are
+                                                                                                0.6                                                            400
+  more to the right, offering high alignment while maintaining
+  coverage. 𝛼-HaSD covers more areas with diverse diversity-                                    0.5
+  alignment trade-offs. SMERL methods attain high alignment
+                                                                                                0.4                                                            40
+  but have lower coverage compared to HaSD.
+                                                                                                      0.88   0.90     0.92   0.94   0.96    0.98   1.00
+                                                                                                             Mean Normalised Alignment
+
+  or HaSD the normalised total coverage of a skill set (y-axis) and the           Figure 6: Approximated Pareto front considering
+  normalised mean alignment value generated by skills in a skill set              SMERL+PbRL and HaSD with different human feed-
+  (x-axis). Coverage is measured by the number of 0.1 × 0.1 square                back budget in Nav2d environment. HaSD is more robust to
+  bins occupied by the agent at least once, while we used the ground              reduction feedback than SMERL+PbRL.
+  truth reward as the alignment value. We highlight the approximate
+  Pareto frontier obtained. Quantitatively, we observe that LSD solu-
+                                                                                  4.4.2 𝛼-HaSD Sensitivity: We also analysed the sensitivity of 𝛼-
+  tions achieve high coverage but low alignment. In contrast, HaSD
+                                                                                  HaSD to human feedback budgets. Figure 7 illustrates the approxi-
+  solutions deliver high alignment while maintaining high coverage.
+                                                                                  mate Pareto frontier obtained with all solutions. 𝛼-HaSD exhibits
+  Meanwhile, as expected SMERL and SMERL+PbRL have marginally
+                                                                                  similar behaviour as HaSD when the budget is restricted, resulting
+  better alignment than HaSD, but with significantly less coverage.
+                                                                                  in less accurate alignment rewards. Nevertheless, 𝛼-HaSD is still
+  Finally, DIAYN and CDP demonstrates a lower performance than
+                                                                                  able to learn a range of alignment values even on very restrictive
+  LSD, HaSD and SMERL methods. Generally, HaSD offers a better
+                                                                                  budgets.
+  balance between exploration and alignment than SMERL or LSD.
+  Lastly, we can observe that 𝛼-HaSD solutions lie on/close to the                4.4.3 Hypervolume: To more accurately quantify the impact of
+  approximated Pareto frontier meaning that we learn qualitative                  restricted human feedback on 𝛼-HaSD, we showcase in Figure 8 the
+  solutions over both objectives.                                                 Hypervolume[35] computed for each set of solutions. Hypervolume
+                      0-HaSD          0.1-HaSD      0.2-HaSD      0.5-HaSD          1.0-HaSD                                                                          Figure 9: Goal-reaching
+              1.0
+                                                                                                                                                                      trajectories    produced
+                                                                         Pareto Front              Unlimited
+              0.9                                                                                                                                                     with LSD skills and
+                                                                                                                                                                      HaSD skills in the Nav2d
+
+
+
+Mean Coverage                                                                                                Feedback Budget
+              0.8
+                                                                                                   1400                                                               environment.
+              0.7                                                                                                                    (a) LSD      (b) HaSD (Ours)
+              0.6                                                                                  400
+
+                                                                                                                                    • The meta-controller selects a skill which is then executed
+              0.5
+                                                                                                   40                                 for one environment-step, replacing the traditional action
+              0.4                                                                                                                     space with the learned skill space.
+                      0.86     0.88       0.90   0.92     0.94    0.96       0.98    1.00
+                                      Mean Normalised Alignment                                                                     • Importantly, no explicit information about unsafe areas is
+                                                                                                                                      provided during this downstream task.
+  Figure 7: Approximated Pareto front considering 𝛼-HaSD                                                                       We provide more details on the settings in Appendix A.1. We eval-
+  with different human feedback budget in Nav2d environ-                                                                       uated the meta-controller over 1000 sample goals and reported
+  ment.                                                                                                                        (across 9 seeds) both the average goal achievement rate and the
+                                                                                                                               mean cost generated to achieve them in Table 1. In addition, we
+                                                                                                                               compute a ranking score for each method based on their separate
+                                                                                                                               ranking on scores and costs. Our results demonstrate that HaSD
+              0.98
+                                                                                                                               attains a goal achievement rate comparable to LSD while main-
+              0.96                                                                                                             taining significantly lower costs. Compared to HaSD, SMERL and
+                                                                                                                               SMERL+PbRL achieve significantly lower goal achievement. This
+
+Hypervolume
+              0.94
+                                                                                                                               may be due to the lower coverage of these methods, which high-
+              0.92
+                                                                                                                               lights the importance of our approach to first discovery skill and
+              0.90                                                                                                             then aligning with human preferences. The qualitative results in
+              0.88                                                                                                             Figure 9 demonstrate that the skill space acquired with HaSD re-
+              0.86                                                                                                             tains alignment information, which allows our meta-controller to
+                          -HaSD                   -HaSD                -HaSD                      -HaSD                        avoid unsafe areas more than with LSD, despite no information
+                     (feedback=40)           (feedback=400)      (feedback=1400)               (Unlimited)                     regarding safety being provided during the downstream task. This
+                                                                                                                               evaluation substantiates the fact that skills discovered through our
+  Figure 8: Hypervolume computed for each set of solutions                                                                     method are not only safe but also useful in downstream tasks.
+  produced by 𝛼-HaSD with different human feedback budget
+  in Nav2d environment.                                                                                                        Table 1: Comparison of baselines (DIAYN,LSD, HaSD, SMERL,
+                                                                                                                               and SMERL+PbRL) based on their performance scores and
+                                                                                                                               associated costs
+  is a popular metric in multi-objective problems[8] to measure how
+  a set of solutions is diverse but simultaneously performant as well.
+  The Hypervolume corresponds to the set of points "contained"                                                                         Method          Score         Cost          Rank
+  within an n-dimensional space. As expected we can see that as                                                                        HaSD(Ours)      98.5% ± 1.0   6.7 ± 0.5      4 (2,2)
+  the amount of feedback diminishes, the Hypervolume metrics also                                                                      LSD             99.5% ± 0.6   12.01 ± 0.3   5 (1,4)
+  decline, indicating a reduction in the quality of the solution set.                                                                  SMERL+PbRL      68.9% ± 4.1   3.86 ± 1.23   5 (4,1)
+  Additionally, the variability of the solution set as feedback decreases.                                                             SMERL           75.6% ± 4.0   9.49 ± 2.0    6 (3,3)
+                                                                                                                                       DIAYN           23.9% ± 3.3   23.9 ± 7.2    10 (5,5)
+
+  4.5                Nav2D: Downstream Task
+  In this section, we demonstrate how we can use skills learned with                                                           4.6    Safety Gymnasium: Hazard-Room
+  HaSD to achieve downstream tasks in more challenging settings.
+                                                                                                                               In this section we present results obtain in the Hazard-Room envi-
+  To this end we implemented a meta-controller in our 2D navigation
+                                                                                                                               ronment described in Section 4.2.4. All results are presented after
+  environment to demonstrate the utility of the discovered skills. In
+                                                                                                                               sampling 1000 skills from the policy and averaging across 5 seeds.
+  this setup:
+                                                                                                                               We report a similar pareto front as in Section 4.3 and highlight the
+                • The agent starts at a random location in the environment,                                                    approximate Pareto frontier obtained. We trained SMERL+PbRL
+                  excluding unsafe areas, and aims to reach a goal at another                                                  only on the point agent to minimise experimental workload. We
+                  random location, also excluding unsafe areas.                                                                observe similar trends as in nav2d, where SMERL+PbRL achieves
+                • The environment provides sparse rewards. Specifically, the                                                   high alignment but very low coverage as shown in Figure 10a. Al-
+                  agent receives a reward signal only upon reaching the goal;                                                  though we have not run SMERL+PbRL on other agents, we expect
+                  otherwise, it receives no reward.                                                                            similar characteristics (ie., high alignment and low coverage) for
+                                      HaSD                        LSD           SMERL+PBRL                                                             0-HaSD                                0.1-HaSD                                   0.2-HaSD                                 0.5-HaSD                                          1-HaSD
+                          1.0                                                         -HaSD
+                                                                                         1.0                                                              1.0 --- Pareto Front                                         1.0                                                                   1.0
+
+                          0.8
+                                      0-HaSD
+                                 --- Pareto Front
+                                                                      0.1-HaSD
+                                                                            0.8
+                                                                                     0.2-HaSD                                                             0.8
+                                                                                                                                                                 0.5-HaSD                           1.0-HaSD
+                                                                                                                                                                                                          0.8                                                                                0.8
+                                                                                                --- Pareto Front                                                                                                                                                                                    --- Pareto Front
+
+
+
+
+              Mean Coverage                                                  Mean Coverage                                                    Mean Coverage                                                Mean Coverage                                                         Mean Coverage
+                                                                                                                                                                                                                              --- Pareto Front
+                          0.6                                                            0.6                                                              0.6                                                          0.6                                                                   0.6
+
+                          0.4                                                            0.4                                                              0.4                                                          0.4                                                                   0.4
+
+                          0.2                                                            0.2                                                              0.2                                                          0.2                                                                   0.2
+
+                          0.0                                                            0.0                                                              0.0                                                          0.0                                                                   0.0
+                                0.0      0.2        0.4   0.6   0.8    1.0                     0.0      0.2        0.4     0.6   0.8   1.0                      0.0      0.2     0.4   0.6    0.8    1.0                     0.0      0.2        0.4   0.6   0.8           1.0                     0.0      0.2        0.4   0.6    0.8    1.0
+                                      Mean Normalised Alignment                                      Mean Normalised Alignment                                         Mean Normalised Alignment                                   Mean Normalised Alignment                                             Mean Normalised Alignment
+
+                                            (a) Point                                                         (b) Car                                                    (c) Racecar                                                    (d) Doggo                                                                 (e) Ant
+ .8    1.0
+ment            Figure 10: Approximated Pareto Front obtained with LSD, HaSD and 𝛼-HaSD for each agent in the Hazardous-Room environment.
+                In general, solutions are arranged from left to right, as alignment objectives are more influential.
+
+                              100                                                                                                                                     LSD              Figure 12: Comparing hyper-
+                                                                                                                                                                      HaSD                                                                                                   0.98
+                                                                                                                                                                                       volume computed for each set
+                                80
+
+                                                                                                                                                                                                                                                                   Hypervolume
+                                                                                                                                                                                       of solutions produced by 𝛼-                                                           0.96
+
+
+
+
+             Box Coverage %
+                                                                                                                                                                                       HaSD with actual human feed-
+                                60                                                                                                                                                                                                                                           0.94
+                                                                                                                                                                                       back budget and ground truth
+                                40                                                                                                                                                     reward in Nav2d environment.
+                                                                                                                                                                                                                                                                             0.92
+                                                                                                                                                                                                                                                                                                 -HaSD (Human)                     -HaSD
+                                20
+
+                                 0         Point                Car                          RaceCar                     Doggo               Ant
+                                                                                                                                                                                        4.8         Sensitivity to Human Feedback
+                                                                                                                                                                                        In this section, we analysed the sensitivity of 𝛼-HaSD to real human
+                Figure 11: Comparing box-pushing agent’s coverage of skill                                                                                                              feedback. For practical reasons, we train offline a reward model
+                sets discovered by LSD and HaSD with the different robots                                                                                                               from actual human feedback subjects (the authors) familiar with the
+                in the Push-Room environment.                                                                                                                                           task. This reward is then used to simulate human preferences during
+                                                                                                                                                                                        training. The reward model was trained with 1400 feedback which
+                                                                                                                                                                                        took 1h to collect. We provide more detail in Appendix A.5. We
+                                                                                                                                                                                        show in Figure 12 the hypervolume obtained with 𝛼-HaSD(Human)
+                                                                                                                                                                                        which used the real human process presented. The hypervolume in-
+                these agents as well. Quantitatively, In Figures 10a and 10c, Point                                                                                                     dicates that 𝛼-HaSD(Human) can obtain similar results with actual
+                and RaceCar display a similar pattern as Section 4.3 where LSD                                                                                                          human than ground truth reward. However we can observe that
+                achieves high coverage but low alignment while HaSD provides                                                                                                            𝛼-HaSD(Human). This is largely due to the noise inherent in the
+                a better trade-off between metrics and 𝛼-HaSD generates diverse                                                                                                         process. This method is inherently noisier than scenarios where
+                favourable trade-offs. In Figures 10b, 10d and 10e Car, Doggo, and                                                                                                      preferences are directly provided during training. The accumula-
+                Ant LSD fails to learn relevant skills, resulting in a low-coverage                                                                                                     tion of approximation errors while learning the reward offline can
+                skill set that does not incur much cost. It is also important to note                                                                                                   contribute to this noise, and these errors may carry over to the use
+                that the LSD’s objective also fails to drive exploration in our method,                                                                                                 of this reward as simulated human input during 𝛼-HaSD training.
+                leading to HaSD methods relying mostly on the alignment objective.                                                                                                      Other than that we are able to obtain similar results from actual
+                We report qualitative results in the Appendix B.                                                                                                                        human feedback.
+
+                4.7                    Safety Gymnasium: Push-Room                                                                                                                      5      DISCUSSION AND CONCLUSION
+                In this section we present results obtain in the Push-Room envi-                                                                                                        In this work, we introduced a novel approach to address under-
+                ronment described in Section 4.2.4. All results are presented after                                                                                                     constrained skill discovery. Our proposed approach, Human aligned
+                sampling 1000 skills from the policy across 5 seeds. We report re-                                                                                                      skill discovery, is based on the idea of optimising both a skill discov-
+                sults regarding the box’s coverage of the room in Figure 11 This                                                                                                        ery objective and an alignment objective. Using these objectives,
+                coverage is measured by the number of 0.1 × 0.1 square bins occu-                                                                                                       we explicitly designed HaSD, an approach to learn diverse skills
+                pied by the box at least once. Having a high coverage by the box                                                                                                        that align with human preference over their entire trajectory. With
+                indicates that the agent interacts with the box in a wide range of                                                                                                      different alignment objectives, we empirically demonstrated that
+                ways. HaSD obtain better coverage with every agent than LSD. This                                                                                                       HaSD learned diverse skills that align with human preferences in
+                means that the alignment objective helps indicate desired behaviour                                                                                                     various navigation and box-pushing environments. Additionally,
+                while allowing the diversity objective to discover diverse skills. We                                                                                                   we showed that we can condition skills on the diversity alignment
+                report qualitative results in the Appendix B.                                                                                                                           trade-off variable to produce a range of skills relevant to different
+diversity-alignment trade-offs. One of the inherent limitations of                            [15] Even Klemsdal, Sverre Herland, and Abdulmajid Murad. 2021. Learning Task
+this work is that the degree of alignment depends on the accuracy                                  Agnostic Skills with Data-driven Guidance. arXiv preprint arXiv:2108.01869
+                                                                                                   (2021).
+of the reward model. This can heavily depend on the number of                                 [16] Saurabh Kumar, Aviral Kumar, Sergey Levine, and Chelsea Finn. 2020. One
+feedback available. Although this is a common limitation of HIL-                                   solution is not all you need: Few-shot extrapolation via structured maxent rl.
+                                                                                                   Advances in Neural Information Processing Systems 33 (2020), 8198–8210.
+methods, it is exacerbated in USD settings due to their inherent                              [17] Arsenii Kuznetsov, Pavel Shvechikov, Alexander Grishin, and Dmitry Vetrov.
+long training time, sample inefficiency and the size of the behaviour                              2020. Controlling overestimation bias with truncated mixture of continuous
+                                                                                                   distributional quantile critics. In International Conference on Machine Learning.
+space. In these circumstances, the questions of when to seek human                                 PMLR, 5556–5566.
+feedback and what queries to select to maximise information gain                              [18] Kimin Lee, Laura Smith, and Pieter Abbeel. 2021. PEBBLE: Feedback-Efficient
+require more sophisticated methods. In future work, we will inves-                                 Interactive Reinforcement Learning via Relabeling Experience and Unsupervised
+                                                                                                   Pre-training. International Conference on Machine Learning (2021).
+tigate how to leverage the diversity and amount of interactions                               [19] Timothy P. Lillicrap, Jonathan J. Hunt, Alexander Pritzel, Nicolas Manfred Otto
+generated by the skill discovery objective to increase reward model                                Heess, Tom Erez, Yuval Tassa, David Silver, and Daan Wierstra. 2016. Continuous
+accuracy with low feedback budgets in USD settings.                                                control with deep reinforcement learning. CoRR abs/1509.02971 (2016).
+                                                                                              [20] Katherine Metcalf, Miguel Sarabia, and Barry-John Theobald. 2022. Rewards
+                                                                                                   Encoding Environment Dynamics Improves Preference-based Reinforcement
+REFERENCES                                                                                         Learning. arXiv preprint arXiv:2211.06527 (2022).
+ [1] Joshua Achiam, Harrison Edwards, Dario Amodei, and Pieter Abbeel. 2018. Vari-            [21] Volodymyr Mnih, Koray Kavukcuoglu, David Silver, Andrei A. Rusu, Joel Veness,
+     ational option discovery algorithms. arXiv preprint arXiv:1807.10299 (2018).                  Marc G. Bellemare, Alex Graves, Martin A. Riedmiller, Andreas Fidjeland, Georg
+ [2] Stephen P Boyd and Lieven Vandenberghe. 2004. Convex optimization. Cambridge                  Ostrovski, Stig Petersen, Charlie Beattie, Amir Sadik, Ioannis Antonoglou, Helen
+     university press.                                                                             King, Dharshan Kumaran, Daan Wierstra, Shane Legg, and Demis Hassabis. 2015.
+ [3] Ralph Allan Bradley and Milton E. Terry. 1952. Rank Analysis of Incomplete                    Human-level control through deep reinforcement learning. Nature 518 (2015),
+     Block Designs: I. The Method of Paired Comparisons. Biometrika 39 (1952), 324.                529–533.
+ [4] Víctor Campos, Alexander Trott, Caiming Xiong, Richard Socher, Xavier Giro               [22] Sherjil Ozair, Corey Lynch, Yoshua Bengio, Aaron van den Oord, Sergey Levine,
+     i Nieto, and Jordi Torres. 2020. Explore, Discover and Learn: Unsupervised                    and Pierre Sermanet. 2019. Wasserstein Dependency Measure for Representation
+     Discovery of State-Covering Skills. In ICML.                                                  Learning. In Advances in Neural Information Processing Systems, H. Wallach,
+ [5] Wentse Chen, Shiyu Huang, Yuan Chiang, Tim Pearce, Wei-Wei Tu, Ting Chen,                     H. Larochelle, A. Beygelzimer, F. d'Alché-Buc, E. Fox, and R. Garnett (Eds.), Vol. 32.
+     and Jun Zhu. 2024. DGPO: discovering multiple strategies with diversity-guided                Curran Associates, Inc. https://proceedings.neurips.cc/paper_files/paper/2019/
+     policy optimization. In Proceedings of the AAAI Conference on Artificial Intelligence,        file/f9209b7866c9f69823201c1732cc8645-Paper.pdf
+     Vol. 38. 11390–11398.                                                                    [23] Jongjin Park, Younggyo Seo, Jinwoo Shin, Honglak Lee, Pieter Abbeel, and Kimin
+ [6] Paul F Christiano, Jan Leike, Tom Brown, Miljan Martic, Shane Legg, and Dario                 Lee. 2021. SURF: Semi-supervised Reward Learning with Data Augmentation
+     Amodei. 2017. Deep Reinforcement Learning from Human Preferences. In Ad-                      for Feedback-efficient Preference-based Reinforcement Learning. In International
+     vances in Neural Information Processing Systems, I. Guyon, U. Von Luxburg,                    Conference on Learning Representations.
+     S. Bengio, H. Wallach, R. Fergus, S. Vishwanathan, and R. Garnett (Eds.),                [24] Seohong Park, Jongwook Choi, Jaekyeom Kim, Honglak Lee, and Gunhee Kim.
+     Vol. 30. Curran Associates, Inc. https://proceedings.neurips.cc/paper/2017/file/              2021. Lipschitz-constrained unsupervised skill discovery. In International Confer-
+     d5e2c0adad503c91f91df240d0cd4e49-Paper.pdf                                                    ence on Learning Representations.
+ [7] Benjamin Eysenbach, Julian Ibarz, Abhishek Gupta, and Sergey Levine. 2019.               [25] Seohong Park, Kimin Lee, Youngwoon Lee, and Pieter Abbeel. 2023.
+     Diversity is all you need: Learning skills without a reward function. In 7th                  Controllability-Aware Unsupervised Skill Discovery. In International Conference
+     International Conference on Learning Representations, ICLR 2019.                              on Machine Learning. PMLR, 27225–27245.
+ [8] Florian Felten, Lucas Nunes Alegre, Ann Nowe, Ana L. C. Bazzan, El Ghazali               [26] Seohong Park, Oleh Rybkin, and Sergey Levine. 2023. METRA: Scalable Unsuper-
+     Talbi, Grégoire Danoy, and Bruno Castro da Silva. 2023. A Toolkit for Reliable                vised RL with Metric-Aware Abstraction. In The Twelfth International Conference
+     Benchmarking and Research in Multi-Objective Reinforcement Learning. In                       on Learning Representations.
+     Thirty-seventh Conference on Neural Information Processing Systems Datasets and          [27] William Saunders, Girish Sastry, Andreas Stuhlmüller, and Owain Evans. 2018.
+     Benchmarks Track. https://openreview.net/forum?id=jfwRLudQyj                                  Trial without Error: Towards Safe Reinforcement Learning via Human Interven-
+ [9] Tuomas Haarnoja, Aurick Zhou, Pieter Abbeel, and Sergey Levine. 2018. Soft                    tion. In Proceedings of the 17th International Conference on Autonomous Agents
+     Actor-Critic: Off-Policy Maximum Entropy Deep Reinforcement Learning with a                   and MultiAgent Systems. 2067–2069.
+     Stochastic Actor. In Proceedings of the 35th International Conference on Machine         [28] Archit Sharma, Shixiang Gu, Sergey Levine, Vikash Kumar, and Karol Hausman.
+     Learning (Proceedings of Machine Learning Research, Vol. 80), Jennifer Dy and                 2020. Dynamics-Aware Unsupervised Discovery of Skills. In International Confer-
+     Andreas Krause (Eds.). PMLR, 1861–1870. https://proceedings.mlr.press/v80/                    ence on Learning Representations. https://openreview.net/forum?id=HJgLZR4KvH
+     haarnoja18b.html                                                                         [29] Krishnan Srinivasan, Benjamin Eysenbach, Sehoon Ha, Jie Tan, and Chelsea
+[10] Shengyi Huang, Rousslan Fernand Julien Dossa, Chang Ye, Jeff Braga, Dipam                     Finn. 2020. Learning to be safe: Deep rl with a safety critic. arXiv preprint
+     Chakraborty, Kinal Mehta, and João G.M. Araújo. 2022. CleanRL: High-quality                   arXiv:2010.14603 (2020).
+     Single-file Implementations of Deep Reinforcement Learning Algorithms. Journal           [30] Richard S. Sutton, Doina Precup, and Satinder Singh. 1999. Between MDPs
+     of Machine Learning Research 23, 274 (2022), 1–18. http://jmlr.org/papers/v23/21-             and semi-MDPs: A framework for temporal abstraction in reinforcement learn-
+     1342.html                                                                                     ing. Artificial Intelligence 112, 1 (1999), 181–211. https://doi.org/10.1016/S0004-
+[11] Maxence Hussonnois, Thommen George Karimpanal, and Santu Rana. 2023.                          3702(99)00052-1
+     Controlled Diversity with Preference: Towards Learning a Diverse Set of Desired          [31] Xiaofei Wang, Kimin Lee, Kourosh Hakhamaneshi, Pieter Abbeel, and Michael
+     Skills. In Proceedings of the 2023 International Conference on Autonomous Agents              Laskin. 2022. Skill preferences: Learning to extract and execute robotic skills
+     and Multiagent Systems. 1135–1143.                                                            from human feedback. In Conference on Robot Learning. PMLR, 1259–1268.
+[12] Jiaming Ji, Borong Zhang, Jiayi Zhou, Xuehai Pan, Weidong Huang, Ruiyang Sun,            [32] Aaron Wilson, Alan Fern, and Prasad Tadepalli. 2012. A Bayesian Approach for
+     Yiran Geng, Yifan Zhong, Josef Dai, and Yaodong Yang. 2023. Safety gymnasium:                 Policy Learning from Trajectory Preference Queries. In NIPS.
+     A unified safe reinforcement learning benchmark. Advances in Neural Information          [33] Tom Zahavy, Yannick Schroecker, Feryal Behbahani, Kate Baumli, Sebastian
+     Processing Systems 36 (2023).                                                                 Flennerhag, Shaobo Hou, and Satinder Singh. 2023. Discovering Policies with
+[13] Danilo Rezende Karol Gregor and Daan Wierstra. 2016. Variational Intrinsic                    DOMiNO: Diversity Optimization Maintaining Near Optimality. In The Eleventh
+     Control. International Conference on Robotic Learning 0, 0 (2016), 0.                         International Conference on Learning Representations.
+[14] Sunin Kim, Jaewoon Kwon, Taeyoon Lee, Younghyo Park, and Julien Perez. 2022.             [34] Ruohan Zhang, Faraz Torabi, Garrett Warnell, and Peter Stone. 2021. Recent
+     Safety-Aware Unsupervised Skill Discovery. In 2023 International Conference on                advances in leveraging human guidance for sequential decision-making tasks.
+     Robotics and Automation (ICRA). IEEE.                                                         Autonomous Agents and Multi-Agent Systems 35, 2 (2021).
+                                                                                              [35] Eckart Zitzler. 1999. Evolutionary algorithms for multiobjective optimization:
+                                                                                                   methods and applications. https://api.semanticscholar.org/CorpusID:14157879
+A APPENDIX
+A.1 Implementation details
+  Environments. We used a (custom 2D Navigation) publicly released repository to experiment in simpler navigation environments. We
+used the customisable capabilities that Safety-Gymnasium [12] offers to design the Hazard-Room and Push-Room environments.
+  Hazard-Room environment. In the Hazard-Room environment, lidar information disrupts the LSD objective, resulting in non-dynamic and
+non-diverse skills. To improve performance, we mask lidar information from the 𝜙 function.
+   DownStream Task. In the experiment in section 4.5, the skills discovered are trained in a slightly modified nav2d where the agent starts
+in a random position within the environment. This adjustment aims to mitigate potential issues arising from changes in the initial state
+distribution of the skills. By ensuring that the agent experiences a variety of initial conditions, we can more accurately combines skills. We
+then train a SAC-TQC on top of the skills discover, we report hyperparameter in Table 5.
+   Algorithm. We implement HaSD based on the publicly available LSD codebase [24] and PEBBLE[18]. As our backbone reinforcement
+learning algorithm, we use the SAC implementation from the publicly available codebase cleanRL[10] and a publicly available codebase for
+(TQC). For all experiment with HaSD we select 𝛼 = 0.2 and for 𝛼-HaSD we sample 𝛼 uniformly from A = {1, 0.5, 0.2, 0.1, 0}. We report other
+hyperparameters used in Tables 2, 3 and 4:
+   Resources. All experiments are conducted on an Ubuntu 20.4 server with 36 cores CPU, 767GB RAM, and a V100 32GB GPU with CUDA
+version 12.0, each run in Sections 4.6 and 4.7 took 24hours (point, Car, Racecar) and 72hours (Doggo, Ant).
+
+                                                  Table 2: Hyperparameter SAC-TQC
+
+
+
+                      Hyperparameter                            Value
+                      Training iteration                        1M(Nav2d), 5M(Point, Car, Racecar), 10M(Doggo, Ant)
+                      Learning rate critic                      3.0 × 10 −04 (Nav2d), 1.0 × 10 −04 (Safety-Gymnasium)
+                      Learning rate actor                       1.0 × 10 −04 (Nav2d), 3.0 × 10 −05 (Safety-Gymnasium)
+                      Update policy frequency                   2
+                      Update-to-data                            4
+                      Optimiser                                 Adam
+                      Minibatch size                            256
+                      Discount factor 𝛾                         0.99
+                      Replay buffer size                        106
+                      Hidden layers                             2
+                      Hidden units per layers                   256(Nav2d), 512(Safety-Gymnasium)
+                      Target network smoothing coefficient      0.995
+                      Entropy coefficent                        auto-adjust [9]
+                      Number of quantiles:                      25
+                      Number of networks:                       3
+                      Number of top quantiles to drop:          2
+
+
+
+                                                      Table 3: Hyperparameter LSD
+
+
+
+                             Hyperparameter             Value
+                             Learning rate critic       3.0 × 10 −04 (Nav2d), 1.0 × 10 −04 (Safety-Gymnasium)
+                             Hidden layers              2
+                             Hidden units per layers    256(Nav2d), 512(Safety-Gymnasium)
+                             Z dim                      2
+                             LSD 𝜖                      1.0 × 10 −06
+                             LSD initial 𝜆              3000
+                                                      Table 4: Hyperparameter RLHF
+
+
+
+                                  Hyperparameter                      Value
+                                  Learning rate                       3.0 × 10 −4
+                                  Optimizer                           Adam
+                                  Minibatch size                      128(Nav2d), 256 (Safety-Gymnasium)
+                                  Ensemble size                       3
+                                  Size segment                        25(Nav2d), 50 (Safety-Gymnasium)
+                                  Sampling mode                       Uniform
+                                  Queries per feedback session        128(Nav2d), 280(Safety-Gymnasium)
+                                  Number of feedback session          10
+                                  Frequency of feedback session       12K (Nav2d), 50K(Safety-Gymnasium)
+                                  Start feedback                      30K (Nav2d), 150K(Safety-Gymnasium)
+
+
+                                        Table 5: Hyperparameter SAC-TQC Downstream-Task
+
+
+
+                                        Hyperparameter                              Value
+                                        Training iteration                          500k(Nav2d)
+                                        Learning rate critic                        3.0 × 10 −03 (Nav2d)
+                                        Learning rate actor                         1.0 × 10 −03 (Nav2d)
+                                        Update policy frequency                     2
+                                        Update-to-data                              1
+                                        Optimiser                                   Adam
+                                        Minibatch size                              256
+                                        Discount factor 𝛾                           0.99
+                                        Replay buffer size                          106
+                                        Hidden layers                               2
+                                        Hidden units per layers                     256(Nav2d)
+                                        Target network smoothing coefficient        0.995
+                                        Entropy coefficent                          auto-adjust [9]
+                                        Number of quantiles:                        25
+                                        Number of networks:                         3
+                                        Number of top quantiles to drop:            2
+
+
+
+A.2    Ground Truth rewards
+A.2.1 Nav2d. The following ground truth reward function is designed to mimic the following preference ‘Trajectories that travel as far as
+possible from the initial position while avoiding unsafe regions should be preferred’:
+
+                                  𝑟 Ground Truth = 𝑎𝑡𝑥 𝑦 − 𝑎𝑥0 𝑦 + 𝑎𝑡𝑥 𝑦 − 𝑎𝑡𝑥−1     𝑡
+                                                                              𝑦 − 1[𝑎𝑥 𝑦 ∈ hazardous areas]                           (9)
+
+where 𝑎𝑡𝑥 𝑦 is the agent position in the Cartesian coordinates at time 𝑡.
+
+A.2.2 Hazard-Room. The following ground truth reward function is designed to mimic the following preference ‘Trajectories that travel as
+far as possible from the initial position while avoiding unsafe regions and staying in the enclosed area should be preferred ’:
+
+                  𝑟 Ground Truth = 𝑎𝑡𝑥 𝑦 − 𝑎𝑥0 𝑦 − 100 × 1[𝑎𝑡𝑥 𝑦 ∈ hazardous areas] − 10 × 1[𝑎𝑡𝑥 𝑦 ∈ Passing through a wall]         (10)
+
+where 𝑎𝑡𝑥 𝑦 is the agent position in the Cartesian coordinates at time 𝑡.
+
+A.2.3 Push-Room. The following ground truth reward function is designed to mimic the following preference ‘Trajectories that make the
+box travel as far as possible from its initial position should be preferred ’:
+
+                                   𝑟 Ground Truth = 𝑟 to box + 𝑟 from box − 1[𝑎𝑡𝑥 𝑦 ∈ Passing through a wall]                        (11)
+where :
+                                              𝑟 to box = 𝑏𝑥𝑡 𝑦 − 𝑎𝑡𝑥 𝑦      if     𝑏𝑥𝑡 −1   𝑡 −1
+                                                                                       𝑦 − 𝑎𝑥 𝑦 ≥ 𝛼𝑏𝑎                                      (12)
+
+
+                                             𝑟 from box = 𝑏𝑥𝑡 𝑦 − 𝑏𝑥0 𝑦       if    𝑏𝑥𝑡 𝑦 − 𝑏𝑥𝑡 −1
+                                                                                                𝑦 ≥ 𝛼𝑏𝑏 ′                                  (13)
+where 𝑎𝑡𝑥 𝑦 and 𝑏𝑥𝑡 𝑦 is respectively the agent position and the box position in the Cartesian coordinates at time 𝑡.
+
+A.3       Conflicting Objectives
+In settings where both rewards conflict, the agent might give up a certain degree of diversity to follow human preferences, or give up a
+degree of human preferences in order to discover novel skills. This trade-off is inherent to multi-objective problems, which is why we
+propose to learn the trade-off with 𝛼-HaSD, enabling the user to choose from multiple solutions at the end. Both rewards are non-orthogonal
+in the safety experiments, since the skill discovery reward encourages crossing unsafe regions while the preferences reward penalises it. In
+these settings Figures 4a to 4e from the paper shows how 𝛼 can deal with this situation.
+   In this section we provide additional experiments to show that our method can manage conflicting objectives in different settings. To
+this end, we introduce two conflicting settings by changing the preferences to ’Trajectories travelling in the North-East region as far as
+possible from the initial position should be preferred’ and ’Trajectories that travel in an L-shaped should be preferred’. Both preferences are
+mimicked by the rewards in Equation 14 and in Equation 15. For the L-shaped, reward we specifically tried to enforce a 90 degree angle
+between the last 3 agent positions. As the state space in the 2D navigation is the agent position, we had to stack the 3 last states for the
+policy to learn behaviour and the reward model to learn the preference. Figure 13 and 14 shows that even in those settings, we are able to
+learn a skill set covering only the North-East region in the first settings and to learn L-shaped looking skills in the second setting.
+
+
+
+
+                          Figure 13: Skill sets obtained with preference for covering the north-east regions.
+
+
+
+
+           (a) 0.0-HaSD                                              (b) 0.2-HaSD                                       (c) 0.5-HaSD
+
+                               Figure 14: Skill sets obtained with preference for L-shape trajectories.
+
+   The following ground truth reward function is designed to mimic the following preference ‘Trajectories that travel in the North-East as far
+as possible from the initial’:
+
+
+                                                         𝑎𝑡𝑥 𝑦 − 𝑎𝑥0 𝑦 ,
+                                                     (
+                                                                           if 𝑎𝑡𝑥 𝑦 ∈ North-East
+                                                𝑟=                                                                                         (14)
+                                                         −1,               otherwise
+where 𝑎𝑡𝑥 𝑦 is the agent position in the Cartesian coordinates at time 𝑡.
+   The following ground truth reward function is designed to mimic the following preference ‘Trajectories that travel in the North-East as far
+as possible from the initial’:
+                                                                                      ′′ ′      ′
+                                                                                 Δ𝑎𝑡𝑥 𝑦𝑡 Δ𝑎𝑡𝑥 𝑦𝑡
+                                         𝑟 = 1 − 𝜃 − 90
+                                                    𝑡
+                                                                𝜃 = arccos(
+                                                                  𝑡
+                                                                                                        )                                 (15)
+                                                                                    ′′ ′            ′
+                                                                                Δ𝑎𝑡𝑥 𝑦𝑡      Δ𝑎𝑡𝑥 𝑦𝑡
+
+where 𝑎𝑡𝑥 𝑦 is the agent position in the Cartesian coordinates at time 𝑡.
+
+A.4 𝛼-Generalisation
+In this section, we provide additional experiments on the generalisation of 𝛼 in 𝛼-HaSD. Figures 4a to 4e shows the skills set learned from
+seen 𝛼 values during training, Figures 15a to 15c with unseen 𝛼 values during training through interpolation and Figure Figures 16a to 16c
+with unseen 𝛼 values during training through extrapolation. This result demonstrates that 𝛼-HaSD can interpolate unseen 𝛼 values well but
+fails to extrapolate to unseen 𝛼 values outside of the scope of the 𝛼 used in training, this is a common challenge in machine learning which
+is not specific to our methods.
+
+
+
+
+          (a) 0.4-HaSD                                           (b) 0.7-HaSD                                          (c) 0.8-HaSD
+
+                                            Figure 15: 𝛼-HaSD skills through interpolation.
+
+
+
+
+         (a) -1.0-HaSD                                           (b) 1.5-HaSD                                          (c) 2.0-HaSD
+
+                                            Figure 16: 𝛼-HaSD skills through extrapolation.
+
+
+A.5    Collecting Human Preferences
+In this section, we detail how we collected human preferences for the experiment in Section 4.8. We first collect trajectories from previous
+runs by using 𝛼-HaSD which provides diverse trajectories. We then construct a dataset of queries by selecting segments of the trajectories
+collected and pairing them randomly with other created segments.
+    We show segments to humans in the form of an image representing the path followed by the agent during the segment selected. This is
+illustrated in Figure 17. Each segment has its own image to easily distinguish its path. We found that showing trajectories in the form of
+an image allows us to provide our preferences quicker. Once we have collected our preferences dataset, we train a reward model with the
+hyperparameters specified in table 4 for 10000 epochs.
+
+A.6    Broader Impacts: Potential Positive and Negative Societal Impacts
+We believe that the unconstrained nature of Unsupervised Skill Discovery should be addressed to reduce the potential discovery of unsafe
+and undesirable skills. As such, our work on aligning skill discovery methods aims to reduce the potential negative societal impacts of
+                                    Figure 17: Application used to collect human preferences.
+
+
+unsupervised skill discovery methods. However, we also found that using a negative 𝛼 in Equation 6, can lead to the discovery of skills
+contrary to human value. This could have a negative impact, so we recommend that future applications ensure that 𝛼 always remains
+positive.
+
+A.7    Safety Gymnasium Tasks
+
+
+
+
+      (a) Point                    (b) Car                   (c) Racecar                   (d) Doggo                    (e) Ant
+
+                         Figure 18: Range of agents used to evaluate our method on safety gymnasium.
+
+
+
+
+                    (a) Hazardous-Room                                                           (b) Push-Room
+
+Figure 19: (a) In the Hazardous-Room environment, the agent should ideally avoid the purple circles while navigating. (b) In
+the Push-Room environment, the agent should ideally move the yellow box around the room.
+B   FULL QUALITATIVE RESULTS
+Figures 20 and Figure 21 show the complete qualitative results of skills discovered by HaSD in the Hazard-Room and Push-Room environments
+across all agents. We use 2-D skills for all agents and environment. In most environments, HaSD discovers skills that align with human
+values regardless of the random seeds.
+
+
+
+
+                                                                (a) Point
+
+
+
+
+                                                                 (b) Car
+
+
+
+
+                                                               (c) Racecar
+
+
+
+
+                                                               (d) Doggo
+
+
+
+
+                                                                 (e) Ant
+
+Figure 20: Qualitative results of HaSD (5seeds) in the Hazard Room environment with with each agents. After sampling 1000
+skills, the first row shows the agent’s trajectory.
+                                                           (a) Point
+
+
+
+
+                                                            (b) Car
+
+
+
+
+                                                          (c) Racecar
+
+
+
+
+                                                          (d) Doggo
+
+
+
+
+                                                            (e) Ant
+
+Figure 21: Qualitative results of HaSD (4seeds) in the Push Room environment with each agents. After sampling 1000 skills, the
+first row shows the agent’s trajectory, while the second row shows the trajectory of the box.
+

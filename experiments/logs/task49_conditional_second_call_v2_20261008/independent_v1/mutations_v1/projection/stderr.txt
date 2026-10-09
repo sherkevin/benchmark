@@ -1,0 +1,16 @@
+Traceback (most recent call last):
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/runpy.py", line 197, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/runpy.py", line 87, in _run_code
+    exec(code, run_globals)
+  File "/Users/jingwu/work/benchmark/src/probe_headless/verify_conditional_second_call_v2.py", line 556, in <module>
+    main()
+  File "/Users/jingwu/work/benchmark/src/probe_headless/verify_conditional_second_call_v2.py", line 543, in main
+    result = audit.execute()
+  File "/Users/jingwu/work/benchmark/src/probe_headless/verify_conditional_second_call_v2.py", line 298, in execute
+    near(saved['transform'], T, 'B-only transform ' + method)
+  File "/Users/jingwu/work/benchmark/src/probe_headless/verify_conditional_second_call_v2.py", line 59, in near
+    check(a.shape == b.shape and np.isfinite(a).all() and np.isfinite(b).all()
+  File "/Users/jingwu/work/benchmark/src/probe_headless/verify_conditional_second_call_v2.py", line 54, in check
+    raise ValueError(message)
+ValueError: B-only transform signed_only

@@ -1,0 +1,17 @@
+arXiv:2511.17729
+abs: https://arxiv.org/abs/2511.17729
+pdf: https://arxiv.org/pdf/2511.17729
+topic: MCP多模态多跳
+pulled: 2026-08-09 via arxiv MCP (arxiv_get_metadata / arxiv_read_paper)
+
+--- 2026-08-11 二次实拉（全文 + 官方数据）---
+html(v4): https://arxiv.org/html/2511.17729v4  -> paper_v4_fulltext.txt (去标签纯文本 196KB)
+repo:     https://github.com/EtaYang10th/Open-M3-Bench (真实公开仓库, main, 577 files)
+          raw.githubusercontent.com 不通(HTTP 000)，改走 GitHub Contents API base64
+          -> repo_README.md / repo_mcp_servers.json / repo_evaluate_trajectories.py
+HF data:  https://hf-mirror.com/datasets/EtaYang10th/Open-M3-Bench
+          -> test_mcp_GT.json (211条GT轨迹, 1.0MB) / test_mcp_fuzzy.json (211条fuzzy query, 300KB)
+          图片二进制(212张png)拉不到: resolve接口302跳CDN后超时
+site:     https://etayang10th.github.io/m3-bench.github.io/
+产出:     真实例子.md (Fish 任务 id=00050000 完整例子)
+勘误:     v4 为 27 servers / 232 tools，非阅读报告中的 28/231

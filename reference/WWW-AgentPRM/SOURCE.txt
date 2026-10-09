@@ -1,0 +1,6 @@
+conference: WWW 2026
+title: AgentPRM: Process Reward Models for LLM Agents via Step-Wise Promise and Progress
+arxiv_id: 2511.08325v1
+arxiv_abs: http://arxiv.org/abs/2511.08325v1
+pdf_url: https://arxiv.org/pdf/2511.08325v1
+matched_arxiv_title: AgentPRM: Process Reward Models for LLM Agents via Step-Wise Promise and Progress

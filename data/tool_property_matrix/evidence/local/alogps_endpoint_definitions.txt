@@ -1,0 +1,28 @@
+# 出处：ALOGPS 2.1 官方主页 https://vcclab.org/lab/alogps/
+# 离线副本：/tmp/alogps.html（未抓到则只留批次表头证据）
+# 摘录方式：去脚本/样式后去标签，按官方段落原样截取，未改写。
+
+## 官方端点定义（logP 与 logS，含自报误差）
+1-octanol/water calculation: ALOGPs was developed with 12908 molecules from the
+PHYSPROP database using 75 E-state indicies. 64 neural networks were
+trained using 50% of molecules selected by chance from the whole set.
+The logP prediction accuracy is root mean squared error rms=0.35 and standard
+mean error s=0.26 [1,2]. 
+ Aqueous solubility calculation: ALOGpS was developed using 1291 molecules and provided
+improved aqueous solubility prediction (rms=0.49, s=0.38) compared to our previous analysis [3]. The molecules used in this study can be downloaded.
+
+## 官方引用
+References 
+ Tetko, I. V.; Tanchuk, V. Y. Application of associative neural networks for prediction of lipophilicity in ALOGPS 2.1 program , J. Chem. Inf. Comput. Sci. , 2002 , 42, 1136-45, article . 
+ Tetko, I. V.; Tanchuk, V. Y.; Villa, A. E. Prediction of n-octanol/water partition coefficients from PHYSPROP database using artificial neural networks and E-state indices , J. Chem. Inf. Comput. Sci. , 2001 , 41, 1407-21, article . 
+ Tetko, I. V.; Tanchuk, V. Y.; Kasheva, T. N.; Villa, A. E. Estimation of aqueous solubility of chemical compounds using E-state indices , J. Chem. Inf. Comput. Sci. , 2001 , 41, 1488-93, article . 
+ Tetko, I. V.; Poda, G. I. Application of ALOGPS 2.1 to predict log D distribution coefficient for Pfizer proprietary compounds , J. Med. Chem. , 2004 , 47, 5601-4, article . 
+ Tetko, I. V.; Bruneau, P. Application of ALOGPS to predict 1-octanol/water distributio
+
+## 交付列口径（原始响应批次数 15）
+# 原始文件：data/tool_results/api_evidence/alogps/batch_0.txt（已去 HTML 标签）
+# 首行即工具自报表头，logP / logS 两个列名来自工具本身：
+mol_N logP logS SMILES
+mol_1 -3.59 -1.59 CN(C)(CCO)(Cl)C
+mol_2 1.45 -3.89 COc1cc3c(c(OC)c1OC)C2CCC(OC)C(=O)CC2C(NC(C)=O)CC3
+mol_3 2.98 -3.91 CCc1cc4c(s1)n2c(C)nnc2CN=C4c3ccccc3Cl

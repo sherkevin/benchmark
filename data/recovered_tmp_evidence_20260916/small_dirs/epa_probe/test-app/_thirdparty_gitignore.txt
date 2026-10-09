@@ -1,0 +1,31 @@
+/target/
+**webapp**
+.settings*
+*.log
+.classpath
+.project
+TEST deployment/
+mavenlog.txt
+*.db
+mvn-repo/
+*.pdf
+dependency-reduced-pom.xml
+ToxRuns/
+*.zip
+test downloadable HCD/
+*.xlsx
+*.bat
+MNDOH/
+*.xls
+Java jdk/
+reports/bob.html
+reports/
+tony/
+*.sql
+*.sqbpro
+SCDCD/
+*.json
+output.tsv
+output.txt
+smiles.csv
+Smiles.smi

@@ -1,0 +1,731 @@
+ALERTSCounter	CRAMERFLAGS	Verhaar scheme	Verhaar scheme#explanation	cdk:Title	SMILES
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 4 (compounds and groups of compounds acting by a specific mechanism)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4Y		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3Y		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3Y		
+6.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4Y,1.4.1Y		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2Y		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2N,1.5.3N,1.5.4Y		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2Y		
+2.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1Y		
+5.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7Y,1.7.1N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 4 (compounds and groups of compounds acting by a specific mechanism)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 4 (compounds and groups of compounds acting by a specific mechanism)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6Y,1.6.1N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 4 (compounds and groups of compounds acting by a specific mechanism)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7Y,1.7.1Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6Y,1.6.1N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7Y,1.7.1Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6Y,1.6.1N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6Y,1.6.1N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6Y,1.6.1N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6Y		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6Y,1.6.1N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6Y		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6Y		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6Y,1.6.1N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2N,1.5.3N,1.5.4N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 4 (compounds and groups of compounds acting by a specific mechanism)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7Y,1.7.1Y		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6Y,1.6.1N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7Y,1.7.1N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6Y,1.6.1N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6Y		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6Y		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6Y,1.6.1N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 2 (less inert compounds)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6Y,1.6.1N,2.1N,2.2N,2.3N,2.4Y		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6Y,1.6.1N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 4 (compounds and groups of compounds acting by a specific mechanism)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4Y		
+2.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7Y,1.7.1Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2N,1.5.3N,1.5.4Y		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 4 (compounds and groups of compounds acting by a specific mechanism)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7Y,1.7.1Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1Y		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 4 (compounds and groups of compounds acting by a specific mechanism)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7Y,1.7.1Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7Y,1.7.1Y		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2N,1.5.3N,1.5.4Y		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7Y,1.7.1Y		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2N,1.5.3N,1.5.4Y		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7Y,1.7.1Y		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7Y,1.7.1Y		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2N,1.5.3N,1.5.4N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2N,1.5.3N,1.5.4N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2N,1.5.3N,1.5.4Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2N,1.5.3N,1.5.4N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2N,1.5.3N,1.5.4N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2N,1.5.3N,1.5.4Y		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2Y		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2N,1.5.3Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7Y,1.7.1Y		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6Y,1.6.1N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+6.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4Y,1.4.1Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2Y		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7Y,1.7.1Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2N,1.5.3N,1.5.4Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2N,1.5.3N,1.5.4N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2N,1.5.3N,1.5.4Y		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2N,1.5.3N,1.5.4Y		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2N,1.5.3N,1.5.4Y		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2N,1.5.3N,1.5.4Y		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2Y		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2Y		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2N,1.5.3N,1.5.4N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6Y,1.6.1N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2N,1.5.3N,1.5.4Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2Y		
+5.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2N,1.5.3N,1.5.4N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2N,1.5.3N,1.5.4N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6Y,1.6.1N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1Y		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7Y,1.7.1Y		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3Y		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1Y		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7Y,1.7.1Y		
+3.0000e+00		Class 4 (compounds and groups of compounds acting by a specific mechanism)	0.1Y,0.2Y,0.3N,4Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2N,1.5.3N,1.5.4Y		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6Y,1.6.1N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+2.0000e+00		Class 4 (compounds and groups of compounds acting by a specific mechanism)	0.1Y,0.2N,4Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 4 (compounds and groups of compounds acting by a specific mechanism)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4Y		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6Y,1.6.1N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 4 (compounds and groups of compounds acting by a specific mechanism)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1Y		
+2.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1Y		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8Y		
+2.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+3.0000e+00		Class 4 (compounds and groups of compounds acting by a specific mechanism)	0.1Y,0.2Y,0.3N,4Y		
+2.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2N,1.5.3N,1.5.4N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6Y,1.6.1N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+	Class 5 (Not possible to classify according to these rules)	0.1N,4N		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2N,1.5.3Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1Y		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6Y,1.6.1N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7Y,1.7.1Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2N,1.5.3N,1.5.4Y		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2N,1.5.3N,1.5.4Y		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2N,1.5.3N,1.5.4Y		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7Y,1.7.1Y		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2N,1.5.3N,1.5.4N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2N,1.5.3N,1.5.4N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 4 (compounds and groups of compounds acting by a specific mechanism)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4Y		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+2.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3N,4N		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2N,1.5.3N,1.5.4N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2Y		
+2.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1Y		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2N,1.5.3N,1.5.4N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2N,1.5.3N,1.5.4Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6Y,1.6.1N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 4 (compounds and groups of compounds acting by a specific mechanism)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4Y		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+5.0000e+00		Class 4 (compounds and groups of compounds acting by a specific mechanism)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1Y		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1Y		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1Y		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2N,1.5.3N,1.5.4N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6Y,1.6.1N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 4 (compounds and groups of compounds acting by a specific mechanism)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6Y,1.6.1N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4Y		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2Y		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7Y,1.7.1Y		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+2.0000e+00		Class 4 (compounds and groups of compounds acting by a specific mechanism)	0.1Y,0.2N,4Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+	Class 5 (Not possible to classify according to these rules)	0.1N,4N		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2N,1.5.3N,1.5.4N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7Y,1.7.1Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8Y		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2N,1.5.3N,1.5.4N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6Y,1.6.1N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 4 (compounds and groups of compounds acting by a specific mechanism)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4Y		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3Y		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7Y,1.7.1Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2N,1.5.3N,1.5.4N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+2.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7Y,1.7.1Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7Y,1.7.1Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2Y		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7Y,1.7.1Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6Y,1.6.1N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+5.0000e+00		Class 4 (compounds and groups of compounds acting by a specific mechanism)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4Y		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2Y		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7Y,1.7.1Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6Y		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+2.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2Y		
+2.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3N,4N		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2N,1.5.3N,1.5.4N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 4 (compounds and groups of compounds acting by a specific mechanism)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 4 (compounds and groups of compounds acting by a specific mechanism)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4Y		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2Y		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7Y,1.7.1Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6Y,1.6.1N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6Y,1.6.1N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+	Class 5 (Not possible to classify according to these rules)	0.1N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7Y,1.7.1N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5Y		
+2.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3N,4N		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2N,1.5.3N,1.5.4Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7Y,1.7.1Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6Y,1.6.1N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6Y,1.6.1N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8Y		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6Y,1.6.1N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 4 (compounds and groups of compounds acting by a specific mechanism)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4Y		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+5.0000e+00		Class 4 (compounds and groups of compounds acting by a specific mechanism)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6Y,1.6.1N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7Y,1.7.1Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+	Class 5 (Not possible to classify according to these rules)	0.1N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2N,1.5.3N,1.5.4Y		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+	Class 5 (Not possible to classify according to these rules)	0.1N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7Y,1.7.1Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+2.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8Y		
+2.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6Y		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6Y,1.6.1N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+	Class 5 (Not possible to classify according to these rules)	0.1N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+2.0000e+00		Class 4 (compounds and groups of compounds acting by a specific mechanism)	0.1Y,0.2N,4Y		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2Y		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6Y,1.6.1N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6Y,1.6.1N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2N,1.5.3N,1.5.4N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6Y,1.6.1N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2Y		
+2.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3N,4N		
+5.0000e+00		Class 4 (compounds and groups of compounds acting by a specific mechanism)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4Y		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2Y		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2N,1.5.3N,1.5.4N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2N,1.5.3N,1.5.4Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7Y,1.7.1Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7Y,1.7.1N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8Y		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+2.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7Y,1.7.1Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5Y		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 4 (compounds and groups of compounds acting by a specific mechanism)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4Y		
+2.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2N,1.5.3N,1.5.4Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2N,1.5.3N,1.5.4Y		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+2.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2Y		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2Y		
+5.0000e+00		Class 4 (compounds and groups of compounds acting by a specific mechanism)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4Y		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2N,1.5.3N,1.5.4N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6Y,1.6.1N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2Y		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2Y		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1Y		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7Y,1.7.1N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6Y,1.6.1N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6Y,1.6.1N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2Y		
+5.0000e+00		Class 4 (compounds and groups of compounds acting by a specific mechanism)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6Y,1.6.1N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6Y,1.6.1N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+1		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2N,4N		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2N,1.5.3N,1.5.4Y		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6Y,1.6.1N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6Y,1.6.1N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7Y,1.7.1N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2N,1.5.3N,1.5.4Y		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1Y		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2Y		
+4.0000e+00		Class 3 (unspecific reactivity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+6.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4Y,1.4.1Y		
+5.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7Y,1.7.1N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+2.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3N,4N		
+6.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4Y,1.4.1Y		
+6.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4Y,1.4.1Y		
+4.0000e+00		Class 5 (Not possible to classify according to these rules)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5N,1.6N,1.7N,2.1N,2.2N,2.3N,2.4N,2.5N,3.1N,3.2N,3.3N,3.4N,3.5N,3.6N,3.7N,3.8N,4N		
+5.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4N,1.5Y,1.5.1N,1.5.2N,1.5.3N,1.5.4Y		
+6.0000e+00		Class 1 (narcosis or baseline toxicity)	0.1Y,0.2Y,0.3Y,1.1Y,1.2Y,1.3N,1.4Y,1.4.1Y		

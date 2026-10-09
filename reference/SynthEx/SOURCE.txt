@@ -1,0 +1,5 @@
+arXiv:2608.07454
+abs: https://arxiv.org/abs/2608.07454
+pdf: https://arxiv.org/pdf/2608.07454
+topic: 天然产物合成规划
+pulled: 2026-08-09 via arxiv MCP (arxiv_get_metadata / arxiv_read_paper)

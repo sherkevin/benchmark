@@ -1,0 +1,22 @@
+{
+  "tests/test_mock_server_contract_tools.py::test_registration_superset_of_nine_contract_names": true,
+  "tests/test_mock_server_contract_tools.py::test_smoke_normalize_structure": true,
+  "tests/test_mock_server_contract_tools.py::test_smoke_search_candidates": true,
+  "tests/test_mock_server_contract_tools.py::test_smoke_get_entity": true,
+  "tests/test_mock_server_contract_tools.py::test_smoke_get_property": true,
+  "tests/test_mock_server_contract_tools.py::test_smoke_compare": true,
+  "tests/test_mock_server_contract_tools.py::test_smoke_edit_molecule": true,
+  "tests/test_mock_server_contract_tools.py::test_smoke_check_molecule_exists_semantics": true,
+  "tests/test_mock_server_contract_tools.py::test_smoke_contract_error_envelope": true,
+  "tests/test_mock_server_contract_tools.py::test_smoke_submit_answer_terminal": true,
+  "tests/test_budget.py::test_contract_mock_server_empty_result_switch": true,
+  "tests/test_call_limit_task07.py::test_exhaustion_infeasible_task07": true,
+  "tests/test_charset_task08.py::test_asgi_charset_and_readable_chinese_error_envelope": true,
+  "tests/test_charset_task08.py::test_e2e_charset_header_and_direct_readable_chinese": true,
+  "tests/test_mock_server_contract_tools.py::test_ast_decorator_count_is_31": true,
+  "tests/test_mock_server_contract_tools.py::test_ast_deprecated_layer_intact": true,
+  "tests/test_mock_server_contract_tools.py::test_ast_source_slice_anchors_preserved": true,
+  "tests/test_template_judge_cp_alignment.py::test_cp_set_equals_cp_weights_keys": true,
+  "tests/test_template_judge_cp_alignment.py::test_response_answer_schema_triple": true,
+  "tests/test_template_judge_cp_alignment.py::test_fixed_family_dag_edges_preserved": true
+}

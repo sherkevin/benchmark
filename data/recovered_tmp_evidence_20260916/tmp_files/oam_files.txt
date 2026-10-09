@@ -1,0 +1,16 @@
+.gitattributes
+README.md
+anvil_training/anvil_recipe.yaml
+anvil_training/data/X_train.csv
+anvil_training/data/y_train.csv
+anvil_training/logs/model/version_0/hparams.yaml
+anvil_training/logs/model/version_0/metrics.csv
+anvil_training/model.json
+anvil_training/model.pth
+anvil_training/recipe_components/data.yaml
+anvil_training/recipe_components/eval.yaml
+anvil_training/recipe_components/metadata.yaml
+anvil_training/recipe_components/procedure.yaml
+expansion_data_inference.csv
+meta.yaml
+run_model_inference.sh

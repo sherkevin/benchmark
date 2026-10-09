@@ -1,0 +1,18 @@
+Use case: infographic-diagram
+Asset type: Figure 1 method architecture for a top-conference machine-learning paper.
+
+Input images:
+- Image 1: Figure 1 v30, edit target. Preserve its exact central-hub composition, three-region layout, arrows, equations, icons, and scientific meaning.
+- Image 2: Figure 2 v26, style reference only. Preserve the shared white paper canvas, flat vector cards, navy outlines, compact icons, and deep-blue / gray / amber / muted-purple palette. Do not copy its temporal timeline.
+
+Make only a targeted cleanup of v30:
+1. The selector card must contain exactly the legible two-word label “select one”. Correct any malformed spelling such as “select tne”.
+2. Preserve the central selector hub and the short local write-back loop; do not turn the figure into a long serial flowchart.
+3. Preserve exactly the equations “q=q^0+Δ” and “τ_t=t+1+D”.
+4. Preserve the blue update arrow ending inside the highlighted released-evidence row on the unlabeled interior write port.
+5. Remove accidental extra words, stray symbols, duplicated arrows, gradients, or watermarks while preserving all other labels and modules.
+
+Scientific role:
+This is a method architecture: fixed score + released evidence → plus → score → select one → selected interaction; valid feedback enters a delayed selected-only queue and writes back to the released evidence register. It is not Figure 2’s time strip. Do not add “decision t”, “selected action”, “later decision”, or a timeline.
+
+Style: polished flat-vector ICLR/ICML/NeurIPS figure, white paper background, thin navy outlines, no drop shadows, no gradients, no 3-D, no grid. Deep blue #2E5DA1 for proposed selector/state/update, gray #DCE3EC for frozen/diagnostic, amber #E9A11A for terminal/judge/chemical feedback, muted purple #7650B8 only for pending/release. Keep labels short and readable at seven-inch paper width. Never write standalone provider letters A, B, or C, and never introduce a second persistent state store.

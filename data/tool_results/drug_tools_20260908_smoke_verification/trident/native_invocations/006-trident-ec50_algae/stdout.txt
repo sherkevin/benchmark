@@ -1,0 +1,7 @@
+Loading DNN... 
+
+Model loaded.
+
+Did not return onehotencoding for Endpoint. Why? You specified only one Endpoint or you specified NOEC and EC10 which are coded to be the same endpoint.
+Did not return onehotencoding for Effect. Why? You specified only one Effect.
+Will use input 0 to network due to no Onehotencodings being present.

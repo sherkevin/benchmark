@@ -1,0 +1,1209 @@
+\documentclass{article}
+
+% if you need to pass options to natbib, use, e.g.:
+% \PassOptionsToPackage{numbers, compress}{natbib}
+% before loading nips_2016
+%
+% to avoid loading the natbib package, add option nonatbib:
+% \usepackage[nonatbib]{nips_2016}
+
+\usepackage[final]{nips_2017}
+\usepackage{xr-hyper}
+\usepackage{hyperref}
+%\externaldocument{actionNipsReviseSupp}
+
+
+
+% to compile a camera-ready version, add the [final] option, e.g.:
+% \usepackage[final]{nips_2016}
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{amsmath,amsthm}
+\usepackage{subcaption}
+\usepackage{caption}
+\usepackage{algorithmic,algorithm}
+\usepackage{graphicx}
+\newtheorem{definition}{Definition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+\usepackage{comment}
+\usepackage{appendix}
+
+\title{Action Centered Contextual Bandits}
+
+% The \author macro works with any number of authors. There are two
+% commands used to separate the names and addresses of multiple
+% authors: \And and \AND.
+%
+% Using \And between authors leaves it to LaTeX to determine where to
+% break the lines. Using \AND forces a line break at that point. So,
+% if LaTeX puts 3 of 4 authors names on the first line, and the last
+% on the second line, try using \AND instead of \And before the third
+% author name.
+
+\author{
+  Kristjan~Greenewald\\ %\thanks{Use footnote for providing further
+    %information about author (webpage, alternative
+    %address)---\emph{not} for acknowledging funding agencies.} \\
+  Department of Statistics\\
+  Harvard University\\
+  %Ann Arbor, MI 48103 \\
+  \texttt{kgreenewald@fas.harvard.edu} \\
+  %% examples of more authors
+  \And
+  Ambuj~Tewari\\
+  Department of Statistics\\
+  University of Michigan\\
+  %Ann Arbor, MI 48103 \\
+  \texttt{tewaria@umich.edu} \\
+   \And
+  Predrag~Klasnja \\
+  School of Information\\
+  University of Michigan\\
+  %Ann Arbor, MI 48103 \\
+  \texttt{klasnja@umich.edu} \\
+  \AND
+  Susan~Murphy \\
+  Departments of Statistics and Computer Science\\
+  Harvard University\\
+  %Ann Arbor, MI 48103 \\
+  \texttt{samurphy@fas.harvard.edu} \\
+  %% \And
+  %% Coauthor \\
+  %% Affiliation \\
+  %% Address \\
+  %% \texttt{email} \\
+  %% \And
+  %% Coauthor \\
+  %% Affiliation \\
+  %% Address \\
+  %% \texttt{email} \\
+}
+
+\begin{document}
+% \nipsfinalcopy is no longer used
+
+\maketitle
+
+%\begin{abstract}
+%  Action centered thompson sampling contextual bandits.
+%  
+%  Contextual bandits have recently emerged as a powerful tool for efficient learning of adaptive decision-making policies (wording?). Existing algorithms, however, have theoretical guarantees only when the time-fixed model fits the data exactly, and provide bounds based on the complexity of the model predicting the reward. In this work, we introduce an action-centering orthogonalization that allows us to decouple the models for the baseline (no action) reward and for the action interaction (?), allowing us to propose an algorithm with performance guaranteed to scale only with the complexity of the interaction model. This allows us to more efficiently learn in scenarios where the true baseline reward model is highly complex and/or time-varying, while the interaction term is relatively simple and fixed over time. 
+%\end{abstract}
+\begin{abstract}  
+Contextual bandits have become popular as they offer a middle ground between very simple approaches based on multi-armed bandits and very complex approaches
+using the full power of reinforcement learning. They have demonstrated success in web applications and have a rich body of associated theoretical guarantees.
+Linear models are well understood theoretically and preferred by practitioners because they are not only easily interpretable but also simple to implement and debug.
+Furthermore, if the linear model is true,
+we get very strong performance guarantees. Unfortunately, in emerging applications in mobile health, the time-invariant linear model assumption is untenable.
+We provide an extension of the linear model for contextual bandits that has two parts: baseline reward and treatment effect. We allow the former to be complex but keep the latter simple.
+We argue that this model is plausible for mobile health applications. At the same time, it leads to algorithms with strong performance guarantees as in the linear model setting, while still allowing for complex nonlinear baseline modeling.
+Our theory is supported by experiments on data gathered in a recently concluded mobile health study.
+\end{abstract}
+\input{intro_revise}
+
+%\section{Introduction}
+%%what we are seeing when we try to implement
+%
+%%why bandit is sub-par, why not enough data for reinforcement learning
+%
+%%clipping
+%
+%%action centering
+%The bandit and contextual bandit have proven to be powerful techniques for achieving adaptive decision making. In particular, the linear contextual bandit learns a linear mapping from a $d$-dimensional state vector to a predicted \emph{reward} for each of a set of possible actions (arms). While the linear contextual bandit has been well studied in the linear, time-constant case, there has been little study of its performance when the data follow an unknown nonlinear or time-varying model. 
+%
+%MHEALTH. Why nonlinear and time-varying models are useful. 
+%
+%In this work, we create an algorithm with theoretical bounds that only depend on the complexity of the model for the \emph{treatment effect}, allowing the baseline reward to be time-varying and to have an arbitrarily complex relation to the state. 
+%
+%Popularity and research interest in contextual bandit. Adaptive decision making (see other papers). Applications in CS, Stats, EE.
+%
+%Recent explosion of mhealth and associated need for adaptive decision making. 
+%
+%Briefly introduce an example for mhealth.
+%
+%Highly complex reward model, requires many features, slow convergence, harder to make individualized learning. Very high noise. 
+%
+%Central idea: Often in mobile health and other applications, there is a baseline ``do nothing" action. The model for the reward in the ``state of nature" using only the baseline ``action" may be highly complex and even nonstationary, whereas the impact of any of the available non-baseline actions relative to the baseline may be much simpler, requiring fewer features to model. Using the action-centering orthogonalization operation, we can exploit this simplicity in the effect of the actions to learn an effective policy more quickly. We confirm these gains in both regret bounds and empirical analysis.
+%
+%Introduce idea of orthogonalization briefly
+%
+%Contributions:
+%
+%- model with probs bounded away from 0 and 1 and why it makes sense in
+%mhealth
+%
+%- appropriate modification of regret and regret analysis to deal with this
+%model
+%
+%- needing simplicity of the treatment effect part of the model only;
+%context only part can be complicated
+%
+%- action-centering as a way to decouple estimation of the two parts (I am
+%unsure about this bullet point)
+%
+%- empirical results on simulations grounded in real mhealth data
+%\subsection{Related Work}
+%Thompson sampling, other extensions, lin-UCB, etc. Why we pick Thompson. Nonlinear contextual bandits. 
+%\subsection{Notation and Outline}
+%
+
+
+\section{Model and Problem Setting}
+%CONNECT TO MOBILE HEALTH
+
+%SOMEHOW HAVE IT COME OUT THAT HAVING MORE INFORMATION ABOUT BASELINE REWARD IMPROVES CONVERGENCE. 
+
+%TRY TO GET ACCURACY OF BASELINE REWARD MODEL BE AN EXPLICIT CONSTANT OUT FRONT. DEMONSTRATE IN SIMULATION. 
+
+
+Consider a contextual bandit with a baseline (zero) action and $N$ non-baseline arms (actions or treatments). At each time $t = 1,2, \dots$, a context vector $\bar{s}_t \in \mathbb{R}^{d'}$ is observed, an action $a_t \in \{0, \dots, N\}$ is chosen, and a reward $r_t(a_t)$ is observed. The bandit learns a mapping from a state vector $s_{t,a_t}$ depending on $\bar{s}_t$ and $a_t$ to the expected reward $r_t(s_{t,a_t})$. 
+The state vector $s_{t,a_t} \in \mathbb{R}^d$ is a function of $a_t$ and $\bar{s}_t$. This form is used to achieve maximum generality, as it allows for infinite possible actions so long as the reward can be modeled using a $d$-dimensional $s_{t,a}$. In the most unstructured case with $N$ actions, we can simply encode the reward with a $d = Nd'$ dimensional $s_{t,a_t}^T = [I(a_t = 1)\bar{s}_t^T, \dots, I(a_t = N) \bar{s}_t^T]$ where $I(\cdot)$ is the indicator function. 
+
+For maximum generality, we assume the context vectors are chosen by an adversary on the basis of the history $\mathcal{H}_{t-1}$ of arms $a_\tau$ played, states $\bar{s}_\tau$, and rewards $ r_{\tau} (\bar{s}_\tau, a_\tau)$ received up to time $t-1$, i.e.,
+\[
+\mathcal{H}_{t-1} = \{a_\tau , \bar{s}_t, r_{\tau} (\bar{s}_\tau, a_\tau), i = 1,\dots, N, \tau = 1, \dots, t-1\}.
+\]
+
+
+%We assume that the expected reward for arm $i$ at any given time $t$ is linear in the context $b_i(t)$, and that the coefficients $\mu(t) \in \mathbb{R}^d$ of the reward are time-varying. Specifically,
+%\[
+%\mathbb{E}[r_i(t) | \{b_i(t)\}_{i = 1}^N, \mathcal{H}_{t-1}] = \mathbb{E}[r_i(t) | b_i(t)] = b_i(t)^T \mu (t).
+%\]
+
+Consider the model %Suppose a contextual bandit with observed states $\bar{s}_t$ and actions $a$, where
+$%\[
+E[r_t(\bar{s}_t,a_t) | \bar{s}_t,a_t] = \bar{f}_t(\bar{s}_t,a_t), 
+$ %\]
+where $\bar{f}_t$ can be decomposed into a fixed component dependent on action and a time-varying component that does not depend on action:
+\[
+E[r_t(\bar{s}_t,a_t) | \bar{s}_t,a_t] =\bar{f}_t(\bar{s}_t,a_t) = f(s_{t,a_t}) I(a_t > 0) + g_t(\bar{s}_t),
+\]
+where $\bar{f}_t(\bar{s}_t,0) = g_t(\bar{s}_t)$ due to the indicator function $I(a_t > 0)$. Note that the optimal action depends in no way on $g_t$, which merely confounds the observation of regret. We hypothesize that the regret bounds for such a contextual bandit asymptotically depend only on the complexity of $f$, not of $g_t$. We emphasize that we do not require any assumptions about or bounds on the complexity or smoothness of $g_t$, allowing $g_t$ to be arbitrarily nonlinear and to change abruptly in time. These conditions create a partially agnostic setting where we have a simple model for the interaction but the baseline cannot be modeled with a simple linear function. In what follows, for simplicity of notation we drop $\bar{s}_t$ from the argument for $r_t$, writing $r_t(a_t)$ with the dependence on $\bar{s}_t$ understood.
+
+In this paper, we consider the linear model for the reward difference at time $t$:
+\begin{equation}\label{eq:reward}
+r_t(a_t) - r_t(0) = f(s_{t,a_t}) I(a_t > 0) + n_t = s_{t,a_t}^T \theta I(a_t > 0) + n_t 
+\end{equation}
+where $n_t$ is zero-mean sub-Gaussian noise with variance $\sigma^2$ and $\theta \in \mathbb{R}^d$ is a vector of coefficients. The goal of the contextual bandit is to estimate $\theta$ at every time $t$ and use the estimate to decide which actions to take under a series of observed contexts. As is common in the literature, we assume that both the baseline and interaction rewards are bounded by a constant for all $t$.
+%\subsection{Probability Constraints in Mobile Health}
+
+
+The task of the action-centered contextual bandit is to choose the probabilities $\pi(a,t)$ of playing each arm $a_t$ at time $t$ so as to maximize expected differential reward 
+\begin{align}\label{eq:rewardPol}
+\mathbb{E}[r_t(a_t)-r_t(0)|\mathcal{H}_{t-1}, s_{t,a}] &= \sum\nolimits_{a = 0}^N \pi(a,t) \mathbb{E}[r_t(a) - r_t(0)|\mathcal{H}_{t-1}, s_{t,a}] \\\nonumber
+&= \sum\nolimits_{a = 0}^N \pi(a,t) s_{t,a}^T \theta I(a> 0).
+\end{align}
+This task is closely related to obtaining a good estimate of the reward function coefficients $\theta$. %Since the contextual bandit operates in real time, it can base its decision only on the history $\mathcal{H}_{t-1}$ and the current contexts $\bar{s}_t$. 
+
+
+
+\subsection{Probability-constrained optimal policy}
+%WHY PROB CONSTRAINTS.WHY ONLY ON ZERO
+
+
+In the mHealth setting, a contextual bandit must choose at each time point whether to deliver to the user a behavior-change intervention, and if so, what type of intervention to deliver. Whether or not an intervention, such as an activity suggestion or a medication reminder, is sent is a critical aspect of the user experience. If a bandit sends too few interventions to a user, it risks the user's disengaging with the system, and if it sends too many, it risks the user's becoming overwhelmed or desensitized to the system's prompts. Furthermore, standard contextual bandits will eventually converge to a policy that maps most states to a near-100\% chance of sending or not sending an intervention. Such regularity could not only worsen the user's experience, but ignores the fact that users have changing routines and cannot be perfectly modeled. We are thus motivated to introduce a constraint on the size of the probabilities of delivering an intervention. We constrain $0< \pi_{\min} \leq 1-\mathbb{P}(a_t = 0|\bar{s}_t) \leq \pi_{\max} < 1$, where $\mathbb{P}(a_t = 0|\bar{s}_t)$ is the conditional bandit-chosen probability of delivering an intervention at time $t$. The constants $\pi_{\min}$ and $\pi_{\max}$ are not learned by the algorithm, but chosen using domain science, and might vary for different components of the same mHealth system. We constrain $\mathbb{P}(a_t = 0|\bar{s}_t)$, not each $\mathbb{P}(a_t = i|\bar{s}_t)$, as which intervention is delivered is less critical to the user experience than being prompted with an intervention in the first place. User habituation can be mitigated by implementing the nonzero actions ($a  = 1,\dots,N$) to correspond to several \emph{types} or \emph{categories} of messages, with the exact message sent being randomized from a set of differently worded messages. 
+
+Conceptually, we can view the bandit as pulling two arms at each time $t$: the probability of sending a message (constrained to lie in $[\pi_{\min},\pi_{\max}]$) and which message to send if one is sent. While these probability constraints are motivated by domain science, these constraints also enable our proposed action-centering algorithm to effectively orthogonalize the baseline and interaction term rewards, achieving sublinear regret in complex scenarios that often occur in mobile health and other applications and for which existing approaches have large regret.
+
+%say pimin pimax come from pedja, not algorithm design. 
+
+Under this probability constraint, we can now derive the optimal policy with which to compare the bandit. The policy that maximizes the expected reward \eqref{eq:rewardPol} will play the optimal action 
+\[
+a^*_t = \arg \max_{i \in \{0,\dots, N\}} s_{t,i}^T \theta I(i > 0),
+\]
+with the highest allowed probability. The remainder of the probability is assigned as follows. If the optimal action is nonzero, the optimal policy will then play the zero action with the remaining probability (which is the minimum allowed probability of playing the zero action). If the optimal action is zero, the optimal policy will play the nonzero action with the highest expected reward 
+\[
+\bar{a}^{*}_t = \arg \max_{i \in \{1,\dots, N\}} s_{t,i}^T \theta
+\]
+with the remaining probability, i.e. $\pi_{\min}$.
+%The arm $a^*_t$ giving the largest reward is given by
+%The nonzero arm $a^{**}_t$ giving the largest reward is given by
+To summarize, under the constraint $1-\pi^*_t(0,t) \in [\pi_{\min},\pi_{\max}]$, the expected reward maximizing policy plays arm $a_t$ with probability $\pi^*(a,t)$, where
+\begin{align}\label{eq:policy}
+%\pi^*(a^*_t,t) = \mathbb{P}(a_t &= a^*_t) = 1-\epsilon \quad \mathrm{and}\\\nonumber
+\mathrm{If} \: &a^*_t \neq 0: \pi^*(a^*_t,t) = \pi_{\max},\quad \pi^*(0,t) = 1-\pi_{\max}, \quad \pi^*(a,t) = 0 \:\forall a \neq 0, a^*_t\\\nonumber
+\mathrm{If} \: &a^*_t = 0: \pi^*(0,t) = 1-\pi_{\min},\quad \pi^*(\bar{a}^{*}_t,t) = \pi_{\min}, \quad \pi^*(a,t)  = 0 \: \forall a \neq 0, \bar{a}^*_t.
+\end{align}
+
+
+
+
+
+
+%\section{Problem Setting}
+\section{Action-centered contextual bandit}
+Since the observed reward always contains the sum of the baseline reward and the differential reward we are estimating, and the baseline reward is arbitrarily complex, the main challenge is to isolate the differential reward at each time step. We do this via an action-centering trick, which randomizes the action at each time step, allowing us to construct an estimator whose expectation is proportional to the differential reward $r_t(\bar{a}_t) - r_t(0)$, where $\bar{a}_t$ is the nonzero action chosen by the bandit at time $t$ to be randomized against the zero action. For simplicity of notation, we set the probability of the bandit taking nonzero action $\mathbb{P}(a_t > 0)$ to be equal to $1- \pi(0,t) = \pi_t$.
+
+%\subsection{Contextual bandits as regression}
+
+%\[
+%\theta = B^{-1}\hat{b}.
+%\]
+
+
+ 
+
+\subsection{Centering the actions - an unbiased $r_t(\bar{a}_t) - r_t(0)$ estimate}
+To determine a policy, the bandit must learn the coefficients $\theta$ of the model for the differential reward $r_t(\bar{a}_t) - r_t(0) = s_{t,\bar{a}_t}^T\theta$ as a function of $\bar{a}_t$. If the bandit had access at each time $t$ to the differential reward $r_t(\bar{a}_t) - r_t(0)$, we could estimate $\theta$ using a penalized least-squares approach by minimizing 
+\begin{align*}%\label{eq:obj}
+\arg \min_{\theta} \sum\nolimits_{t=1}^T (r_t (\bar{a}_t) - r_t(0) &- \theta^T s_{t,\bar{a}_t} )^2 + \lambda\|\theta\|_2^2%= \sum_{t=1}^T (r_t(\bar{a}_t) - r_t(0))^2 + 2(r_t(\bar{a}_t) - r_t(0))\theta^T s_{t,\bar{a}_t} + (\theta^T s_{t,\bar{a}_t})^2%\\\nonumber
+%&= c + 2\theta^T b + \theta^T B \theta
+\end{align*}
+over $\theta$, where $r_t(a)$ is the reward under action $a$ at time $t$ \citep{agrawal2013thompson}. This corresponds to the Bayesian estimator when the reward is Gaussian. % and
+%\begin{align*}
+%b &= \sum_{t = 1}^T   s_{t,\bar{a}_t}(r_t(\bar{a}_t) - r_t(0)),\quad
+%B = \sum_{t=1}^T    s_{t,\bar{a}_t} s_{t,\bar{a}_t}^T.
+%\end{align*}
+%The solution to \eqref{eq:obj} is 
+%The coefficient estimate is then
+% $
+% \hat{\theta} = B^{-1} {b}.
+%$
+ %Obtaining both $r_t(1)$ and $r_t(0)$ is of course impossible. 
+%In the objective, we have %(Alg. 1)
+%Note that $r_t(\bar{a}_t) - r_t(0)$ only affects the vector $b$, not $B$.
+Although we have only access to $r_t(a_t)$, not $r_t(\bar{a}_t) - r_t(0)$, 
+observe that given $\bar{a}_t$, the bandit randomizes to $a_t = \bar{a}_t$ with probability $\pi_t$ and $a_t = 0$ otherwise. Thus
+\begin{align}\label{eq:ExpR}
+\mathbb{E}[(I(a_t>0) - \pi_t) r_t(a_t) | \mathcal{H}_{t-1},\bar{a}_t,\bar{s}_t] &= \pi_t(1-\pi_t) r_t(\bar{a}) - (1- \pi_t) \pi_t r_t(0)\\\nonumber
+& = \pi_t(1-\pi_t) (r_t(\bar{a}_t) -  r_t(0)).
+\end{align}
+Thus $(I(a_t>0) - \pi_t) r_t(a_t) $, which only uses the observed $r_t(a_t)$, is proportional to an unbiased estimator of $r_t(\bar{a}_t) - r_t(0)$. Recalling that $\bar{a}_t, a_t$ are both known since they are chosen by the bandit at time $t$, we create the estimate of the differential reward between $\bar{a}_t$ and action 0 at time $t$ as
+\[
+\hat{r}_t(\bar{a}_t) = (I(a_t>0) - \pi_t) r_t(a_t).
+\]
+%by exploiting the randomization of the action. 
+%Take action with probability $\pi_t$.
+%The reward can be decomposed as follows:
+%\[
+%r_t = f(s,a) + \bar{f}(\bar{s}) + n_t
+%\]
+%where $E[n_t] = 0$ is the noise. Suppose that the action $a$ is binary, i.e. $a \in \{0,1\}$. We can then write the reward as
+%\[
+%r_t = a_t f(s_t) + \bar{f}(s_t) + n_t
+%\]
+%where we have set $f(s_t)$ to be the difference in reward between the actions, and absorbed the remainder into $\bar{f}$. We consider linear models of the form
+%\[
+%r_t = a_t \theta^T s_t + \bar{f}(s_t) + n_t.
+%\]
+%Now, for any policy at time $t$ $a = 0$ will be selected with probability $1-\pi(t)$ and $a= 0$ selected otherwise. %Suppose that $0 < p_0 < \pi_t < p_1 < 1$ for all $t$. 
+%Note that $\pi_t$ is itself a random variable, depending on the state, action, and reward histories. 
+%Ideally, we would like to estimate $\theta$ via least-squares estimation
+%We can use this property to create an alternative for $b$ 
+%%\begin{align}
+%%\hat{\Delta}_t = \frac{a_t - \pi_t}{\pi_t (1 - \pi_t)}r_t 
+%%\end{align}
+%%THIS IS UNSTABLE. INSTEAD, DO 
+%\begin{align}
+%\hat{b} =  \sum_{t = 1}^T (I(a_t>0) - \pi_t)s_{t,\bar{a}_t} r_t(a_t)
+%\end{align}
+%%ALL CONCENTRATION SHOULD HOLD
+%for which
+%\begin{align*}
+%E[\hat{b}| \mathcal{H}_{t-1},\bar{a}_t] =  \sum_{t = 1}^T \pi_t (1 - \pi_t) s_{t,\bar{a}_t}(r_t (\bar{a}_t) - r_t(0)) %= \tilde{b} 
+%\end{align*}
+%%\begin{align*}
+%%E \hat{\Delta}_t &= \frac{1}{\pi_t (1 - \pi_t)}\left(P(a_t = 1) (1 - \pi_t) r_t(1) - P(a_t = 0) \pi_t r_t (0)\right) \\
+%%&= \frac{1}{\pi_t (1 - \pi_t)}\pi_t (1 - \pi_t) (r_t(1) - r_t(0))\\
+%% &=r_t(1) - r_t(0),
+%%\end{align*}
+% as desired. 
+%CONNECT WEiGHTS TO VARIANCE. Weighted least squares
+The corresponding penalized weighted least-squares estimator for $\theta$ using $\hat{r}_t (\bar{a}_t)$ is the minimizer of
+\begin{align}\label{eq:obj2}
+\sum\nolimits_{t=1}^T&  \pi_t (1-\pi_t)(\hat{r}_t(\bar{a}_t)/(\pi_t (1-\pi_t)) -  \theta^T s_{t,\bar{a}_t} )^2+\|\theta\|_2^2\\\nonumber &= \sum\nolimits_{t=1}^T \frac{(\hat{r}_t(\bar{a}_t))^2}{\pi_t(1-\pi_t)} - 2\hat{r}_t(\bar{a}_t)\theta^T s_{t,\bar{a}_t} + \pi_t (1-\pi_t)(\theta^T s_{t,\bar{a}_t})^2+\|\theta\|_2^2\\\nonumber&= c - 2\theta^T \hat{b} + \theta^T B \theta+\|\theta\|_2^2,
+\end{align}
+where for simplicity of presentation we have used unit penalization $\|\theta\|_2^2$, and 
+\begin{align*}
+\hat{b} &=  \sum\nolimits_{t = 1}^T (I(a_t>0) - \pi_t)s_{t,\bar{a}_t} r_t(a_t),\quad
+B =  I + \sum\nolimits_{t=1}^T \pi_t (1-\pi_t) s_{t,\bar{a}_t}s_{t,\bar{a}_t}^T.
+\end{align*}
+The weighted least-squares weights are $\pi_t (1-\pi_t)$, since $\mathrm{var}\left[\left.\frac{\hat{r}_t(\bar{a}_t)}{\pi_t (1-\pi_t)}\right| \mathcal{H}_{t-1}, \bar{a}_t, \bar{s}_t\right] = \frac{\mathrm{var}[\hat{r}_t(\bar{a}_t)t| \mathcal{H}_{t-1}, \bar{a}_t, \bar{s}_t]}{(\pi_t(1-\pi_t))^2}$ and the standard deviation of $\hat{r}_t(\bar{a}_t) = (I(a_t>0) - \pi_t) r_t(a_t)$ given $ \mathcal{H}_{t-1}, \bar{a}_t, \bar{s}_t$ is of order $g_t(\bar{s}_t) = O(1)$.
+ %For proper normalization in the least-squares setting, we set %should replace $B = \sum_t s_t s_t^T$ with
+ %\begin{align*}
+ %\end{align*}
+% Is this the posterior variance?
+ The minimizer of \eqref{eq:obj2} is
+ $%\[
+ \hat{\theta} = B^{-1} \hat{b}$. %Note that the coefficients $\pi_t (1-\pi_t)$ arise from the coefficients of the weighted regression.
+ %\]
+ 
+ %\subsection{Time-varying confusers}
+ 
+ %\subsection{Epoch-greedy: Low regret}
+ 
+ 
+ 
+ 
+ \subsection{Action-Centered Thompson Sampling}
+ As the Thompson sampling approach generates probabilities of taking an action, rather than selecting an action, Thompson sampling is particularly suited to our regression approach. We follow the basic framework of the contextual Thompson sampling approach presented by \cite{agrawal2013thompson}, extending and modifying it to incorporate our action-centered estimator and probability constraints. 
+ 
+The critical step in Thompson sampling is randomizing the model coefficients according to the prior $\mathcal{N}(\hat{\theta},v^2 B^{-1})$ for $\theta$ at time $t$. A $\theta' \sim\mathcal{N}(\hat{\theta},v^2 B^{-1})$ is generated, and the action $a_t$ chosen to maximize $s_{t,a}^T \theta'$.
+%\[
+%a_t = \arg \max_{a \in \{0,\dots,N\}} s_{t,a}^T \theta' I(a > 0).
+%\]
+% , as $v^2B^{-1}$ is the prior covariance of the current estimate $\hat{\theta}$ \cite{?}. 
+The probability that this procedure selects any action $a$ is determined by the distribution of $\theta'$; however, it may select action 0 with a probability not in the required range $[1-\pi_{\max}, 1-\pi_{\min}]$. %We thus introduce an alternative procedure that incorporates the desired probability constraints.
+We thus introduce a two-step hierarchical procedure. After generating the random $\theta'$, we instead choose the \emph{nonzero} $\bar{a}_t$ maximizing the expected reward
+%$\theta' \sim\mathcal{N}(\hat{\theta},v^2 B^{-1})$ and choose the nonzero action $\bar{a}_t$ maximizing the corresponding expected reward
+\[
+\bar{a}_t = \arg \max_{a \in \{1,\dots,N\}} s_{t,a}^T \theta'.
+\]
+ \begin{algorithm}[h]
+\caption{Action-Centered Thompson Sampling}\label{Alg:Thom}
+\begin{algorithmic}[1]
+%\STATE Given prior diagonal covariance $\Sigma_0$. 
+\STATE Set $B =I$, $\hat{\theta} = 0$, $\hat{b} = 0$, choose $[\pi_{\min},\pi_{\max}]$.
+\FOR{$t = 1,2,\dots$}
+\STATE Observe current context $\bar{s}_t$ and form $s_{t,a}$ for each $a \in\{ 1, \dots, N\}$.
+\STATE Randomly generate $\theta' \sim\mathcal{N}(\hat{\theta},v^2 B^{-1})$.
+\STATE Let
+\[
+\bar{a}_t = \arg \max_{a \in \{1,\dots,N\}} s_{t,a}^T \theta'.
+\]
+%\STATE Obtain number $N_t$ of actions taken in past 24 hours. 
+%\STATE Feedback mean offset $\delta_\mu = \alpha(N_t - \beta)_+$.
+\STATE Compute probability $\pi_t$ of taking a nonzero action according to \eqref{eq:nzprob}.%\STATE %Sample $\tilde{\theta}(t)\sim \mathcal{N}(\hat{\theta}, v^2B^{-1})$.
+%\STATE $\pi_t \gets \min(\pi_{\max}, \max(\pi_t,\pi_{\min}))$.
+%\STATE Choose to do a nonzero action ($a_t > 0$) with probability $\pi_t$.\
+\STATE Play action $a_t = \bar{a}_t$ with probability $\pi_t$, else play $a_t = 0$. 
+%\IF{With probability $\pi_t$}
+%\STATE Play action $a_t = \bar{a}_t$.
+%\ELSE
+%\STATE Play action $a_t = 0$.
+%\ENDIF
+ \STATE Observe reward $r_t(a_t)$ and update $\hat{\theta}$
+%\STATE Update 
+\begin{align*}
+B  &= B + \pi_t (1-\pi_t)s_{t,\bar{a}_t} s_{t,\bar{a}_t}^T,\quad
+\hat b = \hat{b}+ s_{t,\bar{a}_t} (I(a_t > 0)- \pi_t)r_t(a_t),\quad
+\hat{\theta} = B^{-1}\hat{b}.
+\end{align*}
+\ENDFOR
+\end{algorithmic}
+\end{algorithm}
+Then we randomly determine whether to take the nonzero action, choosing $a_t =\bar{a}_t$ with probability
+\begin{equation}
+\label{eq:nzprob}
+\pi_t = \mathbb{P}(a_t > 0) = \max(\pi_{\min},\min(\pi_{\max},\mathbb{P}(s_{t,\bar{a}}^T \tilde{\theta}> 0))),
+\end{equation}
+and $a_t = 0$ otherwise, where $\tilde{\theta} \sim\mathcal{N}(\hat{\theta},v^2 B^{-1})$. $\mathbb{P}(s_{t,\bar{a}}^T \tilde{\theta}> 0)$ is the probability that the expected relative reward $s_{t,\bar{a}}^T \tilde{\theta}$ of action $\bar{a}_t$ is higher than zero for $\tilde{\theta} \sim\mathcal{N}(\hat{\theta},v^2 B^{-1})$.
+This probability is easily computed using the normal CDF. 
+%Then, if the decision was made to send a nonzero action, we randomly select which nonzero action to send.
+%The full procedure is
+%\begin{align}
+%a_t = \arg \max_{a \in \{1,\dots,N\}} s_{t,a}^T \theta'.
+%\end{align}
+%\[
+%\pi(a,t) = \arg\max_{\sum_{a} \pi(a) = 1, \pi(0) \in [\pi_{\min},\pi_{\max}]} \sum_{a = 0}^N \pi(a) [s_{t,a}^T \theta I(a > 0)]
+%\]
+ %Mention existing thompson approach.
+ Finally the bandit updates $\hat b$, $B$ and computes an updated $\hat{\theta} = B^{-1} \hat{b}$.
+ Our action-centered Thompson sampling algorithm is summarized in Algorithm \ref{Alg:Thom}.
+ 
+% THIS IS LIKE A HIERARCHICAL BANDIT
+ 
+ %Regression is as in above. Need to address our implementation of the probability constraints.. 
+ 
+ %We choose this over UCB since Thompson sampling gives an explicit $\pi_t$. Note that $v$ has to be increased in correspondence to the size of $\bar{f}$. 
+
+
+
+
+
+\section{Regret analysis}
+%\subsection{Regret and Probability Constraints}
+Classically, the regret of a bandit is defined as the difference between the reward achieved by taking the optimal actions $a^*_t$, and the expected reward received by playing the arm $a_t$ chosen by the bandit
+\begin{equation}\label{eq:regcla}
+\mathrm{regret}_{classical}(t) = s_{t,a^*_t}^T\theta - s_{t,a_t}^T \theta,
+\end{equation}
+where the expectation is taken conditionally on $a_t, s_{t,a_t}^T, \mathcal{H}_{t-1}$. 
+%and the classical contextual bandit attempts to minimize the total regret over possibly unknown horizon $T$.
+%TALK ABOUT HOW WE ARE DOING EXPECTATION'
+For simplicity, let $\pi^*_t = 1-\pi^*_t(0,t)$ be the probability that the optimal policy takes a nonzero action, and recall that $\pi_t = 1-\pi_t(0,t)$ is the probability the bandit takes a nonzero action.
+The probability constraint implies that the optimal policy \eqref{eq:policy} plays the optimal arm with a probability bounded away from 0 and 1, hence definition \eqref{eq:regcla} is no longer meaningful. We can instead create a regret that is the difference in expected rewards conditioned on $\bar{a}_t,\pi_t, s_{t,a_t}^T, \mathcal{H}_{t-1}$, but not on the randomized action $a_t$:
+\begin{align}\label{eq:regret}
+\mathrm{regret}(t) &=  \pi^*_t s_{t,\bar{a}^*_t}^T\theta - \pi_t s_{t,\bar{a}_t}^T \theta%\sum_{a = 0}^N (\pi^*(a,t) - \pi(a,t)) s_{t,a}^T \theta I(a> 0)
+\end{align}
+%, with the expectation also taken with respect to the randomization between zero and nonzero actions:
+%\[
+%\mathrm{regret}(t) = 
+%0\cdot\mathbb{P}(a^*_t =0) + \mathbb{P}(a^*_t =\bar{a}^*_t) s_{t,\bar{a}^*_t}^T\theta - 0\cdot(1-\pi_t) -\pi_t s_{t,\bar{a}_t}^T \theta,
+%\]
+where we have recalled that given $\bar{a}_t$, the bandit plays action $a_t = \bar{a}_t$ with probability $\pi_t$ and plays the $a_t = 0$ with differential reward 0 otherwise.
+%Similarly, we define the expected regret of the action-centered contextual bandit to the difference between the expected reward of the optimal policy $\pi^*$ \eqref{eq:policy} and the expected reward for the bandit given $\bar{a}_t, s_{t,a}$, and $\mathcal{H}_{t-1}$. 
+%Following the definition \eqref{eq:rewardPol} of the expected reward, we have
+%\begin{align}\label{eq:regret}
+%\mathrm{regret}(t) &=  \pi^*_t s_{t,\bar{a}^*_t}^T\theta - \pi_t s_{t,\bar{a}_t}^T \theta.%\sum_{a = 0}^N (\pi^*(a,t) - \pi(a,t)) s_{t,a}^T \theta I(a> 0)
+%\end{align}
+The action-centered contextual bandit attempts to minimize the cumulative regret $
+\mathcal{R}(T) = \sum\nolimits_{t = 1}^T \mathrm{regret}(t)
+$ over horizon $T$.
+
+
+\subsection{Regret bound for Action-Centered Thompson Sampling}
+In the following theorem we show that with high probability, the probability-constrained Thompson sampler has low regret relative to the optimal probability-constrained policy. 
+\begin{theorem}
+Consider the action-centered contextual bandit problem, where $g_t$ is potentially time varying, and $\bar{s}_t$ at time $t$ given $\mathcal{H}_{t-1}$ is chosen by an adversary. Under this regime, the total regret at time $T$ for the action-centered Thompson sampling contextual bandit (Algorithm 1) satisfies
+\[
+\mathcal{R}(T) \leq C \left(\frac{d^2}{\epsilon} \sqrt{T^{1+\epsilon}}(\log(Td) \log \frac{1}{\delta})\right)
+\]
+with probability at least $1-3\delta/2$, for any $0< \epsilon < 1$, $0< \delta < 1$. The constant $C$ is in the proof.
+\end{theorem}
+Observe that this regret bound does not depend on the number of actions $N$, is sublinear in $T$, and scales only with the complexity $d$ of the interaction term, not the complexity of the baseline reward $g$. Furthermore, $\epsilon = 1/\log(T)$ can be chosen giving a regret of order $O(d^2 \sqrt{T})$. 
+%DISCUSS THIS
+
+This bound is of the same order as the baseline Thompson sampling contextual bandit in the adversarial setting when the baseline is identically zero \citep{agrawal2013thompson}. When the baseline can be modeled with $d'$ features where $d' > d$, our method achieves $O(d^2\sqrt{T})$ regret whereas the standard Thompson sampling approach has $O((d + d')^2 \sqrt{T})$ regret. Furthermore, when the baseline reward is time-varying, the worst case regret of the standard Thompson sampling approach is $O(T)$, while the regret of our method remains $O(d^2 \sqrt{T})$.
+
+%where $a_t$ is the action chosen by the contextual bandit at time $t$ and the horizon $T$ is possibly unknown.
+%COMPARE TO CLASSICAL METHODS
+
+
+
+
+%-------
+
+
+
+
+
+%Probability of taking nonzero action $P(a(t) > 0) = \pi(t)$. %, taken with probability $\pi(t)$.
+
+%Context at time $t$ containing joint action-state features: $s_{t,a_t}$. %Form $\tilde{s}_t = [a(t) - \pi(t))s_t;s_t]$. 
+
+
+%\subsection{Regret of classical Thompson Sampler}
+%list, just for comparison
+
+
+
+%
+\subsection{Proof of Theorem 1 - Decomposition of the regret}
+
+We will first bound the regret \eqref{eq:regret} at time $t$. 
+\begin{align}
+\mathrm{regret}(t) = \pi^*_t s_{t,\bar{a}^*_t}^T \theta - \pi_t s_{t,\bar{a}_t}^T \theta
+&= (\pi^*_t - \pi_t) (s_{t,\bar{a}_t}^T \theta) + \pi^*_t (s_{t,\bar{a}^*_t}^T \theta - s_{t,\bar{a}_t}^T \theta)\\
+  &\leq (\pi^*_t - \pi_t) (s_{t,\bar{a}_t}^T \theta) + (s_{t,\bar{a}^*_t}^T \theta - s_{t,\bar{a}_t}^T \theta),
+\end{align}
+where the inequality holds since $(s_{t,\bar{a}^*_t}^T \theta - s_{t,\bar{a}_t}^T \theta) \geq 0$ and $0<\pi_t^* < 1$ by definition. Then
+\[
+\mathcal{R}(T) = \sum\nolimits_{t=1}^T \mathrm{regret}(t) \leq \underbrace{\sum\nolimits_{t=1}^T (\pi^*_t - \pi_t) (s_{t,\bar{a}_t}^T \theta)}_I + \underbrace{\sum\nolimits_{t=1}^T(s_{t,\bar{a}^*_t}^T \theta - s_{t,\bar{a}_t}^T \theta)}_{II}
+\]
+Observe that we have decomposed the regret into a term $I$ that depends on the choice of the randomization $\pi_t$ between the zero and nonzero action, and a term $II$ that depends only on the choice of the potential nonzero action $\bar{a}_t$ prior to the randomization. We bound $I$ using concentration inequalities, and bound $II$ using arguments paralleling those for standard Thompson sampling.
+%\subsection{Bound for term $I$}
+%where the last inequality follows by the union bound.
+%\ubsection{Bound for term $II$}
+%We have the following bound for term $I$. 
+\begin{lemma}\label{lemm:I}
+Suppose that the conditions of Theorem 1 apply. Then with probability at least $1 - \frac{\delta}{2}$, 
+$
+I %&= \sum_{t=1}^T (\pi^*_t - \pi_t)s_{t,\bar{a}_t}^T \theta\\
+\leq C  \sqrt{d^3 T \log(Td) \log(1/\delta)}
+$
+for some constant $C$ given in the proof.
+\end{lemma}
+
+%The proof is in Section \ref{supp:lem1} of the supplement.
+%If term I unsaturated, then $|s_{t,\bar{a}_t}^T \theta|$ small by definition. Otherwise, $|\pi_t^* - \pi_t|$ small. 
+%The bound for term $II$ is as follows.
+%We now move to term $II$. 
+\begin{lemma}\label{lemm:II}
+Suppose that the conditions of Theorem 1 apply. Then term $II$ can be bounded as
+\[
+II = \sum_{t=1}^T (s_{t,\bar{a}^*_t}^T \theta - s_{t,\bar{a}_t}^T \theta) \leq C' \left(\frac{d^2}{\epsilon} \sqrt{T^{1+\epsilon}} \log \frac{1}{\delta} \log (Td)\right)
+\]
+where the inequality holds with probability at least $1-\delta$.
+\end{lemma}
+The proofs are contained in Sections \ref{supp:lem1} and \ref{supp:lem2} in the supplement respectively. %We create concentration bounds on our estimator that allow us to exploit the proof framework of the standard Thompson sampling contextual bandit \cite{agrawal2013thompson}. 
+In the derivation, the ``pseudo-actions'' $\bar{a}_t$ that Algorithm 1 chooses prior to the $\pi_t$ baseline-nonzero randomization correspond to the actions in the standard contextual bandit setting. Note that $I$ involves only $\bar{a}_t$, not $\bar{a}^*_t$, hence it is not surprising that the bound is smaller than that for $II$. Combining Lemmas \ref{lemm:I} and \ref{lemm:II} via the union bound gives Theorem 1.
+
+
+
+
+%For the LinUCB proof as presented in [Chu et al 2011], we need to bound a slightly modified function,
+%which by the above analysis still goes through.
+
+%From this, it is clear that the proof in [Chu et al 2011] still goes through.
+
+%\subsection{Bounded Smoothness}
+%\subsection{Alternative Assumptions?}
+
+
+%PROOF OF SUPERMARTINGALE lemma \ref{lemm:supMart}
+
+%& \sum_{a =0}^N (\pi^*(a,t) - \pi(a,t)) s_{t,a}^T \theta I(a> 0)\\
+%&=\sum_{a =1}^N (\pi^*(a,t) - \pi(a,t)) s_{t,a}^T \theta \\
+%&= \pi^*(a^{**}_t,t) s_{t,a^{**}_t}^T\theta - \sum_{a =1}^N \pi(a,t) s_{t,a}^T \theta\\
+%&= \underbrace{I(a_t^* = 0) \sum_a(\pi_{\min} I(a=a^{**}_t) - \pi(a,t)) s_{t,a}^T \theta}_I\\ &+ \underbrace{I(a_t^* > 0) \sum_a(\pi_{\max} I(a=a^*_t) - \pi(a,t)) s_{t,a}^T \theta}_{II}
+%\end{align}
+%Term 1 bound when saturated?
+%\begin{align}
+%I &= I(a_t^* = 0) \sum_a(\pi_{\min} I(a=a^{**}_t) - \pi(a,t)) s_{t,a}^T \theta \\
+%&\leq I(a_t^* = 0) |\sum_a \pi_{\min} I(a=a^{**}_t) - \pi(a,t)|\max_a | s_{t,a}^T \theta | \\
+%&\leq I(a_t^* = 0) (\pi_{\min}  - \pi_t),
+%\end{align}
+%where the last inequality is due to the bounded reward assumption that $|s_{t,a}^T \theta| < 1$.\
+%
+%FINISH BOUND
+
+
+%\begin{comment}
+%Decomposing \eqref{eq:regret} into summations over saturated and unsaturated arms, 
+%\begin{align}\label{eq:regretDec}
+%\mathrm{regret}(t) =& \underbrace{\sum_{a \notin \mathrm{sat}(t)} (\pi^*(a,t) - \pi(a,t)) s_{t,a}^T \theta I(a> 0)}_{I}\\\nonumber  &+ \underbrace{\sum_{a \in \mathrm{sat}(t)} (\pi^*(a,t) - \pi(a,t)) s_{t,a}^T \theta I(a> 0)}_{II}
+%\end{align}
+%Note that the difference between the expected reward of an unsaturated arm $a$ and the expected reward of the optimal arm is $?? \leq \frac{2 g(T)^2}{\ell(T)}z_{t,a}$. We can then bound the sum over unsaturated arms as
+%\[
+%I = \sum_{a \notin \mathrm{sat}(t)} (\pi^*(a,t) - \pi(a,t)) s_{t,a}^T \theta I(a> 0) \leq \sum_{a \notin \mathrm{sat}(t)} \pi^*(a,t) \frac{2 g(T)^2}{\ell(T)}z_{t,a} \leq \frac{2 g(T)^2}{\ell(T)}z_{t,a}.
+%\]
+%
+%Proof plan: Divide arms into saturated and unsaturated arms
+%
+%unsaturated arms - low regret by above concentration bound, even if played. 
+%
+%saturated arms - Bound (probability that a nonoptimal saturated arm will be played - minimum allowed probability). Also possible using above concentration bound. This is the only thing we need to update.
+%
+%
+%
+%
+%
+%
+%- If zero arm is saturated, the probability of choosing before clipping is low, so the clipped probability will be even closer to 0.2. This means even lower expected regret. 
+%
+%- If a nonzero arm is saturated and no clipping occurs, then automatic good regret. 
+%
+%- If a nonzero arm is saturated and action prob is clipped low, then probability of choosing is even lower and regret is low.
+%
+%- If a nonzero arm is saturated and action prob is clipped high. If it is chosen, implies that zero arm was not chosen. Regret wrt zero arm is zero because of clipping, so what matters is regret relative to other nonzero arms. This regret is bounded using the same argument as nonclipped regret (two subcases - saturated and unsaturated relative to optimal nonzero)
+%
+%If the regret is low in all three nonzero arm cases, then don't need to analyze the probability of each case. Also, the cases don't affect the distributions?
+%
+%
+%Combine all to obtain expected regret. 
+%
+%\end{comment}
+
+\section{Results}
+%In this section, we evaluate the proposed action-centered Thompson sampling approach on both simulated data and data from a mobile health study, comparing to the baseline Thompson sampling contextual bandit in both cases. 
+\subsection{Simulated data}
+%Show regret curves in various scenarios. Compare to standard Thompson sampling. 
+
+%note: experiments done with a = 0 or 1. Redo for multiple actions. 
+
+We first conduct experiments with simulated data, using $N=2$ possible nonzero actions. In each experiment, we choose a true reward generative model $r_t(s,a)$ inspired by data from the HeartSteps study (for details see Section \ref{app:simMod} in the supplement), and generate two length $T$ sequences of state vectors $s_{t,a} \in \mathbb{R}^{NK}$ and $\bar{s}_t \in \mathbb{R}^L$, where the $\bar{s}_t$ are iid Gaussian and $s_{t,a}$ is formed by stacking columns $I(a = i) [1; \bar{s}_t ]$ for $i = 1,\dots, N$. We consider both nonlinear and nonstationary baselines, while keeping the treatment effect models the same. 
+% as
+%\begin{align*}
+%s_{t,a_t} &= a_t \left[\begin{array}{c}1 \\ \mathcal{N}(0_{K},I_{K})\end{array}\right],\quad
+%\tilde{s}_t = \left[\begin{array}{c}1 \\ \mathcal{N}(0_{L},I_{L})\end{array}\right]
+%\end{align*}
+%where $0_K$ is the vector of zeros of length $K$, and $t = 1,\dots, T$. 
+The bandit under evaluation iterates through the $T$ time points, at each choosing an action and receiving a reward generated according to the chosen model. We set $\pi_{\min} = 0.2, \pi_{\max} = 0.8$.
+
+%\begin{figure}[h]
+%\centering
+%%\includegraphics[width=3in]{FiguresTalk/FigNoneE.eps}%\\
+%\begin{subfigure}[b]{.45\textwidth}
+%\centering
+%\includegraphics[width=2.25in]{Figures/NonlinSim.eps}
+%\caption{Nonlinear $\bar{f}$}
+%\end{subfigure}
+%\hfill
+%\begin{subfigure}[b]{.45\textwidth}
+%\includegraphics[width=2.25in]{Figures/NonstatSim.eps}%\includegraphics[width=2in]{FiguresTalk/
+%%FigNoneClassE.eps}
+%\caption{Time varying $\bar{f}_t$}
+%\end{subfigure}
+%\caption{Nonlinear and time varying baseline reward $\bar{f}$: Cumulative regret for proposed Action-Centered approach, compared to baseline contextual bandit. Interaction term is 2-dimensional, and model for baseline reward is 20-dimensional. }
+%%Right: Full $K=2$ ($\Omega = \Psi_1 \oplus \Psi_2$), 225-node Kronecker sum of $\Psi_1$ with an ER graph of size 9 ($\Psi_2$).  }
+%\label{Fig:HighD}
+%\end{figure}
+At each time step, the reward under the optimal policy is calculated and compared to the reward received by the bandit to form the regret $\mathrm{regret}(t)$. We can then plot the cumulative regret
+\[
+\mathrm{cumulative \: regret}(t) = \sum\nolimits_{\tau = 1}^t \mathrm{regret}(\tau). 
+\]
+\begin{figure}[h]
+\centering
+%\includegraphics[width=3in]{FiguresTalk/FigNoneE.eps}%\\
+\begin{subfigure}[b]{.45\textwidth}
+\centering
+\includegraphics[width=2.25in]{Figures/AAAINonlinSim-eps-converted-to.pdf}
+\caption{Median cumulative regret}
+\end{subfigure}
+\hfill
+\begin{subfigure}[b]{.45\textwidth}
+\includegraphics[width=2.25in]{Figures/AAAINonlinSimQuant-eps-converted-to.pdf}%\includegraphics[width=2in]{FiguresTalk/
+%FigNoneClassE-eps-converted-to.pdf}
+\caption{Median with 1st and 3rd quartiles (dashed)}
+\end{subfigure}
+\caption{Nonlinear baseline reward $g$, in scenario with 2 nonzero actions and reward function based on collected HeartSteps data. Cumulative regret shown for proposed Action-Centered approach, compared to baseline contextual bandit, median computed over 100 random trials. }
+%Right: Full $K=2$ ($\Omega = \Psi_1 \oplus \Psi_2$), 225-node Kronecker sum of $\Psi_1$ with an ER graph of size 9 ($\Psi_2$).  }
+\label{Fig:NonLin}
+\end{figure}
+\begin{figure}[h]
+\centering
+%\includegraphics[width=3in]{FiguresTalk/FigNoneE-eps-converted-to.pdf}%\\
+\begin{subfigure}[b]{.45\textwidth}
+\centering
+\includegraphics[width=2.25in]{Figures/NonstatSimNipsSept-eps-converted-to.pdf}
+\caption{Median cumulative regret}
+\end{subfigure}
+\hfill
+\begin{subfigure}[b]{.45\textwidth}
+\includegraphics[width=2.25in]{Figures/NonstatSimNipsSeptQuant-eps-converted-to.pdf}%\includegraphics[width=2in]{FiguresTalk/
+%FigNoneClassE-eps-converted-to.pdf}
+\caption{Median with 1st and 3rd quartiles (dashed)}
+\end{subfigure}
+\caption{Nonstationary baseline reward $g$, in scenario with 2 nonzero actions and reward function based on collected HeartSteps data. Cumulative regret shown for proposed Action-Centered approach, compared to baseline contextual bandit, median computed over 100 random trials.}
+%Right: Full $K=2$ ($\Omega = \Psi_1 \oplus \Psi_2$), 225-node Kronecker sum of $\Psi_1$ with an ER graph of size 9 ($\Psi_2$).  }
+\label{Fig:NonStat}
+\end{figure}
+In the first experiment, the baseline reward is nonlinear. Specifically, we generate rewards using
+$
+r_t(s_{t,a_t},\bar{s}_t, a_t)= \theta^T s_{t,a_t} + 2 I(|[\bar{s}_t]_1| < 0.8)  + n_t
+$
+where $n_t = \mathcal{N}(0, 1)$ and $\theta\in \mathbb{R}^8$ is a fixed vector listed in supplement section \ref{app:simMod}. This simulates the quite likely scenario that for a given individual the baseline reward is higher for small absolute deviations from the mean of the first context feature, i.e. rewards are higher when the feature at the decision point is ``near average'', with reward decreasing for abnormally high or low values. We run the benchmark Thompson sampling algorithm \citep{agrawal2013thompson} and our proposed action-centered Thompson sampling algorithm, computing the cumulative regrets and taking the median over 500 random trials. The results are shown in Figure \ref{Fig:NonLin}, demonstrating linear growth of the benchmark Thompson sampling algorithm and significantly lower, sublinear regret for our proposed method. 
+
+
+
+%Scenarios to consider:
+
+%- Linear $\bar{f}$
+
+%- High dimensional linear $\bar{f}$
+
+
+
+
+%- highly nonlinear $\bar{f}$
+
+%- nonstationary $\bar{f}$
+We then consider a scenario with the baseline reward $g_t(\cdot)$ function changing in time. We generate rewards as
+$
+r_t(s_{t,a_t},\bar{s}_t, a_t)= \theta^T s_{t,a_t} + \eta_t^T \bar{s}_t + n_t
+$
+where $n_t = \mathcal{N}(0, 1)$, $\theta$ is a fixed vector as above, and $\eta_t \in \mathbb{R}^7$, $\bar{s}_t$ are generated as smoothly varying Gaussian processes (supplement Section \ref{app:simMod}). The cumulative regret is shown in Figure \ref{Fig:NonStat}, again demonstrating linear regret for the baseline approach and significantly lower sublinear regret for our proposed action-centering algorithm as expected. 
+
+%\begin{figure}[h]
+%\centering
+%%\includegraphics[width=3in]{FiguresTalk/FigNoneE-eps-converted-to.pdf}%\\
+%\includegraphics[width=4in]{Figures/test_nonst-eps-converted-to.pdf}%\includegraphics[width=2in]{FiguresTalk/
+%%FigNoneClassE-eps-converted-to.pdf}
+%\caption{Time-varying $\bar{f}$: Cumulative regret for proposed Action-Centered approach, compared to baseline contextual bandit. Interaction term is 2-dimensional, and model for baseline reward is also 2-dimensional, but changes slowly in time (Gaussian process). }
+%%Right: Full $K=2$ ($\Omega = \Psi_1 \oplus \Psi_2$), 225-node Kronecker sum of $\Psi_1$ with an ER graph of size 9 ($\Psi_2$).  }
+%\label{Fig:Nonstat}
+%\end{figure}
+
+
+
+
+
+
+%\section{Basic Algorithm - Nonparametric}
+%\begin{figure}[H]
+%\centering
+%\includegraphics[width=4in]{bandit-eps-converted-to.pdf}
+%%\includegraphics[width=3in]{FiguresTalk/Data/MDML_D1_randperm_A4-eps-converted-to.pdf}
+%\caption{ Typical result for ``$f(s_t)$ estimation error" by round using action-centered Thompson sampling. For this experiment, $\bar{f}(s_t) = \bar{\theta}^T s_t$, where $\bar{\theta}$ is random in ${R}^10$, and gives on average a reward with magnitude 10 times that of the action-related $f$ reward. The results demonstrate successful convergence to a good estimate in an extremely difficult problem.}
+%\label{Fig:RealChangeBoth}
+%\end{figure}
+
+%DO SIMULATIONS WHERE WE BREAK EXISTING STANDARD ALGORITHM.  
+
+%DO HEARTSTEPS V1 DATA. DO UNBIASED OFFLINE EVALUATION OF THIS. 
+
+\subsection{HeartSteps study data}
+
+%ANY NEEDED STUDY DETAILS HERE. Tech report, etc? What we are doing in the study.
+
+The HeartSteps study collected the sensor and weather-based features shown in Figure \ref{Fig:HS1Feats} at 5 decision points per day for each study participant. If the participant was available at a decision point, a message was sent with constant probability 0.6. The sent message could be one of several activity or anti-sedentary messages chosen by the system. The reward for that message was defined to be $\log(0.5 + x)$ where $x$ is the step count of the participant in the 30 minutes following the suggestion. 
+As noted in the introduction, the baseline reward, i.e. the step count of a subject when no message is sent, does not only depend on the state in a complex way but is likely dependent on a large number of unobserved variables. Because of these unobserved variables, the mapping from the observed state to the reward is believed to be strongly time-varying. Both these characteristics (complex, time-varying baseline reward function) suggest the use of the action-centering approach. % to orthogonalize away the effect of the baseline and focus on modeling only the change in reward due to sending a message. 
+%If the interaction portion of the underlying reward function is simpler than the baseline portion, we expect the 
+
+We run our contextual bandit on the HeartSteps data, considering the binary action of whether or not to send a message at a given decision point based on the features listed in Figure \ref{Fig:HS1Feats} in the supplement. Each user is considered independently, for maximum personalization and independence of results. As above we set $\pi_{\min} = 0.2, \pi_{\max} = 0.8$. 
+
+We perform offline evaluation of the bandit using the method of \cite{li2011unbiased}. \cite{li2011unbiased} uses the sequence of states, actions, and rewards in the data to form an near-unbiased estimate of the average expected reward achieved by each algorithm, averaging over all users. We used a total of 33797 time points to create the reward estimates. The resulting estimates for the improvement in average reward over the baseline randomization, averaged over 100 random seeds of the bandit algorithm, are shown in Figure \ref{Fig:HS1} of the supplement with the proposed action-centering approach achieving the highest reward. Since the reward is logarithmic in the number of steps, the results imply that the benchmark Thompson sampling approach achieves an average 1.6\% increase in step counts over the non-adaptive baseline, while our proposed method achieves an increase of 3.9\%. 
+
+%REMARK ON WHY NO UNCERTAINTY ON 0 ALSO MEANING OF GAINS. SAY WHY LOGARITHMIC
+
+
+
+
+
+
+
+\section{Conclusion}
+Motivated by emerging challenges in adaptive decision making in mobile health, in this paper we proposed the action-centered Thompson sampling contextual bandit, exploiting the randomness of the Thompson sampler and an action-centering approach to orthogonalize out the baseline reward. We proved that our approach enjoys low regret bounds that scale only with the complexity of the interaction term, allowing the baseline reward to be arbitrarily complex and time-varying. 
+
+
+
+%An open question is how this methodology might apply to nonlinear (e.g. neural network) bandit methods. In particular, the action-centering method may reduce the required complexity of a potential neural-network based bandit approach in larger mobile health studies, allowing it to learn on less data and be robust to time-varying baselines.   
+
+\subsubsection*{Acknowledgments}
+This work was supported in part by grants R01 AA023187, P50 DA039838, U54EB020404, R01 HL125440 NHLBI/NIA, NSF CAREER IIS-1452099, and a Sloan Research Fellowship.
+%Use unnumbered third level headings for the acknowledgments. All
+%%acknowledgments go at the end of the paper. Do not include
+%acknowledgments in the anonymized submission, only in the final paper.
+%\begin{comment}
+
+%\end{comment}
+%\section*{References}
+\bibliographystyle{icml2017}
+\bibliography{cb}
+%\begin{comment}
+\begin{appendices}
+\section{HeartSteps feature list}
+Figure \ref{Fig:HS1Feats} shows the features available to the bandit in the HeartSteps study dataset, and Figure \ref{Fig:HS1} shows the estimated average regret results with errorbars.
+\begin{figure}[h]
+\centering
+\scriptsize{
+\begin{tabular}{p{3cm}|p{3cm}|p{3cm}|c|c}
+\textbf{Feature}             & \textbf{Description} & \textbf{Purpose}& \textbf{Interaction} & \textbf{Baseline Model }   \\
+\hline
+Number of messages sent & Total number of messages sent to user in prior week & Modeling habituation to intervention & Y & Y\\
+\hline
+Location indicator 1 & 1 if not at home or work, 0 o.w. & Location relevant to availability to walk & Y & Y  \\
+\hline
+Location indicator 2 & 1 if at work, 0 o.w. &  & Y & Y  \\
+\hline
+Step count variability & Historical standard deviation of step counts in 60 minute window surrounding decision point, taken over prior 7 days & Responsiveness in different times of day & Y & Y\\
+\hline
+Steps in prior 30 minutes  & Step count in 30 minutes prior to decision point & Measure of recent activity & & Y\\
+\hline
+Square root of steps yesterday  & Square root of the total step count yesterday & Recent commitment/ engagement &  & Y\\
+\hline
+Outdoor Temperature  & Degrees Celsius & Cold weather potentially less appealing &  & Y\\
+\end{tabular}
+}
+\caption{List of features available to the bandit in the HeartSteps experiment. The features available to model the action interaction (effect of sending an anti-sedentary message) and to model the baseline (reward under no action) are denoted via a ``Y'' in the corresponding column. }
+\label{Fig:HS1Feats}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+%\includegraphics[width=3in]{FiguresTalk/FigNoneE-eps-converted-to.pdf}%\\
+\includegraphics[width=4in]{Figures/HeartSteps.png}%\includegraphics[width=2in]{FiguresTalk/
+%FigNoneClassE-eps-converted-to.pdf}
+\caption{Unbiased estimates of the average reward received by the benchmark Thompson sampling contextual bandit and the proposed action-centered Thompson sampling contextual bandit, relative to the reward received under the pre-specified HeartSteps randomization policy. Also shown are one standard deviation error bars for the computed estimates. The superior performance of the action-centering approach is indicative of its robustness to the high complexity of the baseline subject behavior.  }
+%Right: Full $K=2$ ($\Omega = \Psi_1 \oplus \Psi_2$), 225-node Kronecker sum of $\Psi_1$ with an ER graph of size 9 ($\Psi_2$).  }
+\label{Fig:HS1}
+\end{figure}
+\subsection{Simulation model}
+\label{app:simMod}
+Figure \ref{Fig:HS1coef} shows the coefficients $\theta$ used in the main text simulations. The coefficients shown in the figure associated with the first action are obtained via a linear regression analysis of the binary action (sending or not sending a message) HeartSteps intervention data, and the coefficients for the second action are a simple modification of those.
+
+
+\begin{figure}[h]
+\centering
+\scriptsize{
+\begin{tabular}{p{3cm}|p{3cm}|p{3cm}|c|c}
+\textbf{Feature}             & Action 1 coef. & Action 2 coef.   \\
+\hline
+Number of messages sent & .116 & .116\\
+\hline
+Location indicator 1 & -.275 & .275  \\
+\hline
+Location indicator 2 & -.233 & -.233  \\
+\hline
+Step count variability & .0425 & .0425\\
+\hline
+\end{tabular}
+}
+\caption{Effect coefficients, based on HeartSteps data, used for simulation reward model. }
+\label{Fig:HS1coef}
+\end{figure}
+For the time varying simulation, Gaussian processes were used to generate the reward coefficient sequence $\eta_t$ and the state sequence $\bar{s}_t$. We used Gaussian processes since if $\eta_t$ is IID, then the baseline reward becomes an IID random variable, making the baseline reward not time varying. 
+
+We used the Gaussian process
+\[
+\eta_t = \sqrt{1-\rho^2}\eta_{t-1} + \rho n_t
+\]
+where $\eta_0 = 1_7$, $n_t \sim \mathcal{N}(0, I_7)$, and $\rho = 0.1$. The state sequence $\bar{s}_t$ was generated in the same manner. 
+
+
+
+\section{Definitions}
+In order to proceed with the proof of Theorem 1, we make the following definitions. 
+
+\begin{definition}
+
+Define a filtration $\mathcal{F}_{t-1} = \{\mathcal{H}_{t-1}, \bar{s}_{t}\}$ as the union of the history and current context.
+\end{definition}
+%\subsection{Events}
+%DEFINE EVENTS
+\begin{definition}
+Let
+\[
+z_{t,a} = \sqrt{s_{t,a}^T B(t)^{-1} s_{t,a}},
+\]
+for all $a = 1,\dots, N$. 
+\end{definition}
+\begin{definition}
+Define $\ell(T) = R\sqrt{d \log (T^3) \log (1/\delta)} + 1$, $v = R\sqrt{\frac{24}{\epsilon} d \log(1/\delta)}$, and $g(T) = \sqrt{4d \log(Td)} v + \ell(T)$. 
+\end{definition}
+We divide the arms $\bar{a} > 0$ into saturated and unsaturated actions. 
+\begin{definition}[Saturated vs. unsaturated actions]
+Any arm $\bar{a}>0$ for which $g(T) z_{t,\bar{a}} < \ell(T) z_{t,\bar{a}^*_t}$ is called a \emph{saturated arm}. If an arm is not saturated, it is called \emph{unsaturated}. Let $C(t) \subseteq \{1,\dots,N\}$ be the subset of saturated arms at time $t$. 
+\end{definition}
+Observe that the optimal arm $\bar{a}^*$ is unsaturated by definition.
+
+We can now state the required concentration events and present bounds on the probability they occur.
+\subsection{Concentration events}
+
+\begin{definition}
+Let $E^\mu(t)$ be the event that for all $\bar{a} = 1 ,\dots, N$
+\[
+|s_{t,\bar{a}}^T\hat{\theta}_t - s_{t,\bar{a}}^T \theta| \leq \ell(T) z_{t,\bar{a}}.
+\]
+Similarly, let $E^\theta(t)$ be the event that for all $\bar{a} = 1,\dots, N$
+\[
+|s_{t,\bar{a}}^T\theta'_t - s_{t,\bar{a}}^T\hat{\theta}_t| \leq \sqrt{4d\log(Td)} v z_{t,\bar{a}}
+\]
+and $E^\theta_0(t)$ be the corresponding event that for all $\bar{a} = 1,\dots, N$
+\[
+|s_{t,\bar{a}}^T\tilde{\theta}_t - s_{t,\bar{a}}^T\hat{\theta}_t| \leq \sqrt{4d\log(Td)} v z_{t,\bar{a}}
+\]
+\end{definition}
+
+
+We can bound the probabilities of the events $E^\theta(t)$, $E^\theta(t)_0$, and $E^\mu(t)$ in the following lemmas. Observe that by definition $\mathbb{P}(E^\theta(t)|\mathcal{F}_{t-1}) = \mathbb{P}(E^\theta(t)_0|\mathcal{F}_{t-1})$.
+
+%MAKE SURE HOLD FOR ALL T
+\begin{lemma}[\cite{agrawal2013thompson}]
+\label{lemm:eoth}
+For all $t$, and possible filtrations $\mathcal{F}_{t-1}$, $\mathbb{P}(E^\theta(t)|\mathcal{F}_{t-1}) \geq 1 - \frac{1}{T^2}$. 
+\end{lemma}
+%Note that this also implies that $\mathbb{P}(E^\theta_0(t)|\mathcal{F}_{t-1}) \geq 1 - \frac{1}{T^2}$. 
+For $E^\mu(t)$ we have
+\begin{lemma}\label{lemm:AG1}
+For all $t$, $0 < \delta < 1$, $\mathbb{P}(E^\mu(t)) \geq 1 - \frac{\delta}{T^2}$. 
+\end{lemma}
+The proof is given in Section \ref{supp:lemmAG1}. 
+\subsection{Supermartingales}
+\label{supp:AzHo}
+\begin{definition}[Supermartingale]
+A sequence of random variables $(Y_t;t \geq 0)$ is called a supermartingale corresponding to a filtration $\mathcal{F}_{t}$ if, for all $t$, $Y_t$ is $\mathcal{F}_t$-measurable, and 
+\[
+\mathbb{E}[Y_t - Y_{t-1} | \mathcal{F}_{t-1}] \leq 0
+\]
+for all $t \geq 1$.
+\end{definition}
+\begin{lemma}[Azuma-Hoeffding inequality]
+If for all $t = 1 ,\dots, T$ a supermartingale $(Y_t;t \geq 0)$ corresponding to filtration $\mathcal{F}_t$ satisfies $|Y_t - Y_{t-1}| \leq c_t$ for some constants $c_t$, then for any $a \geq 0$
+\[
+\mathbb{P}(Y_T - Y_0 \geq 0) \leq e^{- \frac{a^2}{2 \sum_{t=1}^T c_t^2}}.
+\]
+\end{lemma}
+
+
+\section{Preliminary results}
+\subsection{Lemma \ref{lemm:AG3}: Probability of choosing a saturated action $\bar{a}_t \in C(t)$}
+%\subsection{Probability of choosing a saturated action}
+\begin{lemma}[\cite{agrawal2013thompson} Lemma 2]\label{lemm:AG2}
+For any filtration $\mathcal{F}_{t-1}$ such that $E^\mu(t)$ is true, 
+\[
+\mathbb{P}(s_{t,\bar{a}^*_t}^T\theta' > s_{t,\bar{a}^*_t}^T\theta + \ell(T) z_{t,\bar{a}^*_t} | \mathcal{F}_{t-1}) \geq \frac{1}{4e\sqrt{\pi T^\epsilon}}.
+\]
+\end{lemma}
+We can now prove the following.
+\begin{lemma}\label{lemm:AG3}
+For any filtration $\mathcal{F}_{t-1}$ such that $E^\mu(t)$ is true, 
+\[
+\mathbb{P}(\bar{a}_t \in C(t) | \mathcal{F}_{t-1})\leq \frac{1}{p}\mathbb{P}(\bar{a}_t \notin C(t) | \mathcal{F}_{t-1}) + \frac{1}{p T^2},
+\]
+where $p = \frac{1}{4 e \sqrt{\pi T^\epsilon}}$.
+\end{lemma}
+\begin{proof}
+Recall that $\bar{a}_t$ is the action with the largest value of $s_{t,i}^T \theta'$. Hence, if $s_{t,\bar{a}^*_t}^T \theta'$ is larger than $s_{t,i}^T \theta'$ for all $i \in C(t)$, then $\bar{a}_t$ is one of the unsaturated actions.
+Hence
+\begin{equation}\label{eq:AG1}
+\mathbb{P}(\bar{a}_t \notin C(t) | \mathcal{F}_{t-1}) \geq \mathbb{P}(s_{t,\bar{a}^*_t}^T \theta' > s_{t,i}^T \theta', \forall i \in C(t) | \mathcal{F}_{t-1}.
+\end{equation}
+We know that by definition all saturated arms $i \in C(t)$ have $g(T) z_{t,j} < \ell(T) z_{t,\bar{a}^*_t}$. %Furthermore, if events $E^\mu(t), E^\theta(t)$ are true, $s_{t,i}^T \theta' \leq s_{t,i}^T\theta + g(T) z_{t,i}$. 
+Given an $\mathcal{F}_{t-1}$ such that $E^\mu(t)$ holds, we have that either $E^\theta(t)$ is false or for all $i \in C(t)$
+\[
+s_{t,i}^T \theta' \leq s_{t,i}^T\theta + g(T) z_{t,i} \leq s_{t,\bar{a}^*_t}^T \theta + \ell(T) z_{t,\bar{a}^*_t}
+\]
+implying
+\begin{align*}
+\mathbb{P}(s_{t,\bar{a}^*_t}^T &\theta' > s_{t,i}^T \theta', \forall j \in C(t) |\mathcal{F}_{t-1}) \\
+&\geq \mathbb{P}(s_{t,\bar{a}^*_t}^T \theta' > s_{t,\bar{a}^*_t}^T \theta +\ell(T) z_{t,\bar{a}^*_t}|\mathcal{F}_{t-1})- \mathbb{P}(\overline{E^\theta(t)}|\mathcal{F}_{t-1})\\
+&\geq p - \frac{1}{T^2}.
+\end{align*}
+where we have used the definitions of $E^\mu(t)$, $E^\theta(t)$, and the last inequality follows from Lemma \ref{lemm:AG2} and Lemma \ref{lemm:AG1}. Substituting into \eqref{eq:AG1} gives
+\[
+\mathbb{P}(\bar{a}_t \notin C(t) | \mathcal{F}_{t-1}) + \frac{1}{T^2} \geq p,
+\]
+and
+\[
+\frac{\mathbb{P}(\bar{a}_t \in C(t) | \mathcal{F}_{t-1})}{\mathbb{P}(\bar{a}_t \notin C(t) | \mathcal{F}_{t-1})+\frac{1}{T^2}}\leq \frac{1}{p}.
+\]
+
+\end{proof}
+
+%\subsection{
+\subsection{Lemma \ref{lemm:sumz} - Bound on $\sum_t z_{t,\bar{a}_t}$}
+\begin{lemma}
+For $z_{t,a} = \sqrt{s_{t,a}^T B(t)^{-1} s_{t,a}}$, we have that 
+\[
+\sum_{t=1}^T z_{t,\bar{a}_t}  \leq \frac{5}{C_\pi} \sqrt{d T \log T},
+\]
+where $C_\pi = \sqrt{\min(\pi_{\min}(1-\pi_{\max}), \pi_{\max}(1-\pi_{\min})}$ is a contant.
+\end{lemma}
+
+\begin{proof}
+We apply the following lemma from \cite{auer2002nonstochastic} and \cite{chu2011contextual}. 
+\begin{lemma}
+\label{lemm:sumz}
+Let $A_t = I + \sum_{t=1}^T x_t x_t^T$, where $x_t \in \mathbb{R}^d$ is a sequence of vectors. Then, defining $\sigma_t = \sqrt{x_t^T A_t^{-1} x_t}$, we have
+\[
+\sum_{t =1 }^T \sigma_t \leq 5 \sqrt{d T \log T}.
+\]
+\end{lemma}
+To apply this to $\sum_t z_{t,\bar{a}_t}$, let $x_t = \sqrt{\pi_t(1-\pi_t)}s_{t,\bar{a}_t}$. Then $A_t = I + \sum_{t=1}^T (\pi_t(1-\pi_t))s_{t,\bar{a}_t}s_{t,\bar{a}_t}^T = B_t$, and we have
+\[
+\sigma_t =  \sqrt{x_t^T A_t^{-1} x_t} =\sqrt{\pi_t (1-\pi_t)}\sqrt{s_{t,\bar{a}_t}^T B_t s_{t,\bar{a}_t}} = \sqrt{\pi_t (1-\pi_t)}z_{t,\bar{a}_t}.
+\]
+Applying Lemma \ref{lemm:sumz} we thus have %that $\sum_{t =1 }^T \sigma_t \leq 5 \sqrt{d T \log T}$ and 
+\[
+\sum_{t=1}^T z_{t,\bar{a}_t} \leq \max_{t}\left(\frac{1}{\sqrt{\pi_t (1-\pi_t)}}\right) \sum_{t=1}^T\sigma_t \leq \frac{5}{C_\pi} \sqrt{d T \log T},
+\]
+where $C_\pi = \sqrt{\min(\pi_{\min}(1-\pi_{\max}), \pi_{\max}(1-\pi_{\min})}$ is a constant.
+\end{proof}
+
+
+
+\section{Proof of Lemma \ref{lemm:I} - term I}\label{supp:lem1}
+%\section{Proof of Lemma ?? - term II}
+\begin{proof}
+We know that by definition of the optimal policy, $(\pi^*_t - \pi_t)s_{t,\bar{a}_t}^T \theta \geq 0$. Hence under event $E^\mu(t)$, 
+\begin{align*}
+(\pi^*_t - \pi_t)s_{t,\bar{a}_t}^T \theta 
+&\leq\mathbb{P}\left(\mathrm{sign}(s_{t,\bar{a}_t}^T \theta') \neq \mathrm{sign}(s_{t,\bar{a}_t}^T \theta)\right)|s_{t,\bar{a}_t}^T \theta|\\
+&\leq \min\left[|s_{t,\bar{a}_t}^T \theta|, \mathbb{P}(\mathrm{sign}(s_{t,\bar{a}_t}^T \theta') \neq \mathrm{sign}(s_{t,\bar{a}_t}^T \theta))\right]\\
+&\leq (\ell(T) + \sqrt{4d\log(Td)}v) z_{t,\bar{a}_t} + 1-\mathbb{P}(E^\theta_0(t)).
+\end{align*}
+Substituting in the definitions of $\ell(T),v$ and the bound in Lemma \ref{lemm:eoth} on $\mathbb{P}(E^\theta_0(t))$, we have
+\begin{align*}
+(\pi^*_t - \pi_t)s_{t,\bar{a}_t}^T \theta  &\leq \left(R\sqrt{d \log(T^3) \log(1/\delta)} + 1 + \sqrt{4d\log(Td)}R \sqrt{\frac{24}{\epsilon} d \log(1/\delta)}\right) z_{t,\bar{a}_t} + \frac{1}{T^2}\\
+&\leq C\sqrt{\frac{d^2}{\epsilon} \log(1/\delta)} z_{t,\bar{a}_t} + \frac{1}{T^2}.
+\end{align*}
+Summing over $t$ and recalling that by Lemma \ref{lemm:sumz} $\sum_{t=1}^T z_{t,\bar{a}_t} \leq \frac{5}{C_\pi} \sqrt{dT\log T}$, we have that under event $E^\mu(t)$
+\begin{align*}
+I &= \sum_{t=1}^T (\pi^*_t - \pi_t)s_{t,\bar{a}_t}^T \theta\\
+&\leq  \frac{C}{C_\pi}  \sqrt{d^3 T \log(Td) \log(1/\delta)}.
+\end{align*}
+Since the probability that $E^\mu(t)$ holds is at least $1-\frac{\delta}{T^2}$ by Lemma \ref{lemm:AG1}, the lemma results.
+\end{proof}
+
+\section{Proof of Lemma \ref{lemm:II}: Bound on term $II$}\label{supp:lem2}
+
+Before commencing the proof, we first state the following result from \cite{abbasi2011improved}.
+\begin{lemma}[\cite{abbasi2011improved}]
+\label{lemm:AbbYad}
+Let $(\mathcal{F}'_t; t\geq 0)$ be a filtration, $(m_t;t\geq 1)$ be an $\mathbb{R}^d$-valued stochastic process such that $m_t$ is $(\mathcal{F}'_{t-1})$- measurable, $(\eta_t ; t\geq 1)$ be a real-valued martingale difference process such that $\eta_t$ is $(\mathcal{F}'_t)$-measurable. For $t \geq 0$, define $\xi_t = \sum_{\tau = 1}^t m_\tau \eta_\tau$ and $M_t = I_d + \sum_{\tau = 1}^t m_{\tau} m_{\tau}^T$, where $I_d$ is the $d$-dimensional identity matrix. Assume $\eta_t$ is conditionally $R$-sub-Gaussian. 
+
+Then, for any $\delta' > 0$, $t \geq 0$, with probability at least $1 - \delta'$, 
+\[
+\|\xi_t \|_{M_t^{-1}} \leq R\sqrt{d \log \left(\frac{t+1}{\delta'}\right)},
+\]
+where $\|\xi_t \|_{M_t^{-1}} = \sqrt{\xi_t^T M_t^{-1} \xi_t}$.
+\end{lemma}
+
+
+
+We now prove Lemma \ref{lemm:II}.
+\begin{proof}
+%We have shown that $Y_t$ is a supermartingale. 
+
+Defining $\mathrm{regret}'(t) = (s_{t,\bar{a}^*_t}^T \theta - s_{t,\bar{a}_t}^T \theta)I(E^\mu(t))$, 
+we have the following lemma, which we prove in Section \ref{supp:lemmsupMart}.
+\begin{lemma}\label{lemm:supMart}
+Let, for $p = \frac{1}{4e \sqrt{\pi T^\epsilon}}$,
+\begin{align}
+X_t &= \mathrm{regret}'(t) - \frac{g(T)}{p} I(a(t) \notin C(t)) z_{t,\bar{a}^*_t}\\
+Y_t &= \sum_{w = 1}^t X_w.
+\end{align}
+Then $(Y_t; t = 0,\dots, T)$ is a super-martingale process with respect to filtration $\mathcal{F}_t$. %Furthermore,
+%\[
+%\sum_{t=1}^T \mathrm{regret}'(t) \leq \frac{g(T)^2}{\ell(T)} \frac{3}{p} \sum_{t=1}^T z_{t,\bar{a}_t} + \frac{2 g(T)}{pT} + \frac{8}{p}\frac{g(T)^2}{\ell(T)} \sqrt{2 T \log\left(\frac{2}{\delta}\right)}.
+%\]
+\end{lemma}
+Given our results in Section \ref{supp:Mart} and our concentration bounds, the proof is closely related to \cite{agrawal2013thompson} and is listed in Section \ref{supp:lemmsupMart}. 
+
+
+
+
+Using the definition of $X_t$, we have that $|Y_t - Y_{t-1}| \leq |X_t| \leq 1 + \frac{g(T)}{p} + \frac{2g(T)^2}{\ell(T)} + \frac{2 g(T)}{p T^2} \leq \frac{8}{p} \frac{g(T)^2}{\ell(T)}$. This allows us to apply the Azuma-Hoeffding inequality listed in Section \ref{supp:AzHo}, giving that
+\begin{align*}
+\sum_{t=1}^T \mathrm{regret}'(t) &\leq \sum_{t=1}^T \left(\frac{g(T)}{p} I(\bar{a}_t \notin C(t)) z_{t,\bar{a}^*_t}\right) + \frac{2 g(T)}{pT} + \frac{2 g(T)^2}{\ell(T)} \sum_{t=1}^T z_{t,\bar{a}_t} + \frac{8}{p}\frac{g(T)^2}{\ell(T)}\sqrt{2T \log \frac{2}{\delta}}\\
+&\leq \sum_{t=1}^T \left(\frac{g(T)^2}{\ell(T)} \frac{1}{p} I(\bar{a}_t \notin C(t)) z_{t,\bar{a}_t}\right) + \frac{2 g(T)}{pT} + \frac{2 g(T)^2}{\ell(T)} \sum_{t=1}^T z_{t,\bar{a}_t} + \frac{8}{p} \frac{g(T)^2}{\ell(T)}\sqrt{2T \log \frac{2}{\delta}}\\
+&\leq \frac{g(T)^2}{\ell(T)} \frac{3}{p} \sum_{t=1}^T z_{t,\bar{a}_t} + \frac{2 g(T)}{pT} + \frac{8}{p} \frac{g(T)^2}{\ell(T)} \sqrt{2T\log \frac{2}{\delta}}.
+\end{align*}
+with probability at least $1 - \delta/2$, where we recall that if $\bar{a}_t \notin C(t)$, then $g(T) z_{t,\bar{a}_t} \geq \ell(T) z_{t,\bar{a}^*_t}$. 
+
+Substituting in the bound $\sum_{t=1}^T z_{t,\bar{a}_t} \leq \frac{5}{C_\pi} \sqrt{dT \log T}$ from Lemma \ref{lemm:sumz} and the definitions of $g(T), p, \ell(T)$, we obtain that 
+\[
+\sum_{t=1}^T \mathrm{regret}'(t) \leq \frac{C'}{C_\pi} \left(\frac{d^2}{\epsilon} \sqrt{T^{1+\epsilon}} \log \frac{1}{\delta} \log (Td)\right)
+\]
+with probability at least $1-\frac{\delta}{2}$, where $C'$ is a constant. Recall that by Lemma \ref{lemm:AG1}, $E^\mu(t)$ holds for all $t$ with probability at least $1- \delta/2$, and that $\mathrm{regret}'(t) = (s_{t,\bar{a}^*_t}^T \theta - s_{t,\bar{a}_t}^T \theta)$ whenever $E^\mu(t)$ holds. By the union bound we then have that
+\[
+II = \sum_{t=1}^T (s_{t,\bar{a}^*_t}^T \theta - s_{t,\bar{a}_t}^T \theta) \leq \frac{C'}{C_\pi} \left(\frac{d^2}{\epsilon} \sqrt{T^{1+\epsilon}} \log \frac{1}{\delta} \log (Td)\right)
+\]
+with probability at least $1-\delta$. The lemma results.
+
+%USE OTHER DEF OF REGRET
+\end{proof}
+
+
+
+
+\section{Proof of Lemma \ref{lemm:supMart}}
+\label{supp:lemmsupMart}
+
+
+\begin{proof}
+To prove that $Y_t$ is a super-martingale by the definition above, we need to prove that for all $1\leq t\leq T$ and any $\mathcal{F}_{t-1}$, $\mathbb{E}[Y_t - Y_{t-1} | \mathcal{F}_{t-1}] \leq 0$. 
+
+We first consider filtrations $\mathcal{F}_{t-1}$ for which $E^\mu(t)$ holds. By the definition of $\bar{a}_t$, $ s_{t,\bar{a}_t}^T \theta' \geq s_{t,{a}_t^{**}}^T \theta'$. Under $E^\theta(t)$ and $E^\mu(t)$ we then must have that for all $i = 1,\dots, N$
+\begin{align*}
+s_{t,i}^T \theta &\geq s_{t,i}^T \theta' - g(T) z_{t,i}\\
+&\geq s_{t,{a}_t^{**}}^T \theta' - g(T)z_{t,i}\\
+&\geq s_{t,{a}_t^{**}}^T \theta - g(T)z_{t,\bar{a}^*_t} - g(T) z_{t,i}.
+\end{align*}
+Hence $s_{t,\bar{a}^*_t}^T \theta - s_{t,\bar{a}_t}^T \theta \leq g(T)(z_{t,\bar{a}_t} + z_{t,\bar{a}^*_t})$.
+
+For $\mathcal{F}_{t-1}$ such that $E^\mu(t)$ holds, we then can write
+\begin{align*}
+\mathbb{E}[\mathrm{regret}'(t) | \mathcal{F}_{t-1}] &= \mathbb{E}[ (s_{t,\bar{a}^*_t}^T \theta - s_{t,\bar{a}_t}^T \theta) | \mathcal{F}_{t-1}]\\
+&\geq \mathbb{E}[g(T)(z_{t,\bar{a}_t} + z_{t,\bar{a}^*_t})|\mathcal{F}_{t-1}] + \mathbb{P}(\overline{E^\theta(t)})\\
+&= g(T)z_{t,\bar{a}^*_t} \mathbb{P}(\bar{a}_t \in C(t)|\mathcal{F}_{t-1}) + g(T) \mathbb{E}\left[(\frac{g(T)}{\ell(T)} z_{t,\bar{a}_t}I(\bar{a}_t \notin C(t))|\mathcal{F}_{t-1}\right] \\&+ g(T) \mathbb{E}[z_{t,\bar{a}_t} | \mathcal{F}_{t-1}] + \frac{1}{T^2}.
+\end{align*}
+where we have used the facts that $\mathrm{regret}'(t) \leq 1$, the definition of unsaturated arms, and Lemma \ref{lemm:AG1}. Applying Lemma \ref{lemm:AG3} and noting that since $\min \mathrm{eig}(B(t)) \leq 1$, $z_{t,i} \leq \|s_{t,i}\|_2 \leq 1$, we can show that
+\begin{equation}\label{eq:2}
+\mathbb{E}[\mathrm{regret}'(t) | \mathcal{F}_{t-1}] \leq \frac{g(T)}{p} \mathbb{P}(\bar{a}_t \notin C(t) | \mathcal{F}_{t-1}) z_{t,\bar{a}^*_t} + \frac{2 g(T)}{pT^2}.
+\end{equation}
+By definition, $\mathrm{regret}'(t) = (s_{t,\bar{a}^*_t}^T \theta - s_{t,\bar{a}_t}^T \theta)I(E^\mu(t))$ is zero and the above inequality holds whenever $E^\mu(t)$ is not true. Since we have considered both cases, the lemma is proved.
+
+
+\end{proof}
+
+\section{Proof of Lemma \ref{lemm:AG1}}
+\label{supp:lemmAG1}
+%We first 
+\begin{proof}
+We can apply Lemma \ref{lemm:AbbYad} with $m_t = \sqrt{\pi_t(1-\pi_t)}s_{t,\bar{a}_t}$, 
+\[
+\eta_t = \frac{\hat{r}_t(\bar{a}_t)}{\sqrt{\pi_t(1-\pi_t)}} - \sqrt{\pi_t(1-\pi_t)} s_{t,\bar{a}_t}^T \theta,
+\]
+and with the filtration $\mathcal{F}'_t = (\bar{s}_{\tau+1}, m_{\tau + 1}, \eta_\tau: \tau \leq t)$ effectively containing all the available information up to the current time. $\mathcal{F}'_{t-1}$ is measurable by definition, and in Section \ref{supp:Mart} we show 
+\begin{lemma}\label{lemm:Mart}
+Suppose that $n_t$ is $R$ sub-Gaussian. Then $\eta_t$ is a $\mathcal{F}'_{t}$-measurable, $R'$-sub-Gaussian, martingale difference process where $R' = \frac{R+2}{\sqrt{\pi_{\min}(1-\pi_{\max})}} +\sqrt{\pi_{\max}(1-\pi_{\min})}$.
+\end{lemma}
+
+%as proven in ?? $\eta_t$ is $\mathcal{F}'_{t}$-measurable, $R$-sub-Gaussian, and a martingale difference process. 
+
+We then have
+\begin{align*}
+M_t &= I_d + \sum_{\tau = 1}^t m_{\tau} m_{\tau}^T = I_d + \sum_{\tau = 1}^t \pi_\tau (1-\pi_\tau)s_{\tau, \bar{a}_\tau}s_{\tau, \bar{a}_\tau}^T,\\
+\xi_t &= \sum_{\tau = 1}^t m_\tau \eta_\tau = \sum_{\tau = 1}^t s_{\tau,\bar{a}_\tau} \left(\hat{r}_t(\bar{a}_t) - {\pi_t(1-\pi_t)} s_{t,\bar{a}_t}^T \theta\right).
+\end{align*}
+Observe that these are the two primary components of the contextual bandit, specifically, $B_t = M_{t-1}$ and $b_t - \mathbb{E}[b_t] = \xi_t$. Hence, $\hat{\theta}_t  - \theta = M_{t-1}^{-1} (\xi_{t-1} - \theta)$. Letting $\|y\|_A = \sqrt{y^T A y}$ for any vector $y$ and matrix $A \in \mathbb{R}^{d\times d}$, for all $\bar{a}>0$ we have that since $M_t$ is positive definite,
+\begin{align*}
+|s_{\bar{a},t}^T &\hat{\theta} - s_{\bar{a},t}^T {\theta}| = |s_{\bar{a},t}^T M^{-1}_{t-1} (\xi_{t-1} - \theta)|\\
+ &\leq \|s_{\bar{a},t} \|_{M_{t-1}^{-1}} \|\xi_{t-1} - \theta\|_{M_{t-1}^{-1}}\\
+ &= \|s_{\bar{a},t} \|_{B_{t}^{-1}} \|\xi_{t-1} - \theta\|_{B_{t}^{-1}}.
+\end{align*}
+Applying Lemma \ref{lemm:AbbYad}, we have that for any $\delta' > 0$, $t \geq 1$, 
+\[
+\|\xi_{t-1}\|_{M_{t-1}^{-1}}  \leq R' \sqrt{d \log \frac{t}{\delta'}}.
+\]
+Then $\|\xi_{t-1} - \theta\|_{M_{t-1}^{-1}}\leq R' \sqrt{d \log \frac{t}{\delta'}} + \|\theta\|_{M_{t-1}^{-1}} \leq R'\sqrt{d \log \frac{T}{\delta'}} + 1$. Setting $\delta'  = \delta/T^2$ implies that with probability $1 - \delta/T^2$, for all $\bar{a}$, 
+\begin{align*}
+|s_{\bar{a},t}^T &\hat{\theta} - s_{\bar{a},t}^T {\theta}| \leq \|s_{\bar{a},t} \|_{B_{t}^{-1}} \left(R'\sqrt{d \log (T^3) \log \frac{1}{\delta}} + 1\right)= \ell(T) z_{t,\bar{a}}.
+\end{align*}
+\end{proof}
+
+
+
+\subsection{Proof of Lemma \ref{lemm:Mart}: Martingale analysis of $\eta_t$ }\label{supp:Mart}
+\begin{proof}
+Recall
+\begin{align*}
+|\eta_t| &= \left|\frac{\hat{r}_t(\bar{a}_t)}{\sqrt{\pi_t(1-\pi_t)}} - \sqrt{\pi_t(1-\pi_t)} s_{t,\bar{a}_t}^T \theta\right|\\
+&= \left|\frac{(I(a_t>0) - \pi_t) r_t(a_t)}{\sqrt{\pi_t(1-\pi_t)}} - \sqrt{\pi_t(1-\pi_t)} s_{t,\bar{a}_t}^T \theta\right|\\
+&= \left|\frac{(I(a_t>0) - \pi_t) ( s_{t,a_t}^T \theta I(a_t > 0) + n_t + \bar{f}_t(\bar{s}_t))}{\sqrt{\pi_t(1-\pi_t)}} - \sqrt{\pi_t(1-\pi_t)} s_{t,\bar{a}_t}^T \theta\right|\\
+&\leq \sqrt{\pi_t(1-\pi_t)} + \left| \frac{2+n_t}{\sqrt{\pi_t(1-\pi_t)}}\right|.
+\end{align*}
+since the rewards are all bounded by one and the $\pi_{\min} \leq \pi_t \leq \pi_{\max}$ are bounded. 
+We have assumed that $n_t$ is R sub-Gaussian. Since a bounded random variable $|X|< b$ is $b$ sub-Gaussian and the sum of independent $b_1$ and $b_2$ sub-Gaussian random variables is $b_1 + b_2$ sub-Gaussian, we have that $\eta_t$ is $R' = \frac{R+2}{\sqrt{\pi_{\max}(1-\pi_{\min})}} +\sqrt{\pi_{\min}(1-\pi_{\max})}$ conditionally sub-Gaussian.
+Since $\pi_{\min},\pi_{\max}$ are bounded away from 0 and 1 by constants, $R'$ is a constant.
+
+%we have that $\eta_t$ has sub-Gaussian norm $R' \leq  $ since 
+%Thus $\eta_t$ is $R'$ sub-Gaussian. 
+
+
+
+%so $\eta_t$ is ?-sub-Gaussian conditioned on $\mathcal{H}_{t-1},\bar{a}_t,\bar{s}_t$.
+Additionally, for all $\bar{a}_t$
+\begin{align*}
+\mathbb{E}[\eta_t |\mathcal{H}_{t-1},\bar{a}_t,\bar{s}_t]&= \frac{\mathbb{E}[\hat{r}_t(\bar{a}_t)|\mathcal{H}_{t-1},\bar{a}_t,\bar{s}_t]}{\sqrt{\pi_t(1-\pi_t)}} - \sqrt{\pi_t(1-\pi_t)} s_{t,\bar{a}_t}^T \theta\\
+&= \frac{\mathbb{E}[(I(a_t>0) - \pi_t) r_t(a_t)|\mathcal{H}_{t-1},\bar{a}_t,\bar{s}_t]}{\sqrt{\pi_t(1-\pi_t)}} - \sqrt{\pi_t(1-\pi_t)} s_{t,\bar{a}_t}^T \theta\\
+&= \frac{\pi_t (1-\pi_t)s_{t,\bar{a}_t}^T \theta}{\sqrt{\pi_t(1-\pi_t)}} - \sqrt{\pi_t(1-\pi_t)} s_{t,\bar{a}_t}^T \theta\\
+&=0,
+\end{align*}
+where the third equality follows from \eqref{eq:ExpR}. Thus $\mathbb{E}[\eta_t |\mathcal{H}_{t-1},\bar{s}_t] = 0$ and $\eta_t$ is a martingale difference process.
+%Note 
+
+
+
+%(I(a_t>0) - \pi_t) r_t(a_t)
+\end{proof}
+%\begin{comment}
+%\section{RANDOM INCOHERENT MUSINGS: Exploration into variance reduction}
+%Looking into binary first, i.e. $N=1$.
+%
+%One option (this version needs to be verified):
+%\[
+%B = B + [(I(a_t > 0) - \pi_t)s_{t,\bar{a}_t};\bar{s}_t][(I(a_t > 0) - \pi_t)s_{t,\bar{a}_t};\bar{s}_t]^T
+%\]
+%\[
+%b = [\hat{b};\bar{b}]
+%\]
+%\[
+%\bar{b} = \bar{b} + \bar{s}_t r_t(a_t)
+%\]
+%\[
+%\hat{\theta} = [B^{-1}]_{1:d,:} b = [B^{-1}]_{1:d,1:d}\hat{b} +  [B^{-1}]_{d+1:,1:d}\bar{b}.
+%\]
+%In this version, if it were correct the $B$ would approach block-diagonal and will revert to the main-text estimator. Therefore, there are no gains in constants or rates whatsoever. 
+%This is why we haven't observed any empirical gains with this method. If we want to incorporate a baseline model of this type, we should get rid of the action-centering altogether and try to prove a bound on classical Thompson sampling.
+%
+%Another idea: Subtracting the baseline estimate from $r_t$ in $\hat{b}$. Issue: Can only learn baseline from zero actions. In the large-sample regime, will improve the $R'$ constant from 
+%\[
+%R' = \frac{R+2}{\sqrt{\pi_{\min}(1-\pi_{\max})}} +\sqrt{\pi_{\max}(1-\pi_{\min})}
+%\]
+%to
+%\[
+%R' = \frac{R+1 + ERR}{\sqrt{\pi_{\min}(1-\pi_{\max})}} +\sqrt{\pi_{\max}(1-\pi_{\min})}
+%\]
+%where $ERR$ is the largest difference between the best baseline approximator and the true baseline.
+%
+%This is an ok improvement. We cannot improve the $ERR$ from being the max, since we are in the adversarial regime. Empirical results indicate a small improvement in regret (albeit in a necessarily non-adversarial setting).
+%
+%\end{comment}
+
+
+\end{appendices}
+
+%\end{comment}
+\end{document}

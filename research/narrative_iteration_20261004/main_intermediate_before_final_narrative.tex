@@ -1,0 +1,363 @@
+% INTERNAL PRE-RESULTS REVIEW -- not a submission artifact.
+% The official AAMAS 2027 class and layout are used without modification.
+\documentclass[sigconf,anonymous]{aamas}
+
+\graphicspath{{reference/template/}}
+\usepackage{balance}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{xspace}
+\usepackage{enumitem}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+\makeatletter
+\gdef\@copyrightpermission{
+  \begin{minipage}{0.2\columnwidth}
+   \href{https://creativecommons.org/licenses/by/4.0/}{\includegraphics[width=0.90\textwidth]{by}}
+  \end{minipage}\hfill
+  \begin{minipage}{0.8\columnwidth}
+   \href{https://creativecommons.org/licenses/by/4.0/}{This work is licensed under a Creative Commons Attribution International 4.0 License.}
+  \end{minipage}
+  \vspace{5pt}
+}
+\makeatother
+
+\setcopyright{ifaamas}
+\acmConference[AAMAS 2027]{Proc.\@ of the 26th International Conference on Autonomous Agents and Multiagent Systems (AAMAS 2027)}{3--7 May 2027}{Hanoi, Vietnam}{M.~Baldoni, F.~Fang, W.~Yeoh, N.~Yorke-Smith (eds.)}
+\copyrightyear{2027}
+\acmYear{2027}
+\acmDOI{}
+\acmISBN{}
+\acmSubmissionID{INTERNAL PRE-RESULTS REVIEW}
+\submissionType{Research Paper Track}
+
+\title{After the Decision: Learning to Adapt from Delayed Outcomes}
+\subtitle{Internal pre-results review; empirical cells are intentionally unfilled}
+\author{Anonymous Authors}
+
+\begin{abstract}
+Scientific agents increasingly call specialized predictors rather than solving every subproblem internally. A tool can return a valid object and still be wrong for the molecule at hand, so the agent must choose among providers before seeing their outputs. The feedback that would identify a bad choice is selected-only and can arrive after later decisions, which makes a static router brittle and makes unconstrained online updates capable of damaging a good cold-start policy. We formulate this setting as delayed outcome feedback over a concrete provider menu and specify MIRA-Relay, a stateful adaptation module that keeps a fit-only selector as an immutable fallback, shares released residual evidence within audited provider families, separates runtime hazards from correctness, and uses a result-independent probe schedule to make exploitation identifiable. The primary study uses public TDC BBB truth with the Task36 33-provider routing protocol; hERG and AMES are extensions only after endpoint and lineage audits pass. The pre-registered matrix compares fixed, static, matched online, modern adapted routers, verification controls, and MIRA ablations under identical menus, delays, and budgets. The final study will report prequential correctness, harmed/rescued decisions, delay recovery, calls, latency, memory, and failure and unknown denominators; all empirical cells in this draft remain open pending frozen development and confirmation runs.
+\end{abstract}
+
+\ccsdesc[500]{Computing methodologies~Multi-agent planning}
+\ccsdesc[300]{Computing methodologies~Reinforcement learning}
+\ccsdesc[200]{Computing methodologies~Machine learning}
+\keywords{tool selection, online learning, delayed feedback, scientific agents, molecular property prediction}
+
+\newcommand{\mira}{MIRA\text{-}Relay\xspace}
+\newcommand{\tbd}{\text{TBD}}
+\newcommand{\pre}{\textsc{Pre-results review}}
+\begin{document}
+\maketitle
+\noindent\fbox{\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}{\small\raggedright\textbf{INTERNAL PRE-RESULTS DRAFT.} This manuscript is a design draft, not evidence that MIRA-Relay beats any baseline. Cells marked \tbd{} require frozen receipts, independent recovery, and author review.}}
+
+\section{Introduction}
+Scientific agents increasingly rely on external predictors for molecular properties, retrieval, simulation, and other tasks that are difficult to solve from language alone. In this setting, tool use is a decision problem: an agent must select a concrete provider whose output will be used downstream, while provider quality depends on the input and can change with versions, failures, or availability. A normal response and a plausible number are therefore insufficient evidence that a call was useful.
+
+The failure is concrete. Two providers can return syntactically valid predictions for the same molecule and endpoint while disagreeing with the independently recorded outcome. The agent must choose before it can inspect the unselected outputs, and the only direct correctness label is attached to the provider that was actually called. For a molecular example, the task input can be a BBB molecule with identifier `z000282`, a BBB endpoint, and a menu of 33 cached providers; the correctness of a provider that was not called is not part of the decision-time observation.
+
+This timing makes common fixes incomplete. A fixed winner ignores changes in the menu and input distribution. A static selector can learn a useful cold-start mapping but cannot use consequences observed after deployment. An unconstrained online head can update from sparse, delayed labels and switch away from a strong incumbent because of one misleading observation. Post-call confidence is useful for deciding whether to verify a result, but it is visible only after selection and cannot be silently fed back into the pre-call policy.
+
+Our central insight is to treat selection, post-call verification, and learning as one event contract with separate information boundaries. The selector receives the molecule, endpoint, menu, and released history. The provider produces an output and runtime status. The verifier may accept, escalate, or refuse only after that output is available. The updater receives a selected-only correctness outcome when its release time arrives. This separation makes both the adaptive mechanism and its failure modes auditable.
+
+We instantiate this contract in \mira, the concrete candidate within the MIRA adaptation framework, whose proposed specification is deliberately small. A fit-only direct selector supplies cold-start scores and an immutable fallback. Family-shared residuals and provider biases are updated only by released selected feedback; an audited family registry provides the sharing index. A result-independent, family-balanced probe schedule supplies coverage, while a runtime hazard ledger prevents known failures from being treated as chemical correctness. The method is designed to make the feedback-to-exploitation path measurable rather than to assume that any online update is useful.
+
+This draft makes four testable commitments, each paired with a falsification condition in the experimental matrix:
+\begin{itemize}[leftmargin=*,itemsep=1pt,topsep=2pt]
+    \item \textbf{Task validity.} Public truth and a concrete provider panel yield input-dependent headroom over a fixed provider without leaking unselected outcomes; this fails if an evaluator-only panel score is the only source of signal.
+    \item \textbf{Faithful adaptation.} Selected-only delayed events can be replayed with exact visibility, release clocks, and failure semantics; this fails if an independent checker cannot reconstruct each action and state transition.
+    \item \textbf{Mechanistic adaptation.} Shared residual feedback changes later exploitation decisions beyond the same probe schedule with no update; this fails if all changes come from direct probes or disappear under family/provider permutation.
+    \item \textbf{Practical value.} Any improvement in future correctness must survive the strongest legal fixed and matched online controls while reporting harmed decisions, calls, latency, and memory; otherwise the conclusion is limited to a protocol or diagnostic result.
+\end{itemize}
+The remainder of the paper defines the task, gives the proposed specification, fixes the benchmark and baseline contracts, and lays out the pre-registered matrix whose empirical cells are intentionally left open.
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=\textwidth]{figures/figure1/v4/figure1_v4.pdf}
+  \caption{MIRA-Relay makes selected-only feedback part of the next decision loop. The selector starts from a fit-only immutable fallback and an online family/provider relay. A runtime verifier records the selected output and status; an independent frozen endpoint judge supplies the correctness label only after termination. The selected event waits until $\tau_t=t+1+D$; challenger feedback updates the shared family residual and provider bias, while fallback feedback updates diagnostic ledgers only. The released state is visible at the first decision tick at or after $\tau_t$.}
+  \Description{A four-region framework showing public molecule, endpoint, menu, and released history entering a selector with a fit-only fallback and online relay; one selected provider call; a runtime verifier and post-termination frozen truth judge feeding a delay queue; and a released update where challenger state changes but fallback feedback is ledger-only. Unselected outputs remain hidden.}
+  \label{fig:overview}
+\end{figure*}
+
+\section{Problem and Task Contract}
+We study one agent making a sequence of tool calls. The contract is defined at the granularity of a concrete provider, not a provider family or a post-hoc majority vote.
+
+\subsection{Episode, menu, and feedback}
+At decision tick $t$, the agent receives a molecule $x_t$, an endpoint $e_t$, and an available menu $A_t$ of provider identifiers. It chooses one provider $a_t\in A_t$ before reading the current output panel. A provider returns an output $o_t$, a runtime status $s_t$, and, when available, a numeric confidence $c_t$. After termination, the replay judge records a correctness outcome $r_t\in\{0,1\}$ for the selected provider. The outcome becomes visible only at its registered release tick $\tau_t$.
+
+The legal history at tick $t$ is
+$$
+H_t=\{(x_s,e_s,a_s,r_s,\tau_s):s<t,\ \tau_s\leq t\}.
+$$
+For example, if the call for `z000282` releases at tick 5, a decision at tick 2 cannot read its correctness, its unselected provider outputs, or its future terminal record. The input string and the menu are public at tick 2; the outcome is not.
+
+Provider state uses a global registry $\mathcal P$ fixed by the fit manifest, rather than the
+size of the menu on the current tick. The menu is a mask $m_t(a)=\mathbf 1[a\in A_t]$ over
+$\mathcal P$; a provider that is absent is unavailable but does not change the coordinate system.
+If several events become visible at the same tick, the updater processes them in increasing
+$(\tau_s,\mathrm{release\_ordinal})$ order, where `release\_ordinal` is the insertion order in
+the pending queue. This order is part of the replay contract and is recorded in each release event,
+so a snapshot and event prefix determine one state even when releases tie.
+
+We distinguish four labels that are often conflated.\par
+`runtime\_success` means a valid return. `chemical\_correct` means correct against frozen truth.
+`system\_success` is the end-to-end label used by the selected-only residual updater: it is $0$ for
+a runtime failure and equals `chemical\_correct` for a valid return. Thus a runtime failure has
+`system\_success=0` and `chemical\_correct=null`. `recovered\_label` is the delayed learner-visible value.
+The primary estimand is system success; the verifier and diagnostic logs retain `chemical\_correct`,
+and a valid-return conditional metric is reported only by tables whose schema emits it. The hazard
+ledger reports runtime failures. An unknown truth terminates the scoring stream under the
+pre-registered rule and creates neither zero nor one.
+
+\subsection{Selection and verification interfaces}
+The pre-call selector and post-call verifier have disjoint interfaces:
+$$
+a_t=\pi_{\mathrm{sel}}(x_t,e_t,A_t,H_t),\qquad v_t=\pi_{\mathrm{ver}}(o_t,c_t,s_t),
+$$
+where $v_t$ is one of accept, escalate, or refuse. The verifier can request a second provider only after the first call returns. In the running example, a selector may choose `b3clf\_dtree\_common`; only after its output and confidence are available can the verifier decide whether to escalate.
+
+The online learner maintains a serializable state $S_t$. Updates are event-driven:
+$$
+S_{t+1}=U(S_t,x_s,e_s,a_s,r_s,\tau_s)\quad\text{only when }\tau_s\leq t.
+$$
+No correctness-residual update is allowed for an unselected provider, an unreleased event, an unknown label, or a refusal. A terminal unknown or refusal may still update runtime/availability bookkeeping; fallback feedback never changes residual mean/variance or provider bias. This contract lets a replay verifier compare the visible read set, action, release queue, state hash, and aggregate metrics without importing the training runner.
+
+\subsection{Estimands and costs}
+The primary estimand is future selected correctness under the event contract, aggregated by molecule and reported with scaffold-cluster uncertainty. We also report cumulative error relative to the fit-only Best Fixed provider, the paired counts of rescued and harmed decisions, switch-away rate, runtime failures, unknowns, refusals, provider calls, and update and selection latency. Static full-panel accuracy and evaluator-only Oracle accuracy are controls; neither is an online effect estimate.
+
+\section{MIRA-Relay: Proposed Method Specification}
+This section specifies the candidate mechanism that will be tested. It is a pre-results design, not a claim that the mechanism has passed the acceptance gates.
+
+\subsection{Cold-start scores and the immutable reference}
+Let $\phi(x)\in\mathbb{R}^{d}$ be a frozen molecule representation, $g(a)$ the audited family of provider $a$, and $K=|\mathcal P|$. For each registered provider, a fit-only direct head $w_a^0$ is trained on the fit partition; the current menu only masks which coordinates can act. Let $c$ be the fit-only Best Fixed provider, and let $u_g^0$ and $b_a^0$ be fit-only family residual and provider bias parameters. The cold-start score is
+$$
+z_a^0(x)=(w_a^0)^\top\phi(x)+(u_{g(a)}^0)^\top\phi(x)+b_a^0.
+$$
+The representation case is concrete: in the development diagnostic, $\phi(\texttt{z000282})$ is a frozen 64-dimensional encoder output; a provider such as $\texttt{b3clf\_a}$ has registry family $g(\texttt{b3clf\_a})=\texttt{b3clf}$. The fit partition alone determines $w_a^0,u_g^0,b_a^0$.
+
+The fallback score $z_c^0(x)$ is immutable throughout evaluation. This is a safety reference, not a promise of safety: the experiment must still count every decision in which a challenger replaces the reference and is wrong. Providers outside the fit-manifest registry are out of scope; candidate menus are subsets of the registry and the fallback is always reinserted if a caller omits it.
+
+\subsection{Family-shared residual state}
+The online state concatenates family residuals and provider biases:
+$$
+\beta_t=(u_{1,t},\ldots,u_{G,t},b_{1,t},\ldots,b_{K,t}).
+$$
+For a challenger $a\neq c$, define $q_a(x)$ to contain $\phi(x)$ in the block for family $g(a)$, one in the coordinate for provider $a$, and zeros elsewhere. Its current score is
+$$
+z_{a,t}(x)=(w_a^0)^\top\phi(x)+q_a(x)^\top\beta_t.
+$$
+A common residual added to every provider would cancel in an argmax and could not change the action. The family-specific block does not cancel: feedback from one selected `b3clf` provider can change the scores of its sibling providers while leaving other families unchanged. This is the intended transfer path, and the provider bias preserves within-family differences.
+
+\subsection{Selected-only diagonal update}
+When a selected challenger releases a binary end-to-end label $y_t=\mathrm{system\_success}$, the updater touches only the nonzero coordinates of $q_t=q_{a_t}(x_t)$. For a valid return, $y_t$ equals the released `chemical\_correct` label; a runtime failure contributes $y_t=0$ while its chemical label remains null. Unknown truth and refusal do not update the correctness residual. Let $(\mu_t,\omega_t)$ denote the local mean and diagonal variance for those coordinates. The local Bernoulli MAP logit is the unique root
+$$
+\begin{aligned}
+z^*&=z_0+\upsilon_t\bigl(y_t-\sigma(z^*)\bigr),\\
+z_0&=(w_{a_t}^0)^\top\phi(x_t)+q_t^\top\mu_t,\\
+\upsilon_t&=\sum_j q_{t,j}^2\omega_{t,j}.
+\end{aligned}
+$$
+with $p^*=\sigma(z^*)$ and $h^*=p^*(1-p^*)$. MIRA-Relay uses a diagonal-precision projection, rather than treating the diagonal of a projected state as the diagonal of a full Laplace inverse. Writing $\tau_{t,j}=1/\omega_{t,j}$, the update is
+$$
+\begin{aligned}
+\mu_{t+1,j}&=\mu_{t,j}+\omega_{t,j}q_{t,j}(y_t-p^*),\\
+\tau_{t+1,j}&=\tau_{t,j}+h^*q_{t,j}^2,\\
+\omega_{t+1,j}&=1/\tau_{t+1,j}.
+\end{aligned}
+$$
+The same `z000282` case makes the information boundary explicit. If the selected `b3clf` provider releases $y_t=1$, only its family block and provider bias are updated; no unselected provider receives a synthetic label. If the provider fails, $y_t=0$ updates the system-success residual and the independent hazard ledger, while `chemical\_correct` remains null.
+
+The update touches $O(d)$ coordinates per release. Scoring all $K$ registered candidates costs
+$O(Kd)$, including the fixed direct heads. The online posterior means and diagonal variances
+together store $2(Gd+K)$ scalars, before the runtime ledger, masks, and state version; the fixed
+fit-only direct heads $w_a^0$ are stored separately and are not counted as online state. This is
+smaller than a full covariance for every provider.
+For provider $a$, the score variance used below is
+$$
+\upsilon_{a,t}=\sum_j \phi(x_t)_j^{2}\,\omega^{(g(a))}_{t,j}+\omega^{(b_a)}_t,
+$$
+where the first term is the family block and the second is the provider-bias coordinate.
+These are implementation targets to be measured in the cost table, not assumptions about the final result.
+
+\subsection{Result-independent probes and hazard gate}
+To make selected-only learning identifiable, MIRA-Relay reserves a fixed probe probability $\epsilon=0.20$ before looking at the current outcome. It samples a family uniformly from the eligible family set and then a provider uniformly within that family. If $\mathcal{G}_t$ is the eligible family set and $P_{g,t}$ the eligible providers, the logged propensity is
+$$
+\rho_t(a)=\frac{1}{|\mathcal{G}_t|\,|P_{g(a),t}|},\qquad
+\pi_t(a)=\epsilon \rho_t(a)+(1-\epsilon)\mathbf{1}[a=a_t^{\mathrm{exp}}].
+$$
+Here $\rho_t$ is the safe family/provider probe distribution and $a_t^{\mathrm{exp}}$ is the exploitation action. A provider in a hard block, family block, or runtime-hazard exclusion set is ineligible. If the safe menu is empty, the fallback branch is explicit: $\pi_t(c)=1$ and $\pi_t(a)=0$ for every other provider. Otherwise the displayed mixture is normalized over the eligible family/provider sets. The complete action probability $\pi_t$, not only the probe branch probability, is logged. Common random numbers couple schedules across methods but do not imply identical actions when a dynamic safe menu changes. Every decision records the eligible sets, branch and full propensity, scores, gate action, and block reason.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{figures/figure2/v8/figure2_v8.pdf}
+  \caption{The selected-only lifecycle. At tick $t$, the call returns a runtime status and an independent frozen endpoint judge produces the correctness label after termination. The selected event waits $D$ ticks and cannot update state before $\tau_t=t+1+D$. After release, challenger feedback updates the shared relay; fallback feedback updates ledgers only, and unselected outputs are never observed.}
+  \Description{A vertical lifecycle: a decision tick chooses one eligible provider, the call returns a status and output, an independent frozen truth judge creates the selected label after termination, the event waits in a pending queue, release occurs at tau equal to t plus one plus D, and the relay state is visible to the next action. A crossed-out unselected output is not observed.}
+  \label{fig:lifecycle}
+\end{figure}
+
+On the non-probe branch, MIRA-Relay uses a fixed logit-space upper-confidence score
+$$
+\mathrm{score}_{a,t}=z_{a,t}+\kappa\sqrt{\upsilon_{a,t}},
+$$
+then filters providers whose upper runtime-hazard bound exceeds the fallback bound by a fixed slack. If
+$F^{\mathrm{fit}}_a,V^{\mathrm{fit}}_a$ are fit-time failure/valid counts and
+$F^{\mathrm{on}}_{a,t},V^{\mathrm{on}}_{a,t}$ are released runtime counts, each terminal event
+counted once at release for the fixed BBB endpoint, the bound is
+$$
+h^U_{a,t}=\operatorname{BetaInv}\!\left(1-\delta_h;
+1+F^{\mathrm{fit}}_a+F^{\mathrm{on}}_{a,t},
+1+V^{\mathrm{fit}}_a+V^{\mathrm{on}}_{a,t}\right).
+$$
+The fallback reference intentionally omits online counts because its score and hazard reference
+are immutable; a challenger is eligible only when
+$h^U_{a,t}\leq h^U_{c,0}+\eta_h$. The constants $\kappa$, $\delta_h$, and slack $\eta_h$ are fixed
+in the CPU pre-registration. They cannot be selected by inspecting evaluation outcomes. This branch
+is a candidate exploitation rule; the hazard filter controls runtime exposure only and is not a
+chemical-correctness safety guarantee. The experiment will test whether released residuals actually
+change its decisions.
+
+\subsection{Invariants and falsification}
+The implementation must preserve five invariants: (i) no current truth or unselected output is read before action, (ii) only released selected events update state, (iii) the fallback score is immutable, (iv) system failure and chemical correctness remain separate, and (v) a state snapshot plus event prefix deterministically reconstructs the next action. Fallback feedback does not update the residual learner or provider bias; it may update diagnostic correctness and availability/hazard ledgers and records `residual\_update=false`.
+
+The mechanism is rejected as an adaptive contribution if a same-schedule ProbeNoUpdate control has the same post-release action changes, if changes come only from direct probes, if family/provider permutation leaves the effect unchanged, or if an independent verifier cannot recover the state and propensity fields. These tests distinguish the proposed feedback-to-exploitation path from a probe schedule, a provider-local update, or a logging artifact.
+
+The pre-registered science gate requires at least a $+0.5$ percentage-point paired system-success difference with a molecule-cluster 95\% interval above zero against both ProbeNoUpdate and ProbeIndependentResidual; action change alone is only an implementation check.
+
+\section{Benchmark and Baselines}
+\subsection{Two-layer benchmark contract}
+The primary benchmark has a public truth layer and a provider routing layer. The truth layer uses the Therapeutics Data Commons (TDC) BBB endpoint and its fixed label semantics and split archive~\cite{huang2021tdc}. The development manifest contains 722 BBB molecules with reference labels; 716 have complete cached outputs from the 33-provider Task36 panel. Canonical conflict groups are excluded under the project decision while raw conflict receipts remain available for audit. The old development panel overlaps the official BBB test by 147 canonical molecules and 235 scaffolds, so it cannot be called an untouched confirmation set.
+
+The routing layer is a project protocol built from real provider outputs. It fixes the molecule order, provider registry, menu mask, selected-only feedback, release delay, failure semantics, event schema, and recovery checker. The current adaptation claim covers a fixed fit-manifest registry with changing subsets; provider arrival, retirement, and version migration are out of scope unless a separate event trace is frozen. We do not present this routing layer as an existing community benchmark. The current BBB stream terminates when the truth is unknown; refusal and explicit unknown accounting enter only through a separately frozen verifier protocol. hERG and AMES are extensions only after their endpoint semantics, coverage, conflicts, and provider lineage pass separate audits; their current partial intersections are not final evidence.
+
+\subsection{Baselines and fairness}
+Table~\ref{tab:baselines} fixes the role of each comparator. All deployable methods receive the same molecule, endpoint, menu, feature stratum, initialization permission, selected-only feedback, delay, and call budget. Full-panel labels are allowed only in fit-only warm starts, evaluator-only Oracle controls, or offline audits. The Oracle is never included in a deployable ranking.
+
+\begin{table}[t]
+\caption{Baseline roles under the common routing contract. A row marked ``adapted'' is reported separately from strict matched comparisons until its likelihood and prior semantics are identical.}
+\label{tab:baselines}
+\small
+\begin{tabular}{@{}P{0.19\linewidth}P{0.22\linewidth}P{0.45\linewidth}@{}}
+\toprule
+Role & Comparator & Question answered \\
+\midrule
+Lower anchor & Random & Is there signal beyond blind selection? \\
+Fixed anchor & Best Fixed & What does a fit-only incumbent achieve? \\
+Privileged upper bound & Oracle & How much panel headroom exists with all outputs visible? \\
+Static control & Frozen selector & Does representation plus fit-time mapping suffice? \\
+Matched online & Online/Replay SGD & Does ordinary selected-only updating help? \\
+Contextual control & Greedy LinUCB & Does standard optimism help under the same contract? \\
+Modern adapted & PILOT, BayesianRouter & How do recent router ideas transfer when adapted faithfully? \\
+Static modern & GraphRouter, if auditable & Does graph routing add signal without post-hoc tuning? \\
+Task controls & Direct property predictor; confidence threshold & Is gain from routing or from recovering the endpoint / post-call risk? \\
+Proposed candidate & MIRA-Relay & Does shared residual feedback add exploitation value beyond probe cost? \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The fairness record must include source commit, checkpoint hash, feature and prior, fit-only warm start, feedback likelihood, delay, seed, budget, selection/update latency, state bytes, failure and unknown denominators, and license or audit-only status. Missing fields remain missing; an adapted baseline is not promoted by relabeling it as native.
+
+\section{Experimental Protocol and Matrix}
+The experiments are organized by questions rather than by implementation order. Every result uses raw JSONL, a configuration and input hash, per-event visibility and release fields, a source-tree identity, and an independent recovery script. Results are aggregated by molecule and scaffold cluster; individual event rows are not treated as independent samples.
+
+\subsection{Research questions}
+\textbf{RQ1 (validity):} Does the frozen panel contain context-dependent headroom over the fit-only incumbent?\par
+\textbf{RQ2 (comparison):} Under selected-only delay, does MIRA-Relay improve future correctness at matched cost?\par
+\textbf{RQ3 (mechanism):} Does released family residual feedback change exploitation beyond probes alone?\par
+\textbf{RQ4 (boundary/cost):} How do delay, failures, exposure, verification, latency, memory, and confirmation affect the conclusion?
+
+\subsection{Pre-registered matrix}
+Table~\ref{tab:matrix} is the complete matrix for the first paper build. Cells remain \tbd{} until the corresponding frozen receipt exists. E6 remains blocked until method, baselines, menus, thresholds, and epochs are frozen.
+
+\begin{table*}[t]
+\caption{Pre-registered experiment matrix. ``TBD'' is an intentional placeholder in this internal draft, not a missing value silently filled from a development diagnostic.}
+\label{tab:matrix}
+\small
+\begin{tabular}{p{0.09\linewidth}p{0.18\linewidth}p{0.25\linewidth}p{0.19\linewidth}p{0.18\linewidth}}
+\toprule
+ID / RQ & Setting & Comparators / intervention & Primary measurements & Status \\
+\midrule
+E1 / RQ1 & BBB development, scaffold folds, fit-only panel & Random, Best Fixed, Oracle, Frozen & OOF correctness, headroom, family macro, conflict and failure counts & \tbd{} \\
+E2 / RQ2 & selected-only online, delay $\{0,1,4\}$ & Best Fixed, Frozen, Online SGD, Replay SGD, LinUCB, PILOT, BayesianRouter, MIRA-Relay & prequential correctness, cumulative error/regret, paired CI, calls, update p50/p95 & \tbd{} \\
+E3 / RQ3 & same schedule and menu & NoProbeShield vs ProbeNoUpdate vs ProbeIndependentResidual vs MIRA-Relay; family/provider permutation & release-after action change, paired system-success, harmed/rescued, switch-away, runtime failure & \tbd{} \\
+E4 / RQ4 & controlled feedback-adaptive events & transient/persistent failures, family-balanced exposure, delays, runtime blocks; arrival/retire/version only if separately frozen & recovery time, exposure, failure ledger, delay sensitivity, negative controls & \tbd{} \\
+E5 / RQ4 & full accounting and cost & confidence threshold, matched random escalation, always/never verification, direct-property control & system success, valid-return conditional metric when emitted, refusal/escalation utility, unknowns, latency, memory, event recovery & \tbd{} \\
+E6 / RQ4 & molecule- or scaffold-disjoint confirmation & all frozen deployable methods and controls & pre-registered primary metric and interval; no label feedback to tuning & BLOCKED / \tbd{} \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+For E2 and E3, the same fold, seed, molecule order, probe schedule, menu, and feedback clock are reused across paired methods. Delay changes release timing, not probe assignment. Family-balanced analyses report both family-macro and all-provider metrics because the panel contains correlated provider variants. A provider-version or family-outage event is labeled controlled stress unless a separate audit establishes natural deployment drift.
+
+\section{Results: Pre-results Tables}
+This section defines the result views that will be populated after the method and baseline contracts close. It intentionally contains no headline effect.
+
+\begin{table}[t]
+\caption{Development comparison; cells remain open until independent recovery.}
+\label{tab:main-results}
+\small
+{\setlength{\tabcolsep}{2pt}
+\begin{tabular}{@{}P{0.22\linewidth}P{0.14\linewidth}P{0.16\linewidth}P{0.17\linewidth}P{0.17\linewidth}@{}}
+\toprule
+Method & System success & $\Delta$ vs Frozen & Runtime fail & Update p95 \\
+\midrule
+Random & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+Best Fixed & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+Frozen & \tbd{} & 0 & \tbd{} & \tbd{} \\
+Online SGD & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+Replay SGD & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+Greedy LinUCB & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+PILOT-adapted & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+BayesianRouter-adapted & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+MIRA-Relay & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\paragraph{Known development diagnostics.} The current evidence is useful for designing this table but is not a final result. On the existing BBB development replay, fit-only Best Fixed is reported as $0.915512$ and the evaluator-only Oracle as $0.9972$; these values establish headroom, not an online claim. The strict matched Online-SGD receipt reports pooled accuracy $0.892198$ against its same-receipt Frozen control at $0.901662$. The ContextProbe candidate reports $0.901431$ versus $0.901662$ for Frozen; all 895 departures from the fallback were forced probes, so the receipt does not establish exploitation benefit. These diagnostics are retained as negative or boundary evidence and will not be copied into a headline table without the corresponding scope, denominator, and recovery receipt.
+
+\begin{table}[t]
+\caption{Mechanism and boundary analysis from paired receipts.}
+\label{tab:mechanism-results}
+\small
+{\setlength{\tabcolsep}{2pt}
+\begin{tabular}{@{}P{0.27\linewidth}P{0.15\linewidth}P{0.20\linewidth}P{0.12\linewidth}P{0.12\linewidth}@{}}
+\toprule
+Condition & Probes & Release change & Rescued & Harmed \\
+\midrule
+NoProbeShield & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+ProbeNoUpdate & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+MIRA-Relay & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+Family permutation & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\section{Error and Cost Analysis}
+The paper will report errors by provider family, endpoint, scaffold group, runtime status, and feedback visibility. A wrong terminal prediction, a provider execution failure, an unknown truth, and an intentional refusal are different events and remain in separate denominators. For each adaptive method we will show both-correct, both-wrong, rescued, harmed, and switch-away counts relative to the fit-only incumbent. This decomposition is necessary because a small pooled accuracy change can hide a large number of harmful switches.
+
+The cost table will include provider calls, probe rate, selection and update p50/p95, peak serialized state, and recovery time. Python replay time is reported as policy computation cost; it is not presented as provider money, token, or wall-clock service latency. Verification and escalation report their extra-call distribution and break-even utility thresholds. \tbd{} values will be filled only from the raw event ledger.
+
+\section{Limitations and Discussion}
+The benchmark separates public answer semantics from the project routing protocol. This makes the provider-selection question replayable, but it does not make the routing layer a community benchmark by itself. The principal development endpoint is BBB; hERG and AMES remain extensions until their assay semantics, coverage, conflicts, and provider training lineage are closed. The current provider panel also contains related model families, so provider-count improvements cannot be interpreted as independent evidence without family-balanced analysis.
+
+The proposed method is scoped to feedback-adaptive selection. A delayed selected-only replay does not by itself demonstrate natural provider arrival, retirement, version drift, or broad nonstationarity. Those events are controlled stress unless an independent deployment trace supports a stronger claim. An immutable fallback is a reference and guardrail, not a theorem that no switch can be harmful.
+
+The method may fail when the safe menu contains no identifiable challenger, when probes are too sparse to cover relevant families, or when the family registry is wrong. These are scientific boundaries, not implementation details: the matrix therefore measures exposure, action changes, hazard blocks, and negative controls. If MIRA-Relay does not beat the matched controls after these checks, the paper will retain the protocol and failure analysis but will not call the candidate an effective online selector.
+
+\section{Related Work}
+Tool-using agents learn to call external APIs and execute actions, but their training objectives generally do not impose a selected-only correctness clock~\cite{schick2023toolformer,yao2023react}. Our task instead treats the provider call as an online decision whose outcome may be delayed and whose correctness is tied to an independently auditable scientific endpoint.
+
+Contextual bandits provide the natural language for choosing an action from a context before observing its reward. LinUCB~\cite{li2010contextual} and contextual Thompson sampling~\cite{agrawal2013thompson} are canonical controls, while warm-start methods study how prior data can reduce the cost of early exploration~\cite{oetomo2023warmstart}. Delayed-feedback analyses show that the release clock changes online learning even when the action space is unchanged~\cite{joulani2013online}. MIRA-Relay uses these ideas as baselines and contracts; its proposed difference is the explicit separation of immutable fallback, family-shared residual evidence, runtime hazard, and result-independent probe coverage in a scientific tool menu.
+
+Recent model-routing work studies static or online selection among language models, including budget-aware adaptive routing~\cite{panda2025pilot}, graph-based selection~\cite{feng2025graphrouter}, dual-contrastive routing~\cite{chen2024routerdc}, and benchmark frameworks for multi-model routing~\cite{hu2024routerbench}. Those systems provide useful modern comparators, but their usual feedback is a preference or task score for the selected response and their provider panels are language-model panels. We retain adapted versions only when their input features, prior, feedback, and budget can be audited under the pharmaceutical contract; GraphRouter is audit-only if its graph input semantics cannot be preserved.
+
+Finally, molecular benchmark work emphasizes public task definitions and reproducible datasets~\cite{huang2021tdc,wu2018moleculenet}. Pharmaceutical providers are correlated predictors with different training lineages, so the present study reports family sensitivity and training-membership limits rather than treating every cached model as an independent truth source.
+
+\section{Conclusion}
+This paper defines a narrow, testable problem: selecting a concrete scientific provider before its output is known, then adapting from delayed correctness feedback that is available only for selected calls. MIRA-Relay is a candidate mechanism that makes its proposed sharing, probing, fallback, and hazard decisions explicit and recoverable. The benchmark, baseline contract, and RQ-driven matrix are fixed before final empirical cells are filled. The durable lesson will come from the frozen receipts: either selected-only outcome feedback can produce measurable, cost-aware adaptation under these boundaries, or the recovery and error decomposition will show exactly where that premise fails.
+
+\balance
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{references}
+\end{document}

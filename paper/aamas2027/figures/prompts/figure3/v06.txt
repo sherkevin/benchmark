@@ -1,0 +1,15 @@
+Use the attached AI Figure 3 v02 as the visual reference. Preserve its clean three-panel flat-vector layout, compact rounded headers, large white plotting areas, restrained navy/gray/amber palette, and final-width typography. Generate a new wide results-figure shell on white for a top multi-agent systems paper. Keep plot modules dominant and labels short. Use thin dark axes and very light grid lines. No gradients, 3-D, shadows, clip art, paragraphs, or watermark.
+
+The entire figure is a data-free layout. Draw no points, bars, curves, error bars, intervals, numeric tick labels, significance marks, or placeholder dots. All empirical marks will later be rendered from verified receipts.
+
+Keep exactly three equally sized panels.
+
+(a) Feedback effect. Header “Feedback effect”. Empty axes with x categories “D = 0”, “D = 1”, “D = 4”; y label “Paired change in success (pp)”; one thin zero line. Compact legend entries: “natural fresh” (muted gray) and “controlled label flip” (navy).
+
+(b) Rescued vs harmed. Header “Rescued vs harmed”. Empty grouped-bar axes; x label “Method”; y label “Paired action count”. Reserve short x labels “Frozen”, “SGD”, “LinUCB”, “Bayes”, “MIRA”. Compact legend entries: “rescued” (navy) and “harmed” (muted amber). No bars or heights.
+
+(c) Update cost. Header “Update cost”. Empty scatter axes; x label “Update p95 (µs)”; y label “State (KiB)”. Use a compact legend whose entries are exactly “Frozen” (gray), “MIRA-Relay” (navy), and “matched baselines” (amber). Do not use “Other”, “best”, “SOTA”, or any vague category. Do not draw a frontier, trend, dominance arrow, point, or value.
+
+Use dark blue panel letters “(a)”, “(b)”, “(c)” inside compact rounded title tabs and keep the footer minimal. Use gray for stationary references/Frozen, navy for MIRA-Relay and the primary result layer, and amber only for controlled intervention, harmed outcomes, or matched-baseline cost markers. Ensure every label remains readable at AAMAS full-width placement.
+
+Negative prompt: “Other”, “ProbeNoUpdate”, stale comparator, cumulative time series, invented measurements, fake bars, fake points, fake error bars, fake confidence intervals, numerical ticks, significance stars, ranking arrows, Pareto frontier, SOTA badge, 3-D chart, gradient, shadow, clip art, table, dense legend, paragraph, watermark, logo.

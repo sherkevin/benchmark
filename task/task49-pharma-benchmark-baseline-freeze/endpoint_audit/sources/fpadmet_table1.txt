@@ -1,0 +1,88 @@
+Table 1 | FP-ADMET: a compendium of fingerprint-based ADMET prediction models | Journal of Cheminformatics | Springer Nature Link
+Skip to main content
+Log in
+Menu
+Find a journal
+Publish with us
+Track your research
+Search
+Saved research
+Cart
+Home
+Journal of Cheminformatics
+Article
+Table 1
+Table 1 Fingerprints used in this study to model different ADMET related properties
+From:
+FP-ADMET: a compendium of fingerprint-based ADMET prediction models
+Fingerprint
+Size
+MACCS
+166
+PUBCHEM
+881
+Klekota-Roth (KR)
+4860
+MOLPRINT (RAD2D)
+4096
+Atom pair (AP), atom triplet (AT)
+4096
+Local path environments (LSTAR)
+4096
+All-shortest path (ASP)
+4096
+Depth first search (DFS)
+4096
+Extended conectivity (ECFP: 0, 2, 4, 6)
+1024
+Functional class (FCFP: 0, 2, 4, 6)
+1024
+Pharmacophore: 2PPHAR/3PPHAR (2/3 point)
+4096
+ESTATE
+79
+Descriptions and implementation details of the different fingerprints are provided in the article by Hinselmann et al [
+21
+] and the references therein
+Back to article page
+Search
+Search by keyword or author
+Search
+Navigation
+Find a journal
+Publish with us
+Track your research
+Footer Navigation
+Discover content
+Journals A-Z
+Books A-Z
+Subjects A-Z
+Publish with us
+Journal finder
+Publish your research
+Language editing
+Open access publishing
+Products and services
+Our products
+Librarians
+Societies
+Partners and advertisers
+Our brands
+Springer
+Nature Portfolio
+BMC
+Palgrave Macmillan
+Apress
+Discover
+Corporate Navigation
+Your privacy choices/Manage cookies
+Your US state privacy rights
+Accessibility statement
+Terms and conditions
+Privacy policy
+Help and support
+Legal notice
+Cancel contracts here
+122.231.251.132
+Not affiliated
+© 2026 Springer Nature

@@ -1,0 +1,11 @@
+Metadata-Version: 2.4
+Name: healthagentbench
+Version: 0.1.0
+Summary: Healthcare Agent Benchmark with self-contained mini agent
+Requires-Python: >=3.10
+License-File: LICENSE
+Requires-Dist: openai
+Requires-Dist: requests
+Requires-Dist: python-dotenv
+Requires-Dist: pytest>=8
+Dynamic: license-file

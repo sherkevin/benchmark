@@ -1,0 +1,18 @@
+event: tree_start
+data: {"thread_id": "tree-7e2bdec8-95aefb", "goal": "MgB2超导"}
+
+event: tree_hypotheses
+data: {"hypotheses": [{"node_id": "d1_n0", "hypothesis": "MgB2的超导转变温度可以通过引入轻元素掺杂（如碳）在保持双带结构的同时进一步提高。", "objective": "基于第一性原理计算，系统研究碳掺杂对MgB2电子结构和声子谱的影响，预测最优掺杂浓度下Tc的变化趋势。"}, {"node_id": "d1_n1", "hypothesis": "采用高压扭转工艺制备的纳米晶MgB2块材，其晶界钉扎效应将显著增强磁场下的临界电流密度。", "objective": "通过调控高压扭转参数制备不同晶粒尺寸的MgB2样品，表征其微观结构并测量变温变场下的临界电流密度，建立晶界密度与钉扎性能的关联。"}, {"node_id": "d1_n2", "hypothesis": "在MgB2中引入化学压力（如Al替代Mg）可以调控σ带和π带的相对位置，从而优化双带超导耦合强度。", "objective": "合成Mg1-xAlxB2系列单晶，利用角分辨光电子能谱和比热测量，绘制掺杂依赖的能带结构相图，揭示化学压力对超导序参量的影响。"}, {"node_id": "d1_n3", "hypothesis": "MgB2薄膜中引入人工钉扎中心（如氧化物纳米点阵列）可以在不显著降低Tc的前提下，大幅提高高场下的Jc。", "objective": "利用脉冲激光沉积制备含BaZrO3纳米点阵列的MgB2薄膜，通过透射电镜和输运测量，定量评价人工钉扎中心对磁通钉扎的贡献。"}, {"node_id": "d1_n4", "hypothesis": "MgB2超导体的磁通钉扎各向异性源于其层状晶体结构和双带超导特性，通过织构化处理可以调控各向异性度。", "objective": "采用热变形工艺制备具有c轴取向的MgB2块材，测量不同磁场方向下的临界电流密度，结合电子背散射衍射分析，量化织构度与各向异性参数的关系。"}]}
+
+event: tree_branch_done
+data: {"node_id": "d1_n0", "hypothesis": "MgB2的超导转变温度可以通过引入轻元素掺杂（如碳）在保持双带结构的同时进一步提高。", "status": "succeeded", "score": 0.0}
+
+event: tree_branch_done
+data: {"node_id": "d1_n2", "hypothesis": "在MgB2中引入化学压力（如Al替代Mg）可以调控σ带和π带的相对位置，从而优化双带超导耦合强度。", "status": "succeeded", "score": 0.0}
+
+event: tree_branch_done
+data: {"node_id": "d1_n1", "hypothesis": "采用高压扭转工艺制备的纳米晶MgB2块材，其晶界钉扎效应将显著增强磁场下的临界电流密度。", "status": "succeeded", "score": 0.0}
+
+event: tree_interrupt
+data: {"type": "research_tree_evaluate", "depth": 1, "goal": "MgB2超导", "branches": [{"node_id": "d1_n0", "hypothesis": "MgB2的超导转变温度可以通过引入轻元素掺杂（如碳）在保持双带结构的同时进一步提高。", "status": "succeeded", "score": 0.0, "recommended": "unknown", "summary": "现在我已经收集了充分的证据。让我汇总发现并撰写最终报告。\n\n---\n\n## Branch Summary\n\n**核心发现：该分支假设与已有的实验和理论证据存在根本性矛盾。**\n\n碳掺杂MgB₂已被广泛研究，结论明确：碳替代硼位点引入**电子掺杂**，填充σ带空穴，降低费米面态密度N(Ef)，从而**单调降低Tc**——而非提高。Kortus等人(2005)的里程碑式PRL论文（200次引用）通过第", "failure_reason": ""}, {"node_id": "d1_n1", "hypothesis": "采用高压扭转工艺制备的纳米晶MgB2块材，其晶界钉扎效应将显著增强磁场下的临界电流密度。", "status": "succeeded", "score": 0.0, "recommended": "unknown", "summary": "---\n\n## Branch Summary\n\n本分支假设高压扭转（HPT）工艺制备的纳米晶MgB2块材可通过晶界钉扎效应显著增强磁场下的临界电流密度（Jc）。通过文献调查发现：**HPT应用于MgB2超导体在文献中完全空白**——无任何相关论文。机械合金化（ball milling）是已被验证的纳米晶MgB2制备方法（Gümbel et al. 2002, 231引用），但HPT与机械合金化有本", "failure_reason": ""}, {"node_id": "d1_n2", "hypothesis": "在MgB2中引入化学压力（如Al替代Mg）可以调控σ带和π带的相对位置，从而优化双带超导耦合强度。", "status": "succeeded", "score": 0.0, "recommended": "unknown", "summary": "现在我已经收集了足够的文献证据进行全面分析。让我整合所有发现。\n\n---\n\n## Branch Summary\n\n**Mg₁₋ₓAlₓB₂中化学压力调控双带超导的假设存在根本性缺陷。** Al替代Mg的主要效应是电子掺杂（空穴填充σ带），而非化学压力。所有已发表的实验数据一致表明Al掺杂**单调抑制Tc**（39K→0K），不存在\"优化\"双带耦合的窗口。2004年Ummarino等人的双带Elia", "failure_reason": ""}], "thread_id": "tree-7e2bdec8-95aefb"}
+

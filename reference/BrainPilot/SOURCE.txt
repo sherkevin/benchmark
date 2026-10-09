@@ -1,0 +1,5 @@
+arXiv:2607.15079
+abs: https://arxiv.org/abs/2607.15079
+pdf: https://arxiv.org/pdf/2607.15079
+topic: 脑科学Graph_of_Trace
+pulled: 2026-08-09 via arxiv MCP (arxiv_get_metadata / arxiv_read_paper)

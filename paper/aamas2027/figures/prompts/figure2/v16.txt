@@ -1,0 +1,22 @@
+
+Use v15 as the visual reference. Preserve its style, colors, icons, typography, and the corrected terminal-record information boundary. Make one exact geometry correction.
+
+The amber “terminal outcome” card must be vertically aligned above the navy “selected outcome” card: their centers share the same x coordinate. Put terminal outcome in the center-left of the lower half and put selected outcome directly below it, with a short straight downward arrow whose arrowhead lands on the top edge of selected outcome. The arrow must not land on the purple queue. The selected outcome card must be the only source of the next horizontal arrow, which points right into the purple selected-only queue.
+
+The lower chain must read visibly and without ambiguity:
+
+```
+terminal outcome
+       ↓
+selected outcome → selected-only queue → released outcome → relay update → S_τt → first action
+```
+
+Do not place terminal outcome above the queue, above relay update, or above released outcome. Do not place selected outcome to the left of terminal outcome. Do not let terminal outcome connect directly to queue, released outcome, relay update, or state.
+
+Keep the top chain: S_t + A_t → selector → one selected provider → call → terminal record → frozen endpoint judge → chemical correctness. Runtime status feeds only the grey system failure card; frozen judge feeds only chemical correctness. The only two arrows entering terminal outcome are the short arrow from system failure and the short arrow from chemical correctness. There is no terminal-record shortcut.
+
+Keep the selected-only queue labelled “τ_t = t + 1 + D”, with grey time dots “t+1 … τ_t−1” and note “hidden until τ_t”. Keep released outcome, relay update with “family residual + provider bias”, state cylinder “S_τt”, local circular-arrow “future state”, first action at or after τ_t, and “D=0: visible before next action”. Keep the attached “unselected output” / “not observed” badge. Keep four compact phase tabs DECIDE / EXECUTE + JUDGE / DELAYED FEEDBACK / UPDATE. No global bottom loop.
+
+Render only the exact existing labels and no explanatory paragraphs. Use the same navy #2E5DA1, grey #B8C0CC, amber #D99000, purple #6B4C9A flat-vector palette, clean sans-serif typography, medium outlines, white background, no gradients, no 3-D, no shadows, no grid, no table, no swimlane, no verifier, refusal, escalation, or second call.
+
+Negative prompt: terminal outcome above queue, terminal outcome arrow landing on queue, selected outcome left of terminal outcome, selected outcome disconnected, terminal outcome to queue shortcut, terminal outcome to released outcome, terminal outcome to relay update, system failure directly to selected outcome, terminal record shortcut, queue before selected outcome, queue bypass, long bottom loop, global feedback loop, large empty margins, scattered modules, extra prose, current truth before action, same-action feedback, instant learning, fallback ledger, diagnostic ledger, gradients, 3-D, shadows, watermark.

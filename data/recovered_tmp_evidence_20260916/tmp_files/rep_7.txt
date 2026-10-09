@@ -1,0 +1,4 @@
+NAME	LOGP	LOGS	
+caffeine	-0.499	-0.519	
+aspirin	1.103	-1.241	
+nicotine	1.885	-2.011	

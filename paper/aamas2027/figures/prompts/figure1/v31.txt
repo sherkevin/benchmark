@@ -1,0 +1,17 @@
+Use case: infographic-diagram. Create Figure 1 v21 by preserving the exact layout, modules, text, topology, and top-conference visual quality of the attached Figure 1 v20. Make only one controlled visual correction: distinguish waiting from state update with line style and color.
+
+KEEP UNCHANGED
+Keep the compact white 2.7:1 flat-vector architecture, pale-blue Inputs/MIRA-Relay panels, pale-cream Execution panel, muted purple delay modules, blue selected/update modules, gray frozen records, amber judge/chemical feedback, concrete feature and state grids, simple icons, short labels, no provider letters A/B/C, no gradients, no 3-D, no grid background, no swimlane, no extra prose. Keep all nodes and their positions as in v20. Keep the direct same-height Update arrow entering the highlighted released-state row, and keep the residual vector above the write path as a state readout.
+
+LINE SEMANTICS — ONLY REQUIRED CHANGE
+1. The edge from the selected-only queue to the Release clock represents hidden waiting. It must be a single PURPLE DASHED arrow, with a visible arrowhead pointing from queue toward Release.
+2. The edge from Release to Update represents the released state update. It must be a single solid BLUE arrow, with a visible arrowhead pointing from Release toward Update.
+3. The edge from Update into the highlighted released-state row must remain a single solid BLUE arrow, with its arrowhead visibly inside the highlighted n/s row cells.
+4. Chemical feedback to the selected-only queue remains one short solid purple downward arrow. Runtime error remains a gray dead-end to Runtime ledger.
+Do not add, remove, reroute, or duplicate any edge. Do not change module labels or equations. Do not turn the queue→Release edge into a solid line. Do not color Release→Update purple.
+
+TEXT
+Keep only the existing short labels: Inputs, MIRA-Relay, Execution, Molecule + Endpoint, Features, Frozen scorer, base score, released state, residual, score, Eligible tools, Selector, Selected tool, Call, Return, Judge, Chemical feedback, Runtime ledger, selected-only queue, Release, Update, q=q⁰+Δ, τ_t=t+1+D. No provider names or arbitrary letters.
+
+FINAL CHECK
+The image must be visually identical to v20 except for the three feedback-edge semantics above. It must retain the direct queue→Release→Update→highlighted-row causal path and the sample-gallery quality.

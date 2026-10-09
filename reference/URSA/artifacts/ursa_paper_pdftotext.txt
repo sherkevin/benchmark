@@ -1,0 +1,1883 @@
+                                                      URSA: Chemistry-Aware Benchmark for
+                                                       Utilitarian Retrosynthesis Assessment
+
+
+                                                    Bogdan Zagribelnyy1 ∗ Ivan Ilin1 Nikita Bondarev1 Anton Morgunov2
+                                                           Arkadii Lin1 Maksim Kuznetsov3 Rim Shayakhmetov1
+                                                         Vladimir Aladinskiy1 Alex Aliper1 Alex Zhavoronkov1,3,4
+                                                                 1
+                                                                  Insilico Medicine AI Limited, Masdar City, Abu Dhabi, UAE
+
+
+
+
+arXiv:2607.04688v1 [cs.LG] 6 Jul 2026
+                                                                                     2
+                                                                                       Independent researcher
+                                                                   3
+                                                                     Insilico Medicine Canada Inc., Montreal, Quebec, Canada
+                                                                 4
+                                                                   Insilico Medicine Hong Kong Ltd., Hong Kong SAR, China
+
+
+
+                                                                                        Abstract
+                                                    Synthesis planning aiming to find pathways of reactions for a target molecule is
+                                                    one of the most important and challenging tasks in drug discovery. Recent progress
+                                                    has produced both specialized deep-learning retrosynthesis systems and general-
+                                                    purpose large language models, but objective comparison remains difficult due to
+                                                    the lack of flexible, chemically interpretable benchmarking protocols. In the current
+                                                    study, we are introducing the URSA (Utilitarian RetroSynthesis Assessment) eval-
+                                                    uation framework that provides the opportunity to benchmark the synthetic routes
+                                                    not only from a formal perspective, such as convergence to commercially available
+                                                    starting materials, but also from a chemical plausibility perspective, mimicking
+                                                    the way expert chemists evaluate the reactions and routes. The study covers a
+                                                    comprehensive evaluation of both conventional end-to-end retrosynthesis solutions
+                                                    and LLMs for the synthesis planning task on a set of novel, diverse target molecules
+                                                    with undisclosed synthetic routes, which represent realistic tasks in the daily drug
+                                                    design routine. We find that while LLMs can support high-level strategic planning,
+                                                    they currently underperform specialized retrosynthesis models in reliably solving
+                                                    synthesis planning tasks.
+
+
+                                        1    Introduction
+                                        Computer-Aided/Assisted Synthesis Planning (CASP) aims to design synthetic pathways to target
+                                        molecules, a long-standing grand challenge in organic chemistry [1]. Since Corey and Wipke’s early
+                                        logic-centered systems [2], most CASP methods have treated retrosynthesis as backward search
+                                        over precursor trees: single-step models propose disconnections, and planners search for routes that
+                                        terminate in available starting materials. Modern neural predictors and search algorithms [3–10] have
+                                        greatly improved this navigability problem, but the dominant evaluation metric still asks a narrow
+                                        question: "Did the planner find any path to stock?"
+                                        This metric, often reported as solvability, has limited chemical meaning. Its value depends strongly
+                                        on the definition of the starting-material stock, which varies from realistic commercial inventories to
+                                        expansive virtual libraries. More importantly, stock termination does not imply that the individual
+                                        transformations in the route are chemically plausible. Recent evaluations have shown that stock-
+                                        terminated routes can contain chemically invalid transformations despite satisfying the formal search
+                                        objective [11, 12]. Thus, high stock-termination scores can reward graph connectivity while leaving
+                                        unresolved the question a chemist actually cares about: "Is this route chemically sound?"
+                                            ∗ bogdan@insilicomedicine.com
+
+
+                                        Preprint.
+Route-reproduction benchmarks such as PaRoutes provide a stronger signal by testing whether
+models recover known experimental syntheses [13]. However, exact reproduction is conservative:
+it cannot reward novel but plausible routes that differ from the reference synthesis. This leaves a
+measurement gap between two incomplete criteria. Stock termination can accept implausible novelty;
+route reproduction can reject plausible novelty. Recent work formalizes this distinction through
+the Solv-N[task] hierarchy, which separates syntactic (N = 0) and topological validity (N = 1)
+from higher-order requirements such as selectivity (N = 2) and experimental executability (N = 3)
+and from user-defined constraints [task] such as, e.g., termination to a specified stock of starting
+materials (SM), maximum allowed route length or restriction on the usage of specific reactions [14].
+We introduce URSA (Utilitarian RetroSynthesis Assessment), a benchmark framework for evaluating
+retrosynthetic routes at the practically urgent Solv-1/Solv-2 boundary. URSA asks whether a proposed
+stock-terminated route advances beyond Solv-0/1 checks by satisfying Solv-2 chemical plausibility
+criteria at every reaction step. To support heterogeneous CASP systems, URSA uses RetroCast
+as a route-standardization layer [12], then evaluates each standardized route with reaction-level
+plausibility checks.
+The main contributions of this work are:
+      1. We introduce URSA, a unified framework for evaluating the chemical plausibility of ret-
+         rosynthetic routes generated for novel target molecules.
+      2. We publish Reaction plausibility benchmark dataset collected by expert chemists
+         to measure chemical plausibility discrimination power.
+      3. We release URSA-drugs&clinicals-2026, a diverse benchmark of approved drugs and
+         clinical candidates designed to better reflect medicinal chemistry use cases.
+      4. We benchmark modern synthesis planning tools, including conventional CASP systems and
+         closed- and open-weight LLMs, under a route-level plausibility protocol.
+
+2     Related Work
+2.1   Benchmarking tools for synthesis planning
+
+Existing retrosynthesis benchmarks address different parts of the evaluation problem. PaRoutes
+introduced a large open dataset of experimentally reported routes and exposed the gap between stock
+termination and route reproduction [13]. Syntheseus broadened infrastructure support by making
+it easier to compose single-step retrosynthesis models with multistep planners such as MCTS and
+Retro* [5, 15, 3]. RetroCast addressed the complementary standardization problem by converting
+heterogeneous CASP outputs into a common route representation, enabling reproducible scoring and
+qualitative inspection through SynthArena [12, 16]. These tools improve comparability, but they do
+not by themselves provide an automated Solv-2 plausibility judge.
+Recent work has begun to target this missing validity layer. RetroTrim proposes an ensemble of
+reaction scorers for hallucination filtering, but its current preprint does not release code or model
+weights for independent benchmarking [17]. LLM-based systems have also been proposed as
+synthesis evaluators or planners [18–20], but their reliability on novel target molecules remains
+insufficiently established, and we identify several chemically problematic judgments in Appendix M.
+ChemCensor instead evaluates reaction plausibility through reaction-center and functional-group
+precedent extracted from reported chemistry [21], making it a natural candidate for route-level Solv-2
+benchmarking.
+
+2.2   Benchmarking target sets for synthesis planning
+
+Benchmarking sets also shape what kind of capability is measured. Widely used retrospective sets
+such as USPTO-190 [5], derived from USPTO-full [22], contain molecules with previously reported
+routes. They are useful for controlled retrospective evaluation, but they weakly reflect the prospective
+medicinal chemistry setting, where the target molecule may be novel and no reference synthesis is
+available. Recent analyses further show that such benchmarks can obscure route-quality failures:
+stock-terminated predictions may satisfy the formal benchmark objective while relying on chemically
+implausible transformations or artifacts inherited from patent-derived data [12]. We discuss additional
+limitations of USPTO-190, including low structural diversity and target relevance, in Appendix J.
+
+
+                                                   2
+This limitation reflects a broader transition in the field from an era of navigability, where the central
+question was whether a planner could find any path through retrosynthetic search space, toward an era
+of validity, where the central question is whether that path is chemically plausible [14]. Several recent
+benchmarks move closer to this validity-oriented setting. RetroTrim introduced 32 synthetically
+challenging, practically relevant targets without prior reported synthetic precedents [17]. This is an
+important step, but the set is too small for broad tool comparison and has not been released as an
+extensible benchmark family. URSA is designed to fill this gap by pairing practically relevant target
+sets with a unified route-level plausibility protocol, allowing both conventional CASP systems and
+LLM-based planners to be evaluated on the same chemical validity criteria.
+
+3     Preliminaries
+Solv-N formalism The Solv-N[task] hierarchy separates increasingly strict notions of synthetic
+route validity [14] from satisfaction of [task] constraints (e.g. termination to a stock of SMs):
+Solv-0 requires only basic syntactic validity, i.e. all molecular strings in the route to be valid SMILES.
+Solv-1 additionally requires each reaction step to correspond to a legal reaction template or otherwise
+valid reaction-center transformation. This requirement is usually explicit for template-based planners,
+where the reaction center is encoded in the template, but it is less guaranteed for template-free or
+generative outputs, which can hallucinate chemically invalid transformations [11, 17]. In practice,
+chemists often assess questionable transformations by searching precedents in curated reaction
+databases such as SciFinder and Reaxys [23, 24], but route-level expert review is too slow and
+expensive to serve as a routine benchmark protocol [15]. Solv-2, the focus of this work, adds
+chemical plausibility constraints beyond template legality, including reaction precedent, chemo-
+, regio-, and stereoselectivity consistency. Solv-3 requires experimental executability, including
+conditions, purification, and yield. URSA focuses on Solv-2 because evaluating Solv-3 executability
+is only meaningful after the route has first passed stock termination and reaction-level chemical
+validity checks.
+
+ChemCensor ChemCensor is a reaction-level plausibility evaluator based on synthetic prece-
+dent [21]. It abstracts reported reactions into reaction centers and functional-group contexts, then uses
+these patterns to assess whether a proposed transformation is chemically plausible, including checks
+related to reaction-center precedent and chemo-, regio-, and stereoselectivity. In URSA, ChemCensor
+is used as a candidate automated validator for applying Solv-2 plausibility checks across every step of
+a proposed route. Because recent work has proposed LLMs as reaction or route evaluators [19], we
+benchmark ChemCensor against LLM-based judgments before using it as the route-level plausibility
+component of URSA.
+
+4     Utilitarian Retrosynthesis Assessment
+URSA (Utilitarian RetroSynthesis Assessment) is a route-level evaluation framework for testing
+whether synthesis planning systems produce chemically plausible stock-terminated routes. It is
+designed to compare heterogeneous planners, including conventional CASP systems and LLM-based
+approaches, under the same Solv-0, Solv-1, and Solv-2 criteria. In the URSA [task] configuration
+used here, routes at every reported Solv-N level are additionally required to terminate in the specified
+stock of commercially available building blocks (CABBs).
+
+4.1   Benchmarking sets
+
+URSA evaluates planners on two complementary target-molecule sets. The first, URSA-Expert-2026
+(adopted from the ChemCensor study), contains novel, not-yet-synthesized target molecules whose
+synthetic accessibility was assessed by professional synthetic chemists through reference-supported
+route proposals. This set is more than three times larger than the novel target set proposed in
+RetroTrim [17]. To reduce leakage risk, the supporting expert-designed schemes are not used as
+route-reproduction ground truth in URSA; the benchmark evaluates predicted routes by chemical
+plausibility rather than by exact recovery of those schemes.
+Because these expert targets are intentionally challenging, they may exceed the practical capabilities
+of many current synthesis planners. We therefore include a second, intermediate-difficulty benchmark,
+
+
+                                                    3
+URSA-drugs&clinicals-2026, consisting of 100 approved drugs and clinical candidates. This set
+is intended as a medicinally relevant replacement for USPTO-190: unlike patent-derived synthetic
+intermediates from USPTO-full [22], its targets are selected for practical relevance, structural
+diversity, and direct connection to real therapeutic chemistry. Together, the two sets allow URSA
+to evaluate both prospective planning on difficult novel molecules and route plausibility for known,
+clinically meaningful compounds.
+
+ A
+                                                                                     ?
+                                           Prompting LLM on
+        Benchmark sets                                                  Output parser
+                                              MSRS task                                                                                                           URSA
+          URSA-expert-2026                                                                                                                                      benchmark
+                                                                                                                                                                 metrics:
+                                                                                                     Predicted routes in                  URSA
+      URSA-drugs&clinicals-2026
+                                                                                                       unified format                                             Solv-1
+                                                                                                         (up to 10 per TM)
+                                                                                                                                         Utilitarian              Solv-2
+                                                                                                                                       RetroSynthesis
+             USPTO-190                        Conventional                RetroCast:
+                                                                                                                                        Assessment
+                                                                                                                                                                   CC*
+                                           retrosynthesis tool         format unification
+
+
+                                                URSA BBs
+
+
+ B
+                                   Integrity               Stock termination                 Subtree                 ChemCensor            Best route           Metrics
+                                  validation                    check                       generation                 scoring             selection          calculation
+                                                                                                                                                   2
+
+                                                                 URSA BBs                                                    RXN DB        1       1
+
+
+
+
+  Raw routes                                                                                                           1      2
+                                                                                                                                               2            • Solv-1
+                                                                                                                       1      1
+                                                                                                                                                            • Solv-2
+                                                                                                                                                            • Route Av. CC
+                             Validated routes                Stock checked               Subtrees added             Reactions scored    Best route per TM
+
+
+
+
+Figure 1: URSA benchmark system. A. The benchmarking pipeline for both conventional synthesis
+planning tools and LLMs. B. The URSA benchmark components.
+
+
+4.2       Evaluation protocol formalization
+
+URSA evaluates the necessary precondition for executable synthesis planning under Solv-N[task]
+formalism: whether a proposed route is stock-terminated [task], structurally (Solv-0) and topologically
+(Solv-1) valid, and chemically plausible (Solv-2) at the level of its constituent transformations. A full
+Solv-3 evaluation would require conditions, catalysts, solvents, purification details, safety constraints,
+and expected yields. Those details are important for laboratory execution, but they are only meaningful
+after chemically invalid or selectively impossible transformations have already been filtered. URSA
+therefore focuses on Solv-2 rather than attempting premature condition-level evaluation.
+For each target molecule, a submitted route must satisfy three requirements:
+
+           1. The route must terminate in commercially available building blocks;
+           2. The route must be structurally self-consistent, with valid molecular graphs and coherent
+              directed-acyclic route connectivity;
+           3. Each reaction in the route must be chemically plausible under the ChemCensor-based Solv-2
+              criterion.
+
+Because synthesis planning systems emit incompatible route formats, URSA first standardizes all
+predictions. Conventional CASP outputs are converted into the RetroCast route representation [12];
+LLM-generated routes are parsed from the prompt-specified format described in Appendix I. This
+produces a common route object for validation, scoring, visualization, and metric computation.
+The pipeline then applies a sequence of route-level checks (Figure 1). First, primary integrity
+validation confirms that each route is a coherent directed acyclic graph, removes meaningless steps,
+and verifies that all molecular strings can be parsed by RDKit [25]. Second, stock-termination
+checking verifies that terminal leaves are commercially available building blocks. Third, URSA
+expands validated routes through subtree generation. This module enumerates shorter alternative
+subroutes by collapsing one-component reaction steps and merging adjacent reaction nodes when
+appropriate; already merged steps are not collapsed again. The procedure is illustrated in Appendix K.
+
+
+                                                                                                   4
+Subtree generation addresses a practical mismatch between predicted routes and precedent databases.
+Reaction datasets such as USPTO often store multi-step operations as single reaction records, omitting
+intermediates for transformations such as Boc deprotection or Grignard reagent preparation (Figure 2).
+Without route augmentation, a predicted single-step transformation may be unfairly compared against
+a multi-step precedent, or vice versa. Subtree generation, therefore, creates alternative route views
+that reduce scoring artifacts caused by different levels of reaction granularity.
+After validation and augmentation, URSA extracts every reaction step and scores it with ChemCensor
+using a reference database of synthetic precedents. ChemCensor (CC) scoring components are
+described in Appendix L. Step-level scores are then aggregated into route-level scores. For each
+target molecule, URSA selects the best route using the following priority order:
+
+       1. Prefer routes with Solv-2 = 1, meaning every reaction passes the plausibility criterion;
+       2. If multiple Solv-2 routes are available, select the route with the highest average CC score;
+       3. If no route satisfies Solv-2, select the route with the highest average CC score;
+       4. If multiple routes have the same average CC score, select the shortest route.
+
+URSA reports model performance using Solv-0, Solv-1, Solv-2, and the average ChemCensor
+plausibility score (CC*, Equation 1). Best routes can also be exported as CDXML files annotated
+with ChemCensor scores for visualization and manual analysis.
+
+
+
+
+      Figure 2: Examples of multi-step reaction entities stored in the USPTO reaction database.
+
+
+5     Experimental Methods
+This section describes the experimental design used to evaluate URSA. We run two linked experiments.
+First, we compare ChemCensor (section 9, [21]) with LLM-based reaction judges on an expert-labeled
+reaction plausibility dataset; this determines whether ChemCensor is suitable as the automated Solv-2
+validator used by URSA. Second, using ChemCensor as the route-level plausibility component, we
+benchmark conventional CASP planners and LLM-based planners on the URSA target sets.
+
+5.1   Evaluated systems
+
+We evaluate LLMs, using their default reasoning-effort settings, in two roles: as reaction-level
+plausibility judges in the validator comparison and as route-generators in the route-level benchmark.
+ChemCensor is evaluated only as a reaction-level validator and then used as the Solv-2 scoring
+component in URSA. Conventional CASP tools are evaluated only as route-generating planners.
+Proprietary Foundation Models: Grok 4.1 [26], 4.3 [27]; Gemini 3.1 Pro [28]; GPT 5.1 [29], 5.2
+[30], 5.4 [31] and 5.5 [32]; Claude Sonnet 4.5 [33] and 4.6 [34]; Claude Opus 4.5 [35], 4.6 [36], 4.7
+[37] and 4.8 [38]. Open-weight Foundation Models: DeepSeek-V3.2 [39]; Qwen3.5-397B-A17B
+(hereafter Qwen3.5) [40], Kimi K2.5 [41] and GLM-5 [42].
+Conventional CASP tools: The evaluated conventional synthesis planning tools were either ready-
+to-use end-to-end solutions, such as Retro* [5]; DirectMultiStep (DMS) family of models [10]:
+DMS-Wide, DMS-Flash and DMS-Explorer-XL; ASKCOS [4]; TTLA [43]; DreamRetroer [7], or
+composite solution of (i) single-step retrosynthesis policy LocalRetro (LR) [44] and (ii) orchestrating
+planning algorithm Retro*-0 implemented via Syntheseus [15]. AiZynthFinder (AZF v4.4.0) [45, 46]
+was benchmarked in two modes: with Retro* and MCTS as planners and max route depth of 10.
+RetroChimera [47] was benchmarked via the Syntheseus interface [48] with Retro* and MCTS as
+planners. SynPlanner [49] was evaluated with MCTS planner and max route depth of 10.
+
+
+                                                   5
+  Model        ChemCensor v1.2.0       Grok-4.3         Gemini 3.1 Pro              GPT 5.5   Claude Opus 4.8
+  Accuracy             0.96               0.75                  0.83                 0.76          0.73
+  MCC                  0.92               0.53                  0.67                 0.57          0.52
+
+                 Table 1: Reaction plausibility benchmark results (1000 reactions).
+
+5.2   Reaction-level validator comparison
+
+Following recent proposals to use LLMs for retrosynthesis evaluation [19], we compare the LLMs
+listed above with ChemCensor, a deterministic chemical-plausibility evaluator [21]. The goal of this
+experiment is to select a route-level Solv-2 validator for URSA before applying the full benchmark to
+generated routes.
+The reaction plausibility benchmark (URSA-reaction-plausibility-bench-2026) contains
+1000 reactions collected from synthesis-planning model outputs by expert chemists who work
+closely with CASP tools. Each reaction was labeled as plausible (1) or implausible (0); the final
+highly balanced dataset contains 500 plausible and 500 implausible reactions (see section 9). LLMs
+were evaluated with a derivative of the prompt proposed in [19], provided in Appendix D, and
+were required to output a binary plausibility label. ChemCensor scores on the [0,1-5] scale were
+binarized as 0: [0] and 1: [1-5]. Examples of LLM completions are provided in Appendix E
+and the accuracy and MCC (Matthews Correlation Coefficient) values are reported in Table 1.
+
+5.3   Route-level planning benchmark
+
+The second experiment evaluates synthesis planners under the URSA protocol, using ChemCensor as
+the Solv-2 scoring component for generated routes. All planners are evaluated against a shared starting-
+material stock containing 255,365 compounds (section 9). The stock combines Enamine building
+blocks [50], the ASKCOS "buyables" set [4], and common small-molecule reagents or solvents that
+are often omitted from vendor stocks but are needed for realistic stock termination. The buyables
+component was additionally cross-checked against eMolecules ready-to-purchase Tier 1 and Tier 2
+building blocks [51]. Target molecules are drawn from three benchmark sets: URSA-expert-2026,
+URSA-drugs&clinicals-2026 (section 9), and the conventional USPTO-190 set [5].
+LLM planners were evaluated with natural-language route-generation prompts; the full templates are
+provided in Appendix I. Each model was allowed to provide up to 10 routes per target molecule. If
+a model returned more than 10 routes, outputs were truncated by the model-provided route scores
+when available, or randomly sampled when no scores were provided. For each target molecule,
+URSA selects a best route according to the protocol in subsection 4.2. Final model performance is
+reported using Solv-0, Solv-1, Solv-2, and the average per-target ChemCensor score. The average
+ChemCensor score is computed over the best route for each target:
+
+                                            M
+                                       1 X                 1      X
+                              CC∗ =                                           CCi                           (1)
+                                       M t=1           r∗ (t)
+                                                                i ∈ r ∗ (t)
+                                                   |             {z             }
+                                                 Av. PR ChemCensor for best route
+
+where M is the number of target molecules, r∗ (t) is the best route selected for target t, |r∗ (t)| is
+the number of reactions in that route, and CCi ∈ [0, 5] is the ChemCensor score for reaction i. Best
+routes are released as CDXML files with per-reaction ChemCensor annotations (section 9).
+The primary benchmark configuration, URSA-minor-1.1.0-U2 depends on ChemCensor v1.2.0
+with the U2 precedent database (section 9), containing approximately 1.4M reactions from
+USPTO-full prepared in ChemCensor-compatible format [22]. We also report results for the closed
+URSA-major-1.1.0-U2P2 configuration, which extends U2 with the Pistachio 2023Q4 dataset [52],
+adding approximately 3.5M synthetic precedents yielding U2P2 database of synthetic precedents, and
+exploits the same ChemCensor v1.2.0 reaction-level plausibility engine.
+Main route-level benchmark results are summarized in Table 2 and Figure 3. Additional
+URSA-major-1.1.0 results, USPTO-190 results, inference costs, and detailed analyses are provided
+in Appendix H.
+
+
+                                                       6
+6                      Main Findings and Discussion
+6.1                        ChemCensor outperforms LLM judges on reaction plausibility
+
+ChemCensor achieves the highest accuracy on the expert-labeled reaction plausibility benchmark
+(0.96), while requiring only local execution and no API inference cost (Table 1). The best LLM judge,
+Gemini 3.1 Pro, reaches only 0.83 accuracy and only 0.67 MCC. GPT 5.5, Grok-4.3, and Claude
+Opus 4.8 cluster between 0.73 and 0.76 of the accuracy values with the corresponding MCC values
+in the 0.52-0.57 range.
+Although the LLM judges show nontrivial discrimination ability, their accuracy substantially over-
+states their balanced classification performance. All evaluated LLMs exhibit a systematic bias
+toward labeling reactions as plausible: recall for plausible reactions is high (0.90–0.96), whereas
+recall for non-plausible reactions is markedly lower (0.50–0.73). This asymmetry leads to frequent
+false-positive plausibility assignments and explains the considerably lower MCC values despite
+superficially reasonable accuracy. In contrast, ChemCensor maintains strong discrimination be-
+tween both classes. From a route-planning perspective, tolerance for false positives is particularly
+detrimental in the early stages of retrosynthesis, as it can lead to a combinatorial proliferation of
+implausible branches in the retrosynthetic search tree. These results and the critical assessment of the
+Synthegy approach (see Appendix M) support using deterministic ChemCensor as the automated
+Solv-2 validator in URSA, rather than relying on direct LLM judgments of reaction plausibility.
+
+6.2                        Stock termination remains far above chemical validity
+
+                             A. Solvability hierarchy for conventional retrosynthesis tools                B. Solvability hierarchy for foundation models
+                     100                                                                      100
+
+                      80                                                                          80
+
+
+
+
+ Solvability-N (%)
+                      60                                                                          60
+
+                      40                                                                          40
+
+                      20                                                                          20
+
+                       0                                                                           0
+                                      AZ       CT   S     R et                     TT  LA             laud G  G  PT
+                                                                                                             em . 5
+                                                                                                                  in  5
+                                          F- M                ro*      M      AS  KC                C la   e O
+                                                                                                        ud us 4
+                                                                                                           e O  p    i3.1
+                                                                                                                       .8
+                                      R        C TS     MS-             S- Ex         O  S                    G pu  s 4. 7
+                 hi                     et                                    pl                    C laud e    ro  k-4. 1
+                   m                      ro*- 0-          Flas         D re    or er -X          C laud e So
+                                                                                                             O
+                                                                                                             Ki pu
+                                                                                                                m   s
+                                                                                                                   iK 4.
+                                                                                                                      2. 6
+                    er                            LR            h            am          L          C laud    nn   et 4. 5
+                           R          AZ                            Sy          R                          e O  pu       6
+                      a-     etro         F-              D            nP         et ro                      Q  w   s
+                                                                                                                   en 4. 5
+                                 C           R                           la             er                            3. 5
+                        M                      et                          nn
+                                   him           r o*                         er                  C laud      G GPTLM  -5
+                                       er a-                                     -M  C TS
+                                                                                                         e So nn   et 5.
+                                                                                                                      4. 1
+et                                           R et                            Sy                               G ro  k-4. 5
+                                                                                                                         3
+  ro                                   D         ro *                 D          nL                    C      G  PT   5. 2
+    C                                    M S-                                       la m a           D ee pS  G
+                                                                                                             ee  PT
+                                                                                                                 k- V35. 4
+R                                             W id  e
+                                                                                                                       .2
+
+
+
+
+Figure 3: Assessment of routes predicted by conventional retrosynthetic tools (A) and LLMs (B) in
+URSA within Solv-N hierarchy: Solv-2 values, accumulated Solv-1 and Solv-0 , respectively.
+
+The route-level benchmark shows that each stricter Solv-N level filters out a substantial fraction of
+generated routes (Table 2, Figure 3). This confirms the central premise of URSA: stock termination
+is necessary as a key task constraint to be satisfied, but it is not sufficient for chemically meaningful
+synthesis planning.
+On URSA-expert-2026, the strongest Solv-2 performance is achieved by RetroChimera-MCTS
+(32%), AZF-MCTS (29%), Retro*-0-LR (22%), and GPT-5.5 (21%). This benchmark is intentionally
+difficult: even the best systems solve fewer than one-third of targets under the Solv-2 criterion. The
+gap between Solv-0 and Solv-2 is especially visible for systems such as DreamRetroer and Kimi K2.5.
+DreamRetroer reaches 95% Solv-0 but only 9% Solv-2, while Kimi K2.5 reaches 97% Solv-0 but
+only 5% Solv-2. These results show that many models can produce stock-terminated route structures
+without maintaining chemical plausibility across the full route.
+Performance is higher on URSA-Drugs&Clinicals-2026, consistent with this set being more
+accessible and closer to familiar medicinal chemistry. The best Solv-2 values are achieved by
+RetroChimera-MCTS (60%), AZF-MCTS and AZF-Retro* (54%), followed by RetroChimera-Retro*
+(52%), Retro*, ASKCOS (44%) and DMS-Wide/Flash models (43%). In this setting, conventional
+planners remain highly competitive with frontier LLMs and often outperform them. The stronger
+results on this set indicate that URSA can distinguish between difficult prospective-style targets and
+known clinically meaningful molecules without collapsing both into a single stock-termination score.
+Cost further differentiates the practical utility of these systems. Although direct cost comparisons
+among LLMs are complicated by differences in API pricing, deployment modes, limited infrastructure
+
+
+                                                                                              7
+                                    URSA-expert-2026              URSA-drugs&clinicals-2026
+ Model
+                           Solv-0     Solv-1   Solv-2   CC*     Solv-0    Solv-1    Solv-2    CC*
+                                    Proprietary Foundation Models
+ Grok-4.1                  67         22       7        1.22    75        41        24        2.01
+ Grok-4.3                  5          0        0        0.94    10        1         1         0.58
+ Gemini 3.1                54         30       13       1.46    70        48        38        2.42
+ GPT 5.1                   16         1        1        0.36    11        1         0         0.46
+ GPT 5.2                   12         1        0        0.70    32        10        7         1.33
+ GPT 5.4                   20         1        0        0.71    29        9         6         1.43
+ GPT 5.5                   63         44       21       1.62    75        54        35        2.43
+ Claude Sonnet 4.5         35         3        1        0.98    59        13        7         1.53
+ Claude Sonnet 4.6         39         9        3        0.99    54        13        8         1.44
+ Claude Opus 4.5           45         7        3        1.03    71        22        19        1.71
+ Claude Opus 4.6           60         10       5        1.02    62        23        14        1.67
+ Claude Opus 4.7           51         16       8        1.24    60        33        22        1.97
+ Claude Opus 4.8           55         19       10       1.30    75        37        27        1.99
+                                 Open-weight Foundation Models
+ DeepSeek-V3.2             11         1        0        0.85    13        2         1         1.06
+ Qwen3.5                   53         7        2        1.00    67        22        15        1.70
+ Kimi K2.5                 97         14       5        1.44    98        18        10        1.78
+ GLM-5                     64         5        2        1.00    70        15        10        1.48
+                                Conventional Retrosynthesis Models
+  Retro*                    57       53       14       1.36 76         64     44      2.35
+  AZF-MCTS                  65       58       29       1.61 80         71     54      2.29
+  AZF-Retro*                59       55       20       1.43 74         71     54      2.34
+  DMS-Wide                  85       20       15       1.96 87         54     43      2.59
+  DMS-Flash                 72       21       14       1.73 78         52     43      2.57
+  DMS-Explorer-XL           40       16       10       1.39 54         40     34      3.18
+  Retro*-0-LR               53       40       22       1.40 58         43     29      1.86
+  SynPlanner-MCTS           14       10       6        1.86 38         37     28      2.43
+  ASKCOS                    23       18       12       1.39 60         50     44      2.40
+  RetroChimera-Retro* 100            57       20       1.33 100        69     52      2.14
+  RetroChimera-MCTS 99               78       32       1.53 100        83     60      2.25
+  DreamRetroer              95       57       9        0.96 97         64     39      1.44
+  SynLlama                  0        0        0        0.00 5          4      4       1.86
+  TTLA                      43       29       13       1.36 53         45     34      2.27
+Table 2: Solvability benchmark. CC* is the average ChemCensor per step along the best route,
+averaged across targets (see Equation 1). Benchmark version: URSA-minor-1.1.0-U2, ChemCensor
+v.1.2.0, U2 DB of synthetic precedents.
+
+
+visibility, and non-standardized inference setups, conventional CASP systems can be compared with
+LLM-based planners at the level of observed benchmark-run costs (Table 7 and Table 8). Several
+conventional planners achieve comparable or superior Solv-2 performance at substantially lower
+cost. In particular, AZF-MCTS outperforms all evaluated LLMs on both URSA sets while remaining
+inexpensive to run, whereas Retro*-0-LR achieves competitive performance at similarly low cost.
+RetroChimera requires more compute than lightweight search planners because of its GPU-based
+inference, yet remains considerably cheaper than proprietary frontier LLMs while achieving the
+highest Solv-2 score on both URSA benchmark sets. Thus, URSA exposes not only a validity gap
+but also a cost–validity trade-off that is obscured by stock-termination metrics alone.
+Expanding the ChemCensor precedent database from the open URSA-minor-1.1.0-U2 configuration
+to the closed URSA-major-1.1.0-U2P2 configuration increases absolute Solv-2 values for many
+systems, but does not substantially change the overall ranking (Appendix H). This result suggests that
+precedent coverage materially affects plausibility scoring and that larger open reaction corpora would
+
+
+
+                                                    8
+improve the reliability of automated Solv-2 benchmarks, that derive chemical-plausibility judgments
+from synthetic precedents.
+An important observation is the apparent decoupling between reaction plausibility assessment and
+multistep synthesis planning capability. While frontier LLMs demonstrate relatively similar perfor-
+mance on the isolated reaction plausibility discrimination task Table 1, their performance diverges
+substantially under route-level Solv-2 evaluation Table 2. This suggests that the principal challenge
+of retrosynthesis may no longer lie in recognizing locally plausible transformations, but rather in
+maintaining globally coherent synthetic trajectories under long-horizon chemical constraints. The
+result further supports the view that synthesis planning cannot be reduced to independent single-step
+reaction evaluation.
+
+7   Limitations
+URSA currently evaluates route validity through Solv-2, not Solv-3 executability: conditions, cat-
+alysts, solvents, purification strategies, safety constraints, and expected yields remain outside the
+scoring framework. Its Solv-2 judgments also depend on the coverage and biases of the ChemCensor
+precedent database, which in the open configuration is primarily patent-derived. Finally, the main
+metrics are computed on the selected best route per target molecule, so they do not fully characterize
+route diversity, ranking quality, or failure distributions across all generated candidates.
+
+8   Conclusion
+URSA reframes retrosynthesis benchmarking around chemical validity rather than the ability to reach
+purchasable starting materials alone. In the terminology of the Solv-N framework, URSA is intended
+as a benchmark for the field’s transition from navigability-oriented evaluation to validity-oriented
+evaluation. Across conventional CASP systems and LLM-based planners, stock-terminated routes
+often fail stricter Solv-1 and Solv-2 checks, showing that apparent solvability can substantially
+overestimate practical synthesis capability. By pairing standardized route parsing with ChemCensor-
+based plausibility scoring, URSA enables scalable route-level evaluation that would be impractical
+with manual expert review.
+The results further show that multistep synthesis planning is not reducible to isolated reaction
+plausibility assessment. Strong local reaction judgment does not guarantee chemically coherent
+trajectories across an entire route, especially on difficult prospective targets. Just as ChemCensor
+provides a one-to-many alternative to single-ground-truth Top-K accuracy in single-step retrosynthesis,
+URSA-based Solv-N benchmarking offers a way to move beyond both Top-K route accuracy and
+formal solvability in multistep retrosynthesis evaluation. Future progress will require planners that
+combine route-level generation with stronger chemical constraints, broader open precedent corpora,
+and eventually Solv-3 modules for executable laboratory detail.
+
+9   Code and Data Availability
+All datasets in this work are released on Hugging Face: the benchmark sets at https://
+huggingface.co/datasets/insilicomedicine/URSA-benchmarking-sets and the building
+block set at https://huggingface.co/datasets/insilicomedicine/URSA-BBs. Result arti-
+facts (best routes as annotated CDXML files) are archived on Zenodo at https://doi.org/10.
+5281/zenodo.20810716.
+The source code is available on GitHub:
+
+       • URSA framework: https://github.com/insilicomedicine/URSA;
+       • ChemCensor: https://github.com/insilicomedicine/ChemCensor.
+
+Per-artifact details are provided in Appendix B.
+
+
+
+
+                                                   9
+References
+ [1] Connor W Coley, Pankaj Daga, Marco De Vivo, Willem Jespers, Ashutosh S Jogalekar,
+     S Roy Kimura, Lucien Koenekoop, Anne-Grete Märtson, Timothy R Newhouse, Soumya
+     Ray, Riccardo Sabatini, David C Thompson, and Woody Sherman. Grand challenges
+     for predictive modeling in small molecule drug discovery. ChemRxiv, 2026(0304), 2026.
+     doi: 10.26434/chemrxiv.15000615/v1. URL https://chemrxiv.org/doi/abs/10.26434/
+     chemrxiv.15000615/v1.
+ [2] E. J. Corey and W. Todd Wipke. Computer-Assisted Design of Complex Organic Syntheses:
+     Pathways for molecular synthesis can be devised with a computer and equipment for graphical
+     communication. Science, 166(3902):178–192, 1969. ISSN 0036-8075, 1095-9203. doi:
+     10.1126/science.166.3902.178. URL https://www.science.org/doi/10.1126/science.
+     166.3902.178.
+ [3] Marwin H S Segler, Mike Preuss, and Mark P Waller. Planning chemical syntheses with deep
+     neural networks and symbolic AI. Nature, 555(7698):604–610, March 2018. doi: 10.1038/
+     nature25978. URL https://www.nature.com/articles/nature25978.
+ [4] Zhengkai Tu, Sourabh J. Choure, Mun Hong Fong, Jihye Roh, Itai Levin, Kevin Yu, Joonyoung F.
+     Joung, Nathan Morgan, Shih-Cheng Li, Xiaoqi Sun, Huiqian Lin, Mark Murnin, Jordan P. Liles,
+     Thomas J. Struble, Michael E. Fortunato, Mengjie Liu, William H. Green, Klavs F. Jensen,
+     and Connor W. Coley. Askcos: Open-source, data-driven synthesis planning. Accounts of
+     Chemical Research, 58(11):1764–1775, 2025. doi: 10.1021/acs.accounts.5c00155. URL
+     https://doi.org/10.1021/acs.accounts.5c00155. PMID: 40397546.
+ [5] Binghong Chen, Chengtao Li, Hanjun Dai, and Le Song. Retro*: Learning retrosynthetic
+     planning with neural guided a* search, 2020. URL https://arxiv.org/abs/2006.15820.
+ [6] Junsu Kim, Sungsoo Ahn, Hankook Lee, and Jinwoo Shin. Self-improved retrosynthetic
+     planning, 2021. URL https://arxiv.org/abs/2106.04880.
+ [7] Xuefeng Zhang, Haowei Lin, Muhan Zhang, Yuan Zhou, and Jianzhu Ma. A data-driven group
+     retrosynthesis planning model inspired by neurosymbolic programming. Nature Communi-
+     cations, 16(1):192, Jan 2025. ISSN 2041-1723. doi: 10.1038/s41467-024-55374-9. URL
+     https://doi.org/10.1038/s41467-024-55374-9.
+ [8] Shufang Xie, Rui Yan, Peng Han, Yingce Xia, Lijun Wu, Chenjuan Guo, Bin Yang, and Tao
+     Qin. Retrograph: Retrosynthetic planning with graph search. In Proceedings of the 28th ACM
+     SIGKDD Conference on Knowledge Discovery and Data Mining, KDD ’22, page 2120–2129,
+     New York, NY, USA, 2022. Association for Computing Machinery. ISBN 9781450393850. doi:
+     10.1145/3534678.3539446. URL https://doi.org/10.1145/3534678.3539446.
+ [9] Yemin Yu, Ying Wei, Kun Kuang, Zhengxing Huang, Huaxiu Yao, and Fei Wu. Grasp:
+     Navigating retrosynthetic planning with goal-driven policy.  In S. Koyejo, S. Mo-
+     hamed, A. Agarwal, D. Belgrave, K. Cho, and A. Oh, editors, Advances in Neu-
+     ral Information Processing Systems, volume 35, pages 10257–10268. Curran Associates,
+     Inc., 2022. URL https://proceedings.neurips.cc/paper_files/paper/2022/file/
+     42beaab8aa8da1c77581609a61eced93-Paper-Conference.pdf.
+[10] Yu Shee, Anton Morgunov, Haote Li, and Victor S. Batista. Directmultistep: Direct route
+     generation for multistep retrosynthesis. Journal of Chemical Information and Modeling, 65(8):
+     3903–3914, 2025. doi: 10.1021/acs.jcim.4c01982. URL https://doi.org/10.1021/acs.
+     jcim.4c01982.
+[11] Paula Torren-Peraire, Alan Kai Hassen, Samuel Genheden, Jonas Verhoeven, Djork-Arné
+     Clevert, Mike Preuss, and Igor V Tetko. Models matter: the impact of single-step retrosynthesis
+     on synthesis planning. Digit. Discov., 3(3):558–572, 2024. doi: 10.1039/D3DD00252G. URL
+     https://pubs.rsc.org/en/content/articlelanding/2024/dd/d3dd00252g.
+[12] Anton Morgunov and Victor S. Batista. Procrustean bed for ai-driven retrosynthesis: A unified
+     framework for reproducible evaluation, 2025. URL https://arxiv.org/abs/2512.07079.
+
+
+                                                10
+[13] Samuel Genheden and Esben Bjerrum. PaRoutes: towards a framework for benchmarking
+     retrosynthesis route predictions. Digital Discovery, 1(4):527–539, 2022. ISSN 2635-098X. doi:
+     10.1039/D2DD00015F. URL http://xlink.rsc.org/?DOI=D2DD00015F.
+[14] Anton Morgunov, Yu Shee, Alexander V Soudackov, and Victor S Batista. The syntax of matter:
+     Synthesis planning as the foundation of generative chemistry. ChemRxiv, 2026(0326), 2026.
+     doi: 10.26434/chemrxiv.15001278/v1. URL https://chemrxiv.org/doi/abs/10.26434/
+     chemrxiv.15001278/v1.
+[15] Krzysztof Maziarz, Austin Tripp, Guoqing Liu, Megan Stanley, Shufang Xie, Piotr Gaiński,
+     Philipp Seidl, and Marwin H. S. Segler. Re-evaluating retrosynthesis algorithms with syntheseus.
+     Faraday Discuss., 256:568–586, 2025. doi: 10.1039/D4FD00093E. URL http://dx.doi.
+     org/10.1039/D4FD00093E.
+[16] ischemist. SynthArena: A unified evaluation framework for AI-driven retrosynthesis, 2026.
+     syntharena.ischemist.com.
+[17] Michal Sadowski, Tadija Radusinović, Maria Wyrzykowska, Lukasz Sztukiewicz, Jan
+     Rzymkowski, Paweł Włodarczyk-Pruszyński, Mikołaj Sacha, Piotr Kozakowski, Ruard van
+     Workum, and Stanislaw Kamil Jastrzebski. Trustworthy retrosynthesis: Eliminating halluci-
+     nations with a diverse ensemble of reaction scorers, 2025. URL https://arxiv.org/abs/
+     2510.10645.
+[18] Nguyen Xuan-Vu, Daniel Armstrong, Milena Wehrbach, Andres M Bran, Zlatko Jončev, and
+     Philippe Schwaller. Synthelite: Chemist-aligned and feasibility-aware synthesis planning with
+     llms, 2025. URL https://arxiv.org/abs/2512.16424.
+[19] Andres M Bran, Théo A Neukomm, Daniel Armstrong, Zlatko Jončev, and Philippe Schwaller.
+     Chemical reasoning in LLMs unlocks strategy-aware synthesis planning and reaction mechanism
+     elucidation. Matter, 0(102812):102812, April 2026. doi: 10.1016/j.matt.2026.102812. URL
+     https://www.cell.com/matter/fulltext/S2590-2385(26)00175-X.
+[20] Daniel Armstrong, Zlatko Jončev, Andres M Bran, and Philippe Schwaller. Synthstrategy:
+     Extracting and formalizing latent strategic insights from llms in organic chemistry, 2025. URL
+     https://arxiv.org/abs/2512.01507.
+[21] Bogdan Zagribelnyy, Ivan Ilin, Maksim Kuznetsov, Nikita Bondarev, Roman Schutski, Thomas
+     MacDougall, Rim Shayakhmetov, Zulfat Miftakhutdinov, Mikolaj Mizera, Vladimir Aladinskiy,
+     Alex Aliper, and Alex Zhavoronkov. When single answer is not enough: Rethinking single-step
+     retrosynthesis benchmarks for llms, 2026. URL https://arxiv.org/abs/2602.03554.
+[22] Daniel Lowe. Chemical reactions from US patents (1976-Sep2016). 6 2017. doi: 10.6084/
+     m9.figshare.5104873.v1. URL https://figshare.com/articles/dataset/Chemical_
+     reactions_from_US_patents_1976-Sep2016_/5104873.
+[23] Chemical Abstracts Service (CAS).               SciFinder:   Retrosynthesis software, 2026.
+     cas.org/. . . /synthesis-planning.
+[24] Elsevier. Reaxys, 2026. elsevier.com/solutions/reaxys.
+[25] Greg Landrum, Paolo Tosco, Brian Kelley, Ric, David Cosgrove, sriniker, gedeck, Riccardo
+     Vianello, NadineSchneider, Eisuke Kawashima, Gareth Jones, Dan N, Andrew Dalke, Brian
+     Cole, Matt Swain, Samo Turk, AlexanderSavelyev, Alain Vaucher, Maciej Wójcikowski, Ichiru
+     Take, Vincent F. Scalfani, Daniel Probst, Kazuya Ujihara, guillaume godin, Rachel Walker, Juuso
+     Lehtivarjo, Axel Pahl, Francois Berenger, jasondbiggs, and strets123. rdkit/rdkit: 2023_09_3
+     (q3 2023) release, December 2023. URL https://doi.org/10.5281/zenodo.10275225.
+[26] xAI.    Grok 4.1 model card, November 2025.                     URL https://data.x.ai/
+     2025-11-17-grok-4-1-model-card.pdf.
+[27] xAI. Grok 4.3 model card, November 2026. URL https://docs.x.ai/developers/
+     models/grok-4.3.
+
+
+
+                                                11
+[28] Gemini Team. Gemini 3.1 pro, February 2026. URL https://deepmind.google/models/
+     model-cards/gemini-3-1-pro/.
+[29] OpenAI. Gpt-5.1 instant and gpt-5.1 thinking system card addendum, November 2025.
+     URL https://cdn.openai.com/pdf/4173ec8d-1229-47db-96de-06d87147e07e/5_
+     1_system_card.pdf.
+[30] OpenAI. Update to gpt-5 system card: Gpt-5.2, December 2025. URL https://cdn.openai.
+     com/pdf/3a4153c8-c748-4b71-8e31-aecbde944f8d/oai_5_2_system-card.pdf.
+[31] OpenAI.   Introducing gpt-5.4, March 2026.             URL https://openai.com/index/
+     introducing-gpt-5-4/.
+[32] OpenAI.   Introducing gpt-5.5, April 2026.             URL https://openai.com/index/
+     introducing-gpt-5-5/.
+[33] Anthropic. System card: Claude sonnet 4.5, September 2025. URL https://www.anthropic.
+     com/claude-sonnet-4-5-system-card.
+[34] Anthropic. System card: Claude sonnet 4.6, February 2026. URL https://www.anthropic.
+     com/claude-sonnet-4-6-system-card.
+[35] Anthropic. System card: Claude opus 4.5, November 2025. URL https://www.anthropic.
+     com/claude-opus-4-5-system-card.
+[36] Anthropic. System card: Claude opus 4.6, February 2026. URL https://www.anthropic.
+     com/claude-opus-4-6-system-card.
+[37] Anthropic. System card: Claude opus 4.7, April 2026. URL https://www.anthropic.com/
+     claude-opus-4-7-system-card.
+[38] Anthropic. System card: Claude opus 4.8, May 2026. URL https://www.anthropic.com/
+     claude-opus-4-8-system-card.
+[39] DeepSeek-AI. Deepseek-v3.2: Pushing the frontier of open large language models, 2025. URL
+     https://arxiv.org/abs/2512.02556.
+[40] QwenTeam. Model card: Qwen3.5, March 2026. URL https://qwen.ai/blog?id=qwen3.
+     5.
+[41] Kimi Team. Kimi k2.5: Visual agentic intelligence, 2026. URL https://arxiv.org/abs/
+     2602.02276.
+[42] GLM-5-Team. Glm-5: from vibe coding to agentic engineering, 2026. URL https://arxiv.
+     org/abs/2602.15763.
+[43] David Kreutter and Jean-Louis Reymond. Multistep retrosynthesis combining a disconnection
+     aware triple transformer loop with a route penalty score guided tree search. Chem. Sci., 14(36):
+     9959–9969, September 2023. doi: 10.1039/D3SC01604H. URL https://pubs.rsc.org/
+     en/content/articlelanding/2023/sc/d3sc01604h.
+[44] Shuan Chen and Yousung Jung. Deep retrosynthetic reaction prediction using local reactivity
+     and global attention. JACS Au, 1(10):1612–1620, October 2021. doi: 10.1021/jacsau.1c00246.
+     URL https://pubs.acs.org/doi/10.1021/jacsau.1c00246.
+[45] Samuel Genheden, Amol Thakkar, Veronika Chadimová, Jean-Louis Reymond, Ola Engkvist,
+     and Esben Bjerrum. Aizynthfinder: a fast, robust and flexible open-source software for ret-
+     rosynthetic planning. Journal of Cheminformatics, 12(1):70, Nov 2020. ISSN 1758-2946. doi:
+     10.1186/s13321-020-00472-1. URL https://doi.org/10.1186/s13321-020-00472-1.
+[46] Lakshidaa Saigiridharan, Alan Kai Hassen, Helen Lai, Paula Torren-Peraire, Ola Engkvist,
+     and Samuel Genheden. AiZynthFinder 4.0: developments based on learnings from 3 years of
+     industrial application. J. Cheminform., 16(57), May 2024. doi: 10.1186/s13321-024-00860-x.
+     URL https://link.springer.com/article/10.1186/s13321-024-00860-x.
+
+
+                                                 12
+[47] Krzysztof Maziarz, Guoqing Liu, Hubert Misztela, Austin Tripp, Junren Li, Aleksei Kornev,
+     Piotr Gaiński, Holger Hoefling, Mike Fortunato, Rishi Gupta, and Marwin Segler. Chemist-
+     aligned retrosynthesis by ensembling diverse inductive bias models, 2025. URL https:
+     //arxiv.org/abs/2412.05269.
+[48] Microsoft. RetroChimera. https://github.com/microsoft/retrochimera, 2025.
+[49] Tagir Akhmetshin, Dmitry Zankov, Philippe Gantzer, Dmitry Babadeev, Anna Pinigina, Timur
+     Madzhidov, and Alexandre Varnek. Synplanner: An end-to-end tool for synthesis planning.
+     Journal of Chemical Information and Modeling, 65(1):15–21, 2025. doi: 10.1021/acs.jcim.
+     4c02004. URL https://doi.org/10.1021/acs.jcim.4c02004. PMID: 39739735.
+[50] Enamine. Enamine: Chemical supplier, 2026. enamine.net/building-blocks.
+[51] eMolecules. eMolecules, 2026. emolecules.com/products/building-blocks.
+[52] NextMove Software. Pistachio. https://www.nextmovesoftware.com/pistachio.html.
+     Commercial reaction database.
+[53] Inc. Daylight Chemical Information Systems. SMARTS — a language for describing molec-
+     ular patterns, 2007. URL https://www.daylight.com/dayhtml/doc/theory/theory.
+     smarts.html.
+[54] Philippe Schwaller, Benjamin Hoover, Jean-Louis Reymond, Hendrik Strobelt, and Teodoro
+     Laino. Extraction of organic chemistry grammar from unsupervised learning of chemical
+     reactions. Sci. Adv., 7(15):eabe4166, April 2021. URL https://www.science.org/doi/10.
+     1126/sciadv.abe4166.
+[55] Huiyu Ren, Nicole A Bakas, Mitchell Vamos, Apirat Chaikuad, Allison S Limpert, Carina D
+     Wimer, Sonja N Brun, Lester J Lambert, Lutz Tautz, Maria Celeridad, Douglas J Sheffler, Stefan
+     Knapp, Reuben J Shaw, and Nicholas D P Cosford. Design, synthesis, and characterization of an
+     orally active dual-specific ULK1/2 autophagy inhibitor that synergizes with the PARP inhibitor
+     olaparib for the treatment of triple-negative breast cancer. J. Med. Chem., 63(23):14609–14625,
+     December 2020. URL https://pubs.acs.org/doi/10.1021/acs.jmedchem.0c00873.
+
+
+
+
+                                                13
+A    Impact Statement
+Rational synthesis planning is a daily challenge for millions of organic chemists worldwide, from
+graduate students designing their first multi-step routes to medicinal chemists in pharmaceutical
+companies racing to bring new therapeutics to patients. The ability to objectively evaluate whether a
+proposed synthetic route is chemically sound, rather than only whether it terminates in purchasable
+starting materials, has the potential to accelerate drug discovery, reduce chemical waste, and lower the
+barrier to high-quality retrosynthesis for researchers without deep synthetic expertise. By providing
+a rigorous, chemistry-aware benchmarking framework, URSA aims to raise the standard by which
+synthesis planning systems are compared and ultimately improved, and we hope it contributes
+meaningfully to that goal.
+At the same time, we must acknowledge an inherent dual-use tension. Improved benchmarks drive
+development of more capable synthesis planning systems, and the same chemical reasoning that
+guides the synthesis of a life-saving drug applies equally to the preparation of toxic or otherwise
+harmful compounds. Organic chemistry does not discriminate between benign and malicious intent.
+URSA and ChemCensor evaluate chemical plausibility against a corpus of reported transformations;
+they do not and cannot filter by the nature of the target molecule. More capable planners, validated
+by more rigorous benchmarks, may therefore also lower the barrier to the synthesis of dangerous
+substances. We believe this risk is best managed through community norms, institutional oversight,
+and responsible disclosure practices rather than through artificial restrictions on scientific tools.
+And we encourage the community to develop access policies and safeguards for synthesis planning
+systems proportional to their capabilities.
+
+B    Data Availability Details
+       • Benchmark sets (URSA-reaction-plausibility-bench-2026, URSA-expert-2026,
+         URSA-drugs&clinicals-2026) — provided as separate CSV files at https://
+         huggingface.co/datasets/insilicomedicine/URSA-benchmarking-sets.
+       • URSA Building Blocks — the starting-material stock, provided as a CSV file at https:
+         //huggingface.co/datasets/insilicomedicine/URSA-BBs.
+       • Best routes from URSA — the single best route per target molecule for every benchmark-
+         ing set, exported as CDXML files with per-reaction ChemCensor (CC) scores. Files
+         are organized into six folders by benchmarking set and tool category (conventional
+         synthesis planner or LLM), with one subfolder per model. Archived on Zenodo at
+         https://doi.org/10.5281/zenodo.20810716.
+
+C    Glossary
+Target molecule The target molecule is the desired chemical compound that represents the ultimate
+        goal of synthesis planning. It is the molecule for which the system generates or evaluates
+        synthetic routes, and it serves as the starting point for retrosynthetic disconnection, working
+        backward from the target to identify precursor molecules.
+Reactants Reactants are the chemical compounds that undergo transformation during a chemical
+        reaction and whose atoms are directly incorporated into the product structure. Technically,
+        reactants are distinguished from reagents by the presence of atom mapping – atoms in
+        reactants have corresponding mapped atoms in the product(s).
+Reagents Reagents are chemical compounds that participate in a chemical reaction but whose atoms
+        are not directly incorporated into the product structure. Reagents typically facilitate or
+        enable the transformation (e.g., catalysts, bases, acids, solvents with reactive roles) with no
+        or only minor atom contribution to the final product. For benchmarking, it is reasonable
+        to extend the reacting species with reagents, since they may influence the correctness of
+        atom–atom mapping and thereby the reaction-center extraction process.
+Starting materials Starting materials are the initial chemical compounds from which a synthetic
+        route begins. They are molecules that exist at the terminal nodes (leaves) of a retrosynthetic
+        tree and are not produced by any reaction step within the route. Starting materials serve
+
+
+                                                  14
+         as the input chemicals for the synthesis and are expected to be commercially available or
+         otherwise accessible within the reported synthetic methods.
+Building blocks Building blocks (CABBs) are commercially available chemical compounds that
+         can be found in vendor datasets and purchased from them.
+Single-step retrosynthesis model An SSRS model predicts one or several retrosynthetic disconnec-
+         tions by mapping a target product molecule to a set of precursor reactants corresponding to
+         a single reaction step. The model does not perform recursive planning or multi-step route
+         construction, focusing instead on identifying chemically plausible reactants.
+Multi-step retrosynthesis model An MSRS model is a system that applies retrosynthetic transfor-
+         mations (typically recursively) to decompose a target molecule into commercially available
+         or otherwise accessible starting materials through a sequence of reaction steps.
+Reaction center (RC) An RC is the set of atoms (dynamic atoms) in one or more reactant molecules
+         and the product molecule that undergoes change during a chemical transformation, including
+         atoms/bonds that are formed, broken, created, destroyed, or whose connectivity, bond order,
+         formal charge, or hybridization state differs between reactants and products.
+Reaction center component One single-site transformation. Technically, it’s obtained by splitting
+         a full extracted reaction center along atom-map overlap between reactant and product
+         fragments: parts that share maps are grouped so each group is one independent simultaneous
+         transformation (e.g. two protections cleaved in one step yields two components). Reaction
+         centers which contain several components are named composite or multi-component.
+Chemical plausibility Chemical plausibility reflects alignment of a reaction with core principles of
+         organic synthesis (e.g., chemoselectivity, regioselectivity, stereoselectivity). Operationally,
+         it can be reduced to chemoinformatic concepts such as reaction centers, functional groups,
+         their occurrence, and compatibility rules, potentially augmented with conditions (solvents,
+         temperature, catalysts, auxiliary reagents). In this system, plausibility is assessed by compar-
+         ing the reaction center and functional-group context against a reference dataset of verified
+         transformations. If the extracted reaction center is absent from the reference library, the
+         reaction is considered implausible; similarly, functional groups never observed for that
+         reaction center negate plausibility. When both reaction-center and functional-group context
+         are supported by precedents, the reaction is considered chemically plausible.
+Level of confidence The nominal degree of chemical plausibility is estimated via discrete levels
+         of confidence (LC), depending on which reaction-center representation is matched among
+         verified transformations. Higher LC indicates that a more specific (larger-context) reaction-
+         center definition is supported, correlating with higher nominal plausibility and represen-
+         tativeness in terms of synthetic precedents. The LC value is used as the reaction score in
+         ChemCensor.
+Functional groups (FGs) FGs are structural motifs that determine chemical reactivity and properties.
+         In the present system, functional groups are represented as SMARTS patterns [53] that can be
+         matched to molecular structures via substructure search. Functional-group context annotated
+         for each reaction center helps determine which patterns are tolerable for a transformation,
+         supporting chemical plausibility.
+Functional group (FG) signature An FG signature is the ensemble of FGs present in reactant/prod-
+         uct molecules that are not affected by the transformation. For a given reaction center, the
+         signature is constructed by aggregating synthetic precedents from the reference dataset.
+ChemCensor ChemCensor Score (CC Score) is a quantitative metric evaluating the chemical
+         plausibility of a reaction and/or a retrosynthetic route by measuring the proportion of steps
+         that pass plausibility validation, weighted by their confidence levels.
+Solvability Solvability is a formal metric indicating either the presence (1) or absence (0) of at least
+         one synthetic route for a target molecule to starting materials, or the fraction (percentage) of
+         targets in a set for which a complete route is proposed.
+Solv-0 (Syntactic Solvability) The lowest tier of the validity hierarchy, requiring only that all
+         molecules in a proposed route are syntactically valid graphs (i.e., obey rules of valency and
+         aromaticity).
+Solv-1 (Topological Solvability) The second tier of the validity hierarchy, requiring that a route
+         successfully connects molecules via topologically valid reaction steps. In the means of
+
+
+                                                  15
+        ChemCensor-based Solv-1 calculation, Solv-1 requires all reactions from a route to have
+        synthetic precedents for their reaction centers.
+Solv-2 (Selectivity Solvability) The third tier of the validity hierarchy, requiring that each trans-
+        formation in a route is chemically plausible by satisfying constraints of chemoselectivity,
+        regioselectivity, diastereoselectivity, enantioselectivity, and stoichiometry.
+Solv-3 (Executability Solvability) The highest tier of the validity hierarchy, requiring that a route is
+        experimentally viable under realistic laboratory conditions, accounting for factors such as
+        yield, purification, safety, cost, and reagent availability
+Reference dataset A reference dataset is a collection of verified reaction transformations extracted
+        from sources including patents (e.g., USPTO), articles, preprints, and ELNs. It may include
+        metadata such as conditions and yield. In this system, the reference dataset is used to
+        validate analyzed reactions via reaction-center matching and functional-group signature
+        comparison.
+Synthetic precedent A synthetic precedent is an elementary synthetic fact of a successful chemical
+        reaction recorded in a reference dataset.
+Distributivity of FG signature A property of a multi-component center which implies that FGs of
+        individual reaction center components when found in the reference dataset are added to FG
+        signature of this complex center. Only FGs common for all components are considered.
+
+D    Plausibility Prompt
+
+    System prompt
+
+    You are an expert organic chemist tasked with analyzing proposed chemical reactions and determining their
+    plausibility.
+    Your goal is to provide a reaction plausibility assessment in a binary mode based on its reactants, products,
+    mechanism, and other relevant factors. You will be asked to perform the analysis of a chemical reaction proposed by
+    a retrosynthesis model. You must evaluate objectively and highlight any issues with the proposal.
+    The following reaction has not been experimentally validated. It only provides the desired pathway, however we
+    want to assess the plausibility of this reaction as this is currently entirely theoretical.
+    Examine the reaction SMILES provided above carefully.
+    Using your expertise in organic chemistry, perform the following analysis:
+            1. Identify the reactants and products in the reaction.
+            2. Analyze the reaction mechanism, including:
+                   • Bond formation and breaking
+                   • Electron movement
+                   • Intermediates (if any)
+    Identify key structural changes that occur during the reaction. Evaluate the reaction’s characteristics:
+             • Efficiency (yield, number of steps)
+             • Selectivity
+             • Reagents and conditions required
+             • Potential side products
+    Assess the reaction’s plausibility, considering:
+             • Electronics
+             • Sterics
+             • Mechanistic explanation
+             • Possible alternative pathways
+             • Selectivity of the proposed reaction
+    Before providing your final assessment, wrap your analysis in <analysis> tags. In your analysis:
+            1. List the identified reactants and products separately.
+            2. Reaction SMILES vs. heavy-atom accounting: confirm that every reactant or reagent whose heavy atoms
+               are incorporated into the product is shown explicitly in the reaction SMILES (with species separated
+               as usual, e.g. by . on the reactant side). Do not treat as a defect the omission of optional agents (e.g.
+
+
+
+
+                                                             16
+                catalysts, additives, solvents) whose heavy atoms never appear in the product—their absence is acceptable.
+                Likewise, do not penalize entries that explicitly list such species when that is chemically reasonable;
+                including them is optional and not a negative.
+             3. Identify and list functional groups present in reactants and products.
+             4. Describe the key steps in the reaction mechanism, including:
+                    • Initial bond breaking events
+                    • Formation of any intermediates
+                    • Final bond formation events
+             5. Highlight the main structural changes that occur.
+             6. Discuss the electronic and steric factors that influence the reaction’s plausibility.
+             7. Explain the mechanistic rationale for the proposed reaction.
+             8. Consider and describe any potential alternative pathways or competing reactions.
+     This structured approach will help ensure a thorough interpretation of the reaction and its citability.
+     After your analysis, provide a detailed assessment of the reaction in the following format:
+
+       <assessment>
+       Reaction Components: [List identified reactants and products]
+       Functional Groups: [List functional groups present in reactants and products]
+       Mechanism Overview: [Describe the key steps in the reaction mechanism]
+       Structural Changes: [Highlight the main structural changes that occur]
+       Electronic Factors: [Discuss how electronic effects influence the reaction’s
+       plausibility]
+       Steric Considerations: [Explain any steric factors that impact the reaction’s
+       plausibility]
+       Alternative Pathways: [Describe any potential alternative pathways or competing
+       reactions]
+       Plausibility Analysis: [Provide a detailed assessment of the reaction’s
+       plausibility, including efficiency, selectivity, and mechanistic rationale]
+       Justification: [Explain your reasoning for the assigned binary label,
+       referencing specific aspects of the reaction mechanism and characteristics]
+       </assessment>
+
+     Finally, assign exactly one binary plausibility label:
+              • 0 = not plausible (the reaction as written is not a plausible chemical transformation under reasonable
+                conditions)
+              • 1 = plausible (the reaction is a plausible chemical transformation)
+     Present the label in the following format only: <score>0</score> or <score>1</score>
+     Remember to base your assessment solely on the information provided in the reaction SMILES and your expert
+     knowledge of organic chemistry. Do not make assumptions about the reaction’s intended use or refer to external data
+     sources.
+
+
+     Query Prompt
+
+     Reaction SMILES: <{{input_format}}>{{reaction_smiles}}</{{input_format}}>. Give a binary plau-
+     sibility label only: 0 = reaction is not plausible, 1 = reaction is plausible. Briefly justify, then output exactly
+     <score>0</score> or <score>1</score>.
+
+
+
+E     Reaction Plausibility Benchmark Models Completion Examples
+
+    Model Input
+    System Prompt:
+    <...>
+    Query Prompt:
+    Reaction SMILES: <{{reaction_smiles}}>CN.CNC[C@@H](O)c1ccc(C2(C=O)CCCC2)cc1»
+    CNC[C@@H](O)c1ccc(C2(CNC)CCCC2)cc1</{{reaction_smiles}}>. Give a binary plausibility label only: 0
+
+
+
+
+                                                               17
+= reaction is not plausible, 1 = reaction is plausible. Briefly justify, then output exactly <score>0</score> or
+<score>1</score>.
+
+
+Annotated Input
+
+   Reaction SMILES Visualization
+
+
+
+
+                                           O                                   HN
+
+                         NH2     +
+                                                         N                                    N
+                                                         H                                    H
+                                                    OH                                   OH
+
+
+   Expert Label
+   0
+
+   Expert Comment
+   Potential regioselectivity issue – two amino-groups
+
+
+
+
+Model: Gemini 3.1 Pro
+<analysis> Reaction Components: Reactants: 1.                     Methylamine (CN) 2.           1-(4-((1R)-1-hydroxy-2-
+(methylamino)ethyl)phenyl)cyclopentane-1-carbaldehyde (CNC[C@@H](O)c1ccc(C2(C=O)CCCC2)cc1)
+Product:          1.             (1R)-2-(methylamino)-1-(4-(1-((methylamino)methyl)cyclopentyl)phenyl)ethan-1-ol
+(CNC[C@@H](O)c1ccc(C2(CNC)CCCC2)cc1)
+Functional Groups: Reactants: Primary amine (methylamine), secondary amine, secondary alcohol, aldehyde, aromatic
+ring, cyclopentane ring. Product: Secondary amines (two), secondary alcohol, aromatic ring, cyclopentane ring.
+Mechanism Overview: The reaction is a reductive amination. 1. The primary amine (methylamine) acts as a
+nucleophile and attacks the electrophilic carbonyl carbon of the aldehyde. 2. This forms a hemiaminal intermediate,
+which subsequently undergoes dehydration (loss of a water molecule) to form an imine (-CH=N-CH3). 3. The imine
+intermediate is then reduced by a reducing agent (which is conventionally omitted in the reaction SMILES, such as
+NaBH(OAc)3, NaBH3CN, or H2/Pd) to yield the final secondary amine product (-CH2-NH-CH3).
+Structural Changes: The aldehyde group (-CHO) attached to the quaternary carbon of the cyclopentane ring is
+converted into a methylaminomethyl group (-CH2NHCH3). The rest of the molecule, including the chiral center,
+remains unchanged.
+Electronic Factors: Aldehydes are highly electrophilic and readily undergo nucleophilic attack by primary amines. The
+presence of the electron-rich aromatic ring does not negatively impact the electrophilicity of the aldehyde since they
+are separated by a quaternary sp3 carbon, preventing any direct conjugation.
+Steric Considerations: The aldehyde is situated on a quaternary carbon (a neopentyl-like position), which introduces
+some steric hindrance. However, aldehydes are generally reactive enough that imine formation and subsequent
+reduction can still proceed efficiently, especially with a small, unhindered nucleophile like methylamine.
+Alternative Pathways: The starting material contains a secondary amine which could theoretically react with the
+aldehyde intermolecularly to form an iminium ion, leading to dimerization after reduction. However, methylamine is a
+smaller, less sterically hindered primary amine and is typically used in large excess in such reactions. This kinetic and
+concentration advantage ensures that the reaction with methylamine outcompetes any potential dimerization.
+Plausibility Analysis: The proposed transformation is a standard reductive amination. The heavy-atom accounting
+is perfectly consistent, with the aldehyde carbon and the methylamine combining to form the new -CH2-NH-CH3
+group. The loss of the aldehyde oxygen as water is a standard feature of this mechanism. The omission of the reducing
+agent in the reaction SMILES is acceptable and standard practice for such cheminformatics representations. The
+reaction is highly plausible under standard reductive amination conditions (e.g., using NaBH(OAc)3 in dichloroethane
+or methanol).
+Justification: The reaction is a textbook reductive amination of an aldehyde using methylamine. The structural changes
+are chemically sound, the heavy atoms are properly accounted for, and the potential side reactions can be easily
+mitigated by standard reaction conditions (e.g., excess methylamine). The steric hindrance from the quaternary center
+is not severe enough to prevent the reaction. Therefore, the reaction is highly plausible. </analysis>
+
+
+
+
+                                                          18
+    <score>1</score>
+
+
+
+    Model: GPT 5.5
+    Reductive amination of a formyl substituent with methylamine to give the N-methylaminomethyl product is chemically
+    plausible, assuming a suitable reducing agent/conditions are used. Competing imine formation or reductive amination
+    at the aldehyde is reasonable.
+    <score>1</score>
+
+
+
+F     Model Inferences
+All LLMs were accessed via public inference APIs; the exact providers and pricing references are
+listed in Table 3.
+
+     Model                     Provider                               API reference & pricing
+                                         Proprietary Foundation Models
+     Grok-4.1
+                               xAI                                    x.ai/api
+     Grok-4.3
+     Gemini 3.1 Pro            Google Gemini API                      ai.google.dev/gemini-api/docs/pricing
+     GPT 5.1
+     GPT 5.2
+                               Azure OpenAI Service                   azure.microsoft.com/. . . /azure-openai/
+     GPT 5.4
+     GPT 5.5
+     Claude Sonnet 4.5
+     Claude Sonnet 4.6
+     Claude Opus 4.5
+                               Anthropic API                          claude.com/pricing#api
+     Claude Opus 4.6
+     Claude Opus 4.7
+     Claude Opus 4.8
+                                        Open-weight Foundation Models
+     DeepSeek 3.2                                                     azure.microsoft.com/. . . /deepseek/
+                               Azure AI Foundry
+     Kimi K2.5                                                        azure.microsoft.com/. . . /kimi/
+     GLM-5                     OpenRouter                             openrouter.ai/z-ai/glm-5
+     Qwen3.5                   Alibaba Cloud Model Studio             alibabacloud.com/. . . /model-pricing
+
+                Table 3: Inference providers and API references for all evaluated models.
+
+G      URSA-expert-2026 Set
+The 2D structures of molecules from the URSA-expert-2026 set are provided in [21].
+The dataset diversity is 0.85886. Dataset diversity is defined as the average pairwise dissimilarity
+between all distinct molecule pairs:
+                                         1      X
+                        Diversity =                  (1 − Similarity(i, j)) ,                    (2)
+                                     N (N − 1)
+                                                            i̸=j
+
+where N is the number of molecules in the dataset.
+Molecular similarity in Equation 2 is computed as the cosine similarity between binary vectors
+of structural screens, where each vector element indicates the presence or absence of a specific
+atom-centered structural fragment derived using the Chemosoft software (ChemDiv Inc. chemical
+database software, https://www.chemdiv.com/). The set of screens is constructed dynamically
+across the dataset, capturing atom types, bond types, and ring environments without using hash-based
+compression.
+
+
+
+                                                            19
+H     URSA Benchmark. Additional Experiments.
+H.1   URSA-major-U2P2
+
+Table 4 presents the URSA-major-1.1.0-U2P2 (based on relational DB extended with Pistachio
+[52] dataset) benchmark results.
+
+                                 URSA-expert-2026             URSA-drugs&clinicals-2026
+ Model
+                        Solv-0     Solv-1   Solv-2    CC*    Solv-0   Solv-1   Solv-2   CC*
+                                 Proprietary Foundation Models
+ Grok-4.1               67         31       13        1.53   74       48       35       2.65
+ Grok-4.3               5          1        0         1.30   10       1        1        2.24
+ Gemini 3.1 Pro         54         37       24        1.83   70       56       49       3.36
+ GPT 5.1                15         1        1         0.44   11       1        1        0.81
+ GPT 5.2                11         1        0         0.82   34       12       8        1.91
+ GPT 5.4                20         2        1         0.89   29       11       7        2.07
+ GPT 5.5                62         46       26        1.96   74       58       45       3.10
+ Claude Sonnet 4.5      35         4        1         1.23   59       18       14       2.08
+ Claude Sonnet 4.6      39         9        4         1.13   56       17       12       1.98
+ Claude Opus 4.5        45         7        3         1.22   72       28       22       2.15
+ Claude Opus 4.6        60         13       7         1.33   66       29       21       2.26
+ Claude Opus 4.7        51         21       13        1.48   60       37       31       2.73
+ Claude Opus 4.8        56         25       12        1.59   75       45       37       2.83
+                               Open-weight Foundation Models
+ DeepSeek-V3.2          11         1        0         1.00   15       4        3        1.43
+ Qwen3.5                54         10       3         1.17   67       28       19       2.19
+ Kimi K2.5              97         21       10        1.82   98       30       19       2.40
+ GLM-5                  66         7        4         1.28   71       18       16       2.04
+                              Conventional Retrosynthesis Models
+ Retro*                 57         53       22        1.57   76       68       53       2.95
+ AZF-MCTS               65         60       40        1.87   80       73       61       2.83
+ AZF-Retro*             59         57       29        1.66   74       72       62       2.92
+ DMS-Wide               85         26       18        2.26   87       55       51       3.02
+ DMS-Flash              72         21       15        2.12   78       54       48       3.02
+ DMS-Explorer-XL        40         17       11        1.54   54       40       36       3.63
+ Retro*-0-LR            53         42       29        1.61   58       46       35       2.63
+ SynPlanner-MCTS        14         10       6         1.91   38       38       29       2.85
+ ASKCOS                 23         22       17        1.72   60       57       53       3.28
+ RetroChimera-Retro*    100        64       36        1.56   100      80       68       3.30
+ RetroChimera-MCTS      99         86       55        1.81   100      93       80       3.48
+ DreamRetroer           95         60       17        1.16   97       71       46       1.82
+ SynLlama               0          0        0         0.00   5        5        4        2.29
+ TTLA                   43         30       18        1.61   53       45       41       2.92
+
+Table 4: Solvability benchmark results. CC* is the average ChemCensor per step along the best
+route, averaged across targets (see Equation 1). Benchmark version: URSA-major-1.1.0-U2P2,
+ChemCensor v.1.2.0, U2P2 DB of synthetic precedents.
+
+
+
+
+                                                 20
+H.2   URSA benchmark on USPTO-190 set
+
+Table 5 presents the benchmarking results on the USPTO-190 dataset evaluated under the
+URSA-minor-1.1.0-U2 and URSA-major-1.1.0-U2P2 settings.
+
+                                 URSA-minor-1.1.0-U2                  URSA-major-1.1.0-U2P2
+ Model
+                           Solv-0     Solv-1   Solv-2    CC*     Solv-0    Solv-1    Solv-2    CC*
+                                    Proprietary Foundation Models
+ Grok-4.1                  50         18       8         1.73    50        23        11        1.96
+ Grok-4.3                  7          1        1         0.14    7         1         1         1.93
+ Gemini 3.1 Pro            54         24       16        2.29    55        31        22        2.58
+ GPT 5.2                   11         1        1         0.74    11        1         1         0.85
+ GPT 5.4                   19         0        0         0.59    19        2         0         0.74
+ GPT 5.5                   72         25       11        1.95    72        31        17        2.19
+ Claude Sonnet 4.5         55         3        2         1.19    55        5         4         1.50
+ Claude Sonnet 4.6         48         4        2         1.18    48        6         3         1.45
+ Claude Opus 4.5           56         5        4         1.34    56        9         4         1.53
+ Claude Opus 4.6           61         6        3         1.32    61        11        6         1.62
+ Claude Opus 4.7           44         10       6         1.59    43        14        8         1.81
+ Claude Opus 4.8           58         12       6         1.60    58        16        8         1.99
+                                Conventional Retrosynthesis Models
+ Retro*                    50         36       21        3.33    50        36        23        3.40
+ DMS-Wide                  62         16       11        2.76    62        17        15        2.99
+ DMS-Flash                 60         14       11        2.47    60        15        11        2.63
+ DMS-Explorer-XL           28         11       9         3.02    28        12        11        3.22
+ Retro*-0-LR               34         26       13        2.08    34        28        17        2.40
+ ASKCOS                    15         12       6         2.57    15        14        10        2.72
+ DreamRetroer              91         37       11        1.92    91        41        15        2.03
+ SynLlama                  1          0        0         0.00    1         1         0         0.00
+ TTLA                      21         11       7         2.43    21        13        9         2.55
+ SynPlanner-MCTS           9          7        4         2.54    9         8         4         2.57
+ AZF-MCTS                  33         29       15        2.80    33        30        21        3.05
+ AZF-Retro*                29         24       15        2.97    29        25        16        3.15
+ RetroChimera-Retro*       87         48       28        3.09    87        53        35        3.29
+ RetroChimera-MCTS         98         70       38        3.44    98        77        46        3.60
+
+Table 5:  USPTO-190 solvability benchmark results on URSA-minor-1.1.0-U2 and
+URSA-major-1.1.0-U2P2; ChemCensor v.1.2.0.
+
+H.3   LLMs Answers Uniqueness and Validity
+
+The Table 6 summarizes the uniqueness and validity of routes generated by each LLM across the
+three benchmark datasets.
+
+H.4   Inference Costs and Resource Usage
+
+Table 7 presents the inference costs for each model, calculated based on the pricing listed in Table 3.
+Further details on the inference setup are provided in Appendix F.
+For conventional retrosynthesis models, the inference cost was estimated based on wall-clock runtime
+and the hourly price of the compute instance used (GPU-based for some models, CPU-based for
+others); the corresponding figures are reported in Table 8.
+
+
+
+
+                                                    21
+                                                        URSA-expert-2026          URSA-drugs&clinicals-2026               USPTO-190
+                           Model
+                                                Uniq.      UVC    STR      BB     Uniq.   UVC      STR     BB     Uniq.    UVC     STR      BB
+                                                                     Proprietary Foundation Models
+                           Grok-4.1              93.3     71.00   0.67     0.31   89.3    71.90    0.75   0.47     NA       NA       NA     NA
+                           Gemini 3.1 Pro        70.8     62.20   0.54     0.26   56.9    48.80    0.70   0.51    61.42    51.68    0.54   0.36
+                           GPT 5.1               82.8      1.80   0.00     0.00   89.9     2.20    0.01   0.01     NA       NA       NA     NA
+                           GPT 5.2               74.4     20.80   0.07     0.03   72.1    16.90    0.23   0.15    39.58    8.42     0.06   0.05
+                           GPT 5.4               83.9     33.00   0.17     0.09   80.8    32.10    0.26   0.15    69.21    31.05    0.15   0.05
+                           GPT 5.5               90.0     81.10   0.63     0.39   87.2    81.50    0.74   0.54    85.53    77.37    0.71   0.38
+                           Claude Sonnet 4.5     91.8     55.20   0.25     0.09   90.7    44.10    0.47   0.20    90.68    54.42    0.45   0.20
+22                         Claude Sonnet 4.6     93.9      9.00   0.07     0.05   93.6     9.30    0.24   0.19    98.26    7.05     0.15   0.12
+                           Claude Opus 4.5       88.0     68.30   0.41     0.14   84.6    38.60    0.58   0.37    88.53    30.53    0.36   0.18
+                           Claude Opus 4.6       96.3     37.00   0.40     0.22   93.3     5.70    0.18   0.17    97.11    4.74     0.09   0.08
+                           Claude Opus 4.7       83.1     73.40   0.50     0.15   72.7    62.90    0.60   0.35    81.16    70.63    0.43   0.16
+                                                                     Open-weight Foundation Models
+                           DeepSeek-V3.2         83.5     28.60   0.09     0.06   86.5    25.20    0.13   0.07     NA       NA      NA      NA
+                           Qwen3.5               99.0     54.00   0.52     0.26   98.5    55.60    0.65   0.36     NA       NA      NA      NA
+                           Kimi K2.5             99.2     29.20   0.80     0.67   98.3    27.80    0.78   0.62     NA       NA      NA      NA
+                           GLM-5                 90.5     33.40   0.55     0.33   86.8    36.00    0.60   0.45     NA       NA      NA      NA
+
+     Table 6: Uniqueness and validity of LLMs answers. Uniq.: percentage of unique routes generated; UVC: percentage of unique valid consistent routes; STR: share of
+     targets that have a valid route with passed BB check; BB: share of targets that’s the best route passed BB check. NA denotes models not evaluated on this dataset.
+                                                   URSA-expert-2026               URSA-drugs&clinicals-2026             USPTO-190
+                       Model
+                                            T       Nin     Nout     C        T        Nin    Nout     C        T       Nin     Nout   C
+                                                                    Proprietary Foundation Models
+                       Grok-4.1             1732    4484    498      1.15     1844     2481   488      0.74     NA      NA      NA     NA
+                       Gemini 3.1 Pro       1268    2702    331      9.38     1352     1522   297      6.61     1804    2889    2243   32.69
+                       GPT 5.1              70      4602    652      12.27    86       2449   714      10.20    NA      NA      NA     NA
+                       GPT 5.2              82      4603    441      14.23    90       2444   524      11.62    91      4659    640    17.12
+                       GPT 5.4              106     2446    429      12.55    156      2453   423      12.47    204     4658    770    23.20
+                       GPT 5.5              1027    2446    4593     150.03   1011     2452   4556     148.94   2205    4656    8829   288.14
+                       Claude Sonnet 4.5    151     5297    880      29.09    180      2723   876      21.31    341     5168    1714   41.22
+23                     Claude Sonnet 4.6    261     5300    1339     35.99    242      2724   1498     30.64    449     5171    3161   62.93
+                       Claude Opus 4.5      189     5300    868      48.21    197      2723   972      37.91    374     5169    1985   75.48
+                       Claude Opus 4.6      301     5301    1215     56.87    283      2725   1253     44.96    525     5170    2426   86.49
+                       Claude Opus 4.7      134     3473    792      37.17    128      3479   747      36.08    280     6608    1698   75.50
+                                                                    Open-weight Foundation Models
+                       DeepSeek-V3.2        4608    2380    488      <.01     1259     2390   579      <.01     NA      NA      NA     NA
+                       Qwen3.5              8354    2445    6525     7.15     4135     2450   6226     6.85     NA      NA      NA     NA
+                       Kimi K2.5            4867    2427    12109    0.03     998      2427   11600    0.03     NA      NA      NA     NA
+                       GLM-5                7365    2273    13322    29.07    4435     2262   13702    29.86    NA      NA      NA     NA
+
+     Table 7: Inference costs for LLMs per 10 routes per target. T — wall-clock time (min); Nin , Nout — input and output token counts (thousands); C — total cost
+     (USD). NA denotes unavailable data.
+                           URSA-expert-2026        URSA-drugs&clinicals-2026              USPTO-190
+       Model
+                           T        H       R        T           H        R           T       H       R
+       AZF-MCTS           18.1    0.1785   0.05     15.0    0.1785       0.04        41.5    0.1785 0.12
+       AZF-Retro*         66.6    0.1785   0.20     68.2    0.1785       0.20       127.6    0.1785 0.38
+       ASKCOS             51.7    0.7140   0.61     51.3    0.7140       0.61        98.2    0.7140 1.17
+       DMS-explorer-XL    33.3    1.2900   0.72     36.4    1.2900       0.78        62.1    1.2900 1.33
+       DMS-flash         152.2    1.2900   3.27    151.2    1.2900       3.25       303.8    1.2900 6.53
+       DMS-wide          464.4    1.2900   9.98    467.1    1.2900      10.04       924.0    1.2900 19.87
+       DreamRetroer       4.6     0.1785   0.01     3.6     0.1785      0.01         11.5    0.1785 0.03
+       TTLA              4619.5   0.1785   13.74   4092.2   0.1785      12.17       9932.1   0.1785 29.55
+       Retro*             16.4    0.1785   0.05     9.0     0.1785      0.03         40.1    0.1785 0.12
+       RetroChimera      100.0    3.6700   6.11    100.0    3.6700       6.11       190.0    3.6700 11.62
+       SynLlama           1.6     0.1785   <.01     2.7     0.1785      0.01         0.5     0.1785 <.01
+       Retro*-0-LR        12.1    0.1785   0.04     12.1    0.1785       0.04        25.5    0.1785 0.08
+
+
+Table 8: Run costs for conventional synthesis planning tools. T — runtime (min), H — Hourly Cost
+(USD), R = Run Cost (USD).
+
+H.5   Benchmarking Statistics
+
+For each LLM, we issued 10 queries per target molecule, randomly sampling a prompt template at
+each query (see Appendix I). Although the primary metrics are computed from the single best route
+per target, we employed non-parametric bootstrap resampling (B = 10,000 iterations) over targets to
+estimate 95% confidence intervals for the main metrics. The confidence intervals for the Solv-2 are
+reported in Table 9.
+
+                               Model                     Solv-2       95% CI
+                                    Proprietary Foundation Models
+                               Grok-4.1                   0.09       [0.04, 0.15]
+                               Gemini 3.1 Pro             0.16       [0.09, 0.23]
+                               GPT 5.4                    0.00       [0.00, 0.00]
+                               GPT 5.5                    0.23       [0.15, 0.32]
+                               Claude Sonnet 4.6          0.01       [0.00, 0.03]
+                               Claude Opus 4.6            0.05       [0.01, 0.10]
+                               Claude Opus 4.7            0.12       [0.06, 0.19]
+                                   Open-weight Foundation Models
+                        DeepSeek-V3.2      0.00   [0.00, 0.00]
+                        Qwen3.5            0.04   [0.01, 0.08]
+                        Kimi K2.5          0.01   [0.00, 0.03]
+                        GLM-5              0.02   [0.00, 0.05]
+Table 9: Bootstrap 95% confidence intervals for Solv-2 (B = 10,000) for LLMs for
+URSA-expert-2026 dataset.
+
+
+
+
+                                                     24
+I    Templates Used for LLMs Benchmarking
+To formulate retrosynthesis tasks in natural language, we use a set of templates. We wrap each query
+into 10 different templates, forming the final data representation. These templates in Jinja2 format
+are listed below. We used the SMILES molecular format by default.
+    Templates for the multistep retrosynthesis task
+
+      Template 1
+
+      Please     propose      a    plausible     synthetic    route  for   the    target molecule    <{{in-
+      put_format}}>{{query}}</{{input_format}}>.           The route must converge to commercially available
+      starting materials (purchasable building blocks).
+
+      Template 2
+
+      Please    propose     a    stepwise retrosynthetic    plan      for    the     target    molecule     <{{in-
+      put_format}}>{{query}}</{{input_format}}> in which the final precursors are limited to commercially supplied
+      reagents and building blocks.
+
+      Template 3
+
+      Please propose a convergent retrosynthetic pathway for the target molecule <{{in-
+      put_format}}>{{query}}</{{input_format}}>. It is mandatory that the route ends on commercially
+      available starting materials, not bespoke intermediates.
+
+      Template 4
+
+      Design the entire synthetic route to reach the target molecule <{{input_format}}>{{query}}</{{input_format}}>
+      from catalog chemicals. Explicitly ensure the retrosynthesis bottoms out in commercially accessible building
+      blocks.
+
+      Template 5
+
+      For the target molecule <{{input_format}}>{{query}}</{{input_format}}>, outline a retrosynthetic analysis
+      and propose a synthetic route. The route must terminate in reagents and building blocks that are commercially
+      available from standard suppliers.
+
+      Template 6
+
+      Please propose a sequence of retrosynthetic disconnections that constitutes a valid synthetic route for the target
+      molecule <{{input_format}}>{{query}}</{{input_format}}>. The route must lead to commercially available
+      starting materials.
+
+      Template 7
+
+      Please perform retrosynthetic analysis and propose a synthetic route for the molecule <{{in-
+      put_format}}>{{query}}</{{input_format}}>. The route is acceptable only if every terminal precursor can be
+      sourced as a commercially available building block.
+
+      Template 8
+
+      Please propose a practical multi-step retrosynthetic plan for the target molecule <{{in-
+      put_format}}>{{query}}</{{input_format}}>, in which all reactions ultimately rest on commercially
+      catalogued building blocks as the inputs.
+
+      Template 9
+
+      Please    propose    the    retrosynthetic  pathway    from      the     target     molecule               <{{in-
+      put_format}}>{{query}}</{{input_format}}> down to commercially available building blocks.
+
+      Template 10
+
+      Please      propose  a     retrosynthetic   scheme      for      the    target     molecule      <{{in-
+      put_format}}>{{query}}</{{input_format}}>. The route must lead to commercially purchasable reagents and
+      building blocks.
+
+
+
+
+                                                             25
+J   The structural diversity and relevance analysis of USPTO-190 set
+The close structural analysis of USPTO-190 set reveals substantial diversity flaws of it. Many
+structures of USPTO-190 can be easily clustered in pairs of strikingly similar entries Figure 4, while
+the most prominent cluster consists of 19 structures Figure 5, which are different only from the
+perspective of small peripheral substructures. The smaller clusters consist of 3-5 structures.
+Another finding about structural clusters in USPTO-190 reflects another aspect of the unsystematic
+approach that was adopted during the nomination of compounds to this benchmarking set. Many
+structures are actually the precursors of other compounds of this set or even represent series of
+precursors (like USPTO-132/190, USPTO-174/190 and USPTO-115/190), which is unreasonable,
+since precursors should be present in the synthetic routes of true target molecules, making the
+inclusion of precursors partially redundant.
+Some TMs from USPTO-190 are not relevant to the current trends of medicinal chemistry design
+like the highlited cephalosporins (yellow, Figure 4), nucleoside analogs (USPTO-118/190, USPTO-
+144/190) and steroid (USPTO-75/190) that can be found in the original set.
+These highlighted flaws of the USPTO-190 set are aimed to stress the attention of the community
+to the quality of benchmarking sets. Prior to adopting the benchmarking sets should rigorously
+analyzed to avoid potential biases in the evaluation procedures due to structural biases caused by
+limited diversity of the dataset.
+
+
+
+
+                                                 26
+                                                                                     O                                                                                  N                                                            F
+                 O                                                              O
+     O
+                                                                                                                                                                                                    N      N                                                      N       N
+
+
+                     O                                                                    O                                                                                                                   NH2                                F                        NH2
+                                                                                                                                                                                  Cl
+                                                        NH                                                                        NH
+                                                                                                                                                                                  USPTO-108/190                                                  USPTO-129/190
+                                                   O            O                                                                             O
+                                                                                                                         N
+
+                                                    N                                                                                         F
+                                                                                                                             O
+                                                                                                                                              F
+                                                                                                                                          F
+                                                                                                                                                                                                                                 N
+                                 USPTO-10/190                                                                                                                           Cl
+                                                                                              USPTO-101/190
+                                                                                                                                                                                                N         N                                                           N   N
+                                                                                                                                                                                 N
+                                                                                                                                                                                                          NH2                                    F                            NH2
+
+                                                                                                                                                                                 USPTO-171/190                                                       USPTO-92/190
+
+                                         O
+                                                                                                O
+                                 O           N
+                                             H                                             O        N
+                                                        O                                           H
+                                                                                                                    O                                                                           Br                                            Precursor
+                                                   O                                                                                                                                                           N        N                      of other
+                                                                                                                OH                                                                                                                           compounds
+                                                                                                                                                                                                          H 2N                           of this chemotype
+                                 USPTO-79/190                                                 USPTO-139/190
+                                                                                                                                                                                                        USPTO-149/190
+
+
+
+                             O                                          O                                       O                                                                HO         O                                                            HO       O
+
+                                                                                                                             O                                                                      O                                                                     O
+                 O       N                                  O           N                               O       N                                                                                                                            Br                   N
+                                     O                                                                                           Si                                          O              N                                                                                     O
+                                                                                    OH                                                                                                                   O
+                                                                                                                                                                                       S                                                                      S           N
+                                                                                                                                                                                                    N                                                                     H
+                                                                                                                                                                                                    H               S                                                                         S
+
+
+                     USPTO-105/190                          USPTO-100/190                                   USPTO-111/190                                                            USPTO-109/190                                                            USPTO-11/190
+
+
+                                                                                                                                                                                 HO         O                                         N N                 HO          O
+                                                                                                                                                                        O
+                                                                                                                                                                                                    O                                                                         O
+                                                                                                                                                                             O              N                                            S           S                N
+         F                           H                                                          H           H                                                                                                                                                                         O
+                             H                                                                              N                                                                                             O                                                                                           S
+     F                       N       N                                                          N
+                                                                                                                                                                                        S                                                                         S           N
+     F                                                                                                                                                                                              N
+                                                                                                        O                                                                                           H                                                                         H                   N           NH2
+                                 O                      N                                                                             N                                                                              S
+                                                                                                F                                                                                                                                                                                 HO
+                                                   S                                                                         S
+                                                                                                                                                                                     USPTO-155/190                                                        USPTO-164/190
+
+
+                                                                        OH                                                                        OH
+                                                                                                                                              O                                                                  O          OH
+                                                            O                                                                                                                                   N N
+                                                                                                                                                                                                                                  O
+                     USPTO-133/190                                                              USPTO-53/190                                                                                    S         S                 N
+                                                                                                                                                                                                                                             O                        O
+                                                                                                                                                                                                                                                             S
+                                                                                                                                                                                                                        S            N                                    O
+                                                                                                                                                                                                                                     H                   N        N
+                                                                                                                                                                                                                                         HO                       H
+                         N
+                                                 TMs which are actually precursors to the following compounds
+                                                                                                                                                                                                                            USPTO-185/190
+                             S                                      I                               I                                 I
+                                                                                                                                                                                                                                                                               O          OH
+                                                                                                                                                                                                          HO
+                                                                                                                         OH                                                                                                                                                                   OH
+                 O       H                         O H
+                         N                            N                                  H 2N
+                  S                                 S                                                                O                                                                                                                                                                    O
+                                                     O                                                                                                                                                               OH
+                   O                 O                                  O                               O                                     O
+
+                                                                                                                                                                                            USPTO-177/190                                                     USPTO-19/190
+                 USPTO-39/190                                                                                                                                                                                                                    Actually a precursor of 177/190
+                                                  USPTO-132/190                      USPTO-174/190                   USPTO-115/190
+
+
+
+
+                                                                                                                         O        O                             O   O                                                                                     O
+                                                                                                                                                                                                    O     O                                                                                                     O
+             O                                                  O                                                                                                                                                                                                                                         O
+                     O                                                      O                                                                                                                                                            N                O
+                                                                                                                     N                                      N                                   N                                                                                         O
+HN           N                                      N           N                                                                                                                                                                                                                                     N
+                                                                                                                                                                                                                                             O
+                                                                                                                     S                                      O                                                                                                                                 O
+
+
+     USPTO-178/190                                  USPTO-8/190                                                 USPTO-1/190                            USPTO-48/190                    USPTO-160/190                             USPTO-126/190                                        USPTO-116/190
+
+
+
+Figure 4: Clusters of similar molecules from USPTO-190. Maximum common substructure (MCS) is
+highlighted independently for each cluster.
+
+
+
+
+                                                                                                                                                       27
+                                         O                                                                                                                                                                                                                                                          O
+                         O                                                                          O                         O                                                               O                                                                     O                    O
+      O                                      O                    O                                                                                                                         O                                         O                                                                  N
+                                                                                                                                                              O                              S   F
+                                                                                                                      O                                                                     O    F                                                                                  O
+                                                                                                                                                                                               F
+      O          N                                                O                     N                                                                                       N                                                     O                N
+                                                                                                                                                              O
+  O       N          O                                        O       N                     O                                                                     N                 O                                             O        N               O
+                                                                                                                                                          O
+                                             Cl                                                                           Cl                                                                                  Cl                                                                         Cl
+                                 O                                                                              O                                                                                   O                                                                           O
+                         O                                                                          O                                                                                       O                                                                       O
+
+                                Cl                                                                              Cl                                                                                  Cl                                                                      Cl
+
+              USPTO-102/190                                                             USPTO-127/190                                                                     USPTO-158/190                                                                USPTO-64/190
+                                                                                                                                                                                                                                                                                                    N
+                                     O
+                                                                                                            O                                                                               O                 OH                                                        O
+                         O                                                 O                                                           OH                     O
+      O                                      OH                                                                                                                                                                                            O
+                                                                                                                                                                                                          O
+
+                                                                           O                N                                                                 O                 N                                                          O                N
+      O         N
+                                                                  O            N                    O                                                     O       N                 O                                                 O        N                O
+  O       N          O
+                                                                                                                                                                                                              Cl                                                                               Cl
+                                             Cl                                                                                    Cl
+                                                                                                                                                                                                    O                                                                                O
+                                O                                                                                         O                                                                 O
+                         O                                                                              O                                                                                                                                                               O
+                                                                                                                                                                                                    Cl                                                                              Cl
+                                Cl                                                                                   Cl
+                                                                                        USPTO-140/190                                                                     USPTO-161/190                                                                    USPTO-7/190
+              USPTO-119/190                                                                                                                                                                                                                                                                   HN N
+                                                                                                                                                                                                                                                                                                        N
+                                                                                                                                                                                                          O                                                                                         N
+                                                                                                                                   N
+                                              N                                                             O                                                                               O                                                                           O
+                         O                                                 O                                                                                  O                                               O                            O
+      O
+
+
+
+      O          N                                                         O                    N                                                             O                 N                                                          O                N
+
+  O       N                                                           O        N                    O                                                     O           N             O                                                 O        N                O
+                     O
+                                                                                                                                   Cl                                                                         Cl                                                                              Cl
+                                             Cl
+                                                                                                                          O                                                                          O                                                                              O
+                                 O                                                                          O                                                                               O                                                                           O
+                         O
+                                                                                                                      Cl                                                                            Cl                                                                              Cl
+                                Cl
+               USPTO-124/190                                                             USPTO-150/190                                                                         USPTO-175/190                                                               USPTO-70/190
+
+
+                                                                                                                                                                                                         OH
+                         O                    O                                                         O                         O                                                             O
+      O                                                               O                                                                                           O                                                               Precursor of other compounds of the chemotype
+                                         O                                                                                    O
+                                                                                                                                                                                                                                               O                O
+      O          N                                                                          N                                                                     O                 N
+                                                                                                                                                                                                                                           O       N                O
+  O       N          O                                                    HN                    O                                                             O       N                 O
+                                                                                                                                                                                                                                                                                                    Cl
+                                             Cl                                                                                   Cl                                                                              Cl                                                                     O
+                                                                                                                     O                                                                                                                                                      O
+                                 O                                                                                                                                                                       O
+                         O                                                                              O                                                                                       O
+                                                                                                                                                                                                                                                                                         Cl
+                                Cl                                                                                   Cl                                                                              Cl
+
+                USPTO-151/190                                                            USPTO-153/190                                                                         USPTO-189/190                                                                USPTO-74/190
+
+
+
+
+                                                                                                                                                                      O
+                                                                                                                                                                                                                                      OH
+                                                          O                                                                                           O                                                       O
+                                     O                                O                                                       O                                           OH
+
+
+                                                                                                                                                                                                              O           N
+                                                  N                                                                           O              N
+                                                                                                                                                                                                         O         N          O
+                                     HN               O                                                               O           N              O
+                                                                                                                                                                                                                                                           Cl
+                                                                                   Cl                                                                                     Cl
+                                                                                                                                                                                                                                                   O
+                                                                      O                                                                                           O                                                                   O
+                                                          O                                                                                           O
+                                                                                                                                                                                                                                               Cl
+                                                                      Cl                                                                                      Cl
+                                                  USPTO-22/190                                                                              USPTO-24/190                                                               USPTO-62/190
+
+
+
+Figure 5: The biggest cluster of highly similar structures from USPTO-190. Maximum common
+substructure (MCS) is highlighted for the cluster
+
+
+
+
+                                                                                                                                                 28
+K    Example of Subtree Generation Process
+To exemplify the procedure of subtree generation in the URSA benchmark system, the example route
+schema and respective subroutes are outlined on Figure 6.
+
+                             Input validated synthetic route
+                                                                                    Subtree generator
+           A
+                                                                 C
+         B
+
+                                                                            Collapse C
+       1. Collapse two single-component steps into one
+       2. Two already merged nodes are exempt from collapsing
+       3. Return all possible subtrees for the input route
+
+                            Collapse A                                     Collapse A&C
+
+
+
+
+                            Collapse B                                     Collapse B&C
+
+
+
+
+                           Collapse A&B                                   Collapse A&B&C
+
+
+
+
+                           Figure 6: Example of the subtree generation process.
+
+
+
+
+                                                            29
+L    ChemCensor Scoring
+
+                                     A
+                                                              N N                  N N
+                                                 O       N                    HN
+                                                     O              Cl                   Cl
+
+
+B                                                                         C
+                          N N                        N N                                                                                      e ene e
+    Dynamic                                                                                                                                 en   r  n
+              O       N                      N                                                          e                                 ar H a are
+    atoms                                H                                                            id                   le           cH     c cH
+                                Cl                                                                  en ide               zo                  G
+                  O                                          Cl
+                                                                                                 oh hlor               ra               G  D DG
+                                                                                                l
+                                                                                              ha l c
+                                                                                                                     py               ED -E
+                                                                                                                cH                  o- tha a-E
+                                                                                           yl       y
+                                                                                                              4-                 rth Me Par
+                                                                              …    …     Ar       Ar                            O
+                          N N                        N N
+    RC1       O       N                      N                                0    0     1    1       …       1          …      1   1    1    …
+                                         H
+                  O             Cl                           Cl
+
+
+
+
+                          N N                        N N
+    RC2       O       N                      N                                0    0     1    1       …       0          …      1   1    1    …
+                                         H
+                  O             Cl                           Cl
+
+
+
+
+                          N N                        N N
+    RC3       O       N                      N
+                                         H                                    0    0     1    1       …       0          …      1   1    1    …
+                  O             Cl                           Cl
+
+
+
+
+                          N N
+    RC4       O       N                              N N                      0    0     1    1       …       0          …      1   1    1    …
+                                Cl           N
+                  O                      H
+                                                             Cl
+
+
+
+                          N N                        N N
+                                                                                                             516 FGs
+    RC5       O       N                      N
+                                         H
+                  O             Cl                           Cl
+
+
+
+
+Figure 7: ChemCensor functionalities. A. The input reaction. B. Process of reaction center extraction
+with different RCN highlighted in blue. C. The respective FG signatures annotated for the extracted
+centers.
+
+ChemCensor estimates how closely a single reaction resembles a reference corpus of synthetic
+precedents and uses that resemblance as a proxy for chemical plausibility. Besides precedent
+estimation, it also performs basic checks like correct reaction syntax and SMILES validity. The
+pipeline standardizes the input, validates SMILES, and maps atoms between reactants and products
+(RxnMapper [54] was used). Reactive atoms (atoms related to a dynamic part) are inferred from
+the mapped transform. Next, the processed reaction undergoes rigorous stereo validation: if there
+are any allowed stereo inversions (e.g., SN2 reactions), legit stereo-center emergence (a procedure
+of the resolution of stereoisomers), or stereo errors (inversions in the static part of the reaction).
+Also, to properly render regioselectivity of electrophilic aromatic substitutions, the separate module,
+SeAr annotator, determines if the reaction belongs to Se Ar class and annotates the functional group
+context surrounding the C-H center. Once processing is done, the reaction center extractor yields a
+nested family of centers (RC1–RC4) with increasing peripheral context. Each center is additionally
+annotated with non-participating functional groups which are found outside the reactive part of the
+transformation. Finally, the scorer compares the extracted centers with centers prepared in the same
+manner for the reference database of synthetic precedents. It accepts a center if its signature is
+contained in the reference (sub-signature match), with higher levels yielding higher scores which
+implies the higher chemical plausibility. An exact canonical reaction hit can yield the top score.
+Additionally, SEAr scoring includes checking the SEAr context stored with each precedent reaction.
+The details on center extraction and FG annotation are provided below.
+In the current version, there are five levels of reaction center annotation, denoted RC1, RC2, RC3,
+RC4 and RC5 corresponding to confidence levels and ChemCensor Scores 1, 2, 3, 4 and 5, respectively
+(see Figure 7 A). The RCN is the representation of an RC, where N shows the portion of the structural
+context of an RC; the higher the N, the higher the context size (see Figure 7 B):
+
+
+
+
+                                                                         30
+       • RC1 captures the minimal local environment of RC with the inclusion of dynamic atoms
+         and atoms at topological distance of 1 from them. Also, atoms from predefined FGs (e.g.,
+         carbonyl group, nitrile, etc.) are included when at least one atom of a FG is dynamic.
+       • RC2 includes atoms from RC1 with additional incorporation of the primary ring context (if
+         present), stereochemical surroundings, and/or the atoms at topological distance of 2 around
+         dynamic atoms.
+       • The next level, RC3, extends the atoms of RC2 by the addition of a fused-ring context
+         around (if present) or the atoms at topological distance of 3 around dynamic atoms.
+       • Finally, RC4 is further extended by adding substituent context to aromatic systems and
+         completing the predefined FGs, e.g., carbonyl group, nitrile, etc., or the atoms at topological
+         distance of 4 from reactive atoms.
+
+Scoring for Se Ar reactions also implies comparison of Se Ar functional group context surrounded by
+a C-H center with the context of the same center compiled for reported Se Ar reaction examples.
+After extraction, each reaction center is annotated with functional groups outside the reaction center
+part. ChemCensor uses a curated database of 516 functional group patterns to cover basic chemical
+entities relevant to organic chemistry. Once matched, a non-reacting FG is considered tolerable
+during transformation if all the atoms of a FG are not overlapped with RC atoms. Besides that, FG
+signatures of centers derived from Se Ar reactions are additionally annotated with patterns describing
+different C-H patterns (e.g., presence of ortho-/para-EWG or EDG groups) which are normally not
+checked for centers from non-Se Ar transformations. This helps better evaluate regioselectivity of
+Se Ar reactions without affecting other reaction classes by poorly reactive C-H patterns.
+During the processing of the corpus of reference reaction data, an FG signature is prepared to store
+the cumulative ensemble of non-participating groups found for all reaction examples associated
+with the given RC. To expedite the handling and searching, each reaction center is treated as a
+canonicalized SMARTS string describing reacting patterns for both left and right sides of the reaction.
+The annotated FG signatures are encoded as numpy binary arrays in the form of 516-bit signatures
+(Figure 7 C). Reaction centers and FG signatures prepared for the dataset of synthetic precedents are
+stored in a SQLite database together with the reaction examples from which they originate.
+
+
+
+
+                                                  31
+M     Selected flaws of the Synthegy approach
+While suggesting an interesting Synthegy framework to use LLMs as evaluators of retrosynthetic
+models’ outcomes, the respective study [19] contains striking flaws of LLMs failing to judge correctly
+on chemical synthesis matters.
+Example 1. Figure 8 presents such a case (taken from Fig. 3B of the original paper). As we can see
+Synthegy "thinks" that the provided reaction No.1 is a good and plausible one, since it represents the
+well-described SNAr reaction.
+
+
+
+
+    Figure 8: Reaction erroneously understood as an SNAr reaction by the Synthegy framework.
+
+
+However, this is a classic example of LLMs misinterpreting structural information. The given aryl
+fluoride has the EWG (amide) in m-position, while to be readily substituted the EWG should be placed
+either in p- or in o-position to the leaving fluoride group (see Figure 9). This can be easily justified
+via the mechanism of SNAr reaction that requires stabilization of the transition mode (Meisenheimer
+complex) that can be supported by o- or p- placed EWG.
+
+
+
+
+       Figure 9: Mechanism supporting the correct interpretation of the highlighted reaction.
+
+Example 2. In contrast to Example 1, this (see Figure 10) case presents an erroneous penalization
+of feasible reaction by the Synthegy workflow. This case is taken from SI H Supplemental Note 8
+Section of the original paper. Synthegy ’thinks’ that this reaction can lead to polyarylation and does
+not suggest it for usage.
+However, a quick check in SciFinder [23] for the same reaction center and 2,4-diaminobenzene gives
+us a perfectly matching example (see Figure 11) from the Journal of Medicinal Chemistry [55] of
+reaction with a high yield. While the 2x excess (not a large one) of cheap 2,4-diaminobenzene is
+involved, the practical utility of the reaction could not be diminished.
+
+
+
+
+                                                  32
+                Figure 10: Reaction unfairly penalized by Synthegy.
+
+
+
+
+Figure 11: An example from literature supporting the reaction penalized by Synthegy.
+
+
+
+
+                                        33
+

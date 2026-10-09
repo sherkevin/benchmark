@@ -1,0 +1,6 @@
+Task completed successfully. Found 2 compounds that meet the criteria:
+- z001510: logS = -2.7372, bbb = 1
+- z002730: logS = -2.6758, bbb = 1
+
+Both compounds have logS values between -3 and -2 (inclusive) and bbb = 1.
+Answer saved to answer.json as required.

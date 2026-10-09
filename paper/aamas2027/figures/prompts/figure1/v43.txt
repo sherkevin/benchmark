@@ -1,0 +1,28 @@
+Use case: infographic-diagram.
+Redesign Figure 1 from a clean composition: a compact scientific METHOD ARCHITECTURE, not an execution flowchart. White landscape canvas, about 2.6:1, suitable for a seven-inch two-column paper figure.
+
+Reference roles:
+Image 1 (TableDART): borrow pale local grouping, distinct computational shapes, compact composition, and a clear central fusion mechanism. Do not copy content or words.
+Image 2 (CRITIC): borrow its coherent local feedback loop and readable short labels. Do not copy its content or words.
+Image 3 (our Figure 2 v26): match its restrained navy/blue/gray/amber/purple palette, clean flat icon family, outline weight, and sans-serif typography. Do NOT copy its temporal layout or event chain.
+
+One visual argument: frozen contextual scores plus a correction read from released provider evidence determine one selected tool. A released selected event changes only its producer's two counters. Show the scoring computation prominently; the detailed call/judge/wait timeline belongs to Figure 2.
+
+Layout and graphic grammar:
+- The central architecture occupies roughly two thirds of the canvas in a very pale blue local background with a quiet rounded boundary. The left query and the small right feedback interface sit outside it. No equal-width large panels, stage banners, grid or swimlanes.
+- Left: a small molecule glyph and property-document glyph grouped as a compact “Query” input. Its single arrow enters a locked gray “Frozen scorer” in the upper-left of the architecture. The scorer shows small fixed feature/weight tiles, not a gear or a robot. It contains the feature computation; no separate Features box is needed.
+- Lower-left inside the architecture: a blue “Released state” register with FOUR provider rows and exactly TWO counter columns headed “count” and “correct”. Use small abstract tally marks rather than invented numeric performance. Highlight one row with pale blue. Use small generic tool glyphs as row markers, never A/B/C letters or made-up provider names.
+- The state register feeds a small blue four-cell vector labelled “Residual”. The residual vector and frozen scorer each enter a circular plus operator through two short distinct arrows. Above the operator place the single equation “q = q⁰ + Δ”.
+- The plus operator feeds a slim four-cell vector labelled “Scores”; Scores feeds a blue selector gate labelled “Select”. A small “Eligible tools” icon tray lies immediately BELOW Select and feeds Select with one SHORT upward arrow. It does not connect to state, residual, scorer, or feedback.
+- Select emits one compact “Selected tool” token to the right. Keep the method's fusion/operator and state register dominant, with the external interaction visually subordinate.
+- Right of the architecture: one small neutral-gray rounded card labelled “Feedback lifecycle” with a gear/document/clock trio and a tiny “Fig. 2” beneath the label. This is an ABSTRACT EXTERNAL INTERFACE, not a new learned module. Selected tool enters it. It outputs an amber selected-event card labelled “Released feedback” with a document glyph and small clock badge. Do not expand call, terminal record, judge, runtime failure, queue or release steps inside Figure 1.
+- Released feedback returns by one clean compact curved edge to a small blue “Update” operator adjacent to the LEFT or LOWER edge of the state register. Update writes directly into the single highlighted provider row; the arrowhead must visibly enter that row. All other rows remain visually unchanged. Keep this local write separate from the state-to-residual read edge. Do not draw a state-to-Select shortcut, or a second feedback loop.
+
+Exact short text only:
+“Query”, “Frozen scorer”, “Released state”, “count”, “correct”, “Residual”, “Scores”, “Select”, “Eligible tools”, “Selected tool”, “Feedback lifecycle”, “Fig. 2”, “Released feedback”, “Update”, and “q = q⁰ + Δ”. No additional text, legends, standalone provider letters, performance values, timestamps, or delay equations.
+
+Style and print requirements:
+Match a polished top-conference vector illustration: white matte background; deep navy lettering; consistent thin navy/blue outlines and small triangular arrowheads; flat understated fills; clear silhouettes. Deep blue #2E5DA1 for the adaptive state/residual/selector, light slate gray #DCE3EC for fixed scorer and external interface, soft amber #E9A11A only for the released chemical result, muted purple #7650B8 only for the clock badge. The main method region has a very pale blue tint, not a gradient. Distinct visual objects, no repeated large generic boxes. Use 32–40 pixel primary labels on an approximately 2048-pixel wide image, with all secondary labels at least 28 pixels. Tight balanced padding, no giant empty area, no drop shadows, glossy effects, 3-D, crosses, or watermarks.
+
+Validate the graph before rendering:
+Query→Frozen scorer→plus; Released state→Residual→plus; plus→Scores→Select; Eligible tools→Select; Select→Selected tool→Feedback lifecycle→Released feedback→Update→one highlighted state row. These are the ONLY edges. The state has exactly two counters per provider and no direct edge to Select. Figure 1 explains computation and credit assignment; Figure 2 alone explains the detailed event timing.

@@ -1,0 +1,24 @@
+Use case: infographic-diagram. Create a final candidate Figure 1 method architecture for the MIRA-Relay paper. Use the attached Figure 1 v19 only for its visual quality and palette, but correct the graph. The critical rule is that Update writes directly to the released-state row; residual is a readout from state and must never sit between Update and state.
+
+FIGURE ROLE
+Show method architecture: molecule/endpoint and eligible tools; frozen base score; released selected-only state; score synthesis and selector; selected execution and frozen judge; delayed selected-only queue; direct update of the selected state row. This is not a timeline.
+
+TEXT
+Never write provider letters A, B, C, provider names, or arbitrary row IDs. Use only short labels: Inputs, MIRA-Relay, Execution, Molecule + Endpoint, Features, Frozen scorer, base score, released state, residual, score, Eligible tools, Selector, Selected tool, Call, Return, Judge, Chemical feedback, Runtime ledger, selected-only queue, Release, Update. Equations only q=q⁰+Δ and τ_t=t+1+D. Fewer than 65 English words and no prose paragraphs.
+
+STYLE
+White 2.7:1 landscape, compact flat vector infographic in the top-conference gallery style: pale blue method panel, pale cream execution panel, muted purple pending/release, blue state/update, gray frozen records, amber judge/feedback, navy thin arrows, simple icons, concrete grids and cells. No gradient, 3-D, grid background, swimlane, giant ribbon, crossed-out object, watermark, or performance numbers.
+
+MODULE PLACEMENT
+LEFT INPUTS: molecule and endpoint icons labelled Molecule + Endpoint. No line from Inputs enters released state.
+CENTER METHOD: top row Features grid → locked Frozen scorer → slim q⁰ vector → plus. Place the released-state register in the lower-left of the method panel, with three unlabeled rows, columns n and s, and only the middle row blue. Place the residual vector Δ ABOVE and to the RIGHT of the register, not on the feedback baseline; draw a short upward/right state-readout arrow from the register to residual. Residual and q⁰ enter the plus; plus → score → one Selector. Put a neutral Eligible tools tray beside/inside Selector, with three icons and no provider letters; it is local to Selector. Selector → one Selected tool.
+RIGHT EXECUTION: Selected tool → Call → Return. Valid return → frozen endpoint Judge → amber Chemical feedback r∈{0,1}. Runtime error → gray Runtime ledger dead-end; no runtime edge to chemical feedback or state.
+
+DIRECT SAME-HEIGHT UPDATE CHAIN
+Put a blue Update card immediately to the RIGHT of the released-state register, centered exactly on the highlighted middle row. Put a purple Release clock immediately to the RIGHT of Update on the same centerline; put a purple selected-only queue immediately to the RIGHT of Release on the same centerline. Chemical feedback drops by one short vertical purple arrow into the queue. Draw only these short horizontal edges: selected-only queue ⇢ Release (purple dashed), Release → Update (solid), Update → the INTERIOR CENTER of the highlighted n/s row. The Update arrowhead must enter the blue middle row directly. It must not touch residual, score, the register border, a bottom edge, or whitespace. Do not draw any lower feedback band, long return line, U-shape, vertical Update route, or Release→register bypass. Residual is strictly above this baseline and is a readout used for scoring, never the update destination.
+
+GRAPH AUDIT
+Exactly one causal update path is Chemical feedback → selected-only queue ⇢ Release → Update → highlighted released-state row. Exactly one score path is q⁰ + residual → score → Selector. Runtime error ends at Runtime ledger. Every arrowhead docks on the receiving card or row cell. Zero A/B/C or duplicate provider identity.
+
+FINAL CHECK
+The result must look like a compact top-conference architecture figure, not a process poster. The direct Update-to-state edge is visually obvious even at seven-inch paper width, and the residual vector is visibly separate from the write path.

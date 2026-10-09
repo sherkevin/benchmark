@@ -1,0 +1,563 @@
+# 出处：/Users/jingwu/work/benchmark/data/tool_results/api_evidence/admetlab3/z000282.json（POST /api/single/admet 原始响应；分子 z000282）
+# 字段 data.data.<组>[].name / display / explanation / decision
+# 说明：explanation 是端点定义，与分子无关；此处取一个分子的响应作样本。
+
+### physicochemical | MW | Molecular Weight (MW)
+Contain hydrogen atoms.
+Optimal:100~600
+
+### physicochemical | Vol | Volume
+Van der Waals volume
+
+### physicochemical | Dense | Density
+Density = MW / Volume
+
+### physicochemical | nHA | nHA
+Number of hydrogen bond acceptors.
+Optimal:0~12
+
+### physicochemical | nHD | nHD
+Number of hydrogen bond donors.
+Optimal:0~7
+
+### physicochemical | nRot | nRot
+Number of rotatable bonds.
+Optimal:0~11
+
+### physicochemical | nRing | nRing
+Number of rings.
+Optimal:0~6
+
+### physicochemical | MaxRing | MaxRing
+Number of atoms in the biggest ring.
+Optimal:0~18
+
+### physicochemical | nHet | nHet
+Number of heteroatoms.
+Optimal:1~15
+
+### physicochemical | fChar | fChar
+Formal charge.
+Optimal:-4 ~4
+
+### physicochemical | nRig | nRig
+Number of rigid bonds.
+Optimal:0~30
+
+### physicochemical | Flex | Flexibility
+Flexibility = nRot /nRig
+
+### physicochemical | nStereo | Stereo Centers
+Stereo Centers
+Optimal: ≤ 2
+
+### physicochemical | TPSA | TPSA
+Topological Polar Surface Area.
+Optimal:0~140
+
+### physicochemical | logS | logS
+The logarithm of aqueous solubility value.
+
+### physicochemical | logP | logP
+The logarithm of the n-octanol/water distribution coefficients.
+
+### physicochemical | logD | logD7.4
+The logarithm of the n-octanol/water distribution coefficient at pH=7.4.
+
+### physicochemical | pka_acidic | pka (Acid)
+Acid-base dissociation constant (pKa) value represents the strength of a drug molecule's acidity or basicity.
+
+### physicochemical | pka_basic | pka (Base)
+Acid-base dissociation constant (pKa) value represents the strength of a drug molecule's acidity or basicity.
+
+### physicochemical | mp | Melting point
+The predicted melting point of a compound is expressed in degrees Celsius (°C).
+ Melting points below 25°C are classified as liquids, while melting points above 25°C are classified as solids.
+
+### physicochemical | bp | Boiling point
+The predicted melting point of a compound is expressed in degrees Celsius (°C).
+ A normal boiling point below 25°C is categorized as a gas.
+
+### medchem | QED | QED
+A measure of drug-likeness based on the concept of desirability;
+Attractive: > 0.67;
+unattractive: 0.49~0.67;
+too complex: < 0.34
+decision: 1
+
+### medchem | Synth | SAscore
+Synthetic accessibility score is designed to estimate ease of synthesis of drug-like molecules.
+SAscore ≥ 6, difficult to synthesize; SAscore <6, easy to synthesize
+
+### medchem | gasa | GASA
+ES: Easy to synthesize; HS: Hard to synthesize;
+The output value represents the probability of being difficult to synthesize, ranging from 0 to 1.
+
+### medchem | Fsp3 | Fsp3
+The number of sp3 hybridized carbons / total carbon count, correlating with melting point and solubility.
+Fsp<sup>3</sup> ≥0.42 is considered a suitable value.
+
+### medchem | MCE-18 | MCE-18
+MCE-18 stands for medicinal chemistry evolution.
+MCE-18≥45 is considered a suitable value.
+decision: 1
+
+### medchem | Natural Product-likeness | NPscore
+Natural product-likeness score.
+This score is typically in the range from -5 to 5.
+The higher the score is, the higher the probability is that the molecule is a NP.
+
+### medchem | Lipinski | Lipinski Rule
+MW ≤ 500; logP ≤ 5; Hacc ≤ 10; Hdon ≤ 5
+If two properties are out of range, a poor absorption or permeability is possible, one is acceptable.
+
+### medchem | Pfizer | Pfizer Rule
+logP > 3; TPSA < 75
+Compounds with a high log P (>3) and low TPSA (<75) are likely to be toxic.
+
+### medchem | GSK | GSK Rule
+MW ≤ 400; logP ≤ 4
+Compounds satisfying the GSK rule may have a more favorable ADMET profile
+
+### medchem | GoldenTriangle | GoldenTriangle
+200 ≤ MW ≤ 500; -2 ≤ logD ≤ 5
+Compounds satisfying the Golden Triangle rule may have a more favorable ADMET profile.
+decision: 1.0
+
+### medchem | PAINS | PAINS
+frequent hitters, Alpha-screen artifacts and reactive compound 480 substructures (J Med Chem 201053:2719-40)
+
+### medchem | Alarm_NMR | Alarm_NMR Rule
+Thiol reactive compounds.
+
+### medchem | BMS | BMS Rule
+undesirable, reactive compounds 176 substructures (J Chem Inf Model 200646:1060-8)
+
+### medchem | Chelating | Chelating Rule
+Chelating compounds.
+
+### medchem | Aggregators | Colloidal aggregators
+Category 0: non-colloidal aggregators;
+ Category 1: colloidal aggregators.
+ The output value is the probability of being colloidal aggregators, within the range of 0 to 1.
+
+### medchem | Fluc | FLuc inhibitors
+Category 0: non-fLuc inhibitors;
+Category 1: fLuc inhibitors.
+The output value is the probability of being fLuc inhibitors, within the range of 0 to 1.
+
+### medchem | Blue_fluorescence | Blue fluorescence
+Category 0: non-blue fluorescence;
+ Category 1: blue fluorescence.
+ The output value is the probability of being blue fluorescence, within the range of 0 to 1.
+
+### medchem | Green_fluorescence | Green fluorescence
+Category 0: non-green fluorescence;
+ Category 1: green fluorescence.
+ The output value is the probability of being green fluorescence, within the range of 0 to 1.
+
+### medchem | Reactive | Reactive compounds
+Category 0: non-reactive compound;
+ Category 1: reactive compound.
+ The output value is the probability of being reactive compound, within the range of 0 to 1.
+decision: 1
+
+### medchem | Promiscuous | Promiscuous compounds
+Category 0: non-promiscuous compound;
+ Category 1: promiscuous compound.
+ The output value is the probability of being promiscuous compound, within the range of 0 to 1.
+
+### absorption | caco2 | Caco-2 Permeability
+Optimal: higher than -5.15 Log unit
+
+### absorption | MDCK | MDCK Permeability (cm/s)
+low permeability: < 2 × 10-6 cm/s
+medium permeability: 2-20 × 10<sup>-6</sup> cm/s
+high passive permeability: > 20 × 10<sup>-6</sup> cm/s
+
+### absorption | PAMPA | PAMPA
+The experimental data for Peff was logarithmically transformed (logPeff). 
+Molecules with log Peff values below 2.0 were classified as low-permeability (Category 0), while those with log Peff values exceeding 2.5 were classified as high-permeability (Category 1).
+
+### absorption | pgp_inh | Pgp inhibitor
+Category 1: Inhibitor;
+Category 0: Non-inhibitor;
+The output value is the probability of being Pgp-inhibitor
+
+### absorption | pgp_sub | Pgp substrate
+Category 1: substrate;
+Category 0: Non-substrate;
+The output value is the probability of being Pgp-substrate
+
+### absorption | hia | HIA
+Human Intestinal Absorption
+Category 1: HIA+( HIA < 30%); 
+Category 0: HIA-( HIA >= 30%); 
+The output value is the probability of being HIA+
+
+### absorption | f20 | F20%
+20% Bioavailability
+Category 1: F 20% + (bioavailability < 20%);
+Category 0: F 20% - (bioavailability ≥ 20%);
+The output value is the probability of being F 20% +
+
+### absorption | f30 | F30%
+30% Bioavailability
+Category 1: F 30% + (bioavailability < 30%);
+Category 0: F 30% - (bioavailability ≥ 30%);
+The output value is the probability of being F 30% +
+decision: -1
+
+### absorption | f50 | F50%
+50% Bioavailability
+Category 1: F 50% + (bioavailability < 50%);
+Category 0: F 50% - (bioavailability ≥ 50%);
+The output value is the probability of being F 50% +
+decision: 1
+
+### distribution | PPB | PPB
+Plasma Protein Binding
+Optimal: < 90%.
+Drugs with high protein-bound may have a low therapeutic index.
+
+### distribution | VDss | VDss (L/kg)
+Volume Distribution
+Optimal: 0.04-20L/kg
+
+### distribution | BBB | BBB
+Blood-Brain Barrier Penetration
+Category 1: BBB+; Category 0: BBB-;
+The output value is the probability of being BBB+
+decision: 1
+
+### distribution | Fu | Fu
+The fraction unbound in plasms
+Low: <5%; Middle: 5~20%; High: > 20%
+
+### distribution | OATP1B1 | OATP1B1 inhibitor
+Category 0: Non-inhibitor; Category 1: inhibitor. 
+The output value is the probability of being inhibitor, within the range of 0 to 1.
+decision: 1
+
+### distribution | OATP1B3 | OATP1B3 inhibitor
+Category 0: Non-inhibitor; Category 1: inhibitor. 
+The output value is the probability of being inhibitor, within the range of 0 to 1.
+decision: 1
+
+### distribution | BCRP | BCRP inhibitor
+Category 0: Non-inhibitor; Category 1: inhibitor.
+The output value is the probability of being inhibitor, within the range of 0 to 1.
+
+### distribution | MRP1 | MRP1 inhibitor
+Category 0: Non-inhibitor; Category 1: inhibitor. 
+The output value is the probability of being inhibitor, within the range of 0 to 1.
+
+### distribution | BSEP | BSEP inhibitor
+Category 0: Non-BSEP inhibitor; Category 1: BSEP inhibitor.
+The output value is the probability of being BSEP inhibitor, within the range of 0 to 1.
+
+### metabolism | CYP1A2-inh | CYP1A2 inhibitor
+Category 1: Inhibitor; Category 0: Non-inhibitor;
+The output value is the probability of being inhibitor.
+
+### metabolism | CYP1A2-sub | CYP1A2 substrate
+Category 1: Inhibitor; Category 0: Non-inhibitor;
+The output value is the probability of being inhibitor.
+
+### metabolism | CYP2C19-inh | CYP2C19 inhibitor
+Category 1: Inhibitor; Category 0: Non-inhibitor;
+The output value is the probability of being inhibitor.
+
+### metabolism | CYP2C19-sub | CYP2C19 substrate
+Category 1: Inhibitor; Category 0: Non-inhibitor;
+The output value is the probability of being inhibitor.
+
+### metabolism | CYP2C9-inh | CYP2C9 inhibitor
+Category 1: Inhibitor; Category 0: Non-inhibitor;
+The output value is the probability of being inhibitor.
+
+### metabolism | CYP2C9-sub | CYP2C9 substrate
+Category 1: Inhibitor; Category 0: Non-inhibitor;
+The output value is the probability of being inhibitor.
+decision: -1
+
+### metabolism | CYP2D6-inh | CYP2D6 inhibitor
+Category 1: Inhibitor; Category 0: Non-inhibitor;
+The output value is the probability of being inhibitor.
+
+### metabolism | CYP2D6-sub | CYP2D6 substrate
+Category 1: Inhibitor; Category 0: Non-inhibitor;
+The output value is the probability of being inhibitor.
+decision: 1
+
+### metabolism | CYP3A4-inh | CYP3A4 inhibitor
+Category 1: Inhibitor; Category 0: Non-inhibitor;
+The output value is the probability of being inhibitor.
+
+### metabolism | CYP3A4-sub | CYP3A4 substrate
+Category 1: Inhibitor; Category 0: Non-inhibitor;
+The output value is the probability of being inhibitor.
+
+### metabolism | CYP2B6-inh | CYP2B6 inhibitor
+Category 1: Inhibitor; Category 0: Non-inhibitor;
+The output value is the probability of being inhibitor.
+
+### metabolism | CYP2B6-sub | CYP2B6 substrate
+Category 1: Inhibitor; Category 0: Non-inhibitor;
+The output value is the probability of being inhibitor.
+decision: -1
+
+### metabolism | CYP2C8-inh | CYP2C8 inhibitor
+Category 1: Inhibitor; Category 0: Non-inhibitor;
+The output value is the probability of being inhibitor.
+
+### metabolism | LM-human | HLM Stability
+human liver microsomal (HLM) stability
+Category 0: stable+ (HLM > 30 min); Category 1: unstable- ( HLM ≤ 30 min). The output value is the probability of human liver microsomal instability, where a value closer to 1 indicates a higher likelihood of instability. The range is between 0 and 1.
+
+### excretion | cl-plasma | CL<sub>plasma</sub>
+The unit of predicted CLplasma penetration is ml/min/kg. 
+>15 ml/min/kg: high clearance; 
+5-15 ml/min/kg: moderate clearance; 
+< 5 ml/min/kg: low clearance.
+decision: -1
+
+### excretion | t0.5 | T1/2
+The unit of predicted T1/2 is hours.
+ultra-short half-life drugs: 1/2 < 1 hour;
+short half-life drugs: T1/2 between 1-4 hours;
+intermediate short half-life drugs: T1/2 between 4-8 hours;
+long half-life drugs: T1/2 > 8 hours.
+decision: -1
+
+### toxicity | hERG | hERG Blockers
+Molecules with IC50 ≤10μM or ≥50% inhibition at 10 μM were classified as hERG+ (Category 1), 
+while molecules with IC50 >10μM or < 50% inhibition at 10μM were classified as hERG - (Category 0). 
+The output value is the probability of being hERG+, within the range of 0 to 1.
+
+### toxicity | hERG-10um | hERG Blockers (10um)
+Molecules with IC50 ≤10 μM are classified as hERG+ (Category 1), 
+and molecules with IC50 > 10μM are classified as hERG- (Category 0). 
+The output value is the probability of being hERG+, within the range of 0 to 1.
+
+### toxicity | DILI | DILI
+Drug Induced Liver Injury.
+Category 1: drugs with a high risk of DILI;
+Category 0: drugs with no risk of DILI.
+The output value is the probability of being toxic.
+
+### toxicity | Ames | AMES Toxicity
+AMES Toxicity
+Category 1: Ames positive(+);
+Category 0: Ames negative(-);
+The output value is the probability of being toxic.
+
+### toxicity | ROA | Rat Oral Acute Toxicity
+Rat Oral Acute Toxicity.
+Category 0: low-toxicity, > 500 mg/kg; 
+Category 1: high-toxicity; < 500 mg/kg. 
+The output value is the probability of being toxic, within the range of 0 to 1.
+
+### toxicity | FDAMDD | FDAMDD
+FDA Maximum (Recommended) Daily Dose.
+Category 1: FDAMDD (+);
+Category 0: FDAMDD (-);
+The output value is the probability of being positive.
+
+### toxicity | SkinSen | Skin Sensitization
+Category 1: Sensitizer; 
+Category 0: Non-sensitizer. 
+The output value is the probability of being toxic, within the range of 0 to 1.
+decision: 1
+
+### toxicity | Carcinogenicity | Carcinogenicity
+Category 1: carcinogens;
+Category 0: non-carcinogens;
+The output value is the probability of being toxic.
+
+### toxicity | EC | Eye Corrosion
+Eye Corrosion
+Category 1: corrosives;
+Category 0: noncorrosives;
+The output value is the probability of being corrosives.
+decision: 1
+
+### toxicity | EI | Eye Irritation
+Eye Irritation
+Category 1: irritants;
+Category 0: nonirritants;
+The output value is the probability of being irritants.
+decision: 1
+
+### toxicity | Respiratory | Respiratory
+Category 1: respiratory toxicants; 
+Category 0: non-respiratory toxicants. 
+The output value is the probability of being toxic, within the range of 0 to 1.
+decision: 1
+
+### toxicity | H-HT | Human Hepatotoxicity
+Human Hepatotoxicity
+Category 1: H-HT positive(+);
+Category 0: H-HT negative(-);
+The output value is the probability of being toxic.
+
+### toxicity | Nephrotoxicity-DI | Drug-induced Nephrotoxicity
+Category 0: non-nephrotoxic (-); 
+Category 1: nephrotoxic (+). 
+The output value is the probability of being nephrotoxic (+), within the range of 0 to 1.
+
+### toxicity | Neurotoxicity-DI | Drug-induced Neurotoxicity
+Category 0: non-neurotoxic (-); 
+Category 1: neurotoxic (+). 
+The output value is the probability of being neurotoxic (+), within the range of 0 to 1.
+
+### toxicity | Ototoxicity | Ototoxicity
+Category 0: non-ototoxicity (-); 
+Category 1: ototoxicity (+). 
+The output value is the probability of being ototoxicity (+), within the range of 0 to 1.
+decision: -1
+
+### toxicity | Hematotoxicity | Hematotoxicity
+Category 0: non-hematotoxicity (-); 
+Category 1: hematotoxicity (+). 
+The output value is the probability of being hematotoxicity (+), within the range of 0 to 1.
+
+### toxicity | Genotoxicity | Genotoxicity
+Category 0: non-Genotoxicity (-); 
+Category 1: Genotoxicity (+). 
+The output value is the probability of being ototoxicity (+), within the range of 0 to 1.
+
+### toxicity | RPMI-8226 | RPMI-8226 Immunitoxicity
+Category 0: non-cytotoxicity (-); 
+Category 1: cytotoxicity (+). 
+The output value is the probability of being ototoxicity (+), within the range of 0 to 1.
+
+### toxicity | A549 | A549 Cytotoxicity
+Category 0: non-cytotoxicity (-); 
+Category 1: cytotoxicity (+). 
+The output value is the probability of being ototoxicity (+), within the range of 0 to 1.
+
+### toxicity | HEK293 | Hek293 Cytotoxicity
+Category 0: non-cytotoxicity (-); 
+Category 1: cytotoxicity (+). 
+The output value is the probability of being ototoxicity (+), within the range of 0 to 1.
+
+### toxicity | BCF | BCF
+Bioconcentration factors are used for considering secondary poisoning potential and assessing risks to human health via the food chain.
+The unit is -log10[(mg/L)/(1000*MW)].
+
+### toxicity | IGC50 | IGC50
+48 hour Tetrahymena pyriformis IGC50. 
+The unit of IGC50 is -log10[(mg/L)/(1000*MW)]
+
+### toxicity | LC50DM | LC50DM
+48 hour Daphnia magna LC50. 
+The unit of LC50DM is -log10[(mg/L)/(1000*MW)]
+
+### toxicity | LC50FM | LC50FM
+96 hour fathead minnow LC50. 
+The unit of LC50FM is -log10[(mg/L)/(1000*MW)].
+
+### tox21 | NR-AhR | NR-AhR
+Aryl hydrocarbon receptor
+Category 1: actives ;
+Category 0: inactives;
+The output value is the probability of being active.
+
+### tox21 | NR-AR | NR-AR
+Androgen receptor
+Category 1: actives ;
+Category 0: inactives;
+The output value is the probability of being active.
+
+### tox21 | NR-AR-LBD | NR-AR-LBD
+Androgen receptor ligand-binding domain
+Category 1: actives ;
+Category 0: inactives;
+The output value is the probability of being active.
+
+### tox21 | NR-Aromatase | NR-Aromatase
+Category 1: actives ;
+Category 0: inactives;
+The output value is the probability of being active.
+
+### tox21 | NR-ER | NR-ER
+Estrogen receptor
+Category 1: actives ;
+Category 0: inactives;
+The output value is the probability of being active.
+
+### tox21 | NR-ER-LBD | NR-ER-LBD
+Estrogen receptor ligand-binding domain
+Category 1: actives ;
+Category 0: inactives;
+The output value is the probability of being active.
+
+### tox21 | NR-PPAR-gamma | NR-PPAR-gamma
+Peroxisome proliferator-activated receptor gamma
+Category 1: actives ;
+Category 0: inactives;
+The output value is the probability of being active.
+
+### tox21 | SR-ARE | SR-ARE
+Antioxidant response element
+Category 1: actives ;
+Category 0: inactives;
+The output value is the probability of being active.
+
+### tox21 | SR-ATAD5 | SR-ATAD5
+ATPase family AAA domain-containing protein 5
+Category 1: actives ;
+Category 0: inactives;
+The output value is the probability of being active.
+
+### tox21 | SR-HSE | SR-HSE
+Heat shock factor response element
+Category 1: actives ;
+Category 0: inactives;
+The output value is the probability of being active.
+
+### tox21 | SR-MMP | SR-MMP
+Mitochondrial membrane potential
+Category 1: actives ;
+Category 0: inactives;
+The output value is the probability of being active.
+
+### tox21 | SR-p53 | SR-p53
+p53, a tumor suppressor protein
+Category 1: actives ;
+Category 0: inactives;
+The output value is the probability of being active.
+
+### toxicityrule | Acute_Aquatic_Toxicity | Aquatic Toxicity Rule
+99 substructures;
+toxicity to liquid(water)
+decision: ["<?xml version='1.0' encoding='iso-8859-1'?><svg version='1.1' baseProfile='full'              xmlns='http://www.w3.org/2000/svg'                      xmlns:rdkit='http://www.rdkit.org/xml'                      xmlns:xlink='http://www.w3.org/1999/xlink'                  xml:space='preserve'width='400px' height='400px' viewBox='0 0 400 400'><!-- END OF HEADER --><rect style='opacity:1.0;fill:none;stroke:none' width='400.0' height='400.0' x='0.0' y='0.0'> </rect><path class='bond-0 atom-0 atom-1' d='M 93.7,116.4 L 122.5,188.0 L 117.4,200.0 L 105.4,194.9 L 76.6,123.3 Z' style='fill:#FF7F7F;fill-rule:evenodd;fill-opacity:1;stroke:#FF7F7F;stroke-width:0.0px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1;' /><path class='bond-1 atom-1 atom-2' d='M 117.4,200.0 L 129.4,205.1 L 158.3,276.7 L 141.2,283.6 L 112.3,212.0 Z' style='fill:#FF7F7F;fill-rule:evenodd;fill-opacity:1;stroke:#FF7F7F;stroke-width:0.0px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1;' /><path class='bond-2 atom-1 atom-3' d='M 105.4,194.9 L 117.4,200.0 L 112.3,212.0 L 40.7,240.9 L 33.8,223.8 Z' style='fill:#FF7F7F;fill-rule:evenodd;fill-opacity:1;stroke:#FF7F7F;stroke-width:0.0px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1;' /><path class='bond-3 atom-1 atom-4' d='M 194.2,159.1 L 201.0,176.2 L 129.4,205.1 L 117.4,200.0 L 122.5,188.0 Z' style='fill:#FF7F7F;fill-rule:evenodd;fill-opacity:1;stroke:#FF7F7F;stroke-width:0.0px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1;' /><ellipse cx='85.1' cy='119.8' rx='17.3' ry='17.3' class='atom-0'  style='fill:#FF7F7F;fill-rule:evenodd;stroke:#FF7F7F;stroke-width:1.0px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1' /><ellipse cx='125.1' cy='199.9' rx='23.9' ry='17.4' class='atom-1'  style='fill:#FF7F7F;fill-rule:evenodd;stroke:#FF7F7F;stroke-width:1.0px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1' /><ellipse cx='149.7' cy='280.2' rx='17.3' ry='17.3' class='atom-2'  style='fill:#FF7F7F;fill-rule:evenodd;stroke:#FF7F7F;stroke-width:1.0px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1' /><ellipse cx='37.3' cy='232.3' rx='17.3' ry='17.3' class='atom-3'  style='fill:#FF7F7F;fill-rule:evenodd;stroke:#FF7F7F;stroke-width:1.0px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1' /><ellipse cx='197.6' cy='167.7' rx='17.3' ry='17.3' class='atom-4'  style='fill:#FF7F7F;fill-rule:evenodd;stroke:#FF7F7F;stroke-width:1.0px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1' /><path class='bond-0 atom-0 atom-1' d='M 85.1,119.8 L 98.2,152.4' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1' /><path class='bond-0 atom-0 atom-1' d='M 98.2,152.4 L 111.4,184.9' style='fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2.0px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1' /><path class='bond-1 atom-1 atom-2' d='M 123.5,215.1 L 136.6,247.6' style='fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2.0px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1' /><path class='bond-1 atom-1 atom-2' d='M 136.6,247.6 L 149.7,280.2' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1' /><path class='bond-2 atom-1 atom-3' d='M 105.3,204.9 L 71.3,218.6' style='fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2.0px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1' /><path class='bond-2 atom-1 atom-3' d='M 71.3,218.6 L 37.3,232.3' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1' /><path class='bond-3 atom-1 atom-4' d='M 144.8,189.0 L 171.2,178.3' style='fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2.0px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1' /><path class='bond-3 atom-1 atom-4' d='M 171.2,178.3 L 197.6,167.7' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1' /><path class='bond-4 atom-4 atom-5' d='M 197.6,167.7 L 265.6,221.0' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1' /><path class='bond-5 atom-5 atom-6' d='M 265.6,221.0 L 298.7,207.7' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1' /><path class='bond-5 atom-5 atom-6' d='M 298.7,207.7 L 331.7,194.3' style='fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:2.0px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1' /><path d='M 196.3,168.2 L 197.6,167.7 L 201.0,170.4' style='fill:none;stroke:#000000;stroke-width:2.0px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1;' /><path d='M 262.2,218.3 L 265.6,221.0 L 267.3,220.3' style='fill:none;stroke:#000000;stroke-width:2.0px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1;' /><path class='atom-1' d='M 112.0 187.8L 120.1 200.7Q 120.8 202.0, 122.1 204.3Q 123.4 206.6, 123.5 206.8L 123.5 187.8L 126.7 187.8L 126.7 212.2L 123.4 212.2L 114.8 198.1Q 113.8 196.4, 112.7 194.5Q 111.7 192.6, 111.3 192.0L 111.3 212.2L 108.2 212.2L 108.2 187.8L 112.0 187.8' fill='#0000FF'/><path class='atom-1' d='M 131.3 192.2L 135.6 192.2L 135.6 187.6L 137.6 187.6L 137.6 192.2L 142.0 192.2L 142.0 193.8L 137.6 193.8L 137.6 198.4L 135.6 198.4L 135.6 193.8L 131.3 193.8L 131.3 192.2' fill='#0000FF'/><path class='atom-6' d='M 334.6 188.7Q 334.6 182.9, 337.5 179.6Q 340.4 176.3, 345.8 176.3Q 351.2 176.3, 354.1 179.6Q 357.0 182.9, 357.0 188.7Q 357.0 194.7, 354.1 198.1Q 351.2 201.4, 345.8 201.4Q 340.4 201.4, 337.5 198.1Q 334.6 194.7, 334.6 188.7M 345.8 198.7Q 349.5 198.7, 351.5 196.2Q 353.6 193.6, 353.6 188.7Q 353.6 183.9, 351.5 181.5Q 349.5 179.1, 345.8 179.1Q 342.1 179.1, 340.0 181.5Q 338.0 183.9, 338.0 188.7Q 338.0 193.7, 340.0 196.2Q 342.1 198.7, 345.8 198.7' fill='#FF0000'/><path class='atom-6' d='M 360.8 176.6L 364.2 176.6L 364.2 187.0L 376.7 187.0L 376.7 176.6L 380.0 176.6L 380.0 201.0L 376.7 201.0L 376.7 189.7L 364.2 189.7L 364.2 201.0L 360.8 201.0L 360.8 176.6' fill='#FF0000'/></svg>"]
+
+### toxicityrule | Genotoxic_Carcinogenicity_Mutagenicity | Genotoxic Carcinogenicity Mutagenicity Rule
+117 substructures;
+carcinogenicity or mutagenicity
+
+### toxicityrule | NonGenotoxic_Carcinogenicity | NonGenotoxic Carcinogenicity Rule
+23 substructures;
+carcinogenicity through nongenotoxic mechanisms
+
+### toxicityrule | Skin_Sensitization | Skin Sensitization Rule
+155 substructures;
+skin irritation
+decision: ["<?xml version='1.0' encoding='iso-8859-1'?><svg version='1.1' baseProfile='full'              xmlns='http://www.w3.org/2000/svg'                      xmlns:rdkit='http://www.rdkit.org/xml'                      xmlns:xlink='http://www.w3.org/1999/xlink'                  xml:space='preserve'width='400px' height='400px' viewBox='0 0 400 400'><!-- END OF HEADER --><rect style='opacity:1.0;fill:none;stroke:none' width='400.0' height='400.0' x='0.0' y='0.0'> </rect><path class='bond-0 atom-0 atom-1' d='M 93.7,116.4 L 122.5,188.0 L 117.4,200.0 L 105.4,194.9 L 76.6,123.3 Z' style='fill:#FF7F7F;fill-rule:evenodd;fill-opacity:1;stroke:#FF7F7F;stroke-width:0.0px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1;' /><path class='bond-1 atom-1 atom-2' d='M 117.4,200.0 L 129.4,205.1 L 158.3,276.7 L 141.2,283.6 L 112.3,212.0 Z' style='fill:#FF7F7F;fill-rule:evenodd;fill-opacity:1;stroke:#FF7F7F;stroke-width:0.0px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1;' /><path class='bond-2 atom-1 atom-3' d='M 105.4,194.9 L 117.4,200.0 L 112.3,212.0 L 40.7,240.9 L 33.8,223.8 Z' style='fill:#FF7F7F;fill-rule:evenodd;fill-opacity:1;stroke:#FF7F7F;stroke-width:0.0px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1;' /><path class='bond-3 atom-1 atom-4' d='M 194.2,159.1 L 201.0,176.2 L 129.4,205.1 L 117.4,200.0 L 122.5,188.0 Z' style='fill:#FF7F7F;fill-rule:evenodd;fill-opacity:1;stroke:#FF7F7F;stroke-width:0.0px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1;' /><ellipse cx='85.1' cy='119.8' rx='17.3' ry='17.3' class='atom-0'  style='fill:#FF7F7F;fill-rule:evenodd;stroke:#FF7F7F;stroke-width:1.0px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1' /><ellipse cx='125.1' cy='199.9' rx='23.9' ry='17.4' class='atom-1'  style='fill:#FF7F7F;fill-rule:evenodd;stroke:#FF7F7F;stroke-width:1.0px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1' /><ellipse cx='149.7' cy='280.2' rx='17.3' ry='17.3' class='atom-2'  style='fill:#FF7F7F;fill-rule:evenodd;stroke:#FF7F7F;stroke-width:1.0px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1' /><ellipse cx='37.3' cy='232.3' rx='17.3' ry='17.3' class='atom-3'  style='fill:#FF7F7F;fill-rule:evenodd;stroke:#FF7F7F;stroke-width:1.0px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1' /><ellipse cx='197.6' cy='167.7' rx='17.3' ry='17.3' class='atom-4'  style='fill:#FF7F7F;fill-rule:evenodd;stroke:#FF7F7F;stroke-width:1.0px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1' /><path class='bond-0 atom-0 atom-1' d='M 85.1,119.8 L 98.2,152.4' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1' /><path class='bond-0 atom-0 atom-1' d='M 98.2,152.4 L 111.4,184.9' style='fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2.0px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1' /><path class='bond-1 atom-1 atom-2' d='M 123.5,215.1 L 136.6,247.6' style='fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2.0px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1' /><path class='bond-1 atom-1 atom-2' d='M 136.6,247.6 L 149.7,280.2' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1' /><path class='bond-2 atom-1 atom-3' d='M 105.3,204.9 L 71.3,218.6' style='fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2.0px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1' /><path class='bond-2 atom-1 atom-3' d='M 71.3,218.6 L 37.3,232.3' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1' /><path class='bond-3 atom-1 atom-4' d='M 144.8,189.0 L 171.2,178.3' style='fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2.0px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1' /><path class='bond-3 atom-1 atom-4' d='M 171.2,178.3 L 197.6,167.7' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1' /><path class='bond-4 atom-4 atom-5' d='M 197.6,167.7 L 265.6,221.0' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1' /><path class='bond-5 atom-5 atom-6' d='M 265.6,221.0 L 298.7,207.7' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1' /><path class='bond-5 atom-5 atom-6' d='M 298.7,207.7 L 331.7,194.3' style='fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:2.0px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1' /><path d='M 196.3,168.2 L 197.6,167.7 L 201.0,170.4' style='fill:none;stroke:#000000;stroke-width:2.0px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1;' /><path d='M 262.2,218.3 L 265.6,221.0 L 267.3,220.3' style='fill:none;stroke:#000000;stroke-width:2.0px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1;' /><path class='atom-1' d='M 112.0 187.8L 120.1 200.7Q 120.8 202.0, 122.1 204.3Q 123.4 206.6, 123.5 206.8L 123.5 187.8L 126.7 187.8L 126.7 212.2L 123.4 212.2L 114.8 198.1Q 113.8 196.4, 112.7 194.5Q 111.7 192.6, 111.3 192.0L 111.3 212.2L 108.2 212.2L 108.2 187.8L 112.0 187.8' fill='#0000FF'/><path class='atom-1' d='M 131.3 192.2L 135.6 192.2L 135.6 187.6L 137.6 187.6L 137.6 192.2L 142.0 192.2L 142.0 193.8L 137.6 193.8L 137.6 198.4L 135.6 198.4L 135.6 193.8L 131.3 193.8L 131.3 192.2' fill='#0000FF'/><path class='atom-6' d='M 334.6 188.7Q 334.6 182.9, 337.5 179.6Q 340.4 176.3, 345.8 176.3Q 351.2 176.3, 354.1 179.6Q 357.0 182.9, 357.0 188.7Q 357.0 194.7, 354.1 198.1Q 351.2 201.4, 345.8 201.4Q 340.4 201.4, 337.5 198.1Q 334.6 194.7, 334.6 188.7M 345.8 198.7Q 349.5 198.7, 351.5 196.2Q 353.6 193.6, 353.6 188.7Q 353.6 183.9, 351.5 181.5Q 349.5 179.1, 345.8 179.1Q 342.1 179.1, 340.0 181.5Q 338.0 183.9, 338.0 188.7Q 338.0 193.7, 340.0 196.2Q 342.1 198.7, 345.8 198.7' fill='#FF0000'/><path class='atom-6' d='M 360.8 176.6L 364.2 176.6L 364.2 187.0L 376.7 187.0L 376.7 176.6L 380.0 176.6L 380.0 201.0L 376.7 201.0L 376.7 189.7L 364.2 189.7L 364.2 201.0L 360.8 201.0L 360.8 176.6' fill='#FF0000'/></svg>"]
+
+### toxicityrule | LD50_oral | Acute Toxicity Rule
+20 substructures;
+acute toxicity during oral administration
+
+### toxicityrule | NonBiodegradable | NonBiodegradable
+19 substructures;
+non-biodegradable
+
+### toxicityrule | SureChEMBL | SureChEMBL Rule
+164 substructures; 
+MedChem unfriendly status
+
+### toxicityrule | Toxicophores | FAF-Drugs4 Rule
+154 toxic substructures from FAF-Drug4

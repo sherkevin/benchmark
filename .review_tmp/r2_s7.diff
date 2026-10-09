@@ -1,0 +1,278 @@
+commit 2e19d989bdbae471f9d603d1a90eb7e6259d4025
+Author: Jing Wu <jingwu.wu@alibaba-inc.com>
+Date:   Fri Aug 7 22:04:50 2026 +0800
+
+    task-05 §7 R1-②（任务 #60）：resolve 组成↔实体 ID 映射（E6 open 污染判定堵点）
+    
+    ADR-0018 修订 R1-②（59a35ac）：映射归 E3 判分侧、不放 gateway（gateway 不该
+    持有 G_B，防 agent 经工具面反查）；判定式 hit_gb = 𝟙[resolve(c_submit) ∩ G_B ≠ ∅]；
+    映射一对多（§8 同分异构全收）。
+    
+    - evaluate.py resolve(composition, gw=None, backend_root=None) -> set[entity_id]：
+      复用 composition_of/composition_equal 纯函数组（ε=0.02 冻结口径）；全库
+      92,193 实体倒排索引模块级懒缓存（键=backend 根+ε 口径，仿 _MATERIAL_KEY_CACHE）；
+      分子域剥 H / 晶体域不剥（与条件③同款处置）；精确键 O(1)+ε 容忍扫描兜底。
+    - hit_gb 接线：未注册 case 报错不回落顶层 g_b（task-05 §7 L158，承 R1-①）；
+      实体 ID 直比路径（normalize_b_key）行为冻结零回归，未命中时补走
+      resolve∩G_B 并集判定；fixture 占位双轨（SMILES 键）不互扰。
+    - gateway.py BPartitionReader.registered() 接缝（Json=cases 键在场；
+      JSONL=has_case_data 同款判据）——与 load 回落规则解耦的注册态判别。
+    - 防泄漏纪律静态测试：resolve 不在 CANONICAL_TOOLS/gateway 模块面/tools_schema。
+    - 真实数据实证（rehearsal_logs/task-05-section7_resolve_realdata.log）：
+      z064386 formula/dummy 两形态命中（同组成 17 实体一对多）；dh_09 三成员
+      全收；E6 judge_open_case 真实 hit_gb 等价联调（dh 采样 0/1350 未落盘如实登记）。
+    - 新测试 11 用例；全量 301 passed + 1 skipped + 5 errors 预存在，零新增失败。
+
+diff --git a/dag_poc/gateway.py b/dag_poc/gateway.py
+index 715c641..cfd39df 100644
+--- a/dag_poc/gateway.py
++++ b/dag_poc/gateway.py
+@@ -349,6 +349,13 @@ class BPartitionReader:
+     def load(self, case_id):
+         raise NotImplementedError
+ 
++    def registered(self, case_id):
++        """该 case 是否做了 per-case G_B 注册（task-05 §7 / 任务 #60，ADR-0018
++        修订 R1-①/②：判分侧 hit_gb 对未注册 case 报错不回落顶层 g_b，需要
++        与 load 回落规则解耦的注册态判别——load(case_id) 查无时回落顶层，
++        无法区分"未注册"与"注册但空"）。"""
++        raise NotImplementedError
++
+ 
+ class BPartitionJsonReader(BPartitionReader):
+     """当前实现：读 b_partition.json（per-case 结构，任务 #13）。
+@@ -373,6 +380,16 @@ class BPartitionJsonReader(BPartitionReader):
+                    for m in src.get('members', [])]
+         return members, list(src.get('g_b', []))
+ 
++    def registered(self, case_id):
++        """cases[case_id] 在场即已注册；文件不在场/解析失败 → False（保守）。"""
++        if not case_id or not os.path.exists(self.path):
++            return False
++        try:
++            with open(self.path, encoding='utf-8') as f:
++                return case_id in json.load(f).get('cases', {})
++        except (OSError, json.JSONDecodeError):
++            return False
++
+ 
+ class BPartitionBackendJsonlReader(BPartitionReader):
+     """ADR-0015 §2 义务 1/2：B 加载层接 E1 文件系统分层布局。
+@@ -433,6 +450,11 @@ class BPartitionBackendJsonlReader(BPartitionReader):
+                         return True
+         return False
+ 
++    def registered(self, case_id):
++        """JSONL 读取器的注册态 = backend 布局有该 case 的 B 侧数据（复用
++        has_case_data 同款扫描判据）。"""
++        return self.has_case_data(case_id)
++
+     def load(self, case_id):
+         members, g_b = [], []
+         for path, fn in self._iter_b_files():
+diff --git a/src/benchmark/evaluate.py b/src/benchmark/evaluate.py
+index c2648fc..36e24b8 100644
+--- a/src/benchmark/evaluate.py
++++ b/src/benchmark/evaluate.py
+@@ -527,7 +527,18 @@ def hit_gb(answer, case_id, reader=None):
+     placeholder=占位期标记——per-case key_space 含"过渡期/占位"声明，或 G_B
+     成员含占位口径 token（ed:/bm_placeholder 前缀，顶层回落口径）；E5 冻结
+     真实 G_B（InChIKey/canonical_smiles）后自然落 'real'。结果可辨"机制已通、
+-    数据占位"（供 grounding_mode 落账，修复七声明）。"""
++    数据占位"（供 grounding_mode 落账，修复七声明）。
++
++    task-05 §7（任务 #60，ADR-0018 修订 R1-②）两处接线：
++      ① G_B 的唯一来源 = b_partition.cases[case_id] 的 per-case 注册；未注册
++         **报错而不回落顶层 g_b**（task-05 §7 L158：回落会让命中判定静默失真，
++         这类静默降级是本项目已多次踩过的坑；承 ADR-0018 R1-①，顶层 g_b 仅作
++         fixture）。既有调用面（_score_open_discovery/open_case_metric）均由
++         discovery_case_ids（=cases 键集）门控，报错不波及既有判分链。
++      ② 组成串形态作答接判定式 hit_gb = 𝟙[resolve(提交组成) ∩ G_B ≠ ∅]：
++         实体 ID 直比路径（normalize_b_key，行为冻结不回归）未命中时，补走
++         resolve 一对多映射（同分异构全收）与 G_B 实体 ID 集交集；fixture
++         占位口径（SMILES 键）不在实体 ID 空间，resolve 交集恒空、双轨不互扰。"""
+     gw = _import_gateway()
+     if gw is None or not case_id or answer in (None, ''):
+         return False, set(), False
+@@ -536,6 +547,11 @@ def hit_gb(answer, case_id, reader=None):
+         if not os.path.exists(path):
+             return False, set(), False
+         reader = gw.BPartitionJsonReader(path)
++    if not reader.registered(case_id):
++        raise ValueError(
++            f'case {case_id} 未做 per-case G_B 注册（b_partition.cases 无此键）：'
++            'G_B 的唯一来源是 per-case 注册，不得回落顶层 g_b'
++            '（ADR-0018 修订 R1-①；task-05 §7）')
+     _members, g_b = reader.load(case_id)
+     gb_set = {gw.normalize_b_key(m) for m in g_b}
+     placeholder = any(str(m).strip().startswith(('ed:', 'bm_placeholder'))
+@@ -551,7 +567,13 @@ def hit_gb(answer, case_id, reader=None):
+             except Exception:
+                 pass
+     key = gw.normalize_b_key(answer)
+-    return key in gb_set, gb_set, placeholder
++    hit = key in gb_set
++    if not hit:
++        # R1-② 判定式：resolve(提交组成) ∩ G_B ≠ ∅（G_B 成员为实体 ID；组成串
++        # 形态作答经一对多映射与 G_B 交集——实体 ID 直比路径未命中时的并集
++        # 补判，既有直比行为零改动）。
++        hit = bool(resolve(answer) & set(g_b))
++    return hit, gb_set, placeholder
+ 
+ 
+ # ── 组成层面 grounding 纯函数（task-05 §2 / task #53，ADR-0018 §5 H6-H9）──────
+@@ -744,6 +766,154 @@ def composition_equal(a, b, epsilon=COMPOSITION_EPSILON):
+     return True
+ 
+ 
++# ── §7 R1-②：组成 ↔ 实体 ID 映射层（task-05 §7 追加项 / 任务 #60）────────
++# ADR-0018 修订 R1-②（59a35ac）：映射归 E3 判分侧、**不放 gateway**——gateway
++# 是给 agent 用的工具面，不该持有 G_B（持有即泄漏风险，防 agent 经工具面反查
++# G_B）；resolve 不得导出为工具面任何能力（静态断言见
++# tests/test_resolve_composition_task05.py）。判定式：
++#     hit_gb = 𝟙[resolve(提交组成) ∩ G_B ≠ ∅]
++# 映射**必须一对多**（ADR-0018 §8 同分异构全收）：同一组成可对应多个实体，
++# 一对一会漏判。
++# 数据源：A 侧全库身份档 get_entity_A.jsonl（92,193 行；get_entity_B.jsonl 为
++# 0 行——B 是分区概念不是物理文件，映射建在 A 侧全库身份档上）。组成口径复用
++# 本文件 composition_of 形态③（晶体=formula；分子=dummy SMILES 同位素计数、
++# 缺失回落 formula），不另起解析。
++_COMPOSITION_INDEX_CACHE = {}
++# 缓存键 = (backend 根路径, ε 口径)：ε = COMPOSITION_EPSILON 冻结口径（裁定 2
++# 写死 0.02），入键防口径变更后的脏缓存；backend 根路径口径与 gateway
++# _MATERIAL_KEY_CACHE/_A_IDENTITY_CACHE 一致（任务 #41 Minor6 先例），不同根
++# 不共享、同根命中。
++
++
++class _IdentityHolder(object):
++    """composition_of 形态③/④ 所需的最小 duck-typing 面（_a_identity 二元组）。
++    判分侧内部使用，不导出。"""
++
++    def __init__(self, identity):
++        self._a_identity = identity
++
++
++def _resolve_identity(gw, backend_root):
++    """取 A 侧身份档 (entity_records, smiles_map) 与 backend 根路径。
++    gw 在场优先（judge 侧 Gateway 持有 _a_identity）；否则走 gateway 模块级
++    default_a_identity_reader + _load_a_identity 懒缓存接缝（8 万行级 jsonl
++    每个 backend 根只扫一遍）。gateway 不可导入/读取器不在场 → ((None, None), None)。"""
++    if gw is not None and getattr(gw, '_a_identity', None):
++        return gw._a_identity, getattr(gw, '_a_identity_root', None)
++    gwmod = _import_gateway()
++    if gwmod is None:
++        return (None, None), None
++    try:
++        reader = gwmod.default_a_identity_reader(backend_root)
++    except Exception:
++        return (None, None), None
++    if reader is None:
++        return (None, None), None
++    return gwmod._load_a_identity(reader), getattr(reader, 'backend_root', None)
++
++
++def _build_composition_index(identity):
++    """全库组成倒排索引构建（每 backend 根一次，缓存于 _COMPOSITION_INDEX_CACHE）。
++
++    双域口径（与条件③分子域剥 H 口径一致，L920-930 同款处置）：
++      crystal 域：formula 按匿名式解析，**不剥 H**（材料侧两侧同含 H）；
++      molecule 域：dummy SMILES 同位素计数（天然不含隐式 H），SMILES 缺失回落
++      formula 时剥 H label（映射表不在场则保守不剥）——分子侧 formula 含隐式
++      H 而提交组成串以 dummy 载体口径为准，不剥会恒不命中。
++    返回 ({域: {frozen_key: set(eid)}}, {域: [(组成 dict, frozenset(eid))]}, stats)；
++    entries 列表供 ε 容忍扫描（哈希精确键不覆盖 occupancy 小数 ε 边界）。
++    """
++    recs, smap = identity
++    h_label = _element_to_label_map().get('H')
++    idx = {'molecule': {}, 'crystal': {}}
++    stats = {'entities': 0, 'molecule': 0, 'crystal': 0,
++             'no_composition': 0, 'h_label': h_label}
++    for eid, rec in recs.items():
++        stats['entities'] += 1
++        if rec.get('entity_type') == 'crystal':
++            comp = _parse_anon_formula(rec.get('formula'))
++            dom = 'crystal'
++        else:
++            dom = 'molecule'
++            smi = (smap or {}).get(eid)
++            comp = _smiles_composition(smi) if smi else None
++            if comp is None:
++                comp = _parse_anon_formula(rec.get('formula'))
++                if comp is not None and h_label is not None:
++                    comp = {k: v for k, v in comp.items() if k != h_label}
++                    comp = comp or None
++        if comp is None:
++            stats['no_composition'] += 1   # 留痕不静默吞（风险登记同 §9 R4 口径）
++            continue
++        key = tuple(sorted((k, round(float(v), 6)) for k, v in comp.items()))
++        idx[dom].setdefault(key, set()).add(eid)
++        stats[dom] += 1
++    entries = {dom: [(dict(k), frozenset(v)) for k, v in idx[dom].items()]
++               for dom in idx}
++    return idx, entries, stats
++
++
++def _composition_index(gw=None, backend_root=None):
++    """懒装载组成倒排索引（模块级缓存）；身份档不可得 → (None, None, None)。"""
++    identity, root = _resolve_identity(gw, backend_root)
++    if not identity[0]:
++        return None, None, None
++    key = (root if root is not None else id(identity[0]), COMPOSITION_EPSILON)
++    cached = _COMPOSITION_INDEX_CACHE.get(key)
++    if cached is None:
++        cached = _build_composition_index(identity)
++        _COMPOSITION_INDEX_CACHE[key] = cached
++    return cached
++
++
++def resolve(composition, gw=None, backend_root=None):
++    """组成 ↔ 实体 ID 映射（ADR-0018 修订 R1-②，task-05 §7 追加项 / 任务 #60）。
++
++    签名：resolve(composition, gw=None, backend_root=None) -> set[entity_id]
++    语义：**一对多、同分异构全收**——把提交组成经 composition_of 规范化后，在
++    A 侧全库身份档中找所有组成相等（composition_equal，ε=COMPOSITION_EPSILON
++    冻结口径）的实体，返回实体 ID 集合；不可解析/无命中 → 空集。
++
++    判定式消费面（唯一合法用途）：hit_gb = 𝟙[resolve(c_submit) ∩ G_B ≠ ∅]。
++    本函数只落判分侧——不导出为 gateway 工具面任何能力（ADR-0018 R1-② 明令：
++    gateway 不该持有 G_B，映射放工具面即 agent 可反查 G_B 的泄漏风险）。
++
++    查询侧剥 H 口径（与条件③一致）：分子域索引按不含隐式 H 口径建——提交
++    组成含 H label 时剥 H 后补查分子域（实体 formula 形态作答如
++    '[16*]20[19*]22[22*]1[81*]2' 的 H 计数不得造成漏判）；晶体域不剥。
++    组成入参亦受理 dict（已解析组成，供复用方直传）。
++    """
++    if isinstance(composition, dict):
++        comp = dict(composition)
++    elif isinstance(composition, str):
++        identity, _ = _resolve_identity(gw, backend_root)
++        holder = _IdentityHolder(identity) if identity[0] else None
++        comp = composition_of(composition, holder)
++    else:
++        return set()
++    if not comp:
++        return set()
++    idx, entries, _ = _composition_index(gw, backend_root)
++    if idx is None:
++        return set()
++
++    def _lookup(dom, c):
++        key = tuple(sorted((k, round(float(v), 6)) for k, v in c.items()))
++        ids = set(idx[dom].get(key, ()))
++        if not ids:   # 精确键未命中才走 ε 容忍扫描（occupancy 小数边界口径）
++            for ec, ev in entries[dom]:
++                if composition_equal(c, ec):
++                    ids |= ev
++        return ids
++
++    out = _lookup('molecule', comp) | _lookup('crystal', comp)
++    h_label = _element_to_label_map().get('H')
++    if h_label is not None and h_label in comp:
++        comp_nh = {k: v for k, v in comp.items() if k != h_label}
++        out = out | _lookup('molecule', comp_nh)
++    return out
++
++
+ def _edit_op_hops(events):
+     """编辑序列累计算子总数（裁定 4 跳数定义）：trace 中全部 edit_molecule
+     applied=True 行的 detail 计数 n 之和（detail 缺省/不可解析计 1）。"""

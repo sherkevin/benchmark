@@ -1,0 +1,77 @@
+You are a materials scientist. Solve this SEVEN-STEP task. Each step's output
+feeds the next; you must carry every step through to the end.
+
+SEED MATERIAL: O6.080Ca1Cu2Ba2Hg1
+
+A — Series peak: the seed is in a homologous doping series (same elements, varying
+    oxygen). Find its members, report the composition with MAXIMUM Tc; call it T*.
+B — threshold1 = T* - 40. Among family with element set ['Bi', 'Ca', 'Cu', 'O', 'Sr'],
+    find ALL members with Tc >= threshold1. Call this set Q1.
+C — T2 = the LOWEST Tc among Q1.
+D — threshold2 = T2 - 5. Among family ['Ba', 'Ca', 'Cu', 'O', 'Y'],
+    find ALL with Tc >= threshold2. Call this set Q2.
+E — T3 = the HIGHEST Tc among Q2.
+F — threshold3 = T3 - 8. Among family ['Bi', 'Ca', 'Cu', 'O', 'Sr'],
+    find ALL with Tc >= threshold3. Call this set Q3.
+G — Final: among Q3, return the member with the LOWEST Tc (the marginal qualifier).
+
+BUDGET: up to 60 get_property calls (enough to measure everything).
+
+CANDIDATES (use verbatim as identifiers):
+  O8.196Ca1Cu2Sr2Bi2
+  O16.250Ca2Cu4Sr4Bi4
+  O8Ca0.800Cu2Sr2.200Bi2
+  O8.248Ca1Cu2Sr2Bi2
+  O6.210Ca1Cu2Ba2Hg1
+  O8Ca0.070Cu4Y0.930Ba2
+  O6.220Ca1Cu2Ba2Hg1
+  O8Ca0.120Cu4Y0.880Ba2
+  O8Ca0.050Cu4Y0.950Ba2
+  O8Ca0.100Cu4Y0.900Ba2
+  O8Ca0.100Cu4Y1Ba1.900
+  O8Ca0.074Cu4Y1Ba1.926
+  O8.210Ca1Cu2Sr2Bi2
+  O8.245Ca1Cu2Sr2Bi2
+  O8Ca0.150Cu4Y0.850Ba2
+  O8.100Ca1Cu2Sr2Bi2
+  O8.195Ca1Cu2Sr2Bi2
+  O8.272Ca1Cu2Sr2Bi2
+  O6.310Ca1Cu2Ba2Hg1
+  O8.293Ca1Cu2Sr2Bi2
+  O8.110Ca1Cu2Sr2Bi2
+  O8Ca0.030Cu4Y0.970Ba2
+  O8.190Ca1Cu2Sr2Bi2
+  O8Ca0.920Cu2Sr2.080Bi2
+  O8Ca0.250Cu4Y0.750Ba2
+  O6.270Ca1Cu2Ba2Hg1
+  O6.190Ca1Cu2Ba2Hg1
+  O8Ca0.075Cu4Y0.925Ba2
+  O8Cu4Sr0.200Ba1.800Yb1
+  O8.194Ca1Cu2Sr2Bi2
+  O8.140Ca1Cu2Sr2Bi2
+  O4.103Cu1Ba2Hg1
+  O8Ca0.020Cu4Y0.980Ba2
+  O8Ca1Cu2Sr2Bi2
+  O8.120Ca1Cu2Sr2Bi2
+  O8.291Ca1Cu2Sr2Bi2
+  O6.160Ca1Cu2Ba2Hg1
+  O6.100Ca1Cu2Ba2Hg1
+  O8.288Ca1Cu2Sr2Bi2
+  O8.160Ca1Cu2Sr2Bi2
+  O6.130Ca1Cu2Ba2Hg1
+  O8.231Ca1Cu2Sr2Bi2
+  O6.080Ca1Cu2Ba2Hg1
+  O8.118Ca1Cu2Sr2Bi2
+  O8.170Ca1Cu2Sr2Bi2
+  O8Ca0.200Cu4Y0.800Ba2
+  O6.140Ca1Cu2Ba2Hg1
+  O1.970Cu1Sr0.880La0.120
+  O8.270Ca1Cu2Sr2Bi2
+  O8.234Ca1Cu2Sr2Bi2
+  O8.224Ca1Cu2Sr2Bi2
+  O6.240Ca1Cu2Ba2Hg1
+  O6.300Ca1Cu2Ba2Hg1
+
+Call submit_answer with: peak, peak_tc (T*), threshold (=threshold1),
+qualifying (=Q1), final (=step G answer). Put T2, Q2, T3, Q3 inside 'evidence'.
+Every value you cite must come from an actual measurement. Complete ALL seven steps.

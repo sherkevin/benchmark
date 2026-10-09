@@ -1,0 +1,5 @@
+arXiv:2604.06185
+abs: https://arxiv.org/abs/2604.06185
+pdf: https://arxiv.org/pdf/2604.06185
+topic: 真实用户行为
+pulled: 2026-08-09 via arxiv MCP (arxiv_get_metadata / arxiv_read_paper)

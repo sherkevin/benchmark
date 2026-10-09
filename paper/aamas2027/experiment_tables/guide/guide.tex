@@ -1,0 +1,268 @@
+\documentclass[10pt,letterpaper]{article}
+\usepackage[left=42pt,right=42pt,top=42pt,bottom=46pt]{geometry}
+\usepackage{ctex}
+\setCJKmainfont{STSong}
+\usepackage{amsmath,amssymb,booktabs,array,xcolor,tikz,eso-pic,fancyhdr,hyperref,caption}
+\definecolor{GuideBlue}{HTML}{2E5DA1}
+\definecolor{GuidePurple}{HTML}{6846A8}
+\definecolor{Watermark}{HTML}{E1E5EA}
+\hypersetup{pdftitle={Benchmark + Baseline Acceptance Guide v09},pdfsubject={Complete target specification, not measured results},colorlinks=true,urlcolor=GuideBlue}
+\newcommand{\B}[1]{{\color{GuideBlue}#1}}
+\newcommand{\R}[1]{{\color{GuidePurple}#1}}
+\newcommand{\sect}[1]{\vspace{4pt}{\large\bfseries\color{GuideBlue}#1}\par\vspace{2pt}}
+\newcommand{\subsect}[1]{\vspace{2pt}{\normalsize\bfseries #1}\par\vspace{1pt}}
+\newcommand{\note}[1]{{\fontsize{8.4}{10.2}\selectfont #1\par}}
+\newenvironment{clean}{\begin{center}\fontsize{8.55}{10.05}\selectfont\setlength{\tabcolsep}{3.7pt}\renewcommand{\arraystretch}{1.04}}{\end{center}}
+\captionsetup{font=small,labelfont=bf,justification=raggedright,singlelinecheck=false,skip=2pt}
+\setlength{\parindent}{0pt}\setlength{\parskip}{3pt}
+\pagestyle{fancy}\fancyhf{}
+\fancyhead[L]{\fontsize{7.7}{9}\selectfont\bfseries\color{GuideBlue}TARGET ACCEPTANCE GUIDE --- NOT MEASURED}
+\fancyhead[R]{\fontsize{7.7}{9}\selectfont v09 / 2026-10-08}
+\fancyfoot[L]{\fontsize{7.7}{9}\selectfont T: target contract\quad M: measured anchor\quad B: binding requirement}
+\fancyfoot[R]{\thepage}\renewcommand{\headrulewidth}{.3pt}
+\AddToShipoutPictureBG{\AtPageCenter{\makebox(0,0){\rotatebox{34}{\textcolor{Watermark}{\fontsize{29}{35}\selectfont\bfseries TARGET / NOT RESULTS}}}}}
+
+\begin{document}
+{\LARGE\bfseries Benchmark + Baseline 验收目标矩阵}\par
+{\large v09：完成后才允许关闭 Benchmark+Baseline 验收}\par
+\vspace{3pt}
+\textbf{文档性质。}这是一份\B{完整的目标规格和验收合同}，不是结果预测，也不是正式论文结果表。后续必须用真实运行、原始事件、独立恢复、冻结收据和 v006 逐项评分表填充。只有真实证据、独立评分和双人复核都完成，项目才可以关闭 Benchmark+Baseline 验收；“符合某几个均值”不构成关闭。\par 旧版 v07 只作为实测分布锚点保留在 \texttt{versions/v07\_20261008/}，不向候选方法继承均值、区间或胜率。
+
+\sect{1. 关闭条件：先过硬门，再过三门}
+\begin{clean}
+\begin{tabular}{@{}p{.14\linewidth}p{.48\linewidth}p{.25\linewidth}@{}}
+\toprule
+层级 & 必须满足的条件 & 关闭含义\\
+\midrule
+硬条件 H & H1--H10 全部 PASS；任一 FAIL 直接 HOLD，UNKNOWN 不能按 PASS 处理。 & 真值、信息公平、冻结、恢复链没有硬伤。\\
+评分 B & B1--B8 每项 $\ge3$；B9--B15 每项 $\ge2$ 且不得为 0；总分 $\ge49/60$。 & benchmark/baseline 的细项证据达到内部加严线。\\
+Gate A & Gate-A1--Gate-A4 各 $\ge3$，总分 $\ge12/16$；H1--H4 PASS。 & Benchmark 选型和 routing protocol 闭合。\\
+Gate B & Gate-B1--Gate-B4 各 $\ge3$，总分 $\ge12/16$；每个主 baseline 有同合同 raw run 和 recovery。 & Baseline 选型、保真和公平比较闭合。\\
+Gate C & Gate-C1--Gate-C4 各 $\ge3$，总分 $\ge12/16$；E1--E5 无缺口，E6 完成 Stage-B。 & 实验矩阵、结果方向、成本、失败和不确定性闭合。\\
+\bottomrule
+\end{tabular}
+\end{clean}
+\textbf{最终判定：}H、B、Gate-A、Gate-B、Gate-C 全部通过，并提交独立的 v006 评分表、双人复核、候选 artifact checker 和最终 sealed confirmation exposure receipt 后，Benchmark+Baseline 状态为 \textbf{CLOSED}。评分表、复核和收据是本 Guide 的组成部分，不是另一个未声明的门。任一顶层门不通过，状态为 \textbf{HOLD}，不能用其他门高分抵消。E6 不是把开发集做大，而是方法、菜单、epoch、阈值和 baseline 冻结后的一次性确认。当前已经跑过并被查看的 157 条记录只作历史/冻结参考；只有 exposure audit 证明它们在候选冻结前没有把标签或结果回流到决策，才可作为最终 E6，否则必须使用新 sealed manifest。
+
+\sect{2. Benchmark 合同：公共真值和自建 routing layer 分开}
+\begin{clean}
+\begin{tabular}{@{}p{.22\linewidth}p{.68\linewidth}@{}}
+\toprule
+层 & 本项目必须固定的内容\\
+\midrule
+公共 truth layer & TDC BBB 的公开来源、版本、下载 hash、endpoint 语义和标签生成脚本；duplicate、canonical 冲突、unknown、timeout 和失败规则逐条记录。\\
+Routing layer & 分子 $x$、endpoint、当步 eligible menu $A_t$、一次只选一个 provider、selected-only 输出、termination/runtime status、反馈延迟 $D\in\{0,1,4\}$、release tick、state hash 和下一次决策。\\
+主投稿切片 & 四个 fresh providers；development 与 157 个 scaffold-disjoint confirmation molecules 分开；已有 157 条只有通过 exposure receipt 才能承担最终 E6，否则另建 sealed manifest；33-provider Task36 只作 development，不把 provider 数量当独立证据。\\
+可见信息 & 选择前只能看声明的 $S_t,A_t$ 和已 release 的 selected outcome；不能看 truth、当前未选输出或 full panel。fit-only warm start 与 evaluator-only control 单独标记。\\
+独立性边界 & provider 源码、checkpoint、训练成员、family lineage、许可证和失败语义留 receipt；相关 provider 以 family-macro、exposure 和 joint-error 报告，不假设彼此独立。\\
+\bottomrule
+\end{tabular}
+\end{clean}
+\textbf{两层不能混名：}TDC BBB 承担“答案是什么”的公共来源责任；routing layer 承担“在什么信息和时钟下选择工具”的实验协议。论文可以贡献新的 routing protocol，但不能把自建回放层直接称作社区公认 benchmark。
+
+\note{\textbf{E6 暴露定义。}“未读”指 confirmation truth、逐题 correctness、按方法/延迟聚合的结果和任何由它们触发的调参决策，在 candidate freeze 之前均不可见。输入分子和冻结 provider 的前向输出可以被缓存以保证可重放，但若这些输出或结果曾影响方法、阈值、epoch、baseline 或 claim 选择，当前 manifest 必须标记为 \texttt{previously\_inspected}，不能冒充最终 E6。关闭包要附 \texttt{exposure\_receipt.json}：manifest hash、freeze commit/time、truth-access audit、决策影响检查和最终 cohort 状态。}
+
+\sect{3. Baseline 合同：每个方法回答不同问题}
+\begin{clean}
+\begin{tabular}{@{}p{.22\linewidth}p{.19\linewidth}p{.46\linewidth}@{}}
+\toprule
+方法 / 控制 & 角色 & 同合同要求\\
+\midrule
+Random & 下界 & 同 menu、failure/unknown、调用预算和 seed；只回答任务是否有信号。\\
+Fit-only Best Fixed & 训练期固定赢家 & 只用 fit 区完整标签；不读取 confirmation；不能冒充 online。\\
+Retrospective Best Fixed & evaluator-only 控制 & 可用来显示可达 headroom；不进入可部署排序，不称逐分子 Oracle。\\
+Frozen selector & 静态能力控制 & 与候选共用 feature/menu/prior；自然场景允许成为强基线。\\
+Matched Online-SGD / Replay & 最近的普通持续学习对照 & 同 prior、selected-only feedback、$D$、update budget、seed 和 compute；是主要现代对照。\\
+Greedy LinUCB & 经典在线探索 & 记录初始化和特征；适配名称显式包含 fit-prior / common-prior。\\
+BayesianRouter-adapted & 主要现代后验路由对照（canonical primary） & method\_id=\texttt{bayesianrouter}；保存论文、源码、版本、prior、适配差异和 raw/recovery。必须有可运行 adapter；若在 freeze 前无法恢复，LinTS 必须升级为 primary，不能用论文数字替代。公开跨域数字只作动机。\\
+LinTS-adapted & 采样路由 audit-only（除非另行声明为主 baseline） & method\_id=\texttt{lin\_ts\_adapted}；同一 selected-only 合同；不能与 BayesianRouter 合并成一个结果行。其主/audit 身份在 freeze receipt 中一次性固定。\\
+MIRA-Relay candidate & 目标方法 & method\_id=\texttt{mira\_context\_reliability}；主要机制消融固定为 \texttt{mira\_relative\_reliability}（保留相同 fit surface、menu、prior、seed、budget 和 release clock，只去掉 context-relative residual）；另列 Frozen/SGD/Replay 与 permutation。\\
+\bottomrule
+\end{tabular}
+\end{clean}
+\textbf{Baseline 完成定义：}名单不等于完成。主 baseline 必须有同一输入/\allowbreak menu/\allowbreak feature/\allowbreak prior/\allowbreak feedback/\allowbreak delay/\allowbreak failure/\allowbreak unknown/\allowbreak budget/\allowbreak seed/\allowbreak compute 合同、真实 raw JSONL、配置和 source hash、独立 recovery，以及失败和成本字段。任何只保留论文均值、只跑 smoke、或无法恢复状态的 baseline 只能列为 audit-only。关闭前还要由 candidate-specific checker 校验 \texttt{method\_id}、run ID、contract hash、input hash、source commit、primary comparator 和正文 artifact；不能从 v07 或别的策略复制分布。
+
+\newpage
+\sect{4. H1--H10 硬条件清单}
+\begin{clean}
+\begin{tabular}{@{}p{.07\linewidth}p{.39\linewidth}p{.41\linewidth}@{}}
+\toprule
+ID & PASS 条件 & 直接 HOLD 的情况\\
+\midrule
+H1 & truth 来源、版本、标签语义和 hash 固定。 & 运行时下载未锁版本或来源不可追溯。\\
+H2 & duplicate、canonical 冲突、别名和 unknown 规则公开。 & 按第一行、多数票或模型表现静默清洗。\\
+H3 & molecule/scaffold split、confirmation、provider training exposure 和 candidate-freeze exposure receipt 分开审计。 & development/test 或训练成员重叠未披露，或把 previously-inspected cohort 叫 untouched。\\
+H4 & provider 源码、commit、checkpoint、环境和失败语义可追溯。 & 只有工具名，没有可重现输出。\\
+H5 & 选择前不读取 truth、未选输出或 full panel。 & static full-panel 排序冒充 online。\\
+H6 & 所有方法共用输入、menu、selected-only 反馈、delay、预算和初始化权限。 & candidate 拥有额外标签、warm start 或 compute。\\
+H7 & 有 canonical、至少一个可运行 modern nearest、matched control、固定策略和 evaluator-only control；主/audit 身份已冻结。 & 只和 Random 或过时方法比较，或 modern nearest 只有论文数字。\\
+H8 & final confirmation 在方法、menu、epoch、阈值和 baseline 冻结后一次性只读，并有 exposure receipt。 & 看 confirmation 标签/结果后调参、改 comparator，或没有 freeze/exposure 收据。\\
+H9 & 指标、分母、failure/unknown/delay 统计和不确定性开跑前冻结。 & 出结果后删失败、换指标或改分母。\\
+H10 & raw JSONL、config、hash、checkpoint 和独立 verifier 可重算。 & 只有最终均值或手工表。\\
+\bottomrule
+\end{tabular}
+\end{clean}
+\textbf{每项证据最小格式：}文件路径、SHA-256、生成命令、统计脚本和 verifier 版本。没有路径和 hash 的叙述最多记 2 分，不能给 3 或 4 分。
+
+\sect{5. B1--B15 评分对象与门槛}
+\begin{clean}
+\begin{tabular}{@{}p{.08\linewidth}p{.27\linewidth}p{.51\linewidth}@{}}
+\toprule
+ID & 评分维度 & 4 分所需的完整证据\\
+\midrule
+B1 & truth 权威性 & public/primary source、版本/hash、下载清单、脚本、独立核对和 source sensitivity。\\
+B2 & 标签语义 & endpoint/threshold、duplicate、unknown、failure、冲突规则和逐字节标签重生成。\\
+B3 & split/独立性 & molecule/scaffold、development/confirmation、provider exposure 分层和 overlap audit。\\
+B4 & provider lineage & model hash、训练来源、commit、环境、失败、许可证和 deterministic/independent receipt。\\
+B5 & 任务匹配 & 输入、menu、action、selected feedback、delay、budget、failure/unknown 的机器校验 contract。\\
+B6 & 信息与因果公平 & visible history/release time 事件证据和能拒绝非法 trace 的 checker。\\
+B7 & 动态事件覆盖 & $D\in\{0,1,4\}$、pending queue、selected-only release、failure/pressure 与 scope 边界。\\
+B8 & 资源/初始化公平 & feature、prior、seed、compute、budget、cold/common-warm/online 分层的 independent checker。\\
+B9 & baseline 角色完整 & Random、fixed、retrospective、Frozen、matched online、现代近邻和目标方法各有问题对应。\\
+B10 & baseline fidelity & 论文版本、源码 commit、适配差异、license、超参、tuning budget 和数值/单元测试。\\
+B11 & provider family correlation & family-macro、pooled、exposure/lineage 分层、paired uncertainty 和敏感性。\\
+B12 & metrics/utility & future correctness、error/regret、calls、latency、update、memory、failure/unknown 和 utility。\\
+B13 & statistics & seed、paired episode/order、scaffold/family cluster、95\% CI/effect、分母和负结果。\\
+B14 & experiment coverage & E1--E5 映射 RQ，含机制、边界、成本、停止规则；E6 按 scope 加入。\\
+B15 & reproducibility/confirmation & config、命令、环境、GPU、hash、逐事件日志、checkpoint、recovery 和 freeze receipt。\\
+\bottomrule
+\end{tabular}
+\end{clean}
+\textbf{评分锚点：}0=缺失/矛盾/泄漏；1=只有名单或描述；2=可运行但审计不完整；3=合同、原始记录、独立复核齐全；4=在此基础上有压力或负例、恢复和清楚的 claim scope。通过要求：B1--B8 $\ge3$，B9--B15 $\ge2$ 且不得为0，总分 $\ge49/60$。
+
+\newpage
+\sect{6. 实验矩阵与正文交叉映射}
+\begin{clean}
+\begin{tabular}{@{}p{.12\linewidth}p{.19\linewidth}p{.29\linewidth}p{.27\linewidth}@{}}
+\toprule
+最终正文展品 & 受验收矩阵 & 必须回答的问题 & 必须出现的证据\\
+\midrule
+Table 3：任务有效性与主结果 & E1 + E2 & provider 是否有 headroom；候选与 Frozen/SGD/Replay/Random 怎样比较。 & fit/retrospective controls、同合同主 baseline、分母和 raw receipt。\\
+Table 4：source credit / rescue-harm & E2 + E3 & 收益来自哪些 provider 错误结构；是否有 harmed switch。 & correctness bits、rescue/harm/both-wrong、family/scaffold paired effect。\\
+Table 5：prior / 机制消融 & E3 & full 方法是否胜自己的去模块版本。 & 同 schedule、同 budget、permutation 和 negative result。\\
+Table 6：delay / pressure & E2 + E4 & selected-only delayed feedback 在 $D=0,1,4$ 和受控压力下是否成立。 & release clock、pending queue、压力 receipt、每个 delay 的分布。\\
+Table 7：错误、拒答与失败 & E4 + E5 & 什么时候错、什么时候拒答、系统失败如何入账。 & failure/unknown/refusal 分母、fallback 仅 diagnostic、不静默变 0/1。\\
+Table 8：成本与恢复 & E5 & accuracy 以什么 calls、p50/p95、update、memory 和 recovery 代价换来。 & 端到端计时、异常日志、独立 verifier、break-even。\\
+Table 9：冻结确认（固定 artifact ID） & E6 & 开发结论能否迁移到 final sealed scaffold-disjoint data。 & \texttt{paper/}\allowbreak\texttt{aamas2027/main.tex}\allowbreak\texttt{\#tab:confirmation}；方法/\allowbreak menu/\allowbreak epoch/\allowbreak threshold/\allowbreak baseline freeze、exposure receipt、一次性 raw receipt、标签不回流。\\
+Figure 3：dynamic trace & E2 + E4 & 数据怎样从 terminal 到 pending、release、state update 和下一次 action。 & 同一个事件 schema；不能只画静态 full panel。\\
+\bottomrule
+\end{tabular}
+\end{clean}
+\textbf{交叉映射规则：}正文每个数字必须能回到一个实验 ID、一个 comparator、一个统计单位、一个 candidate-specific raw JSONL 和一个 hash。当前主稿已有 Table 3--8；关闭前必须在固定 artifact ID \texttt{paper/aamas2027/main.tex\#tab:confirmation} 写入 Table 9，不能用“同等展品”替代，也不能只在文字里口头声明。Table 7 的拒答展示不是最终 E6；历史 157 的 previously-inspected receipt 也不能混名为 final sealed E6。
+
+\sect{7. E1--E6 目标矩阵：做完它才有资格关门}
+\begin{clean}\fontsize{7.35}{8.25}\selectfont\setlength{\tabcolsep}{2.8pt}\renewcommand{\arraystretch}{0.96}
+\begin{tabular}{@{}p{.09\linewidth}p{.25\linewidth}p{.40\linewidth}p{.15\linewidth}@{}}
+\toprule
+实验 & 必答问题 & 必须做的比较与分布 & 通过/停机\\
+\midrule
+E1 任务有效性 & provider 是否存在可利用差异和可达 headroom？ & Random、fit-only Best Fixed、retrospective control、Frozen；5-fold OOF、joint bits、all-correct/mixed/all-wrong、失败/unknown。主单位是 outer-fold 内 scaffold-clustered molecule pair。 & Best Fixed$-$Random pooled paired effect $\ge+2.0$pp，95\% paired CI 下界 $\ge0$，且至少 3/5 fold 的 effect $\ge+1.0$pp；否则 benchmark 先 HOLD。\\
+E2 主比较 & delayed selected-only feedback 是否改善未来选择？ & candidate 自己的 Frozen、matched SGD/Replay、Greedy LinUCB、BayesianRouter-adapted、Permutation；primary comparator 固定为 \texttt{matched\_online\_sgd}，其余为 secondary；自然和 controlled 分开，报告 stream mean、scaffold-cluster CI、strict-win、rescue/harm。 & controlled primary contrast（MIRA$-$matched Online-SGD）点估计 $\ge+2.0$pp 且 95\% paired CI 下界 $\ge+0.5$pp；natural 只要求不低于 $-1.0$pp non-inferiority margin，若宣称自然 superiority 则 CI 下界必须 $>0$。\\
+E3 机制消融 & 结果来自动态 relay 机制而非 backbone、prior 或预算？ & primary ablation 固定为 \texttt{mira\_relative\_reliability}；与 full 共享 feature/menu/prior/seed/budget/release clock，仅删除 context-relative residual；Frozen、no-update 和 family permutation 只作 secondary。 & controlled full$-$primary-ablation 点估计 $\ge+1.0$pp 且 CI 下界 $\ge0$；若只胜旧 baseline、不胜自身 ablation，机制 claim HOLD。\\
+E4 动态/压力 & declared dynamic scope 是否成立？ & $D=0,1,4$、pending queue、selected-only release、transient/persistent failure、controlled correctness flip；primary comparator 仍为 matched Online-SGD，逐 delay 预注册。 & pooled contrast 满足 E2 margin，且每个 $D$ 的 primary contrast 点估计 $\ge+1.0$pp、经 Holm--Bonferroni $q=.05$ 调整的 paired CI 下界 $\ge0$；非法提前反馈或任一 delay contract 失败直接 HOLD，不能用 pooled 正数覆盖。\\
+E5 错误/成本/恢复 & 方法的收益是否值得代价，失败是否透明？ & calls、policy selector/update latency、provider end-to-end latency、memory、restart/replay、failure/unknown/refusal、utility/break-even。冻结单线程 CPU、batch=1、warm/cold、计时起止；policy timer 不含 provider I/O。 & selector+update policy p95 $\le2\times$ Frozen 且 $\le100\,\mu$s（kernel/replay）；端到端 provider time 单列，不由该 cap 代替。任何隐藏 call 或删失败直接 HOLD。\\
+E6 冻结确认 & 开发结论能否迁移到 final sealed data？ & 四 fresh providers 与 157 scaffold-disjoint molecules 作为首选 cohort；只有 exposure receipt 证明 truth/aggregate/decision 未在 freeze 前暴露时才可使用，否则建立新的 sealed manifest。方法、menu、epoch、threshold、baseline 先冻结，一次运行。 & natural 若宣称安全需 CI 下界 $\ge-1.5$pp；controlled claim CI 下界 $>0$；标签回流、补跑、调参或 exposure receipt 缺失直接 Stage-B FAIL。Stage-A 的 E1--E5 先评分，只有通过后才打开 final confirmation。\\
+\bottomrule
+\end{tabular}
+\end{clean}
+\textbf{统一统计合同（开跑前写入每个 preregistration）：}E1 的点估计按 outer fold 等权，fold 内以 molecule/scaffold 配对；E2--E4 的点估计按完整 stream 等权，先在共同的 \texttt{(fold, seed, delay, order)} strata 内计算 candidate$-$comparator，再等权合并声明 strata，不能按事件行加权。95\% CI 统一用保留配对轨迹的 scaffold-cluster bootstrap（10,000 draws，seed 固定）；fold、scaffold、order 和 strategy randomness 分开报告。E2、E3 各只有一个 primary contrast；E4 的三个 delay contrast 是一个 multiplicity family，使用 Holm--Bonferroni $q=.05$。其他 baseline、分层和 win-rate 只作 secondary；若要写 superiority，必须使用预登记的 multiplicity correction。
+
+\textbf{阈值解释：}E1 的 $+2.0$pp/$+1.0$pp 是任务可辨识性的最低 headroom，而不是声称结果；E2 的 $+2.0$pp 和 $+0.5$pp CI 下界是 practical margin；E3 的 $+1.0$pp 检验机制归因；$-1.0/-1.5$pp 是自然场景允许的边界。若真实结果未过对应 claim，只能保留负结果并收窄 claim，不能换统计单位或把 secondary 改成 primary。
+
+\sect{8. 结果分布和误差合同}
+\begin{clean}
+\begin{tabular}{@{}p{.20\linewidth}p{.66\linewidth}@{}}
+\toprule
+对象 & 关门时必须呈现\\
+\midrule
+联合错误 & 每个 provider 的 correctness bit、all-correct/mixed/all-wrong、family correlation；不能假设 provider 独立。\\
+配对错误 & rescue、harm、both-wrong、neutral action change；均值增益不能隐藏错误切换。\\
+统计单位 & stream/order、molecule、scaffold、family、fit seed 分开；逐 event 只能作记录，不可直接当独立样本。\\
+到达顺序 & 若声称 arrival robustness，重新运行完整 adaptive trajectory；报告 128 matched orders 的 mean、paired SD、q025/q975、range 和 strict-win。旧 v07 只作 anchor。\\
+方法相关性 & $s^2_{A-B}=s_A^2+s_B^2-2\operatorname{Cov}(A,B)$；共同 order/stream 必须保留 covariance。\\
+失败和未知 & runtime failure、unknown、refusal、fallback、timeout 全部入账；fallback 只作诊断，不作为 chemical correctness。\\
+成本 & calls、selector/update p50/p95、端到端 latency、memory、restart/recovery 和 utility 同表；kernel-only 与 end-to-end 分开。\\
+重算 & raw JSONL、config、source/input/checkpoint hash、独立 verifier 和聚合脚本分离；重算误差在预登记 rounding 内。\\
+候选绑定 & 每个主结果绑定 candidate-specific run/contract/input/source hash 和 exposure receipt；不得从 v07 或历史策略复制 SD、covariance、win rate。\\
+\bottomrule
+\end{tabular}
+\end{clean}
+\textbf{禁止继承：}候选方法不能继承 v07 的 SD、covariance、win rate 或旧策略的 order 分布。每个新候选有自己的 paired vectors，并且必须提交 candidate-specific artifact manifest：\texttt{run\_id}、\texttt{method\_id}、\texttt{contract\_sha256}、\texttt{input\_manifest\_sha256}、\texttt{source\_commit}、\texttt{primary\_comparator\_id}、\texttt{exposure\_status}。checker 发现只引用旧 anchor、缺少新 raw JSONL 或状态 hash 不匹配时，Gate-C4 自动 HOLD。公开论文中的 LinUCB、LinTS、BayesianRouter 数字只证明方法家族有近期先例，不能作为 BBB 的效果目标。
+
+\sect{9. 结果合理性和失败规则}
+\begin{clean}
+\begin{tabular}{@{}p{.15\linewidth}p{.39\linewidth}p{.34\linewidth}@{}}
+\toprule
+检查 & 允许的合理关系 & 不能通过的表现\\
+\midrule
+自然场景 & MIRA 可与 Frozen 持平或小幅逊色；若主张自然 superiority 才要求正向 CI。 & 只因受控压力正向就宣称普遍自然提升。\\
+受控反馈 & MIRA 应相对 matched SGD/Replay 有可解释增益，并报告 harmed/rescued。 & 只胜 Random/弱 adapter，或删掉负 order。\\
+All-wrong & 各方法共同保留不可修错误；收益来自 mixed/avoidable strata。 & 把共同 all-wrong 当作 routing gain。\\
+压力与延迟 & 分层结果可以不同；pooled 不能冒充每个 $D$ 都赢。 & 改 release clock、提前看反馈、把 controlled flip 叫自然漂移。\\
+成本与失败 & 允许准确率/成本 trade-off，但 utility contract 先冻结。 & 通过静默拒答、隐藏 call、删除 runtime failure 提高分数。\\
+公开结果 & 只作家族、年代和量级的文献锚点。 & 把跨任务 accuracy/cost 直接填进 BBB 表。\\
+\bottomrule
+\end{tabular}
+\end{clean}
+\textbf{停止规则：}E2 controlled margin、E3 attribution、E5 cost/recovery 或 H1--H10 任一失败时，停止继续调参贴目标；保留负结果并修改 claim 或方法。E1--E6 的目标是让结果可判定，不是逼实验产生预设数字。
+
+\newpage
+\sect{10. 关闭包和独立评分表：这是验收的一部分}
+真实实验完成后，必须把以下文件一起提交；缺任何一个，不能写 CLOSED。
+\begin{clean}
+\begin{tabular}{@{}p{.28\linewidth}p{.55\linewidth}@{}}
+\toprule
+文件 & 必须包含的内容\\
+\midrule
+\texttt{closure\_scorecard\_v09.md} & H1--H10 的 PASS/FAIL、B1--B15 的 0--4 分、Gate-A/B/C 子分数和总分；每格写 evidence path、SHA-256、日志行号、缺口和修复动作。\\
+\texttt{closure\_review\_author\_v09.md} & benchmark/data auditor 的独立签名、日期、scope、逐项评分和是否推荐 CLOSED。\\
+\texttt{closure\_review\_replicator\_v09.md} & paper/reproducibility auditor 的独立签名、恢复命令、重算差异和是否推荐 CLOSED。\\
+\texttt{candidate\_artifact\_checker.json} & 逐主表/图检查 candidate-specific run ID、method ID、contract/input/source hash、primary comparator 和禁止复用历史 anchor。\\
+\texttt{exposure\_receipt.json} & final cohort 的 manifest hash、freeze commit/time、truth/aggregate access audit、decision-impact audit 和 cohort status。\\
+\texttt{closure\_decision\_v09.json} & 机器可读的最终状态：\texttt{CLOSED} 或 \texttt{HOLD}；绑定 Guide、标准、主稿和所有 score/review/exposure hash。\\
+\bottomrule
+\end{tabular}
+\end{clean}
+两名复核者分差达到 2 分时，先补证据再重评；任一 H 失败、Gate 子项低于 3、B 总分低于 49/60、E1--E6 缺 raw/recovery、candidate checker 失败或 exposure receipt 非 sealed，机器状态只能是 \textbf{HOLD}。只有双方都给出 CLOSED，且复核记录引用的证据哈希与表格数字一致，才关闭。
+
+\sect{11. 完成后逐项签收}
+\begin{clean}
+\begin{tabular}{@{}p{.08\linewidth}p{.56\linewidth}p{.24\linewidth}@{}}
+\toprule
+ID & 完成条件 & 签收状态\\
+\midrule
+Gate-A1 & 公共 truth、版本/hash、endpoint 语义、冲突/unknown 规则和重生成 receipt。 & PASS / HOLD\\
+Gate-A2 & routing contract 机器校验：menu、selected-only、delay、failure、release、state hash。 & PASS / HOLD\\
+Gate-A3 & split、scaffold、provider exposure 和 final sealed confirmation exposure receipt 隔离审计。 & PASS / HOLD\\
+Gate-A4 & provider lineage、family correlation、macro/exposure/joint-error 报告。 & PASS / HOLD\\
+Gate-B1 & baseline role roster 完整，至少一个 modern nearest 可运行，所有主 baseline 各有同合同 raw run。 & PASS / HOLD\\
+Gate-B2 & 输入、反馈、目标、dynamic scope 和适配差异匹配并写清。 & PASS / HOLD\\
+Gate-B3 & 论文/源码/commit/checkpoint/license、adapter test 和 tuning budget 可追溯。 & PASS / HOLD\\
+Gate-B4 & feature/prior/seed/budget/compute/delay/failure 公平 checker 通过。 & PASS / HOLD\\
+Gate-C1 & E1--E6 各映射 RQ、正文展品、配置、原始 JSONL 和 hash。 & PASS / HOLD\\
+Gate-C2 & candidate 与主 baseline 同一 contract，paired vectors 和 recovery 全齐。 & PASS / HOLD\\
+Gate-C3 & 方向、practical margin、自然边界、机制归因、成本和 scope 全符合。 & PASS / HOLD\\
+Gate-C4 & uncertainty、failure/unknown、负结果、independent recovery、candidate artifact checker 和 exposure/claim scope 全闭合。 & PASS / HOLD\\
+\bottomrule
+\end{tabular}
+\end{clean}
+\textbf{关闭判定：}上述 Gate-A1--Gate-A4、Gate-B1--Gate-B4、Gate-C1--Gate-C4 全部 PASS，同时 H1--H10 PASS、B1--B15 分数达到第 1 节门槛、正文展品和 raw evidence 一一对应，且第 10 节的 scorecard 与双人复核均推荐 CLOSED，状态才写 \textbf{CLOSED}。这份 Guide 完成后可以关闭验收；scorecard 和复核是 Guide 的组成部分。
+
+\sect{12. 版本、来源和主版隔离}
+\begin{clean}
+\begin{tabular}{@{}p{.23\linewidth}p{.64\linewidth}@{}}
+\toprule
+材料 & 处理规则\\
+\midrule
+Guide v01--v07 & 全部保留；v07 是固定已查看队列的实测参考，不能继承给未来候选。\\
+Guide v08 & 反方审查发现 E1/E4/estimand/exposure 条件不足；完整旧版保留，不能作为最终 closure contract。\\
+Guide v09 & 本文件把关闭所需的主估计量、multiplicity、逐 delay、candidate artifact 和 final sealed exposure 写成硬条件；后续若共同确认修改，另建 v10。\\
+正式论文 main.pdf & 不写入 T/B 目标数值；只写真实运行结果，编译和主版提升独立进行。\\
+公开 baseline 结果 & 存在 \texttt{\string~/work/reasonable\_results/pharma\_tool\_selection\_public\_baselines\_v1/}，只作文献锚点。\\
+证据归档 & \texttt{experiments/logs/} 保存 raw/config/failure/recovery；缺少 source/hash 的表格不能签收。\\
+\bottomrule
+\end{tabular}
+\end{clean}
+\textbf{一句话验收标准：}当且仅当真实 benchmark、真实 baseline、E1--E6、三门评分、硬条件、统一统计合同、逐 delay 判定、分布/失败/成本、candidate-specific artifact、final sealed exposure、独立恢复和双人 scorecard 全部按本矩阵签收，Benchmark+Baseline 才能关闭；此时 Guide 已经完成其验收职责。任何目标数值在此之前都只是 T，不是 M。
+
+\end{document}

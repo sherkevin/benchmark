@@ -1,0 +1,71 @@
+=== encoder/config.json ===
+ACL                         : default
+Accept-Ranges               : bytes
+Content-Length              : 2083
+Content-Md5                 : gLcWrCmFaxb2rAy4J7FZ6A==
+Content-Type                : application/json
+Etag                        : "80B716AC29856B16F6AC0CB827B159E8"
+Last-Modified               : 2026-09-26 23:29:09 +0800 CST
+Owner                       : 1810854989714828
+Vary                        : Accept-Encoding
+X-Oss-Hash-Crc64ecma        : 17910618765037288853
+X-Oss-Object-Type           : Normal
+X-Oss-Storage-Class         : Standard
+
+0.206530(s) elapsed
+=== model.safetensors ===
+ACL                         : default
+Accept-Ranges               : bytes
+Content-Length              : 842609210
+Content-Type                : application/octet-stream
+Etag                        : "7E494C4B6E8D190F495A81E078417B5A-13"
+Last-Modified               : 2026-09-26 23:40:04 +0800 CST
+Owner                       : 1810854989714828
+X-Oss-Hash-Crc64ecma        : 9521678683775112186
+X-Oss-Object-Type           : Multipart
+X-Oss-Storage-Class         : Standard
+
+0.211483(s) elapsed
+=== rl_agent_config.json ===
+ACL                         : default
+Accept-Ranges               : bytes
+Content-Length              : 745
+Content-Md5                 : eoXbmegrbeZp4XfO0A5MWw==
+Content-Type                : application/json
+Etag                        : "7A85DB99E82B6DE669E177CED00E4C5B"
+Last-Modified               : 2026-09-26 23:29:09 +0800 CST
+Owner                       : 1810854989714828
+X-Oss-Hash-Crc64ecma        : 4990953942551711953
+X-Oss-Object-Type           : Normal
+X-Oss-Storage-Class         : Standard
+
+0.214095(s) elapsed
+=== tokenizer/tokenizer.json ===
+ACL                         : default
+Accept-Ranges               : bytes
+Content-Length              : 3583228
+Content-Md5                 : CdGZvkWWQLr9rrHwJ8nK6Q==
+Content-Type                : application/json
+Etag                        : "09D199BE459640BAFDAEB1F027C9CAE9"
+Last-Modified               : 2026-09-26 23:30:11 +0800 CST
+Owner                       : 1810854989714828
+Vary                        : Accept-Encoding
+X-Oss-Hash-Crc64ecma        : 2306272427653560882
+X-Oss-Object-Type           : Normal
+X-Oss-Storage-Class         : Standard
+
+0.270741(s) elapsed
+=== tokenizer/tokenizer_config.json ===
+ACL                         : default
+Accept-Ranges               : bytes
+Content-Length              : 308
+Content-Md5                 : gHqnzqchYl3IcorAYocc4w==
+Content-Type                : application/json
+Etag                        : "807AA7CEA721625DC8728AC062871CE3"
+Last-Modified               : 2026-09-26 23:29:10 +0800 CST
+Owner                       : 1810854989714828
+X-Oss-Hash-Crc64ecma        : 667310818116431552
+X-Oss-Object-Type           : Normal
+X-Oss-Storage-Class         : Standard
+
+0.209531(s) elapsed

@@ -1,0 +1,1270 @@
+                                             Online Multi-LLM Selection via Contextual Bandits
+                                                   under Unstructured Context Evolution
+
+
+                                                           Manhin Poon1        Xiangxiang Dai2 Xutong Liu3 Fang Kong4
+                                                                              John C.S. Lui2 Jinhang Zuo1
+                                                         1
+                                                           City University of Hong Kong 2 The Chinese University of Hong Kong
+                                                     3
+                                                       Carnegie Mellon University 4 Southern University of Science and Technology
+
+
+
+
+arXiv:2506.17670v1 [cs.LG] 21 Jun 2025
+                                                                                         Abstract
+                                                     Large language models (LLMs) exhibit diverse response behaviors, costs, and
+                                                     strengths, making it challenging to select the most suitable LLM for a given user
+                                                     query. We study the problem of adaptive multi-LLM selection in an online setting,
+                                                     where the learner interacts with users through multi-step query refinement and must
+                                                     choose LLMs sequentially without access to offline datasets or model internals. A
+                                                     key challenge arises from unstructured context evolution: the prompt dynamically
+                                                     changes in response to previous model outputs via a black-box process, which
+                                                     cannot be simulated, modeled, or learned. To address this, we propose the first con-
+                                                     textual bandit framework for sequential LLM selection under unstructured prompt
+                                                     dynamics. We formalize a notion of myopic regret and develop a LinUCB-based
+                                                     algorithm that provably achieves sublinear regret without relying on future context
+                                                     prediction. We further introduce budget-aware and positionally-aware (favoring
+                                                     early-stage satisfaction) extensions to accommodate variable query costs and user
+                                                     preferences for early high-quality responses. Our algorithms are theoretically
+                                                     grounded and require no offline fine-tuning or dataset-specific training. Experi-
+                                                     ments on diverse benchmarks demonstrate that our methods outperform existing
+                                                     LLM routing strategies in both accuracy and cost-efficiency, validating the power
+                                                     of contextual bandits for real-time, adaptive LLM selection. Code is available at
+                                                     https://github.com/EntroShape/Online_LLM_Selection
+
+
+                                         1    Introduction
+                                         Large Language Models (LLMs) have demonstrated remarkable capabilities across a wide range of
+                                         tasks, from open-ended dialogue to complex reasoning and mathematical problem solving [1, 2, 3].
+                                         However, these capabilities come with significant trade-offs: more powerful models tend to be slower
+                                         and more expensive, while faster, cheaper models often lack robustness or reasoning ability [4, 5]. In
+                                         practice, no single model is universally optimal across all insputs or user preferences [6].
+                                         This growing heterogeneity has motivated the deployment of multi-LLM systems, where multiple
+                                         LLMs with different strengths (e.g., accuracy, latency, cost) are available, and a routing or selection
+                                         mechanism determines which one to use for a given user query. Such multi-model setups are increas-
+                                         ingly adopted in both academic research and industrial applications, where balancing performance
+                                         and efficiency is critical [7, 8]. A lightweight model like Mistral may suffice for factual lookups
+                                         or shallow reasoning, while more complex tasks might require high-end models like GPT-4 [9].
+                                         Selecting the right LLM at the right time can yield substantial improvements in cost-effectiveness
+                                         and user satisfaction [6, 10].
+                                         Existing approaches to multi-LLM routing [7, 10, 11, 12] often rely on static policies, supervised
+                                         learning on offline datasets, or single-step decision-making. However, real-world user interactions
+                                         are often sequential and adaptive. Users refine their queries based on prior answers, leading to
+
+                                         Preprint.
+multi-step interactions where the system can revise its LLM choices dynamically. For example, a user
+might ask a factual question, follow up with a clarification request, and then pose a deeper reasoning
+challenge. Each step introduces new contextual information—typically derived from the model’s
+earlier responses—which should influence subsequent model selection.
+To support this type of dynamic, multi-step interaction, we propose a new framework for online
+multi-LLM selection under unstructured context evolution. In our setting, the system interacts with a
+user over a sequence of steps: at each step, it receives a prompt context—potentially incorporating
+previous model responses—and must select an LLM to generate the next reply. Crucially, the prompt
+evolves over time according to a black-box transformation that may include concatenation, rewriting,
+user edits, or proprietary formatting. Because this evolution process is unknown, non-differentiable,
+and potentially stochastic, conventional planning-based approaches such as reinforcement learning
+(RL) are ill-suited. In effect, modeling how a prompt evolves would itself require reasoning at the
+level of an LLM, rendering the transition dynamics unlearnable in practice.
+To address these challenges—multi-LLM decision-making, the need for online adaptation, and
+unstructured context evolution—we adopt a contextual bandit framework. Rather than modeling
+full interaction trajectories, we decompose the process into a sequence of myopic decisions, where
+the system selects the best LLM for the current context without attempting to forecast how the
+prompt will evolve. This formulation is both feasible and effective: it allows us to sidestep modeling
+the unknown transition dynamics while still enabling continual improvement from user feedback.
+We formalize this learning objective using myopic regret, which quantifies the loss relative to the
+best possible LLM choice at each step. Building on this formulation, we develop a LinUCB-based
+algorithm that maintains confidence-aware estimates of each model’s performance across varying
+prompt contexts. To handle practical deployment constraints, we further extend the algorithm to
+account for stochastic per-query costs and budget constraints, and introduce a heuristic that prioritizes
+high-quality responses early in the interaction to reflect user positional bias. Together, our framework
+offers a principled and scalable online solution for adaptive, cost-aware multi-LLM selection.
+Our Contributions. We make the following key contributions:
+
+       • We introduce the first contextual bandit framework for multi-step LLM selection under
+         unstructured context evolution—a realistic and underexplored setting that captures the
+         adaptive nature of interactive user–LLM interactions.
+       • We propose a Greedy LinUCB algorithm for per-step LLM selection and establish a sublinear
+         regret bound with respect to myopic regret. Our results show that efficient online learning is
+         achievable even without modeling how prompts evolve over time.
+       • We extend our method to handle stochastic cost constraints and position-sensitive utility,
+         designing budget-aware and position-aware variants that improve decision quality in cost-
+         limited settings and prioritize early user satisfaction in multi-turn interactions.
+       • We conduct extensive experiments across diverse benchmarks, demonstrating that our
+         algorithms consistently outperform existing routing methods in both accuracy and cost-
+         efficiency. The results further confirm the value of context evolution and the effectiveness of
+         lightweight online adaptation.
+
+Overall, our work provides a principled and lightweight foundation for orchestrating multiple LLMs
+in open-ended, multi-step environments. By using contextual bandits under unstructured prompt
+evolution, we demonstrate that practical and scalable multi-LLM systems can be built without relying
+on offline training or complex environment simulation.
+Related Work.
+Several recent works [7, 12, 13] have studied LLM selection in multi-model deployments to improve
+cost-efficiency and performance. MetaLLM [7] applies LinUCB to choose an LLM for each query
+based on learned reward signals derived from offline preference data. MixLLM [12] formulates LLM
+routing as a linear contextual bandit problem, optimizing a weighted sum of estimated accuracy, cost,
+and latency. While both methods leverage contextual bandits [14, 15], they operate in a single-step
+setting and do not account for prompt evolution or multi-turn query refinement. Other approaches
+rely on static or offline policies. AutoMix [11] introduces a self-verification mechanism where a
+lightweight model decides whether to escalate a query to a stronger LLM, but assumes access to
+a reliable verification oracle and relies on a fixed cascade. Similarly, OpenAI’s Function Calling
+
+
+                                                   2
+Selector [8] trains a static classifier to select between GPT variants based on supervised fine-tuning,
+without adapting to online feedback or context changes. Additional recent efforts include C2MAB-V
+[10], which adopts a combinatorial bandit approach for selecting LLM subsets under complex reward
+formulations, and LLMSelector [6], which optimizes expert-model placement across distributed
+systems. The Multi-Armed Router [16] proposes an exploration–exploitation strategy for LLM
+routing but focuses on single-turn inference and assumes fixed prompt representations. A growing
+body of work explores multi-turn LLM orchestration. ReAct [17] and Tree of Thoughts [18] propose
+agent-style reasoning pipelines where LLMs operate over multiple steps using hand-crafted heuristics.
+These approaches demonstrate promising performance but rely on predefined planning rules and lack
+learnable routing policies. PromptAgent [19] automates prompt optimization using Monte Carlo Tree
+Search, but requires task-specific reward functions and simulated feedback, limiting its generality.
+In contrast to all of the above, our work tackles the problem of online multi-step LLM selection under
+unstructured and unlearnable context evolution. We propose a contextual bandit formulation that
+is lightweight, feedback-driven, and equipped with provable regret guarantees—bridging the gap
+between practical black-box orchestration and theoretically grounded online learning.
+
+
+2   Motivation
+
+Deploying a single LLM to handle diverse user
+queries often results in unnecessary trade-offs                           Evolve context
+
+between cost, latency, and performance. In this                   Satisfy user ?
+paper, we advocate for a sequential, multi-model                                         No
+approach to LLM orchestration—where a sys-                         Yes
+                                                                                                                 Budget
+tem adaptively selects among multiple LLMs
+                                                                                    Yes
+over multiple steps in response to user feedback.                   Output                    Satisfy user ?
+
+In this section, we outline three motivating ob-                                                               Evolve
+                                                                                              No               context
+servations: the promise of multi-LLM selection,         Queries
+                                                                                   ...
+the importance and challenge of evolving con-
+text, and the suitability of contextual bandits.                                                   Positional utility
+
+                                                     Available
+Why multi-LLM selection matters. Modern              LLM List
+LLMs exhibit diverse behaviors: they vary in
+factual accuracy, latency, and cost. As demon- Figure 1: Online multi-LLM selection with contex-
+strated in our experiments (Section 6 ), no single tual bandits under unstructured context evolution.
+model consistently dominates across all tasks.
+For instance, lightweight models like Mistral-
+Small-3.1 respond quickly and perform well on simple queries, while larger models like GPT-4.1 are
+better suited for complex reasoning. This motivates the use of multi-LLM selection—dynamically
+choosing which LLM to use for each query—to achieve better performance-cost trade-offs.
+This strategy is increasingly adopted in production systems that serve diverse user queries. Recent
+works and industry practices have explored LLM routing and orchestration to reduce latency and API
+costs while maintaining output quality (e.g., [7, 8, 11]). In such systems, multiple LLMs are deployed
+as a shared model pool, and a routing policy determines which one to invoke. Using a high-cost
+model like GPT-4.1 indiscriminately is often unnecessary and inefficient—especially for trivial or
+repetitive queries. A well-designed selector can route easy queries to cheaper models while reserving
+more capable models for harder cases, yielding significant cost savings without sacrificing quality.
+Why context matters and why it is unstructured. A key design choice in our setting is to let each LLM
+selection depend not only on the original user query, but also on the responses of previously selected
+models. This results in an evolving prompt context, where the input to each LLM is dynamically
+constructed based on prior outputs. Through empirical observations (see Section 6), we find that
+incorporating this context is crucial—later LLMs often perform better when they can “see” earlier
+attempts, as they may correct previous errors or build upon partial answers. This motivates our
+formulation of sequential multi-LLM selection with contextual adaptation.
+However, modeling how the prompt evolves across steps is inherently difficult. The new context
+may be formed through a combination of LLM responses, prompt concatenation, user edits, or
+system-specific transformations. We formalize this process as a context evolution function g, which
+maps the current context and LLM output to the next-step prompt. Importantly, g is a black-box
+
+
+                                                    3
+function—often non-differentiable, stochastic, or proprietary—and cannot be explicitly modeled or
+learned. In practice, predicting the next prompt would require simulating how an LLM response
+changes the prompt structure, which itself may require reasoning as complex as what the LLM
+performs. This complexity makes multi-step planning intractable and violates the assumptions of RL,
+which depends on having a learnable or simulatable transition model. By contrast, our framework
+avoids this issue by adopting a myopic view: it selects the best LLM for the current context, without
+trying to predict future prompt evolution. This enables robust online decision-making even under
+unstructured and unpredictable context dynamics.
+Why contextual bandits are the right tool. Given the limitations of RL in this setting, we turn to
+contextual bandits as a lightweight yet principled alternative. Rather than modeling full trajectories, a
+contextual bandit approach selects the best LLM for each step based solely on the current prompt
+context. This myopic decision-making is both feasible and robust: it avoids the need to simulate
+or model g, while still adapting to evolving feedback over time. As illustrated in Figure 1, our
+framework supports multi-step interaction with users: at each step, the system observes a new prompt
+context, selects an LLM, receives feedback, and optionally evolves the context for the next step. We
+formalize the learning objective via myopic regret, which compares the agent’s chosen LLM to the
+best possible LLM for the current prompt context. This yields a theoretically tractable and practically
+meaningful measure of performance, even when full trajectory optimization is infeasible.
+Contextual bandits are particularly attractive in this setting because they are lightweight, data-efficient,
+and robust to dynamic environments [20, 21, 22]. Unlike RL, they require no offline training or
+simulator access, and they adapt easily to new user populations, model APIs, and cost structures. This
+makes them well-suited for real-world multi-LLM systems, where queries are diverse, budgets vary,
+and models evolve rapidly. By combining theoretical rigor with practical feasibility, contextual bandits
+provide a compelling foundation for adaptive LLM routing in open-ended, real-time environments.
+
+3   Problem Formulation
+We consider an online sequential decision-making problem for adaptive multi-LLM selection, moti-
+vated by real-time user interactions with LLMs. Let [K] = {1, . . . , K} denote the set of available
+LLMs. Each LLM k ∈ [K] is associated with an unknown feature vector θk∗ ∈ Rd , capturing its
+alignment with user preferences across different prompt contexts. A learning agent interacts with
+users over T rounds. In each round t ∈ [T ], the agent receives a user query Qt and engages in a
+multi-step adaptive interaction with the user, lasting at most H steps. Let xt,1 ∈ Rd denote the initial
+context vector derived from Qt (e.g., an embedding or prompt representation). At each step h ∈ [H],
+the agent observes context xt,h and selects an LLM at,h ∈ [K] to generate a response. Let Rt,h
+denote the output of LLM at,h when invoked on context xt,h . The user provides binary feedback
+rt,h ∈ {0, 1}, indicating satisfaction with the result. For analytical simplicity, we model the feedback
+as a linear function of the context and the selected LLM’s parameters corrupted by noise:
+                                       rt,h = ⟨xt,h , θa∗t,h ⟩ + ϵt,h ,
+
+where ϵt,h is a zero-mean sub-Gaussian noise term. This surrogate model enables the application of
+linear contextual bandit algorithms despite the discrete nature of the actual user feedback. If rt,h = 1,
+the round ends. Otherwise, the agent proceeds to the next step, where the context is updated by
+incorporating the previous LLM response:
+                                   xt,h+1 = g(xt,h , at,h , Rt,h , rt,h ),
+where g is a black-box function representing how the context evolves in response to the LLM’s output
+(e.g., through concatenation, rewriting, or augmentation). Importantly, as discussed in Section 2, g
+is assumed to be unstructured and unlearnable: it may be stochastic, nonstationary, or governed by
+proprietary model behavior, and cannot be explicitly modeled or simulated. This interaction continues
+for up to H steps or until the user is satisfied. The goal is to design an online decision policy that
+maximizes the expected cumulative user satisfaction over T rounds.
+Myopic regret. Due to the unstructured and unobservable nature of the context evolution function g,
+multi-step planning or reinforcement learning methods that rely on modeling or simulating future
+states are inapplicable. Instead, we adopt a myopic regret minimization framework, where the agent
+selects each LLM based solely on the current context, without modeling future transitions. At step h
+
+
+                                                      4
+Algorithm 1 Greedy LinUCB for Multi-LLM Selection
+ 1: Input: Regularization parameter λ > 0, confidence parameter α > 0
+ 2: Initialize Ak ← λId , bk ← 0 ∈ Rd for all k ∈ [K]
+ 3: for round t = 1, 2, · · · do
+ 4:    Receive initial query Qt and build context xt,1 ∈ Rd
+ 5:    for step h = 1 to H do
+ 6:       for each k ∈ [K] do                           q
+ 7:         θ̂k ← A−1
+                    k bk ;  UCBk ← ⟨xt,h , θ̂k ⟩ + α · x⊤          −1
+                                                              t,h Ak xt,h
+ 8:      end for
+ 9:      Query LLM at,h ← arg maxk UCBk with (Qt , Rt,1 , · · · , Rt,h−1 )
+10:      Receive output Rt,h and binary feedback rt,h ∈ {0, 1}
+11:      Update: Aat,h ← Aat,h + xt,h x⊤     t,h ; bat,h ← bat,h + rt,h xt,h
+12:      if rt,h = 1 then
+13:         break
+14:      else
+15:         xt,h+1 ← g(xt,h , at,h , Rt,h , rt,h )
+16:      end if
+17:   end for
+18: end for
+
+
+of round t, define the instantaneous regret as:
+                              Regt,h = max ⟨xt,h , θk∗ ⟩ − ⟨xt,h , θa∗t,h ⟩,
+                                         k∈[K]
+
+which quantifies the expected shortfall in user satisfaction due to a suboptimal LLM choice in the
+given context. The total regret over T rounds is:
+                                                    Ht
+                                                  T X
+                                                  X
+                                       R(T ) =              Regt,h ,
+                                                  t=1 h=1
+
+where Ht ≤ H denotes the number of steps taken in round t.
+Remark. While it may seem natural to compare against the best full sequence of LLMs per query (i.e.,
+sequence-wise regret), such analysis requires modeling or learning the transition function g, which is
+infeasible in practice. Moreover, the space of possible LLM trajectories is combinatorially large and
+highly nonstationary. Thus, sequence-wise regret is neither practically meaningful nor theoretically
+tractable in our setting. By contrast, myopic regret minimization ensures robust performance at
+each decision point, without relying on assumptions about future context evolution, making it more
+suitable for real-time multi-LLM decision-making under unstructured prompt dynamics
+
+4     Greedy LinUCB Algorithm
+In this section, we propose a LinUCB-based greedy algorithm for sequential LLM selection. As
+discussed in Section 3, since future contexts evolve via an unknown and unstructured function g,
+multi-step planning is intractable. We therefore adopt a myopic strategy that focuses on optimizing
+per-step feedback using contextual bandits. Specifically, we adapt the LinUCB algorithm to this
+setting by maintaining a separate linear model for each LLM and selecting the arm with the highest
+upper confidence bound (UCB) at each step.
+As described in Algorithm 1, the greedy LinUCB algorithm maintains a regularized least-squares
+model for each LLM k ∈ [K], represented by a matrix Ak and a response vector bk . At each decision
+step (t, h), the algorithm computes the ridge regression estimate θ̂k = A−1    k bk and evaluates the
+LinUCB index for each LLM (line 7). This index combines the predicted reward θ̂k ⊤ xt, h with
+an exploration bonus proportional to the estimate’s uncertainty, promoting the selection of under-
+explored LLMs. The LLM with the highest LinUCB score is chosen for querying. This approach is
+crucial, as selecting solely based on the highest predicted reward (pure exploitation) risks suboptimal
+decisions by neglecting parameter uncertainty. After receiving the model response Rt,h and observing
+
+
+                                                    5
+the binary user feedback rt,h ∈ {0, 1}, the algorithm updates the corresponding model parameters
+Aat,h and bat,h . If the user is satisfied (i.e., rt,h = 1), the round terminates. Otherwise, the context
+evolves to xt,h+1 = g(xt,h , at,h , Rt,h , rt,h ), and the algorithm proceeds to the next step. This greedy
+procedure is repeated at each decision point without modeling the future evolution of context.
+Under the following assumptions, we provide a high-probability upper bound on the cumulative
+myopic regret of Algorithm 1.
+Assumption 1 (Bounded parameters). For all k ∈ [K], ∥θk∗ ∥2 ≤ S.
+Assumption 2 (Bounded context norm). For all xt,h , it holds that ∥xt,h ∥2 ≤ L.
+Assumption 3 (Linear feedback). The expected feedback satisfies E[rt,h ] = ⟨xt,h , θa∗t,h ⟩.
+Assumption 4 (Sub-Gaussian noise). The noise ϵt,h is conditionally zero-mean and sub-Gaussian.
+Theorem 1. Under Assumptions 1–4, with probability at least 1 − δ, the cumulative myopic regret of
+the Greedy LinUCB algorithm satisfies:
+                               √                  √              KT L2
+                                                                       
+                   R(T ) = O     KdT H · SL + λS · log                       .
+                                                                    λδ
+The regret bound in Theorem 1 matches √    the structure of standard LinUCB bounds in contextual
+                  additional factor of H reflecting the multi-step interaction in each round. The regret
+bandits, up to an √
+scales as O(SL
+           e        KdT H), where the O e notation hides logarithmic terms. Compared to classical
+contextual bandits [14, 21], the challenge in our setting stems from the evolving and unmodeled
+context dynamics. Nevertheless, by minimizing per-step regret and avoiding assumptions on the
+transition function g, the greedy LinUCB algorithm remains provably efficient and robust in this
+unstructured sequential environment.
+
+5     Budget-Aware Algorithms under Stochastic Costs
+In real-time LLM selection settings, different models incur different costs due to latency, compute, or
+token-based pricing. Moreover, these costs can vary stochastically with user queries. Motivated by
+this, we extend our algorithm to handle per-query random costs, where each user specifies a budget
+and the learner must select LLMs adaptively within that budget while maximizing user satisfaction.
+
+Problem setup. In each round t ∈ [T ], the user provides a total budget Bt > 0. At each step
+h ∈ [H], when the learner selects arm at,h , it observes a reward rt,h ∈ {0, 1} and incurs a cost
+ct,h,at,h ∈ [0, Cmax ] drawn i.i.d. from a fixed but unknown distribution with mean µat,h . The learner
+                                                                                 PHt
+observes the cost only after querying the LLM. The cumulative cost must satisfy h=1    ct,h,at,h ≤ Bt ,
+where Ht is the number of steps taken in round t. The goal is to maximize cumulative user satisfaction
+under this per-round budget constraint.
+
+5.1   Budget-Aware Greedy LinUCB Algorithm.
+
+At each step, the algorithm computes:
+
+       • Reward estimate: UCBk (xt,h ) = ⟨xt,h , θ̂k ⟩ + αk , where θ̂k is the LinUCB estimator and
+         αk is the confidence width.
+       • Cost estimate: ĉk ispthe empirical mean of observed costs for arm k, with confidence
+         interval width βk = log(2T K/δ)/(2Nk ), where Nk is the number of times arm k has
+         been selected.
+       • Score: The algorithm computes
+                                                          UCBk (xt,h )
+                                      Scorek (xt,h ) =                    ,
+                                                        max{ĉk − βk , ε}
+         where ε is a small positive constant to avoid a denominator of 0, and selects the arm with the
+         highest score whose upper-bound cost estimate ĉk + βk fits within the remaining budget.
+This two-level confidence mechanism ensures both optimism in reward and conservatism in cost,
+balancing exploration and budget feasibility. We now provide a regret bound comparing against a
+per-step myopic oracle that knows true reward and cost expectations.
+
+
+                                                    6
+Algorithm 2 Positionally-Aware Knapsack Heuristic
+Require: Budget Bt , UCB scores rbk , cost estimates ĉk for all k ∈ [K]
+ 1: Initialize remaining budget b ← Bt and candidate list C ← ∅
+ 2: while b > 0 do
+ 3:    Solve a 0-1 knapsack problem on arms [K] \ C with budget b and objective (b rk , ĉk )
+ 4:    Let k next ← arm with highest rbk among selected items in knapsack solution
+ 5:    if k next does not exist or ĉknext > b then
+ 6:       break
+ 7:    end if
+ 8:    Add k next to candidate list C
+ 9:    b ← b − ĉknext
+10: end while
+11: return candidate list C
+
+
+Myopic regret definition. In the presence of budget constraints and stochastic costs, it is infeasible
+to compare against a full-horizon optimal policy or to use standard cumulative reward as the regret
+benchmark. Instead, we adopt a per-step myopic regret formulation. At each step (t, h), define the
+best feasible arm (oracle) as:
+                                 ∗                           ⟨xt,h , θk∗ ⟩
+                                kt,h = arg        max                      ,
+                                             k∈[K], µk ≤bt,h    µk
+where bt,h is the remaining budget before step h in round t. This oracle greedily selects the arm with
+the highest expected reward per unit cost that fits within the remaining budget. Let the algorithm’s
+selected arm be at,h . Then the per-step regret is:
+                               Regt,h = ⟨xt,h , θk∗t,h            ∗
+                                                   ∗ ⟩ − ⟨xt,h , θa
+                                                                    t,h
+                                                                        ⟩,
+
+and the total regret is:
+                                                     X H
+                                                     T X t
+
+                                    Rbudget (T ) =             Regt,h .
+                                                     t=1 h=1
+Assumption 5 (Stochastic Cost). For each arm k ∈ [K], the cost ct,h,k is i.i.d. with unknown mean
+µk ∈ (0, Cmax ] and sub-Gaussian noise.
+Theorem 2. Under Assumptions 1–5 and with probability at least 1 − δ, the cumulative myopic
+regret of budget-aware greedy LinUCB algorithm satisfies
+                                                              s                !
+                                     √            K                    
+                                                 X    C  max              T K
+                Rbudget (T ) = O
+                               e SL · KdT H +                · T log                .
+                                                        µ2k                 δ
+                                                         k=1
+
+This result extends classical LinUCB analysis to√ the setting with budget constraints and stochastic,
+unknown
+     √    costs. The   reward  regret scales with   KdT H, while the additional cost regret grows
+with T and is amplified by small mean costs µk . Despite this challenge, the algorithm remains
+budget-feasible with high probability and achieves sublinear cumulative regret.
+
+5.2   Positionally-Aware Knapsack Heuristic
+
+The greedy budget-aware algorithm introduced earlier selects LLMs sequentially by maximizing
+a cost-normalized reward score. While effective in balancing reward and cost, this approach may
+overly prioritize cheap LLMs and delay the use of more capable ones until later in the interaction.
+In many real-world scenarios, however, users exhibit positional bias: they prefer to receive high-
+quality responses early and may disengage if early attempts fail. This motivates the need to consider
+positional utility, where earlier successful responses are more valuable in practice than later ones.
+To better balance early accuracy and overall cost, we propose a positionally-aware knapsack heuristic
+in Algorithm 2. The key idea is to incorporate cost estimates and UCB reward scores into a dynamic
+selection procedure that prioritizes early deployment of high-confidence LLMs while respecting the
+per-query budget. At each step, the algorithm solves a 0-1 knapsack problem over the remaining
+
+
+                                                     7
+LLM candidates, using UCB scores as reward estimates and empirical costs as weights. From the
+knapsack solution, it selects the arm with the highest UCB score, adds it to the candidate list, and
+updates the remaining budget. This process is repeated until no feasible arms remain or the budget is
+exhausted. By anchoring each decision within a budget-aware optimization, the method ensures that
+strong LLMs are selected as early as possible without exceeding cost constraints.
+Remark. This knapsack-based strategy explicitly targets positional utility by favoring the early use
+of high-performing models, rather than deferring them due to their cost. Unlike purely greedy cost-
+normalized approaches, which may over-prioritize cheap but weak models, the knapsack heuristic
+balances exploration and resource allocation more effectively. While the method is heuristic and
+lacks a formal regret bound, it aligns closely with practical deployment goals in interactive systems.
+As demonstrated in our experiments in , the algorithm delivers higher effective utility—especially
+when stronger models are costly and positional preferences matter.
+
+
+
+6       Experiments
+
+Baselines. We compare our algorithms against online LLM routing methods. For online, contextual
+bandit approaches, MetaLLM [7] employs LinUCB to select an LLM by learning a policy that
+predicts a reward (balancing accuracy and cost) based on query embeddings. MixLLM [12], another
+online bandit method, routes queries by optimizing a weighted sum of predicted response quality, cost,
+and an explicit latency penalty. Reported optimal trade-off parameter λ = 1.4 is used for MixLLM.
+Majority Voting [23] is also considered as a baseline due to its effectiveness and simplicity.
+Candidate LLMs. The LLM pool, used across all baseline comparisons, included several state-of-
+the-art models (i) Deepseek-v3, a state-of-the-art open-source MoE model from China with 671 billion
+total parameters; (ii) llama-4-maverick, a latest open-source Mixture-of-Experts (MoE) model with
+400 billion total parameters and 128 experts; (iii) phi-4, a 14-billion-parameter model from Microsoft,
+designed for tasks including complex reasoning and math problem-solving; (iv) gemini-2.0-flash, a
+multimodal model from Google DeepMind, suitable for rapid responses. (v) Mistral-small-3.1-24b-
+instruct, an efficient instruction-following model from Mistral AI; (vi) GPT-4.1-Nano, a lightweight
+variant of GPT-4.1, optimized for fast and cost-effective responses.
+Datasets. Experiments were conducted on various datasets covering diverse tasks and domains. (i)
+MMLU-Pro [24]: A comprehensive multiple-choice question (MCQ) benchmark covering topics
+across Science, Technology, Engineering, and Mathematics (STEM) disciplines. (ii) Math-500 [25]:
+A question-answering (QA) benchmark featuring mathematical problems across seven distinct
+undergraduate-level subjects. (iii) GPQA [26]: A dataset consisting of challenging graduate-level
+multiple-choice questions (MCQs) in physics, biology, and chemistry. For our experiments, we
+converted the MCQs into open-ended questions to further increase the difficulty. (iv) AIME: A QA
+benchmark consisting of problems from the American Invitational Mathematics Examination, testing
+advanced mathematical reasoning. Our dataset comprised of the data from AIME1 2024 and 20252 .
+Evaluation Protocol. For MMLU-Pro, accuracy was used as the evaluation metric. For the remaining
+datasets, responses were evaluated using Deepseek-R1[27] as an LLM grader that provided binary
+feedback (“true” or “false”) based on whether the generated answer matched the gold answer. These
+feedback signals were then used to compute accuracy scores. Each dataset was randomly split into an
+offline training set (20%) for initialization and an online testing set (80%) for evaluation.
+Experiment Specification. For our proposed algorithms, we set a maximum cascade depth of H = 4
+LLMs per query. Query embeddings were generated using the sentence [28]. Query embeddings for
+all evaluated algorithms are in 384-dimensional embeddings. The exploration parameter (α) was
+set to 0.675 and the regularization parameter (λ) to 0.45. The given budget for each query for both
+budget-aware algorithms is randomly +/- 5% to the average cost per query of greedy LinUCB. No
+any cost constarint was implemented For Greedy LinUCB algorithm.
+
+
+
+    1
+        https://huggingface.co/datasets/MathArena/aime_2025
+    2
+        https://huggingface.co/datasets/Maxwell-Jia/AIME_2024
+
+
+                                                  8
+6.1               Experimental Results
+
+6.1.1              Main Results
+
+
+Table 1: Accuracy (%) on the different task. The best is in bold and the worst is underlined. Random
+routing is not considered for best/worst.
+                                                                   MMLU-Pro      AIME    GPQA     Math500      Avg
+
+
+
+
+                    Candidate LLMs
+                                     Mistral-Small-3.1               48.80        1.67   22.22     57.60       32.57
+                                     Phi-4                           51.50        8.33   29.80     67.20       39.21
+                                     Llama-4-Maverick                41.77       20.00   39.90     85.40       46.77
+                                     Gemini-2.0-Flash                62.10       20.00   35.30     86.00       50.85
+                                     GPT-4.1-Nano                    41.33        6.67   29.80     71.60       37.35
+                                     DeepSeek-V3-Chat                58.80        3.33   31.31     70.40       40.96
+                                     Voting                          63.30       67.39   47.48     50.85       57.26
+                                     MixLLM                          76.32       41.67   53.79     85.20       64.25
+                                     MetaLLM                         72.11       20.83   52.40     83.80       57.29
+
+                    Routing
+                                     Random                          49.75       13.64   27.85     67.00       39.56
+                                     Greedy LinUCB                   86.25       54.16   51.28     96.25       71.9
+                                     Budget Aware LinUCB             77.29       56.25   59.12     84.00       69.17
+                                     Positionally-Aware Knapsack     82.20       62.50   66.67      88         74.84
+
+
+
+
+Table 2: Cost (US Dollars). The best (lowest) is in bold and the worst (highest) is underlined.
+Random routing is not considered for best/worst.
+                                                                    MMLU-Pro         AIME        GPQA      Math500       Avg
+
+
+
+
+ Candidate LLMs
+                  Mistral-Small-3.1                                   2.00E-05    3.72E-03   1.08E-02      5.44E-05    3.65E-03
+                  Phi-4                                               2.00E-05    3.82E-03   5.05E-05      4.83E-05    9.85E-04
+                  Llama-4-Maverick                                    8.30E-05    1.41E-04   1.34E-04      1.02E-04    1.15E-04
+                  Gemini-2.0-Flash                                    2.80E-05    3.01E-04   1.06E-04      2.07E-04    1.61E-04
+                  GPT-4.1-Nano                                        2.70E-05    1.19E-02   1.20E-04      1.31E-04    3.04E-03
+                  DeepSeek-V3-Chat                                    1.16E-04    2.37E-04   1.85E-04      1.62E-04    1.75E-04
+                  Voting                                              3.38E-04    2.31E-02   1.31E-02      8.10E-04    9.34E-03
+                  MixLLLM                                             1.27E-04    3.61E-03   9.40E-03      4.77E-04    3.40E-03
+                  MetaLM                                              6.73E-05    4.26E-04   5.24E-04      3.28E-04    3.36E-04
+
+ Routing
+                  Random                                              4.73E-05    1.56E-04   9.81E-05      1.17E-04    1.05E-04
+                  Greedy LinUCB                                       9.28E-05    2.14E-03   9.80E-04      4.31E-04    9.11E-04
+                  Budget-Aware LinUCB                                 4.89E-05    7.00E-04   3.40E-04      9.72E-05    2.97E-04
+                  Positionally-Aware Knapsack Heuristic               5.12E-05    7.52E-04   5.10E-03      9.57E-05    1.50E-03
+
+
+The experimental results demonstrate the effectiveness of the proposed online multi-LLM selection
+algorithms. As seen from (Table 1), the Positionally-Aware Knapsack heuristic achieved the highest
+average accuracy of 74.84%. This represents a 16.5% improvement over the best-performing baseline
+router, MixLLM (64.25%), and is also notably higher than our other proposed methods, Greedy
+LinUCB (71.99%) and Budget-Aware LinUCB (69.17%). In terms of cost (Table 2), this heuristic
+(1.50E-03 USD average cost) is approximately 2.27 times more economical than MixLLM (3.32E-03
+USD average cost) and substantially cheaper than the Voting [23] baseline (9.34E-03 USD average
+cost).
+The Budget-Aware LinUCB algorithm stands out for its cost-efficiency, with an average cost of
+2.97E-04 USD (Table 2). This is comparable to the cost of the MetaLLM baseline (3.36E-04 USD
+average cost) and approaches the cost of the most economical individual LLM, Llama-4-Maverick
+(1.15E-04 USD average cost). However, Budget-Aware LinUCB delivers a significantly higher
+average accuracy of 69.17% (Table 1). This is 20.7% greater than MetaLLM (57.71% average
+accuracy) and 39.6% higher than the most accurate individual LLM, Gemini-2.0-Flash (50.85%
+average accuracy), while being over 3.07 times more economical than our Greedy LinUCB (8.29E-04
+USD average cost) for a similar accuracy. Even compared to the Random routing baseline, which has
+
+
+                                                                        9
+a low average cost (1.05E-04 USD), Budget-Aware LinUCB achieves 79.4% higher average accuracy
+(69.17% vs. 39.56%) for a moderately higher, yet still very low, operational cost.
+The restricted average accuracy of baseline methods, MixLLM (64.25%) and MetaLLM (57.71%),
+might be attributed to their formulation of optimizing a weighted sum of estimated accuracy, cost,
+and latency (MixLLM) or learned reward signals (MetaLLM) for each query independently. Both
+approaches operate within a single-step decision-making paradigm; their routing logic is applied only
+once per user query based on the initial context. This design inherently lacks the capability to adapt
+to or leverage the context evolution that occurs in multi-turn user interactions, where subsequent
+prompts are dynamically modified based on prior LLM outputs. Their myopic optimization, focused
+solely on the current step’s predicted outcome, limits their effectiveness in optimizing performance
+over an entire multi-step conversation sequence, which is a core characteristic of real-world user-LLM
+interactions and our experimental setup.
+
+
+
+6.1.2   Effectiveness of Positional Awareness
+
+
+
+
+        Table 3: Accuracy (%) and Average Steps by Position for Different Configurations.
+               Config.                   Position         MMLU-Pro    AIME    GPQA     Math500      Avg
+                                         Total Accuracy       86.25   54.16    51.28      96.25    71.99
+                                         Avg. Step            1.870   3.375    3.308       1.31     2.52
+           Greedy LinUCB                 1st                  58.58   18.75    28.21      86.00    47.89
+                                         2nd                  15.04   20.83    15.38       6.25    15.38
+                                         3rd                   7.12   10.42     2.56       3.00     6.03
+                                         4th                   5.05    4.17     5.13       1.00     4.09
+                                         Overall              77.29   56.25    59.12         84    69.17
+                                         Avg Step             2.120   2.042    2.897       1.08     2.04
+    Budget-Aware Greedy LinUCB           1st                  48.21   47.92    32.70      80.75    52.39
+                                         2nd                  14.62    4.17    11.95       3.00    8.435
+                                         3rd                   9.12    2.08     8.18       0.25     4.90
+                                         4th                   5.33    2.08     6.29          0     3.49
+                                         Overall              82.20   62.50    66.67      88.00    74.84
+                                         Avg Step             1.996   1.542    1.780     1.0075     1.58
+ Positionally-Aware Knapsack heuristic   1st                  78.11   60.42    57.86      88.00    71.10
+                                         2nd                   4.05    2.08     7.55        0.00    3.42
+                                         3rd                   0.04    0.00     1.26        0.00    0.33
+                                         4th                   0.00    0.00     0.00        0.00    0.00
+
+
+
+
+The Positionally-Aware Knapsack heuristic is specifically designed to prioritize early user satisfaction,
+reflecting a positional discount where earlier high-quality responses are more valuable. Table 3
+illustrates this design’s success. The Knapsack heuristic achieves an average accuracy of 71.10%
+in the very first step. This remarkable initial performance accounts for approximately 95.0% of its
+total average accuracy of 74.84%. This indicates that for the vast majority of queries, the Knapsack
+heuristic identifies a satisfactory LLM on its first attempt. In contrast, the other proposed methods,
+while effective, distribute their accuracy accumulation over more steps. The Greedy LinUCB method,
+for instance, achieves 47.89% accuracy in the first step, which is only about 71.24% of its 71.99%
+overall average accuracy. Similarly, the Budget-Aware Greedy LinUCB obtains 52.39% accuracy
+in its initial attempt, constituting roughly 75.7% of its total average accuracy of 69.17%. Moreover,
+the Knapsack heuristic satisfies user queries in an average of just 1.58 steps, significantly fewer than
+the 2.52 steps for Greedy LinUCB and 2.04 steps for Budget-Aware Greedy LinUCB. These results
+underscore the effectiveness of solving a knapsack problem at each step to select high-confidence
+LLMs early while respecting budget constraints. This approach aligns well with practical needs in
+multi-turn interactions, where users often value prompt and accurate responses, thereby enhancing
+the overall user experience.
+
+
+                                                    10
+6.1.3   Effectiveness of Budget Awareness
+
+
+
+
+                    (a) AIME                                              (b) GPQA
+
+
+
+
+                   (c) Math500                                         (d) MMLU_Pro
+                                   Figure 2: CDF of per-query cost.
+
+
+
+The practical deployment of multi-LLM systems necessitates robust cost control, a challenge directly
+addressed by our budget-aware algorithms. Figure 2 presents Cumulative Distribution Function
+(CDF) plots of per-query costs, where curves terminating at or before the designated fixed budget
+line (dashed vertical line) signify effective budget adherence. Across all datasets, the Budget-Aware
+Greedy LinUCB algorithm consistently demonstrates superior cost management; its CDF curve
+typically saturates near or before the budget threshold, indicating that the vast majority of queries are
+processed within the allocated financial limits. This performance contrasts sharply with the standard
+Greedy LinUCB whose cost distribution frequently extends well beyond the budget line, reflecting
+its lack of explicit cost constraints and resulting in higher average operational expenses as noted
+in Table 2. The Positionally-Aware Knapsack heuristic, while primarily optimizing for early user
+satisfaction, also exhibits commendable budget discipline due to its cost-aware knapsack formulation,
+generally keeping query costs within bounds. These distributions affirm that incorporating explicit
+budget-aware mechanisms, as in Budget-aware LinUCB, is highly effective and crucial for enabling
+cost-efficient LLM selection, ensuring that the system can reliably operate within predefined financial
+constraints without unduly sacrificing performance.
+
+6.1.4   Sensitivity Analysis on Budget Constraint
+
+To assess the impact of varying budget constraints, we evaluated the performance of Budget-Aware
+LinUCB and the Positionally-Aware Knapsack heuristic across a range of fixed budgets on the AIME
+Dataset. As can be seen in Figure 2 , at extremely low budgets (e.g., 0.00005), both algorithms
+achieve zero performance, as the budget is likely insufficient to select any LLM. As the budget
+increases, the performance of both algorithms generally improves. Budget-Aware LinUCB initially
+outperforms the Positionally-Aware Knapsack heuristic at tighter budget constraints (e.g., from
+0.00015 to 0.001). However, as the budget increases further, the Positionally-Aware Knapsack
+heuristic demonstrates superior performance, surpassing Budget-Aware LinUCB around the “Current”
+operational budget (0.0021437) and achieving significantly higher performance at larger budgets
+(0.0035 to 0.02). Notably, the Knapsack heuristic’s performance consistently scales with increasing
+budget, reaching its peak at the highest tested budget (0.02). In contrast, Budget-Aware LinUCB’s
+performance peaks around a budget of 0.005 and subsequently declines at higher budget allocations.
+This suggests that while Budget-Aware LinUCB is effective under strict budget limitations, the
+
+
+                                                   11
+              Figure 3: Sensitivity Analysis on Budget Constraint on AIME Dataset.
+
+
+Positionally-Aware Knapsack heuristic offers greater performance scalability and robustness as
+budget availability increases, better leveraging larger budgets for higher overall utility.
+
+7   Concluding Remarks
+This work presents a contextual bandit framework for online multi-LLM selection under unstructured
+prompt evolution, offering a lightweight and theoretically grounded solution. While our algorithms
+demonstrate strong performance across diverse benchmarks, several limitations remain. First, we
+adopt a myopic decision strategy and do not model long-term interaction effects, which may limit
+performance in tasks requiring deep multi-step reasoning. Second, the framework assumes access
+to reliable user feedback, which may be noisy or delayed in practice. Third, we treat the LLM pool
+as fixed, whereas practical deployments may involve dynamic model availability or changing costs.
+Future work includes extending the framework to handle delayed and noisy feedback, incorporating
+non-myopic planning under partially learnable prompt dynamics, and optimizing LLM scheduling in
+dynamically evolving model pools.
+
+
+
+
+                                               12
+References
+ [1] Tom Brown, Benjamin Mann, Nick Ryder, Melanie Subbiah, Jared D Kaplan, Prafulla Dhariwal,
+     Arvind Neelakantan, Pranav Shyam, Girish Sastry, Amanda Askell, et al. Language models are
+     few-shot learners. Advances in neural information processing systems, 33:1877–1901, 2020.
+ [2] Sébastien Bubeck, Varun Chadrasekaran, Ronen Eldan, Johannes Gehrke, Eric Horvitz, Ece
+     Kamar, Peter Lee, Yin Tat Lee, Yuanzhi Li, Scott Lundberg, et al. Sparks of artificial general
+     intelligence: Early experiments with gpt-4. arXiv preprint arXiv:2303.12712, 2023.
+ [3] Xiangxiang Dai, Yuejin Xie, Maoli Liu, Xuchuang Wang, Zhuohua Li, Huanyu Wang, and John
+     Lui. Multi-agent conversational online learning for adaptive llm response identification. arXiv
+     preprint arXiv:2501.01849, 2025.
+ [4] Weizhe Yuan, Richard Yuanzhe Pang, Kyunghyun Cho, Xian Li, Sainbayar Sukhbaatar, Jing
+     Xu, and Jason Weston. Self-rewarding language models, 2025.
+ [5] Rohan Anil, Andrew M. Dai, Orhan Firat, et al. Palm 2 technical report, 2023.
+ [6] Lingjiao Chen, Jared Quincy Davis, Boris Hanin, Peter Bailis, Matei Zaharia, James Zou,
+     and Ion Stoica. Optimizing model selection for compound ai systems. arXiv preprint
+     arXiv:2502.14815, 2025.
+ [7] Quang H Nguyen, Duy C Hoang, Juliette Decugis, Saurav Manchanda, Nitesh V Chawla, and
+     Khoa D Doan. Metallm: A high-performant and cost-efficient dynamic framework for wrapping
+     llms. arXiv preprint arXiv:2407.10834, 2024.
+ [8] Kashyap Coimbatore Murali, Nate Harada, Sai, Prashanth Soundararaj, and Shikhar
+     Kwatra.    Openai cookbook: Practical guide for model selection for real-world
+     use cases. https://cookbook.openai.com/examples/partners/model_selection_
+     guide/model_selection_guide#purpose-audience, 2025.
+ [9] OpenAI. Gpt-4 technical report, 2023. https://openai.com/research/gpt-4.
+[10] Xiangxiang Dai, Jin Li, Xutong Liu, Anqi Yu, and John CS Lui. Cost-effective online multi-llm
+     selection with versatile reward models. arXiv preprint arXiv:2405.16587, 2024.
+[11] Pranjal Aggarwal, Aman Madaan, Ankit Anand, Srividya Pranavi Potharaju, Swaroop Mishra,
+     Pei Zhou, Aditya Gupta, Dheeraj Rajagopal, Karthik Kappaganthu, Yiming Yang, et al. Automix:
+     Automatically mixing language models. Advances in Neural Information Processing Systems,
+     37:131000–131034, 2024.
+[12] Xinyuan Wang, Yanchi Liu, Wei Cheng, Xujiang Zhao, Zhengzhang Chen, Wenchao Yu, Yanjie
+     Fu, and Haifeng Chen. Mixllm: Dynamic routing in mixed large language models. arXiv
+     preprint arXiv:2502.18482, 2025.
+[13] Yu Xia, Fang Kong, Tong Yu, Liya Guo, Ryan A Rossi, Sungchul Kim, and Shuai Li. Which llm
+     to play? convergence-aware online model selection with time-increasing bandits. In Proceedings
+     of the ACM Web Conference 2024, pages 4059–4070, 2024.
+[14] Tor Lattimore and Csaba Szepesvári. Bandit algorithms. Cambridge University Press, 2020.
+[15] Xiangxiang Dai, Zhiyong Wang, Jize Xie, Xutong Liu, and John CS Lui. Conversational
+     recommendation with online learning and clustering on misspecified users. IEEE Transactions
+     on Knowledge and Data Engineering, 36(12):7825–7838, 2024.
+[16] Bowen Zhang, Gang Wang, Qi Chen, and Anton van den Hengel. How do we select right llm
+     for each query? arXiv preprint, 2024.
+[17] Shunyu Yao, Jeffrey Zhao, Dian Yu, Nan Du, Izhak Shafran, Karthik Narasimhan, and Yuan
+     Cao. React: Synergizing reasoning and acting in language models, 2023.
+[18] Shunyu Yao, Dian Yu, Jeffrey Zhao, Izhak Shafran, Thomas L. Griffiths, Yuan Cao, and Karthik
+     Narasimhan. Tree of thoughts: Deliberate problem solving with large language models, 2023.
+
+
+                                                13
+[19] Xinyuan Wang, Chenxi Li, Zhen Wang, Fan Bai, Haotian Luo, Jiayou Zhang, Nebojsa Jojic,
+     Eric P Xing, and Zhiting Hu. Promptagent: Strategic planning with language models enables
+     expert-level prompt optimization. arXiv preprint arXiv:2310.16427, 2023.
+[20] Xiangxiang Dai, Zhiyong Wang, Jize Xie, Tong Yu, and John CS Lui. Online learning and
+     detecting corrupted users for conversational recommendation systems. IEEE Transactions on
+     Knowledge and Data Engineering, 36(12):8939–8953, 2024.
+[21] Yasin Abbasi-Yadkori, Dávid Pál, and Csaba Szepesvári. Improved algorithms for linear
+     stochastic bandits. Advances in neural information processing systems, 24, 2011.
+[22] Jinhang Zuo, Songwen Hu, Tong Yu, Shuai Li, Handong Zhao, and Carlee Joe-Wong. Hierar-
+     chical conversational preference elicitation with bandit feedback. In Proceedings of the 31st
+     ACM International Conference on Information & Knowledge Management, pages 2827–2836,
+     2022.
+[23] Junyou Li, Qin Zhang, Yangbin Yu, Qiang Fu, and Deheng Ye. More agents is all you need.
+     arXiv preprint arXiv:2402.05120, 2024.
+[24] Yubo Wang, Xueguang Ma, Ge Zhang, Yuansheng Ni, Abhranil Chandra, Shiguang Guo,
+     Weiming Ren, Aaran Arulraj, Xuan He, Ziyan Jiang, et al. Mmlu-pro: A more robust and
+     challenging multi-task language understanding benchmark. In The Thirty-eight Conference on
+     Neural Information Processing Systems Datasets and Benchmarks Track, 2024.
+[25] Hunter Lightman, Vineet Kosaraju, Yura Burda, Harri Edwards, Bowen Baker, Teddy Lee, Jan
+     Leike, John Schulman, Ilya Sutskever, and Karl Cobbe. Let’s verify step by step. arXiv preprint
+     arXiv:2305.20050, 2023.
+[26] David Rein, Betty Li Hou, Asa Cooper Stickland, Jackson Petty, Richard Yuanzhe Pang, Julien
+     Dirani, Julian Michael, and Samuel R. Bowman. GPQA: A graduate-level google-proof q&a
+     benchmark. In First Conference on Language Modeling, 2024.
+[27] Aixin Liu, Bei Feng, Bing Xue, Bingxuan Wang, Bochao Wu, Chengda Lu, Chenggang Zhao,
+     Chengqi Deng, Chenyu Zhang, Chong Ruan, et al. Deepseek-v3 technical report. arXiv preprint
+     arXiv:2412.19437, 2024.
+[28] Shitao Xiao, Zheng Liu, Peitian Zhang, and Niklas Muennighoff. C-pack: Packaged resources
+     to advance general chinese embedding, 2023.
+
+
+
+
+                                                14
+Appendix
+
+A     Proofs
+
+A.1     Proof of Theorem 1
+
+Proof. We analyze the cumulative myopic regret of the Greedy LinUCB algorithm under a linear
+reward model: for each arm k ∈ [K] and context xt,h , the expected reward is E[rt,h ] = ⟨xt,h , θk∗ ⟩.
+Let Ak = λI + xx⊤ and bk =
+                P                 P
+                                      rx be the design matrix and response vector constructed from
+past observations for arm k, and define the ridge regression estimate θ̂k = A−1
+                                                                             k bk .
+By Theorem 2 of [21], under Assumptions 1–4, with probability at least 1 − δ, for all arms k and all
+contexts xt,h :
+                                     |⟨θ̂k − θk∗ , xt,h ⟩| ≤ α · ∥xt,h ∥A−1 ,
+                                                                                  k
+
+
+where
+                                                              s                       !
+                                                  √                         KT L2
+                                                                        
+                             α = O (SL +              λS) ·       log                      .
+                                                                             λδ
+
+     ∗
+Let kt,h = arg maxk ⟨xt,h , θk∗ ⟩ be the optimal arm at step (t, h), and let at,h be the arm selected by
+Greedy LinUCB. The instantaneous regret is:
+
+                                 Regt,h = ⟨xt,h , θk∗t,h            ∗
+                                                     ∗ ⟩ − ⟨xt,h , θa
+                                                                      t,h
+                                                                          ⟩.
+
+Using the definition of the UCB index and the confidence bounds:
+
+                                         Regt,h ≤ 2α · ∥xt,h ∥A−1
+                                                               a
+                                                                  .
+                                                                            t,h
+
+
+
+Summing over all T rounds and up to H steps per round:
+                                       Ht
+                                     T X
+                                     X                              Ht
+                                                                  T X
+                                                                  X
+                         R(T ) =                Regt,h ≤ 2α                       ∥xt,h ∥A−1
+                                                                                          a
+                                                                                             .
+                                                                                           t,h
+                                      t=1 h=1                     t=1 h=1
+
+
+Using the standard cumulative uncertainty bound (Lemma 11 of [21]):
+
+                                                         T HL2
+                           X                                   
+                                      2
+                               ∥xt,h ∥A−1 ≤ Kd log 1 +              ,
+                                        at,h               λd
+                               t,h
+
+and applying Cauchy–Schwarz:
+                                                 s
+                                                                     T HL2
+                         X                                                
+                               ∥xt,h ∥A−1 ≤          T HKd · log 1 +        .
+                                       a  t,h                          λd
+                         t,h
+
+
+Substituting into the regret bound:
+                                                              s                         !
+                                                √                               T HL2
+                                                                            
+                          R(T ) = O α ·             KdT H ·        log                         .
+                                                                                  λd
+
+Combining logarithmic terms and substituting the expression for α, we conclude:
+                               √                   √             KT L2
+                                                                     
+                  R(T ) = O      KdT H · SL + λS · log                      .
+                                                                    λδ
+
+                                                        15
+A.2   Proof of Theorem 2
+
+Proof. We decompose the total regret into two parts: (i) regret from suboptimal reward estimation,
+assuming true costs are known, and (ii) additional regret due to cost estimation errors.
+Total Regret Decomposition. At each step (t, h), let the myopic oracle select
+
+                                       ∗                                ⟨xt,h , θk∗ ⟩
+                                      kt,h = arg                max                   ,
+                                                        k∈[K], µk ≤bt,h    µk
+and let at,h be the algorithm’s selected arm. Then the per-step regret is
+                                        ⟨xt,h , θk∗∗ ⟩                         ⟨xt,h , θa∗t,h ⟩
+                                                        t,h
+                        Regt,h =                              · µkt,h
+                                                                  ∗   −                           · µat,h .
+                                               µkt,h
+                                                 ∗                                 µat,h
+
+This can be decomposed as:
+                    ⟨xt,h , θk∗∗ ⟩
+                                                                !
+                                             ⟨xt,h , θa∗t,h ⟩                                                µkt,h − µat,h
+                                                                                                              ∗
+                                                                                                                                 
+       Regt,h =                 t,h
+                                      −                             · µkt,h
+                                                                        ∗   + ⟨xt,h , θa∗t,h ⟩ ·                                     .
+                        µkt,h
+                          ∗                        µat,h                                                          µat,h
+
+For analysis, we upper bound this regret by two terms:
+                               ⟨xt,h , θk∗∗ ⟩           ⟨xt,h , θa∗t,h ⟩                        µkt,h
+                                                                                                  ∗   − µat,h
+                                             t,h
+               Regt,h ≤                             −                          ·µkt,h
+                                                                                  ∗   +                                 .
+                                  µ    ∗
+                                      kt,h                    µat,h                                  µat,h
+                           |                       {z                      }                |         {z           }
+                          (A): reward estimation error under true costs                    (B): cost estimation error
+
+
+(A) Reward regret. If the cost estimates µk were known, the algorithm reduces to a cost-weighted
+Greedy LinUCB variant. As in the standard LinUCB analysis, the cumulative regret from reward
+estimation over T rounds and H steps is:
+                                                   √          
+                               Rreward (T ) = O
+                                              e SL · KdT H .
+
+
+(B) Cost regret. The algorithm uses an empirical estimate ĉk and confidence width βk to compute
+the denominator in the score:
+                                                  UCBk (xt,h )
+                                 Scorek (xt,h ) =              .
+                                                    ĉk − βk
+With high probability, Hoeffding’s inequality ensures:
+                                                   s
+                                                      log(2T K/δ)
+                               |ĉk − µk | ≤ βk =                 .
+                                                          2Nk
+
+This affects the ranking of arms. In the worst case, a suboptimal arm k with a slightly underestimated
+cost may be chosen over the optimal one, even if its reward is lower. Over T rounds, each such
+deviation contributes
+                  √ an additional regret. Assuming the maximum deviation in cost estimate affects
+selection for O( T ) rounds and the worst-case reward difference is O(1), we obtain:
+                                                         s             !
+                                            K                   
+                                           X    C max              T K
+                           Rcost (T ) = O
+                                        e               · T log            ,
+                                                  µ2k               δ
+                                                        k=1
+
+where the factor µ12 arises from the sensitivity of the score to cost estimation errors near small µk .
+                   k
+
+Total regret. Adding the two components:
+                                                                                                              s                      !
+                                                                      √                  K                                  
+                                                                                         X Cmax                                 TK
+ Rbudget (T ) = Rreward (T ) + Rcost (T ) = O
+                                            e SL ·                        KdT H +                        ·      T log                     .
+                                                                                                   µ2k                           δ
+                                                                                         k=1
+
+
+                                                                16
+B    Impact of Context
+
+Our framework posits that leveraging evolving context—the output from previous LLM interactions—
+can enhance the performance of subsequent LLM selections. To specifically investigate this, we
+conducted a controlled experiment on 60 questions from the AIME dataset, comparing two strategies:
+Strategy 1, using Gemini-Flash as a standalone solver, and Strategy 2, a two-step sequential approach
+where Mistral-Small first attempts the problem, and its output (regardless of correctness) is then
+provided as context to Gemini-Flash for a second attempt. One example for positive and negative
+context impact is provided in appendix.
+The results demonstrate a tangible benefit from context. Strategy 2 (Mistral → Gemini w/ Context)
+achieved a 25% success rate, outperforming Strategy 1’s (Gemini-Only) 20% success rate. More
+tellingly, in 8 out of the 60 questions, Gemini-Only failed, Mistral’s initial attempt also failed, but
+Gemini with context from Mistral’s attempt subsequently succeeded. This directly indicates that the
+contextual information, even from an initially incorrect response, can provide valuable grounding,
+expose flawed reasoning paths to avoid, or offer a different starting point that enables the subsequent
+LLM to reach the correct solution. This aligns with the core motivation of our work: that adaptive,
+multi-step interactions where context evolves can lead to better outcomes than single-shot LLM
+applications.
+However, the influence of context is not universally positive. In 3 instances, the Gemini-Only
+strategy succeeded, while the sequential Mistral → Gemini approach failed. This suggests that poor
+or misleading initial context can sometimes derail a subsequent LLM that might have otherwise
+succeeded. Such cases underscore the complexity of context interaction and highlight a potential
+challenge in multi-LLM cascades. The example below demonstrates a scenario where the initial
+context might have had a detrimental effect.
+Overall, while the sequential strategy incurred a higher average cost per question ($0.000712 for
+Strategy 2 vs. $0.000229 for Strategy 1) due to invoking two models in many cases, the net gain
+in accuracy (5% percentage points, with 8 direct context-driven successes) supports the hypothesis
+that context evolution is a valuable mechanism. This targeted experiment highlights the potential of
+contextual information to improve problem-solving in multi-LLM systems, providing a foundational
+rationale for the adaptive, context-aware selection mechanisms developed in this paper. The instances
+of negative impact also motivate further research into robustly determining when and how context
+should be passed or filtered. Below we have provided two examples that show the impact of context.
+
+    Example : Context Helped
+    Question: Six points A, B, C, D, E and F lie in a straight line in that order. Suppose that
+    G is a point not on the line and that AC = 26, BD = 22, CE = 31, DF = 33, AF = 73,
+    CG = 40, and DG = 30. Find the area of △BGE. Ground Truth: 468
+    Ground Truth: 468
+
+    Strategy 1 (Gemini-Only): Let AB = a, BC = b, CD = c, DE = d, EF = e. AC = a +
+    b = 26, BD = b+c = 22, CE = c+d = 31, DF = d+e = 33, AF = a+b+c+d+e = 73.
+    AF = AC +CE+EF −CE+DF = 26+31+e = 73, implying a = 18 and e = 17. b = 8,
+    c = 14, d = 17. Therefore AE = 51. BE = BC + CE = 8 + 31 = 39. Let G be (0, y).
+    Calculate B and E using distance formula. Coordinates B = (xB , 0), E = (xE , 0), G =
+    (xG , 0). Area of △BGE = 12 |xB − xE | · y. Using law of cosines to coordinate points is too
+    complex. Let the area of the triangle be denoted by K. No easy spatial representation.
+    The final answer is 195
+    Is Correct: False
+    Total Cost: $0.000155
+    Strategy 2 (Mistral -> Gemini w/ Context):
+    Attempt 1 (Mistral): Model: mistralai/mistral-small-3.1-24b-instruct
+    Parsed Answer: Given the points A, B, C, D, E, F on a line and G not on the line, we need
+    to find the area of △BGE.
+    1. Extend G to meet the line at point H such that GH ⊥ EF . 2. Let EH = x and HF = y.
+    3. According to Pythagoras’ theorem, for △GIH: 402 − (y + 31)2 = x2 . 4. For △GJH:
+
+
+
+                                                  17
+302 − (y + 9)2 = (x + 31)2 . 5. Solving these equations:
+                                  1600 − (y + 31)2 = x2
+                                 900 − (y + 9)2 = (x + 31)2
+6. Simplifying and solving these, coupled with equations found from 732 − (x + y)2 =
+(x + 31)2 + (y + 9)2 , leads to:
+                                [EH] = 16.0, [HF ] = 20.5
+7. Using the area formula 21 × base × height:
+                                            1
+                       Area of △BGE =         × 44.5 × 31 = 695.75
+                                            2
+The final calculated area is 695.75 .
+Is Correct: False
+Attempt 2 (Gemini w/ Context): Model: google/gemini-2.0-flash-001
+Parsed Answer: Let a, b, c, d, e, f be the positions of points A, B, C, D, E, F on the line,
+respectively. We are given: c−a = 26, d−b = 22, e−c = 31, f −d = 33, f −a = 73. From
+f − a = 73, f = a + 73. Also, c = a + 26, d = b + 22, e = c + 31 = a + 26 + 31 = a + 57,
+f = d + 33 = b + 22 + 33 = b + 55. So a + 73 = b + 55 =⇒ b = a + 18. Then
+d = a + 18 + 22 = a + 40. We have DG = 30 and CG = 40. Let G = (x, y).
+(x − (a + 26))2 + y 2 = 402 = 1600 (x − (a + 40))2 + y 2 = 302 = 900 Subtracting,
+(x − a − 26)2 − (x − a − 40)2 = 700. ((x − a) − 26)2 − ((x − a) − 40)2 = 700
+(x − a)2 − 52(x − a) + 262 − [(x − a)2 − 80(x − a) + 402 ] = 700 28(x − a) + 676 − 1600 =
+700 28(x − a) = 700 + 924 = 1624 x − a = 1624        28 = 58. Thus x = a + 58. Then
+(a + 58 − a − 26)2 + y 2 = 322 + y 2 = 1600, so y 2 = 1600 − 1024 = 576, and y = 24.
+Therefore, B = a + 18, E = a + 57, G = (a + 58, 24). Area of △BGE = 21 |(a + 18)(0 −
+24) + (a + 57)(24 − 0) + (a + 58)(0 − 0)| = 12 |(18 − 57)(−24)| = 12 |(−39)(−24)| =
+ 1
+ 2 (39)(24) = 39 · 12 = 468.
+The final answer is 468
+Is Correct: True
+Total Cost: $0.000504
+
+
+
+Example : Context Hurted
+                                                              √
+Question (AIME) : Question: Let O(0, 0), A( 12 , 0), and B(0, 23 ) be points in the coordinate
+plane. Let F be the family of segments P Q of unit length lying in the first quadrant with P
+on the x-axis and Q on the y-axis. There is a unique point C on AB, distinct from A and B,
+that does not belong to any segment from F other than AB. Then OC 2 = pq , where p and q
+are relatively prime positive integers. Find p + q. Ground Truth: 23
+
+
+Strategy 1 (Gemini-Only):Parsed Answer: Let P (x, 0) and Q(0, y). Since P Q = 1,
+x2 + y 2 = 1. The envelope of P Q √is x2/3 + y 2/3 = 1. The coordinates of C are where
+ 2/3      2/3
+                             √        3
+                                                         √
+                                                      1 3 3                  1    27
+x +y          = 1 and y = − 3x + 2 . Solving, C = ( 8 , 8 ). Then OC 2 = 64    + 64  =
+28     7
+64 =  16 . p = 7, q = 16. p + q = 23.
+The final answer is 23
+Is Correct: True
+Total Cost for Attempt: $0.000114
+
+Strategy 2 (Mistral -> Gemini w/ Context):
+Attempt 1 (Mistral):
+Model: mistralai/mistral-small-3.1-24b-instruct
+
+
+
+                                             18
+               1. **Define the points and the segment**: - Points are O(0, 0), A 12 , 0 ,
+                                                                                       
+ParsedAnswer:
+         √ 
+and B 0, 23 . - Segment P Q has P on the x-axis and Q on the y-axis with unit length.
+2. **Parameterize point C on AB**: - Let C be on AB with coordinates C(x, y). -
+The lineAB can be parameterized       as C(t) = (1 − t)A + tB for 0 ≤ t ≤ 1. - Thus,
+                    √ 
+          1           3
+C(t) = 2 (1 − t), 2 t .
+3. **Find the condition for C not belonging to any segment in F**: - For C to not belong to
+any segment in F, it must satisfy the condition where the distance
+                                                                p from C to any point P on
+the x-axis and Q on the y-axis is greater than 1. - This implies x2 + y 2 > 1. - Substituting
+x and y from the parameterization, we get:
+                                                     √ !2
+                             v
+                             u
+                             u 1            2
+                             t (1 − t) +               3
+                                                         t    >1
+                                   2                  2
+
+- Simplifying inside the square root:
+                                  r
+                                        1           3
+                                          (1 − t)2 + t2 > 1
+                                        4           4
+                                  r
+                                    1 − 2t + t2 + 3t2
+                                                       >1
+                                             4
+                                   r
+                                      1 + 2t2 − 2t
+                                                    >1
+                                             4
+                                    √
+                                      1 + 2t2 − 2t
+                                                    >1
+                                            2
+                                    p
+                                      1 + 2t2 − 2t > 2
+                                     1 + 2t2 − 2t > 4
+                                     2t2 − 2t − 3 > 0
+                                               3
+                                      t2 − t − > 0
+                                               2
+4. **Solve the quadratic inequality**: - The roots of the quadratic equation t2 − t − 23 = 0
+are:                                     √               √
+                                    1± 1+6          1± 7
+                               t=                =
+                                          2             2
+                                                    √                √
+- The inequality t2 − t − 32 > 0 holds for t < 1−2 7 or t > 1+2 7 .
+5. **Determine
+        √
+                  the unique t within the interval (0, 1)**: - Since 0 ≤ t ≤ 1, the valid t is
+     1+ 7
+t= 2 .
+                                               √
+6. **Calculate OC 2 **: - Substitute t = 1+2 7 back into the parameterization:
+                                            √ ! √             √ !!
+                              1       1+ 7             3 1+ 7
+                         C        1−              ,
+                              2           2          2       2
+                                            √ ! √             √ !!
+                              1 1−1− 7                 3 1+ 7
+                         C                        ,
+                              2         2            2       2
+                                        √ √             √ !
+                                           7     3(1 + 7)
+                                 C −         ,
+                                          4          4
+- Calculate OC 2 :
+                                        √ !2        √           √        !2
+                              2           7             3(1 +       7)
+                          OC =        −      +
+                                         4                  4
+
+
+
+                                               19
+                                                                 √
+                                               2 7      3(1 + 2 7 + 7)
+                                       OC =         +
+                                                 16             16
+                                                                   √
+                                              2     7     3(8 +  2 7)
+                                          OC =         +
+                                                   16           16
+                                                                   √
+                                               2     7     24 +  6 7
+                                           OC =         +
+                                                    16          16
+                                                                √
+                                                        31 + 6 7
+                                              OC 2 =
+                                                            16
+                                                       √
+        7. **Simplify and find p and q**: - Since 7 is irrational,
+                                                               √
+                                                                          we need to ensure p and q are
+        relatively prime. - The expression simplifies to 31+616
+                                                                 7
+                                                                   , but we need pq to be rational. - Thus,
+        we re-evaluate the steps and find the correct t that simplifies to a rational OC 2 .
+        After re-evaluating, the correct t and simplifying, we find:
+                                                                    19
+                                                      OC 2 =
+                                                                    7
+        Thus, the final answer is:
+                                                           26
+        Is Correct: False
+        Total Cost for Attempt: $0.000155 Attempt 2 (Gemini w/ Context):                                 Model:
+
+        google/gemini-2.0-flash-001:
+        Parsed Answer: Let P = (x, 0) and Q = (0, y) with x, y ≥ 0 and P Q = 1. Then
+                                                ′    ′
+        x2 + y 2 = 1. The line PQ is given by xx + yy = 1. The equation of the line AB is
+                 ′
+         x′   √y
+        1/2 +  3/2
+                       = 1, or 2x′ + √23 y ′ = 1. Let x = cos θ and y = sin θ for 0 ≤ θ ≤ π/2.
+                                                      ′         ′
+                                                      x       y               ′           ′
+        Then the equation of the line PQ is cos         θ + sin θ = 1, or x sin θ + y cos θ = sin θ cos θ.
+                         ′ ′                    ′   2   ′
+        The point C(x , y ) on AB is 2x + √3 y = 1. We want to find a point C on AB such that
+        x′ sin θ + y ′ cos θ = sin θ cos θ has a unique solution for θ. Substituting x′ = 21 − √13 y ′
+        gives ( 12 − √13 y ′ ) sin θ + y ′ cos θ = sin θ cos θ 21 sin θ − √13 y ′ sin θ + y ′ cos θ = sin θ cos θ
+                                                                     sin θ(cos θ− 1 )
+        y ′ (cos θ − √13 sin θ) = sin θ cos θ − 21 sin θ y ′ = cos θ− √1 sin2 θ = cos θ−sin√1θ sin θ (cos θ − 21 )
+                                                                        3                    3               √
+        We want y ′ to have a unique solution. This arises when cos θ− √13 sin θ = 0, i.e., tan θ = 3,
+        so θ = π3 . In this case, cos θ − 12 = 0, so 12 − 12 = 0. Consider f (θ) = cos θ−sin√1θ sin θ . Let
+                                                                                  √                  3
+                                                                                    3        ′     √1 ′
+        θ = π3 be the unique solution. Then cos θ = 12 and sin θ =                              1
+                                                                                   2 . Then x = 2 − 3 y . So,
+        2x′ + √23 y ′ = 1. The final answer is 7/16
+        Is Correct: False
+        Total Cost: $0.000504
+
+
+    C    Prompt Template
+    This section presents the prompts used to interact with the LLMs for both problem-solving and
+    answer evaluation.
+                        Listing 1: Base Prompt for Language Model Problem Solving.
+1   Solve the following math problem : { question_text }
+2
+3   Please provide a Structured derivation of your answer within 50 words .
+4   At the end , clearly state your final answer in LaTeX format , enclosed
+        within \boxed{}.
+5   For example : ’ The final answer is \boxed{ x =5} ’.
+
+
+
+                                                           20
+        Listing 2: Augmented Prompt for Language Model with Feedback from Prior Attempts.
+1   Solve the following math problem : { question_text }
+2
+3   Please provide a Structured derivation of your answer within 50 words .
+4   At the end , clearly state your final answer in LaTeX format , enclosed
+        within \boxed{}.
+5   For example : ’ The final answer is \boxed{ x =5} ’.
+6
+7   Note : The following previous attempts were incorrect . Please provide a
+          different solution or identify the error in previous reasoning if
+          possible :
+8   - Attempt 1 ( by { failed_llm_id_1 }) led to : { failed_answer_1 }
+9   - Attempt 2 ( by { failed_llm_id_2 }) led to : { failed_answer_2 }
+
+
+            Listing 3: Prompt for the Grader Model to Evaluate LLM Answer Correctness.
+1   Expression 1: { llm_answer_latex }
+2   Expression 2: { ground_truth_latex }
+3
+4   Expression 2 is the answer and expression is attempt by student , look
+        at their final answer only which might be boxed , does student get
+        the final expected answer ? Respond with only the word ’ True ’ or ’
+        False ’.
+
+
+
+
+                                               21
+

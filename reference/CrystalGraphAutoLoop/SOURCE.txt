@@ -1,0 +1,5 @@
+arXiv:2606.29717
+abs: https://arxiv.org/abs/2606.29717
+pdf: https://arxiv.org/pdf/2606.29717
+topic: MatBench自主超专家
+pulled: 2026-08-09 via arxiv MCP (arxiv_get_metadata / arxiv_read_paper)

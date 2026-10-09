@@ -1,0 +1,158 @@
+commit cea3c7bebc1347baf92ec198c3530458827a0561
+Author: Jing Wu <jingwu.wu@alibaba-inc.com>
+Date:   Fri Aug 7 21:25:14 2026 +0800
+
+    任务 #61 归属纠正：test_material_key_recompute 断言改数据源动态取（E3 测试设计问题自修）。监工裁定：该测试文件系本线 d3b7d4a 所写、硬编码 5771/5740/31 魔法数，E1 扩量是正常职责、数据还会再扩，钉常量必再挂——失败归属由'待 E1 更新常量'纠正为 E3 自修改动态取。改法（调研规格④）：_load_key_column 按 key_type 分流返 (primary, degraded)，缺 key_type 旧版键列向后兼容按 primary；库规模/唯一键数改守恒式动态断言（universe==键列 primary 键去重规模）；碰撞组形状按裁定 F4 不钉常量也不降注释——复算侧形状分布==键列登记侧形状分布自洽断言；复算一致性断言（测试本体）原样保留仅收窄至 primary 子集（degraded 行无 SPACEGROUP 段现算返 None 不在复算面）；文件头/docstring/log 模板三处文案同步去硬编码。实证：现键列 17,252 行（5,771 primary+11,481 degraded）4 passed；worktree 旧键列 5,771 行（无 key_type 字段）重放 4 passed——对数据再扩免疫
+
+diff --git a/dag_poc/mcp_mock_server/tests/test_material_identity_grounding.py b/dag_poc/mcp_mock_server/tests/test_material_identity_grounding.py
+index fbe3d3b..27be178 100644
+--- a/dag_poc/mcp_mock_server/tests/test_material_identity_grounding.py
++++ b/dag_poc/mcp_mock_server/tests/test_material_identity_grounding.py
+@@ -4,8 +4,10 @@
+ 
+ 覆盖四块：
+   1. 全量键列等价：gateway 接口 B 现算键（空间群号按符号缓存拼装）与 E1-04
+-     judge 侧键列（接口 A，material_identity_keys.jsonl）5,771/5,771 逐一相同，
+-     唯一键 5,740、冲突 31 组全部为上游重复录入（同键判等是正确行为）；
++     judge 侧键列（接口 A，material_identity_keys.jsonl）primary 子集逐一相同
++     （规模/唯一键数/碰撞组形状全部从键列动态取，不钉魔法数——任务 #61
++     归属纠正：键列随 E1 扩量增长属正常职责，钉常量会反复挂）；碰撞组全部
++     为上游重复录入（同键判等是正确行为）；
+   2. 真实数据样本实跑：get_entity_A.jsonl 晶体记录（A 侧可见字段：匿名
+      formula + masked_structure SPACEGROUP 段）现算键与键列 == 比对，含
+      小数计量/SG64 旧记法别名/零计量/分子单质四类边界样本；
+@@ -23,6 +25,7 @@ import datetime
+ import json
+ import os
+ import sys
++from collections import Counter
+ 
+ HERE = os.path.dirname(os.path.abspath(__file__))
+ DAG_POC = os.path.abspath(os.path.join(HERE, '..', '..'))
+@@ -42,42 +45,60 @@ MATERIAL_REALDATA_LOG = os.path.join(
+ 
+ 
+ def _load_key_column():
+-    """接口 A 键列：{id: material_identity_key}。"""
+-    out = {}
++    """接口 A 键列，按 key_type 分流（任务 #61 动态取口径，调研规格④）：
++    返回 (primary, degraded)，各为 {id: material_identity_key}。
++    degraded 行无 SPACEGROUP 段，material_key_from_record 现算返 None，不在
++    本文件复算面（降级键复算归 §9 配套用例）；缺 key_type 的旧版键列一律按
++    primary 处理（向后兼容）。"""
++    primary, degraded = {}, {}
+     with open(KEY_COLUMN_PATH, encoding='utf-8') as f:
+         for line in f:
+             line = line.strip()
+-            if line:
+-                rec = json.loads(line)
+-                out[rec['id']] = rec['material_identity_key']
+-    return out
++            if not line:
++                continue
++            rec = json.loads(line)
++            target = degraded if rec.get('key_type') == 'degraded' else primary
++            target[rec['id']] = rec['material_identity_key']
++    return primary, degraded
+ 
+ 
+ def test_material_key_recompute_matches_key_column():
+     """全量等价（E3 侧独立复核，对应 E1-04 自检 S2）：接口 B 现算键与
+-    judge 侧键列 5,771/5,771 逐一相同；唯一键 5,740、冲突组 31（全部
+-    上游重复录入，同键判等是正确行为，E1-04 交接 §3）。证据同步写盘。"""
++    judge 侧键列 primary 子集逐一相同（复算一致性是测试本体，原样保留）。
++    库规模/唯一键数/碰撞组数与形状全部从键列动态取（任务 #61 归属纠正：
++    原硬编码 5771/5740/31 属测试设计问题，E1 扩量是正常职责、数据还会再扩，
++    钉常量必再挂）；degraded 行无 SPACEGROUP 段、现算返 None，不在本用例
++    复算面（分流口径见调研规格④）。证据同步写盘。"""
+     gw = G.Gateway()
+     ent_records, _ = gw._a_identity
+-    key_column = _load_key_column()
+-    assert len(key_column) == 5771
++    key_column_primary, key_column_degraded = _load_key_column()
++    assert key_column_primary, '键列 primary 子集不应为空'
++    # 复算语义（测试本体，不许弱化）：primary 子集逐条现算 == 键列登记值
+     mismatch = []
+-    for cid, expect in key_column.items():
++    for cid, expect in key_column_primary.items():
+         rec = ent_records.get(cid)
+         assert rec is not None and rec.get('entity_type') == 'crystal', cid
+         got = G.material_key_from_record(rec)
+         if got != expect:
+             mismatch.append((cid, got, expect))
+     assert not mismatch, f'现算键与键列不一致 {len(mismatch)} 条：{mismatch[:3]}'
+-    # 键全集：唯一键 5,740；冲突组 31 全部恰 2 条/组（上游重复录入）
++    # 唯一键数守恒式（动态）：universe 规模 == 键列 primary 键去重规模
++    # （等价于"无一条现算失败/丢失"；不再钉 5740 常量）
+     universe = gw._material_key_universe()
+-    assert len(universe) == 5740
+-    from collections import Counter
++    assert len(universe) == len(set(key_column_primary.values()))
++    # 碰撞组形状自洽（裁定 F4：不钉常量也不降注释）——复算侧形状分布
++    # 与键列登记侧形状分布逐档一致；现况为上游重复录入恰 2 条/组（3DSC
++    # 数据事实），数据再扩时两分布同步演化、自洽断言不受影响
+     cnt = Counter(G.material_key_from_record(ent_records[c])
+-                  for c in key_column)
++                  for c in key_column_primary)
+     dup_groups = {k: n for k, n in cnt.items() if n > 1}
+-    assert len(dup_groups) == 31 and set(dup_groups.values()) == {2}
+-    _write_material_realdata_log(key_column, ent_records, universe, dup_groups)
++    keycol_cnt = Counter(key_column_primary.values())
++    keycol_dup = {k: n for k, n in keycol_cnt.items() if n > 1}
++    assert len(dup_groups) == len(keycol_dup)
++    assert Counter(dup_groups.values()) == Counter(keycol_dup.values()), \
++        '碰撞组形状分布复算值与键列登记值不自洽'
++    _write_material_realdata_log(key_column_primary, ent_records, universe,
++                                 dup_groups, degraded_count=len(key_column_degraded))
+ 
+ 
+ def test_material_key_realdata_samples():
+@@ -86,7 +107,7 @@ def test_material_key_realdata_samples():
+     小数计量 / SG64 旧记法 'C m c a' / 零计量 c04294 / 分子单质 c05146。"""
+     gw = G.Gateway()
+     ent_records, _ = gw._a_identity
+-    key_column = _load_key_column()
++    key_column, _ = _load_key_column()   # primary 子集（样本均为晶体主键）
+     # 首行样本（交接说明示例）：小数计量归约 1.98/0.02 → 99/1/50/100
+     rec = ent_records['c00001']
+     assert G.material_key_from_record(rec) == '[20*]99[32*]50[42*][48*]100_SG139'
+@@ -140,7 +161,8 @@ def test_material_key_seam_fault_tolerant():
+         {'formula': 'garbage', 'masked_structure': 'SPACEGROUP:P 1'}) is None
+ 
+ 
+-def _write_material_realdata_log(key_column, ent_records, universe, dup_groups):
++def _write_material_realdata_log(key_column, ent_records, universe, dup_groups,
++                                 degraded_count=0):
+     """材料侧身份键实跑证据落盘（沿 E1 rehearsal_logs 惯例；每次运行覆写
+     为当次实跑留痕，测试绿即证据新）。"""
+     os.makedirs(os.path.dirname(MATERIAL_REALDATA_LOG), exist_ok=True)
+@@ -153,9 +175,13 @@ def _write_material_realdata_log(key_column, ent_records, universe, dup_groups):
+         '# 入参: A 侧可见字段（get_entity_A.formula + masked_structure 的 SPACEGROUP 段）',
+         '',
+         '## 全量等价复核（E3 侧独立重跑，对应 E1-04 自检 S2）',
+-        f'  键列规模: {len(key_column)} 条（接口 A 对照源）',
++        f'  键列 primary 规模: {len(key_column)} 条（接口 A 对照源，动态取）'
++        + (f'；另有 degraded 行 {degraded_count} 条（无 SPACEGROUP 段，不在本复算面）'
++           if degraded_count else ''),
+         f'  接口 B 现算 == 键列: {len(key_column)}/{len(key_column)} 逐一相同',
+-        f'  唯一键数: {len(universe)}（冲突组 {len(dup_groups)}，全部上游重复录入，同键判等是正确行为）',
++        f'  唯一键数: {len(universe)}（冲突组 {len(dup_groups)}，形状分布 '
++        f'{dict(sorted(Counter(dup_groups.values()).items()))}'
++        '；全部上游重复录入，同键判等是正确行为）',
+         '',
+         '## 样本摘录（键生成与 == 比对）',
+     ]
+@@ -177,9 +203,11 @@ def _write_material_realdata_log(key_column, ent_records, universe, dup_groups):
+         '  伪键（错空间群号）/ 仅 reduced_formula 半串 → anchor_in_A=False',
+         '',
+         '## 判别力评估结论',
+-        '  键覆盖率 5,771/5,771（100%）、唯一键 5,740；31 组碰撞全部为 3DSC 上游',
++        f'  键覆盖率 {len(key_column)}/{len(key_column)}（100%）、唯一键 {len(universe)}；'
++        f'{len(dup_groups)} 组碰撞全部为 3DSC 上游',
+         '  重复录入（同材料重复登记），不存在"不同晶体同键"——同键判等是正确行为，',
+-        '  判别力充分支撑 grounding == 判定（造题去重归 E5）。',
++        '  判别力充分支撑 grounding == 判定（造题去重归 E5）。规模数字为当次',
++        '  实跑动态取自键列（任务 #61 起不钉常量）。',
+         '',
+         '## 边界登记',
+         '  材料版 edit_op 算子集未就位（ADR-0017 §4 另定）→ grounding 条件③的',

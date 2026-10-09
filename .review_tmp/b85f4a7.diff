@@ -1,0 +1,293 @@
+commit b85f4a79129a7ccc8a2364284d6480f8c90baf97
+Author: Jing Wu <jingwu.wu@alibaba-inc.com>
+Date:   Fri Aug 7 11:40:51 2026 +0800
+
+    任务 #45（task-04 §1）：extract_tool_data 新契约迁移 + legacy 双轨。显式名单分派（新契约 9 工具 ⊆ _NEW_CONTRACT_TOOL_NAMES → _extract_new；含任一旧名/MIXED → _extract_legacy），分流日志留痕；legacy 分支原样冻结搬入零语义改动（legacy 9 实验点逐位等于基线）；新分支按 tools_schema.json output 逐工具重组六元组（literature_search doc_id/search_candidates id/get_entity 晶体/get_property 扁平化/compare 双域），错误信封显式跳过，判分公式零改动；新契约 6 实验点 cp1-cp5 出现非 0（avg task_score 0.067→0.127）。新增 test_tool_extract_dispatch.py 8 用例全绿。待裁定项：test_main_end_to_end_with_discovery_case 以修复前 _all_results.json 快照为固定基线，与本修复目标必然冲突（红线禁改 traces/**），已报监工
+
+diff --git a/dag_poc/mcp_mock_server/tests/test_tool_extract_dispatch.py b/dag_poc/mcp_mock_server/tests/test_tool_extract_dispatch.py
+new file mode 100644
+index 0000000..1cb22c1
+--- /dev/null
++++ b/dag_poc/mcp_mock_server/tests/test_tool_extract_dispatch.py
+@@ -0,0 +1,171 @@
++#!/usr/bin/env python3
++"""test_tool_extract_dispatch.py —— 任务 #45（task-04 §1 PR-34）：
++extract_tool_data 新契约迁移 + legacy 双轨回归。
++
++覆盖（§1.4 四项要求的测试侧）：
++  分派    显式名单判定：工具名 ⊆ 新契约 9 工具 → _extract_new；出现任一旧名
++          → _extract_legacy；MIXED 归 legacy；空 trace 归 legacy。
++  新分支  逐工具出参形状映射（lit doc_id / candidates[].id / get_entity 晶体
++          入 cif_ids / get_property 嵌套重组扁平 / compare ordered_ids 双域 /
++          无语义 4 工具跳过不崩）；统一错误信封显式跳过。
++  legacy  6 旧工具名抽取口径冻结（合成样本逐字段断言，不引用外部 trace）。
++  实跑    真实新契约 trace（仓库内 dag_poc/traces，只读）判分非 0 冒烟。
++
++运行：
++  python3 -m pytest dag_poc/mcp_mock_server/tests/test_tool_extract_dispatch.py -q
++"""
++
++import json
++import os
++import sys
++
++HERE = os.path.dirname(os.path.abspath(__file__))
++DAG_POC = os.path.abspath(os.path.join(HERE, '..', '..'))
++sys.path.insert(0, DAG_POC)
++sys.path.insert(0, os.path.abspath(os.path.join(DAG_POC, '..', 'src', 'benchmark')))
++
++import evaluate as E   # noqa: E402
++
++
++# ── 合成 fixture（自带，不依赖外部 trace 文件）─────────────────────────────
++
++def _ev(tool, ret, args=None):
++    """网关录像行形态事件（args/ret 双形态之一）。"""
++    return {'t': 1, 'tool': tool, 'args': args or {}, 'ret': ret, 'ok': True}
++
++
++NEW_EVENTS = [
++    _ev('literature_search', {'total_found': 2, 'papers': [
++        {'doc_id': '10.1000/a', 'title': 't1', 'year': 2020, 'citation_count': 3},
++        {'doc_id': '10.1000/b', 'title': 't2', 'year': 2021, 'citation_count': 5}]}),
++    _ev('search_candidates', {'candidates': [
++        {'id': 'aa', 'entity_type': 'molecule', 'structure_hint': 'FORMULA:[16*]15'},
++        {'id': 'ab', 'entity_type': 'molecule', 'structure_hint': 'FORMULA:[19*]25'}]}),
++    _ev('search_candidates', {'error_code': 'EMPTY_RESULT', 'error': '检索无命中'}),
++    _ev('get_entity', {'id': 'xa', 'entity_type': 'crystal',
++                       'structure': {'formula': 'FORMULA:[20*]99',
++                                     'masked_structure': 'FORMULA:[20*]99;SPACEGROUP:I 4/m m m',
++                                     'atom_count': 5}}),
++    _ev('get_entity', {'id': 'aa', 'entity_type': 'molecule',
++                       'structure': {'formula': '[16*]15', 'masked_structure': 'm',
++                                     'atom_count': 44}}),
++    _ev('get_property', {'id': 'aa', 'values': [
++        {'name': 'bbb', 'value': 1}, {'name': 'caco2', 'value': -4.35}]}),
++    _ev('get_property', {'id': 'ab', 'values': []}),   # 空 values 不入 admet_results
++    _ev('compare', {'ordered_ids': ['aa', 'ab', 'ac']}),
++    _ev('check_molecule_exists', {'exists': True}),
++    _ev('edit_molecule', {'result_id': 'p1', 'applied': True}),
++    _ev('normalize_structure', {'canonical_id': 'c1ccccc1', 'valid': True}),
++    _ev('submit_answer', {'accepted': True}),
++]
++
++LEGACY_EVENTS = [
++    {'tool': 'literature_search', 'result': {'papers': [{'doi': '10.9/old'}]}},
++    {'tool': 'search_molecule_database', 'result': {'results': [{'name': 'ma'}]}},
++    {'tool': 'predict_admet', 'result': {'results': [
++        {'molecule': 'ma', 'bbb': 1}, {'molecule': 'mb', 'error': 'boom'}]}},
++    {'tool': 'get_cif_by_formula', 'result': {'success': True, 'cif_key': 'xa_exp_1'}},
++    {'tool': 'crystal_predict', 'arguments': {'cif_key': 'xb_exp_1'},
++     'result': {'tc': 90}},
++    {'tool': 'compare_materials', 'result': {'sorted_results': [
++        {'cif_key': 'xa_exp_1', 'tc': 92}]}},
++]
++
++
++# ── 分派探测（显式名单判定）─────────────────────────────────────────────────
++
++def test_dispatch_new_contract_pure():
++    """工具名全在新契约 9 工具内 → 新分支（抽取面与 _extract_new 一致）。"""
++    assert E.extract_tool_data(NEW_EVENTS) == E._extract_new(NEW_EVENTS)
++
++
++def test_dispatch_legacy_pure_and_mixed():
++    """纯旧名与 MIXED（旧名+新名混用）均归 legacy 分支。"""
++    assert E.extract_tool_data(LEGACY_EVENTS) == E._extract_legacy(LEGACY_EVENTS)
++    mixed = NEW_EVENTS + [{'tool': 'predict_admet', 'result': {'results': []}}]
++    assert E.extract_tool_data(mixed) == E._extract_legacy(mixed)
++    # 空 trace 归 legacy（口径零变化：全空六元组）
++    assert E.extract_tool_data([]) == (set(), set(), set(), [], set(), [])
++
++
++def test_dispatch_real_traces():
++    """真实 trace 分派实证（仓库内只读）：legacy 9 组 trace 含旧工具名归
++    legacy；新契约 trace（cardiac/cns 系）工具名 ⊆ 9 工具归新分支。"""
++    legacy_trace = os.path.join(
++        DAG_POC, 'traces', 'case_antibiotic_sulfamethoxazole__qwen3.7-max.jsonl')
++    new_trace = os.path.join(
++        DAG_POC, 'traces', 'case_cns_metoprolol__bailian_glm-5.2.jsonl')
++    for path, branch in ((legacy_trace, E._extract_legacy),
++                         (new_trace, E._extract_new)):
++        events = [json.loads(l) for l in open(path, encoding='utf-8')]
++        assert E.extract_tool_data(events) == branch(events), path
++
++
++# ── _extract_new 逐工具映射 ─────────────────────────────────────────────────
++
++def test_extract_new_per_tool_mapping():
++    """9 工具逐形状映射：lit doc_id / candidates[].id / 晶体 cif_ids /
++    get_property 扁平重组 / compare 双域；无语义 4 工具跳过不崩。"""
++    lit, mol, admet_ids, admet_results, cif, crystal = E._extract_new(NEW_EVENTS)
++    assert lit == {'10.1000/a', '10.1000/b'}
++    assert mol == {'aa', 'ab', 'ac'}          # search_candidates + compare 合并
++    assert cif == {'xa', 'aa', 'ab', 'ac'}    # get_entity 晶体 + compare 双域
++    assert admet_ids == {'aa'}                # 空 values 的 ab 不入
++    assert admet_results == [{'molecule': 'aa', 'bbb': 1, 'caco2': -4.35}]
++    assert crystal == []                      # 新契约无 crystal_results 语义位
++    # 扁平重组直接喂 gold_pass_set 零改动（判分公式消费面验证）
++    gps = E.gold_pass_set(admet_results,
++                          [{'property': 'bbb', 'op': '==', 'threshold': 1}])
++    assert gps == {'aa'}
++
++
++def test_extract_new_error_envelope_skipped():
++    """统一错误信封 {error_code} 显式跳过——不当空数据静默吞，也不崩。"""
++    evs = [_ev('search_candidates', {'error_code': 'EMPTY_RESULT', 'error': 'x'}),
++           _ev('get_property', {'error_code': 'UNKNOWN_ENTITY', 'error': 'x'}),
++           _ev('literature_search', {'error_code': 'BUDGET_EXCEEDED', 'error': 'x'})]
++    assert E._extract_new(evs) == (set(), set(), set(), [], set(), [])
++
++
++def test_extract_new_args_ret_dual_form():
++    """网关录像行（args/ret）与 legacy 行形态（arguments/result）均兼容。"""
++    ev = {'tool': 'literature_search',
++          'result': {'papers': [{'doc_id': '10.1000/c'}]}}
++    lit, *_ = E._extract_new([ev])
++    assert lit == {'10.1000/c'}
++
++
++# ── _extract_legacy 口径冻结 ────────────────────────────────────────────────
++
++def test_extract_legacy_frozen_semantics():
++    """legacy 6 工具名抽取口径逐字段冻结（原 extract_tool_data 原样搬移）。"""
++    lit, mol, admet_ids, admet_results, cif, crystal = E._extract_legacy(LEGACY_EVENTS)
++    assert lit == {'10.9/old'}                 # 旧形状读 doi（非 doc_id）
++    assert mol == {'ma'}
++    assert admet_ids == {'ma'}                 # 含 error 的 mb 不入
++    assert admet_results == [{'molecule': 'ma', 'bbb': 1}]
++    assert cif == {'xa_exp_1', 'xb_exp_1'}
++    assert crystal == [{'cif_key': 'xb_exp_1', 'tc': 90},
++                       {'cif_key': 'xa_exp_1', 'tc': 92}]
++
++
++# ── 实跑冒烟：新契约 trace 判分非 0（§1.4 要求 4 的证据面）──────────────────
++
++def test_new_contract_trace_scores_nonzero():
++    """真实新契约 trace（仓库内只读）经新分支抽取后 cp1-cp5 出现非 0——
++    cns_metoprolol__bailian_glm-5.2 人工核过：cp1=1（lit 2 篇）、
++    gps={aa,ec}、cp4=0.4（ranked∩gps=2/10）、cp5=1.0（gold 前二序一致）、
++    cp6=0.5（best=ec∈gps 但非 gt=aa）。"""
++    case_path = os.path.join(DAG_POC, 'templates', 'fixed_discovery',
++                             'case_cns_metoprolol.json')
++    trace_path = os.path.join(DAG_POC, 'traces',
++                              'case_cns_metoprolol__bailian_glm-5.2.jsonl')
++    resp_path = trace_path.replace('.jsonl', '_response.json')
++    response = json.load(open(resp_path, encoding='utf-8')).get('response')
++    scores, gps, ranked, best = E.score_case(case_path, trace_path, response)
++    assert scores['cp1'] == 1.0
++    assert scores['cp2'] > 0 and scores['cp3'] > 0
++    assert scores['cp4'] > 0 and scores['cp5'] > 0
++    assert sorted(gps) == ['aa', 'ec']
++    assert abs(scores['cp4'] - 0.4) < 1e-9 and scores['cp5'] == 1.0
++    assert best == 'ec' and scores['cp6'] == 0.5
+diff --git a/src/benchmark/evaluate.py b/src/benchmark/evaluate.py
+index 7c9c2f0..a7dc821 100644
+--- a/src/benchmark/evaluate.py
++++ b/src/benchmark/evaluate.py
+@@ -59,8 +59,40 @@ def normalize_id(raw_id, mock_db):
+             return entry['name']
+     return rid  # 归一化失败，返回原值（会在后续判分中被标记为未知 ID）
+ 
++# ── 工具名分派（任务 #45 / task-04 §1.4 要求 3：显式名单判定，不靠字段存在性猜）──
++# 新契约 9 工具（tools_schema.json v1 冻结名单）；trace 事件工具名 ⊆ 本集 →
++# _extract_new，出现任一集外名（旧工具名/alias_map DEPRECATED 旧名）→
++# _extract_legacy（MIXED 亦归 legacy：39 份混合 trace 新名仅 literature_search，
++# legacy 抽取认它无损失；ADR-0014 修订 R1 legacy_adapter 思路：63 份历史 trace
++# 仍可重判，不因新契约废掉旧资产）。
++_NEW_CONTRACT_TOOL_NAMES = frozenset({
++    'literature_search', 'search_candidates', 'get_entity', 'get_property',
++    'compare', 'submit_answer', 'check_molecule_exists', 'edit_molecule',
++    'normalize_structure',
++})
++
++
+ def extract_tool_data(events):
+-    """从 trace 提取各工具的实体 ID 和返回数据。"""
++    """从 trace 提取各工具的实体 ID 和返回数据（六元组语义不变）。
++
++    任务 #45（task-04 §1 PR-34）：按工具名集合显式分派新契约/legacy 双轨，
++    返同一六元组 (lit_dois, mol_ids, admet_ids, admet_results, cif_ids,
++    crystal_results)，下游判分公式/权重/阈值零改动。分派结果记日志便于审计。"""
++    tools = {e.get('tool') for e in events if e.get('tool')}
++    if tools and tools <= _NEW_CONTRACT_TOOL_NAMES:
++        logging.info('extract_tool_data 分派=new（新契约 9 工具，工具名集合=%s）',
++                     sorted(tools))
++        return _extract_new(events)
++    legacy_extras = sorted(tools - _NEW_CONTRACT_TOOL_NAMES)
++    if legacy_extras:
++        logging.info('extract_tool_data 分派=legacy（含旧契约工具名 %s）',
++                     legacy_extras)
++    return _extract_legacy(events)
++
++
++def _extract_legacy(events):
++    """旧契约 6 工具名抽取（任务 #45 自原 extract_tool_data 原样冻结搬入，
++    逻辑一字不改；63 份历史 trace 重判口径不变）。"""
+     lit_dois, mol_ids, admet_ids, admet_results = set(), set(), set(), []
+     cif_ids, crystal_results = set(), []
+     for e in events:
+@@ -97,6 +129,63 @@ def extract_tool_data(events):
+                     crystal_results.append(item)
+     return lit_dois, mol_ids, admet_ids, admet_results, cif_ids, crystal_results
+ 
++
++def _extract_new(events):
++    """新契约 9 工具出参形状抽取（任务 #45 / task-04 §1.4 要求 1：逐工具对齐
++    tools_schema.json output 定义），重组为六元组同一语义：
++      literature_search  papers[].doc_id（新形状；旧读 doi 恒空）→ lit_dois
++      search_candidates  candidates[].id（旧 search_molecule_database
++                         results[].name 语义位）→ mol_ids
++      get_entity         {id, entity_type, structure}：旧 get_cif_by_formula 的
++                         cif 语义对应位——晶体 id 入 cif_ids；分子侧结构档无
++                         判分语义不入集合
++      get_property       {id, values[]{name,value}} 嵌套重组为扁平
++                         {molecule:<id>, <name>:<value>} 追加 admet_results
++                         （gold_pass_set/_score_fixed 的 r.get(c['property'])/
++                         r.get('molecule') 零改动），id 入 admet_ids
++      compare            ordered_ids 排序证据（旧 compare_materials 读
++                         sorted_results[].cif_key）→ 双域入 mol_ids+cif_ids
++      check_molecule_exists / edit_molecule / normalize_structure /
++      submit_answer      无判分语义，跳过不崩
++    统一错误信封 {error_code, error} 显式跳过（不当空数据静默吞）；
++    args/ret 双形态经 _event_args_ret（网关录像行与 legacy trace 行均兼容）。"""
++    lit_dois, mol_ids, admet_ids, admet_results = set(), set(), set(), []
++    cif_ids, crystal_results = set(), []
++    for e in events:
++        tool = e.get('tool')
++        _, ret = _event_args_ret(e)
++        if not isinstance(ret, dict) or 'error_code' in ret:
++            continue
++        if tool == 'literature_search':
++            for p in ret.get('papers', []):
++                if isinstance(p, dict) and p.get('doc_id'):
++                    lit_dois.add(p['doc_id'])
++        elif tool == 'search_candidates':
++            for c in ret.get('candidates', []):
++                if isinstance(c, dict) and c.get('id'):
++                    mol_ids.add(c['id'])
++        elif tool == 'get_entity':
++            if ret.get('entity_type') == 'crystal' and ret.get('id'):
++                cif_ids.add(ret['id'])
++        elif tool == 'get_property':
++            eid = ret.get('id')
++            values = ret.get('values')
++            if eid and isinstance(values, list) and values:
++                flat = {'molecule': eid}
++                for item in values:
++                    if isinstance(item, dict) and item.get('name') is not None:
++                        flat[item['name']] = item.get('value')
++                admet_ids.add(eid)
++                admet_results.append(flat)
++        elif tool == 'compare':
++            for oid in ret.get('ordered_ids', []):
++                if isinstance(oid, str) and oid:
++                    mol_ids.add(oid)    # 药物域：cp2 候选池 grounded 证据
++                    cif_ids.add(oid)    # 材料域：旧 compare_materials 语义位
++        # check_molecule_exists / edit_molecule / normalize_structure /
++        # submit_answer：无判分语义，跳过
++    return lit_dois, mol_ids, admet_ids, admet_results, cif_ids, crystal_results
++
+ def gold_pass_set(results, constraints):
+     passed = set()
+     for r in results:

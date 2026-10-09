@@ -1,0 +1,163 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="560" viewBox="0 0 1800 560" role="img" aria-labelledby="title desc">
+  <title id="title">MIRA-Relay: tool selection with delayed selected-only feedback</title>
+  <desc id="desc">A left-to-right framework. A molecule, endpoint, provider menu, and released history enter a selector. MIRA-Relay combines an immutable fit-only head with family residuals and provider bias, then selects one provider. The selected provider returns an output and runtime status. A verifier and frozen judge emit selected-only system-success feedback. The feedback waits in a delay queue until release tick tau, updates the MIRA-Relay state and hazard ledger, and determines the next decision.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,5 L0,10 z" fill="#526579"/>
+    </marker>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2E5DA1"/>
+    </marker>
+    <marker id="arrow-orange" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,5 L0,10 z" fill="#C97813"/>
+    </marker>
+    <marker id="arrow-purple" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,5 L0,10 z" fill="#7650A5"/>
+    </marker>
+    <filter id="soft" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur stdDeviation="1.5"/>
+    </filter>
+  </defs>
+  <rect width="1800" height="560" fill="#FFFFFF"/>
+
+  <!-- information boundary band -->
+  <rect x="44" y="22" width="1712" height="55" rx="12" fill="#F7F9FB" stroke="#CCD5DF" stroke-width="1.5"/>
+  <line x1="885" y1="31" x2="885" y2="68" stroke="#CCD5DF" stroke-width="1.5"/>
+  <text x="70" y="56" font-family="Arial,Helvetica,sans-serif" font-size="23" font-weight="700" fill="#183B63">BEFORE ACTION</text>
+  <text x="305" y="56" font-family="Arial,Helvetica,sans-serif" font-size="21" fill="#526579">xₜ, eₜ, Aₜ, and released Hₜ only</text>
+  <text x="930" y="56" font-family="Arial,Helvetica,sans-serif" font-size="23" font-weight="700" fill="#183B63">AFTER SELECTED CALL</text>
+  <text x="1226" y="56" font-family="Arial,Helvetica,sans-serif" font-size="21" fill="#526579">oₜ and sₜ visible; yₜ waits until τₜ</text>
+
+  <!-- top flow boxes -->
+  <!-- input -->
+  <g>
+    <rect x="45" y="112" width="250" height="250" rx="15" fill="#F1F4F7" stroke="#AEBAC7" stroke-width="2"/>
+    <text x="68" y="148" font-family="Arial,Helvetica,sans-serif" font-size="27" font-weight="700" fill="#183B63">1  Public context</text>
+    <text x="68" y="180" font-family="Arial,Helvetica,sans-serif" font-size="22" fill="#2A3B4D">molecule xₜ</text>
+    <!-- simple molecule glyph -->
+    <g transform="translate(78,198)" stroke="#526579" stroke-width="3" fill="#FFFFFF">
+      <polygon points="38,0 72,20 72,60 38,80 4,60 4,20"/>
+      <line x1="72" y1="20" x2="111" y2="0"/>
+      <line x1="72" y1="60" x2="111" y2="81"/>
+      <circle cx="111" cy="0" r="7" fill="#E8F0FA"/>
+      <circle cx="111" cy="81" r="7" fill="#E8F0FA"/>
+      <circle cx="38" cy="0" r="5" fill="#526579"/>
+      <circle cx="4" cy="60" r="5" fill="#526579"/>
+    </g>
+    <text x="68" y="300" font-family="Arial,Helvetica,sans-serif" font-size="21" fill="#2A3B4D">endpoint eₜ · menu Aₜ</text>
+    <text x="68" y="330" font-family="Arial,Helvetica,sans-serif" font-size="21" fill="#2A3B4D">released history Hₜ</text>
+    <text x="68" y="353" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#687789">unselected outputs hidden</text>
+  </g>
+
+  <!-- arrow input to selector -->
+  <line x1="300" y1="237" x2="327" y2="237" stroke="#526579" stroke-width="3" marker-end="url(#arrow)"/>
+  <text x="301" y="222" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="19" fill="#526579">visible</text>
+
+  <!-- selector -->
+  <g>
+    <rect x="330" y="100" width="405" height="275" rx="16" fill="#E8F0FA" stroke="#2E5DA1" stroke-width="3"/>
+    <text x="354" y="137" font-family="Arial,Helvetica,sans-serif" font-size="28" font-weight="700" fill="#183B63">2  MIRA-Relay selector</text>
+    <text x="354" y="164" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#526579">scores eligible providers before call</text>
+    <rect x="354" y="184" width="165" height="88" rx="10" fill="#F1F4F7" stroke="#AEBAC7" stroke-width="1.5"/>
+    <text x="370" y="210" font-family="Arial,Helvetica,sans-serif" font-size="20" font-weight="700" fill="#46596B">fit-only head</text>
+    <text x="370" y="234" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#526579">cold-start score</text>
+    <text x="370" y="255" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#526579">immutable fallback</text>
+    <rect x="534" y="184" width="176" height="88" rx="10" fill="#FFFFFF" stroke="#2E5DA1" stroke-width="1.8"/>
+    <text x="549" y="210" font-family="Arial,Helvetica,sans-serif" font-size="20" font-weight="700" fill="#2E5DA1">online state</text>
+    <text x="549" y="234" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#526579">family residuals</text>
+    <text x="549" y="255" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#526579">provider bias · hazard</text>
+    <rect x="354" y="294" width="128" height="42" rx="21" fill="#FFF2DD" stroke="#C97813" stroke-width="1.6"/>
+    <text x="418" y="320" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="20" font-weight="700" fill="#945B11">probe / exploit</text>
+    <line x1="494" y1="315" x2="548" y2="315" stroke="#C97813" stroke-width="2" marker-end="url(#arrow-orange)"/>
+    <rect x="561" y="294" width="149" height="42" rx="21" fill="#2E5DA1"/>
+    <text x="635" y="320" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="21" font-weight="700" fill="#FFFFFF">choose aₜ</text>
+  </g>
+
+  <!-- arrow selector to provider -->
+  <line x1="741" y1="237" x2="766" y2="237" stroke="#2E5DA1" stroke-width="3" marker-end="url(#arrow-blue)"/>
+  <text x="754" y="222" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="19" fill="#2E5DA1">one action</text>
+
+  <!-- provider -->
+  <g>
+    <rect x="770" y="112" width="250" height="250" rx="15" fill="#F1F4F7" stroke="#AEBAC7" stroke-width="2"/>
+    <text x="793" y="148" font-family="Arial,Helvetica,sans-serif" font-size="27" font-weight="700" fill="#183B63">3  Provider call</text>
+    <rect x="793" y="171" width="204" height="54" rx="10" fill="#FFFFFF" stroke="#526579" stroke-width="1.5"/>
+    <text x="895" y="205" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="23" font-weight="700" fill="#183B63">aₜ only</text>
+    <text x="793" y="255" font-family="Arial,Helvetica,sans-serif" font-size="21" fill="#2A3B4D">output oₜ</text>
+    <text x="793" y="285" font-family="Arial,Helvetica,sans-serif" font-size="21" fill="#2A3B4D">runtime status sₜ</text>
+    <text x="793" y="328" font-family="Arial,Helvetica,sans-serif" font-size="19" fill="#687789">others not called</text>
+  </g>
+
+  <!-- arrow provider to verifier -->
+  <line x1="1026" y1="237" x2="1051" y2="237" stroke="#526579" stroke-width="3" marker-end="url(#arrow)"/>
+  <text x="1038" y="222" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="19" fill="#526579">terminal</text>
+
+  <!-- verifier -->
+  <g>
+    <rect x="1055" y="112" width="250" height="250" rx="15" fill="#FFF7E9" stroke="#D9A04D" stroke-width="2"/>
+    <text x="1078" y="148" font-family="Arial,Helvetica,sans-serif" font-size="27" font-weight="700" fill="#183B63">4  Verify / score</text>
+    <text x="1078" y="181" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#526579">post-call only</text>
+    <rect x="1078" y="199" width="61" height="38" rx="19" fill="#FFFFFF" stroke="#D9A04D" stroke-width="1.5"/>
+    <text x="1108" y="224" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#945B11">accept</text>
+    <rect x="1145" y="199" width="73" height="38" rx="19" fill="#FFFFFF" stroke="#D9A04D" stroke-width="1.5"/>
+    <text x="1181" y="224" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#945B11">escalate</text>
+    <rect x="1224" y="199" width="51" height="38" rx="19" fill="#FFFFFF" stroke="#D9A04D" stroke-width="1.5"/>
+    <text x="1249" y="224" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#945B11">refuse</text>
+    <text x="1078" y="273" font-family="Arial,Helvetica,sans-serif" font-size="21" font-weight="700" fill="#945B11">selected-only yₜ</text>
+    <text x="1078" y="300" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#526579">system_success ∈ {0, 1}</text>
+    <text x="1078" y="333" font-family="Arial,Helvetica,sans-serif" font-size="19" fill="#687789">runtime failure → yₜ = 0</text>
+  </g>
+
+  <!-- arrow verifier to queue -->
+  <line x1="1311" y1="237" x2="1336" y2="237" stroke="#C97813" stroke-width="3" marker-end="url(#arrow-orange)"/>
+  <text x="1324" y="222" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="19" fill="#945B11">enqueue</text>
+
+  <!-- delay queue -->
+  <g>
+    <rect x="1340" y="112" width="205" height="250" rx="15" fill="#F0ECF8" stroke="#7650A5" stroke-width="2"/>
+    <text x="1362" y="148" font-family="Arial,Helvetica,sans-serif" font-size="27" font-weight="700" fill="#183B63">5  Delay queue</text>
+    <text x="1362" y="181" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#526579">label hidden until τₜ</text>
+    <rect x="1362" y="206" width="161" height="60" rx="10" fill="#FFFFFF" stroke="#7650A5" stroke-width="1.5" stroke-dasharray="7 5"/>
+    <text x="1442" y="232" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="21" font-weight="700" fill="#7650A5">release at τₜ</text>
+    <text x="1442" y="254" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="19" fill="#526579">selected event only</text>
+    <text x="1362" y="306" font-family="Arial,Helvetica,sans-serif" font-size="19" fill="#7650A5">D = feedback delay</text>
+    <text x="1362" y="334" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#687789">no update before release</text>
+  </g>
+
+  <!-- arrow queue to state -->
+  <line x1="1551" y1="237" x2="1576" y2="237" stroke="#7650A5" stroke-width="3" marker-end="url(#arrow-purple)"/>
+  <text x="1563" y="222" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="19" fill="#7650A5">release</text>
+
+  <!-- state -->
+  <g>
+    <rect x="1580" y="100" width="175" height="275" rx="16" fill="#E8F0FA" stroke="#2E5DA1" stroke-width="3"/>
+    <text x="1599" y="137" font-family="Arial,Helvetica,sans-serif" font-size="27" font-weight="700" fill="#183B63">6  Update</text>
+    <text x="1599" y="164" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#2E5DA1">MIRA-Relay Sₜ₊₁</text>
+    <rect x="1599" y="188" width="137" height="42" rx="9" fill="#FFFFFF" stroke="#2E5DA1" stroke-width="1.4"/>
+    <text x="1667" y="214" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#526579">family residuals</text>
+    <rect x="1599" y="239" width="137" height="42" rx="9" fill="#FFFFFF" stroke="#2E5DA1" stroke-width="1.4"/>
+    <text x="1667" y="265" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#526579">provider bias</text>
+    <rect x="1599" y="290" width="137" height="42" rx="9" fill="#FFF2DD" stroke="#C97813" stroke-width="1.4"/>
+    <text x="1667" y="316" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#945B11">hazard ledger</text>
+  </g>
+
+  <!-- feedback loop to next decision -->
+  <path d="M1668,389 L1668,475 L170,475 L170,372" fill="none" stroke="#2E5DA1" stroke-width="2.6" stroke-dasharray="9 7" marker-end="url(#arrow-blue)"/>
+  <text x="908" y="505" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="21" font-weight="700" fill="#2E5DA1">released state determines next decision (t + 1)</text>
+
+  <!-- selected-only feedback annotation -->
+  <path d="M1170,362 C1170,404 1260,404 1404,362" fill="none" stroke="#C97813" stroke-width="2" stroke-dasharray="6 6" marker-end="url(#arrow-orange)"/>
+  <text x="1272" y="402" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="19" fill="#945B11">selected call creates this feedback</text>
+
+  <!-- small legend -->
+  <g transform="translate(56,430)">
+    <rect x="0" y="0" width="15" height="15" rx="3" fill="#E8F0FA" stroke="#2E5DA1" stroke-width="1.5"/>
+    <text x="23" y="13" font-family="Arial,Helvetica,sans-serif" font-size="14" fill="#526579">MIRA-Relay state</text>
+    <rect x="145" y="0" width="15" height="15" rx="3" fill="#F1F4F7" stroke="#AEBAC7" stroke-width="1.5"/>
+    <text x="168" y="13" font-family="Arial,Helvetica,sans-serif" font-size="14" fill="#526579">fixed / public</text>
+    <rect x="269" y="0" width="15" height="15" rx="3" fill="#FFF2DD" stroke="#C97813" stroke-width="1.5"/>
+    <text x="292" y="13" font-family="Arial,Helvetica,sans-serif" font-size="14" fill="#526579">event or branch</text>
+    <rect x="408" y="0" width="15" height="15" rx="3" fill="#F0ECF8" stroke="#7650A5" stroke-width="1.5"/>
+    <text x="431" y="13" font-family="Arial,Helvetica,sans-serif" font-size="14" fill="#526579">delayed visibility</text>
+  </g>
+</svg>

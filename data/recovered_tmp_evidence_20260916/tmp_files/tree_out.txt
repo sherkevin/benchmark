@@ -1,0 +1,18 @@
+event: tree_start
+data: {"thread_id": "tree-ae95f16b-1ccc30", "goal": "MgB2超导"}
+
+event: tree_hypotheses
+data: {"hypotheses": [{"node_id": "d1_n0", "hypothesis": "通过化学掺杂引入晶格畸变可以增强MgB2中的双能带超导电性，从而提高临界温度Tc。", "objective": "系统计算不同掺杂元素（如Al、C、Zn）对MgB2电子结构和声子谱的影响，寻找Tc提升的掺杂方案。"}, {"node_id": "d1_n1", "hypothesis": "优化MgB2晶界连接性和致密度能够显著提高其在高场下的临界电流密度Jc。", "objective": "研究不同烧结工艺（热压、放电等离子烧结）参数对MgB2微观结构、晶界连通性和Jc的关联。"}, {"node_id": "d1_n2", "hypothesis": "引入人工钉扎中心（如纳米氧化物或碳化物）可有效抑制MgB2中磁通涡旋运动，提升不可逆场。", "objective": "制备含有纳米Y2O3或SiC掺杂的MgB2块材/线材，表征其磁通钉扎特性与微观缺陷分布。"}, {"node_id": "d1_n3", "hypothesis": "MgB2在超导态下具有本征的超导二极管效应，其非互易输运特性与反演对称性破缺相关。", "objective": "在MgB2薄膜中测量非互易超导临界电流，探索其作为无耗散二极管的潜力。"}, {"node_id": "d1_n4", "hypothesis": "利用应变工程调控MgB2的σ带和π带费米能级相对位置，可优化双能带超导配对相互作用。", "objective": "通过外延生长在压电/铁电衬底上施加双轴应变，原位测量应变对MgB2超导转变温度和上临界场的影响。"}]}
+
+event: tree_branch_done
+data: {"node_id": "d1_n2", "hypothesis": "引入人工钉扎中心（如纳米氧化物或碳化物）可有效抑制MgB2中磁通涡旋运动，提升不可逆场。", "status": "succeeded", "score": 0.0}
+
+event: tree_branch_done
+data: {"node_id": "d1_n1", "hypothesis": "优化MgB2晶界连接性和致密度能够显著提高其在高场下的临界电流密度Jc。", "status": "succeeded", "score": 0.0}
+
+event: tree_branch_done
+data: {"node_id": "d1_n0", "hypothesis": "通过化学掺杂引入晶格畸变可以增强MgB2中的双能带超导电性，从而提高临界温度Tc。", "status": "succeeded", "score": 0.0}
+
+event: tree_interrupt
+data: {"type": "research_tree_evaluate", "depth": 1, "goal": "MgB2超导", "branches": [{"node_id": "d1_n0", "hypothesis": "通过化学掺杂引入晶格畸变可以增强MgB2中的双能带超导电性，从而提高临界温度Tc。", "status": "succeeded", "score": 0.0, "recommended": "unknown", "summary": "## Branch Summary\n\nThis branch investigated the hypothesis that **chemical doping-induced lattice distortion can enhance the two-band superconductivity in MgB2, thereby raising Tc**. After extensive l", "failure_reason": ""}, {"node_id": "d1_n1", "hypothesis": "优化MgB2晶界连接性和致密度能够显著提高其在高场下的临界电流密度Jc。", "status": "succeeded", "score": 0.0, "recommended": "unknown", "summary": "Now let me synthesize all findings into the final report.\n\n---\n\n## Branch Summary\n\n**Hypothesis:** Optimizing MgB₂ grain boundary connectivity and density through advanced sintering processes (hot pre", "failure_reason": ""}, {"node_id": "d1_n2", "hypothesis": "引入人工钉扎中心（如纳米氧化物或碳化物）可有效抑制MgB2中磁通涡旋运动，提升不可逆场。", "status": "succeeded", "score": 0.0, "recommended": "unknown", "summary": "Now I have a comprehensive picture. Let me compile the final branch report.\n\n---\n\n## Branch Summary\n\n本分支假设\"引入人工钉扎中心（如纳米氧化物或碳化物）可有效抑制MgB2中磁通涡旋运动，提升不可逆场\"。通过系统文献调研，发现该假设**部分成立但存在严重的成熟度不均衡**：\n\n- **SiC掺杂**", "failure_reason": ""}], "thread_id": "tree-ae95f16b-1ccc30"}
+

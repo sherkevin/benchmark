@@ -1,0 +1,178 @@
+=== SANITY ===
+{"conflict_rows": 400, "majority_label_rate_400": 0.6625, "morgan_acc_400": 0.805, "all_four_wrong_730": 12, "all_four_wrong_400": 0, "n_wrong_distribution_730": {"0": 318, "1": 262, "2": 82, "3": 56, "4": 12}}
+=== CATION EXCLUSION AUDIT ===
+{'nitro_or_N_oxide': 14, 'azide': 2}
+=== CONSTRAINT STATS ===
+C3_strict_formal: 730=10 (1.37%) | 400=8 (2.00%) | 真值=不通透一致率 730:0.7 (7/10) 400:0.625 (5/8)
+C3_broad_lenient: 730=22 (3.01%) | 400=12 (3.00%) | 真值=不通透一致率 730:0.5 (11/22) 400:0.5833 (7/12)
+C3_broad_strict: 730=20 (2.74%) | 400=11 (2.75%) | 真值=不通透一致率 730:0.55 (11/20) 400:0.6364 (7/11)
+C5_fire: 730=63 (8.63%) | 400=35 (8.75%) | 真值=不通透一致率 730:0.7143 (45/63) 400:0.6 (21/35)
+C5_tpsa: 730=63 (8.63%) | 400=35 (8.75%) | 真值=不通透一致率 730:0.7143 (45/63) 400:0.6 (21/35)
+C5_hbd: 730=10 (1.37%) | 400=7 (1.75%) | 真值=不通透一致率 730:0.9 (9/10) 400:0.8571 (6/7)
+C5_hbd_not_subsumed_by_tpsa: 0
+=== C6 ===
+  skeleton_dup_groups_730 = 7
+  skeleton_dup_rows_730 = 14
+  skeleton_dup_groups_within_400 = 4
+  skeleton_dup_rows_within_400 = 8
+  identical_full_inchikey_groups_730 = 1
+  真值矛盾组: [('IAKHMKGGTNLKSZ', ['z000364', 'z021608'], [0, 1])]
+=== BUCKETS ===
+{
+ "C3strict": {
+  "hard_C3_only__400": {
+   "decidable": 8,
+   "silent": 392,
+   "decidable_rate": 0.02,
+   "acc": {
+    "rows_with_bbb_label_verdict": 8,
+    "agree": 5,
+    "agree_rate": 0.625,
+    "rows_c6_only_no_label_verdict": 0
+   }
+  },
+  "hard_C3+C6__400": {
+   "decidable": 16,
+   "silent": 384,
+   "decidable_rate": 0.04,
+   "acc": {
+    "rows_with_bbb_label_verdict": 8,
+    "agree": 5,
+    "agree_rate": 0.625,
+    "rows_c6_only_no_label_verdict": 8
+   },
+   "c6_ids": [
+    "z000364",
+    "z002909",
+    "z015738",
+    "z015780",
+    "z020806",
+    "z021608",
+    "z034662",
+    "z034775"
+   ]
+  },
+  "hard_C3+C6+softC5__400": {
+   "decidable": 50,
+   "silent": 350,
+   "decidable_rate": 0.125,
+   "acc": {
+    "rows_with_bbb_label_verdict": 42,
+    "agree": 26,
+    "agree_rate": 0.619,
+    "rows_c6_only_no_label_verdict": 8
+   }
+  },
+  "hard_C3+C6__730": {
+   "decidable": 24,
+   "silent": 706,
+   "decidable_rate": 0.0329
+  }
+ },
+ "C3broadLenient": {
+  "hard_C3_only__400": {
+   "decidable": 12,
+   "silent": 388,
+   "decidable_rate": 0.03,
+   "acc": {
+    "rows_with_bbb_label_verdict": 12,
+    "agree": 7,
+    "agree_rate": 0.5833,
+    "rows_c6_only_no_label_verdict": 0
+   }
+  },
+  "hard_C3+C6__400": {
+   "decidable": 20,
+   "silent": 380,
+   "decidable_rate": 0.05,
+   "acc": {
+    "rows_with_bbb_label_verdict": 12,
+    "agree": 7,
+    "agree_rate": 0.5833,
+    "rows_c6_only_no_label_verdict": 8
+   },
+   "c6_ids": [
+    "z000364",
+    "z002909",
+    "z015738",
+    "z015780",
+    "z020806",
+    "z021608",
+    "z034662",
+    "z034775"
+   ]
+  },
+  "hard_C3+C6+softC5__400": {
+   "decidable": 53,
+   "silent": 347,
+   "decidable_rate": 0.1325,
+   "acc": {
+    "rows_with_bbb_label_verdict": 45,
+    "agree": 28,
+    "agree_rate": 0.6222,
+    "rows_c6_only_no_label_verdict": 8
+   }
+  },
+  "hard_C3+C6__730": {
+   "decidable": 36,
+   "silent": 694,
+   "decidable_rate": 0.0493
+  }
+ },
+ "C3broadStrict": {
+  "hard_C3_only__400": {
+   "decidable": 11,
+   "silent": 389,
+   "decidable_rate": 0.0275,
+   "acc": {
+    "rows_with_bbb_label_verdict": 11,
+    "agree": 7,
+    "agree_rate": 0.6364,
+    "rows_c6_only_no_label_verdict": 0
+   }
+  },
+  "hard_C3+C6__400": {
+   "decidable": 19,
+   "silent": 381,
+   "decidable_rate": 0.0475,
+   "acc": {
+    "rows_with_bbb_label_verdict": 11,
+    "agree": 7,
+    "agree_rate": 0.6364,
+    "rows_c6_only_no_label_verdict": 8
+   },
+   "c6_ids": [
+    "z000364",
+    "z002909",
+    "z015738",
+    "z015780",
+    "z020806",
+    "z021608",
+    "z034662",
+    "z034775"
+   ]
+  },
+  "hard_C3+C6+softC5__400": {
+   "decidable": 53,
+   "silent": 347,
+   "decidable_rate": 0.1325,
+   "acc": {
+    "rows_with_bbb_label_verdict": 45,
+    "agree": 28,
+    "agree_rate": 0.6222,
+    "rows_c6_only_no_label_verdict": 8
+   }
+  },
+  "hard_C3+C6__730": {
+   "decidable": 34,
+   "silent": 696,
+   "decidable_rate": 0.0466
+  }
+ }
+}
+=== C3 rows ===
+Traceback (most recent call last):
+  File "/Users/jingwu/work/benchmark/.review_tmp/dir3_census_bbb_constraints_v3.py", line 274, in <module>
+    print(f"  {d['entity_id']} truth={d['truth']} cf={int(d['is_conflict'])} strict={int(d['strict_formal'])} tierA={[h['kind'][:12] for h in d['tierA_kinds']] if d['tierA_kinds'] else d['tierA_kinds']} sbLen={len(d['sb_lenient'])} sbStr={len(d['sb_strict'])} | {d['smiles'][:55]}")
+                                                                                                                      ~^^^^^^^^
+TypeError: string indices must be integers, not 'str'

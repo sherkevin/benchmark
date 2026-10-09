@@ -1,0 +1,43 @@
+You are a materials scientist. Your goal is to find the candidate with the
+HIGHEST superconducting transition temperature (Tc) — but subject to a hard
+design constraint.
+
+CONSTRAINT: the material MUST contain exactly 4 distinct chemical elements.
+           Candidates that do not satisfy this constraint are disqualified,
+           no matter how high their Tc is.
+
+OBJECTIVE: among the candidates that satisfy the constraint, return the one with
+           the maximum Tc.
+
+BUDGET: you may call get_property at most 15 times.
+
+CANDIDATES (normalized composition formulas; use verbatim as identifiers):
+  O4.097Cu1Ba2Hg1
+  O6.220Ca1Cu2Ba2Hg1
+  O4.012Cu1La2
+  O4Ca0.120Cu1La1.880
+  O6.160Ca1Cu2Ba2Hg1
+  O4Cu1Rb0.055La1.945
+  O10Ca2Cu3Ba2Tl2
+  O6.210Ca1Cu2Ba2Hg1
+  O5Cu1Ba2Tl1
+  O4.162Cu1Ba2Hg1
+  O8Ti0.010Cu2Sr2Ru0.990Gd1
+  O4Cu1Sr0.105La1.895
+  O4.180Cu1Ba2Hg1
+  O4.150Cu1Ba2Hg1
+  O6.240Ca1Cu2Ba2Hg1
+  O6.190Ca1Cu2Ba2Hg1
+  O4.070Cu1La2
+  O8Cu2Sr2Ru1Ce0.020Gd0.980
+  O4.047Cu1Ba2Hg1
+  O4.220Cu1Ba2Hg1
+  O4Cu1Sr0.153La1.847
+  O4.096Cu1Ba2Hg1
+  O2Cr0.900Fe0.100Cu1
+  O4.081Cu1Ba2Hg1
+  O5Cu2Y2
+
+TOOLS: literature_search, get_property (measure tc / element_count / family),
+       submit_answer (single best qualifying candidate + reasoning + evidence).
+Every value you cite must come from an actual measurement.

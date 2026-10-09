@@ -1,0 +1,2 @@
+# 出处：/Users/jingwu/.local/share/benchmark-runtimes/_sources/FPADMET/README.md
+Venkatraman, V. FP-ADMET: a compendium of fingerprint-based ADMET prediction models. J Cheminform 13, 75 (2021). https://doi.org/10.1186/s13321-021-00557-5

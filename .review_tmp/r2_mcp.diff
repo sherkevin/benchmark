@@ -1,0 +1,103 @@
+commit 963857d7900e4ea8a868d393ec88a380447c3feb
+Author: Jing Wu <jingwu.wu@alibaba-inc.com>
+Date:   Fri Aug 7 21:34:15 2026 +0800
+
+    task-05 §10 / PR-40（任务 #58）：gateway 按 case 加载 per-case 视图并全工具过滤
+    
+    F1：Gateway.__init__ 增 case_kind（open/fixed/None）+ _resolve_case_view
+    统一装载（view=None 即全库口径，不写两套）；open 缺视图构造即 raise
+    CASE_VIEW_MISSING（fail-closed，不静默回落全库）。
+    F2：case_id 传输仅实现构造参数 + env DAGPOC_CASE_ID 兜底；HTTP 头
+    X-Dagpoc-Case-Id 留二期（代码注释注明预留）。
+    
+    过滤面：literature_search（过滤至 literature_doc_ids，视图在场不预设
+    扫描上限）/search_candidates（universe 裁剪至 visible_entity_ids）/
+    get_entity、get_property（白名单外 UNKNOWN_ENTITY，保先计费后校验）/
+    compare（observed 单一写入口已闸住，防御不变式注释登记）。边界工具
+    check_molecule_exists/edit_molecule/normalize_structure/submit_answer
+    零过滤（测试实证逐字一致）。
+    
+    MCP 薄包装：mock_server.py/gateway_mcp.py 增读 env DAGPOC_CASE_KIND
+    透传（最小改动）。
+    
+    测试：test_pr40_case_view_gateway.py 19 用例四组覆盖（过滤生效/fail-closed
+    三口径/fixed 统一路径/无 case_id 现状不变+env 通道）；机制验收实跑
+    pr40_case_view_rehearsal.py → rehearsal_logs/PR-40_case_view_realdata.log
+    （e105_example_001 四工具返回集 ⊆ 白名单、gt c01360 不可达、15 检查
+    全 PASS；如实登记：机制验收口径，生产验收等 E4-04 合跑）。
+    
+    归属说明：gateway.py 主体改动（视图接缝 + __init__ + 四工具过滤）已先期
+    被 E1 §6 提交 6c14fdd 一并卷入（工作区语义无差异），本提交补齐 MCP 薄
+    包装、测试与验收证据面。
+    
+    全量回归：281 passed + 1 skipped，5 errors 为预存在基线（src/tests/
+    test_core.py 4 + src/llm_api_test/test_models.py 1，与本改动无关）。
+
+diff --git a/dag_poc/mcp_mock_server/gateway_mcp.py b/dag_poc/mcp_mock_server/gateway_mcp.py
+index 0d7820c..8c6b689 100644
+--- a/dag_poc/mcp_mock_server/gateway_mcp.py
++++ b/dag_poc/mcp_mock_server/gateway_mcp.py
+@@ -48,7 +48,7 @@
+   cd dag_poc/mcp_mock_server
+   python gateway_mcp.py                 # 默认端口 9001
+   GATEWAY_MCP_PORT=9002 python gateway_mcp.py
+-  DAGPOC_CASE_ID=<case_id> python gateway_mcp.py   # 按 case 装载 B 分区（修复三参数）
++  DAGPOC_CASE_ID=<case_id> python gateway_mcp.py   # 按 case 装载 B 分区（修复三参数）+ per-case 视图
+ 
+ 环境前置（任务 #21 M4，E4 交接声明）
+ ------------------------------------
+@@ -126,10 +126,18 @@ def build_gateway():
+ 
+     环境变量（均可缺省，缺省即修复三的默认回落行为，零改动语义）：
+       DAGPOC_CASE_ID    : 按 case 装载 B 分区（b_partition.json cases[case_id]）
+-      DAGPOC_DB_PATH    : 覆盖快照路径（默认 dag_poc/data/mock_db.json）"""
++                          + per-case 可见集视图（task-05 §10 / PR-40）
++      DAGPOC_CASE_KIND  : 'open'/'fixed'（PR-40）；open 类未注册视图时
++                          Gateway 构造即 raise CASE_VIEW_MISSING，服务启动
++                          即失败（fail-closed，不静默回落全库）
++      DAGPOC_DB_PATH    : 覆盖快照路径（默认 dag_poc/data/mock_db.json）
++
++    注：case_id 另有构造参数直传通道；HTTP 头 X-Dagpoc-Case-Id 留二期
++    不实现（需 FastMCP 中间件读头，预留，见 gateway.py PR-40 注释块）。"""
+     case_id = os.getenv('DAGPOC_CASE_ID') or None
++    case_kind = os.getenv('DAGPOC_CASE_KIND') or None
+     db_path = os.getenv('DAGPOC_DB_PATH') or None
+-    return Gateway(case_id=case_id, db_path=db_path)
++    return Gateway(case_id=case_id, case_kind=case_kind, db_path=db_path)
+ 
+ 
+ GATEWAY = build_gateway()
+diff --git a/dag_poc/mcp_mock_server/mock_server.py b/dag_poc/mcp_mock_server/mock_server.py
+index 9fa289e..d9d1b50 100644
+--- a/dag_poc/mcp_mock_server/mock_server.py
++++ b/dag_poc/mcp_mock_server/mock_server.py
+@@ -35,7 +35,7 @@ gateway_mcp.py（端口 9001）降为等效备用端点（测试依赖，保留
+ 启动：
+   cd dag_poc/mcp_mock_server
+   python mock_server.py  # 默认端口 9000
+-  DAGPOC_CASE_ID=<case_id> python mock_server.py   # 按 case 装载 B 分区
++  DAGPOC_CASE_ID=<case_id> python mock_server.py   # 按 case 装载 B 分区 + per-case 视图
+ 
+ 与真实 server.py 的区别：
+   - 不需要 Diamond 配置中心、KeyCenter、OSS、外部 API
+@@ -72,10 +72,18 @@ def _build_gateway():
+ 
+     环境变量（均可缺省，缺省即默认回落行为）：
+       DAGPOC_CASE_ID    : 按 case 装载 B 分区（b_partition.json cases[case_id]）
+-      DAGPOC_DB_PATH    : 覆盖快照路径（默认 dag_poc/data/mock_db.json）"""
++                          + per-case 可见集视图（task-05 §10 / PR-40）
++      DAGPOC_CASE_KIND  : 'open'/'fixed'（PR-40）；open 类未注册视图时
++                          Gateway 构造即 raise CASE_VIEW_MISSING，服务启动
++                          即失败（fail-closed，不静默回落全库）
++      DAGPOC_DB_PATH    : 覆盖快照路径（默认 dag_poc/data/mock_db.json）
++
++    注：case_id 另有构造参数直传通道；HTTP 头 X-Dagpoc-Case-Id 留二期
++    不实现（需 FastMCP 中间件读头，预留，见 gateway.py PR-40 注释块）。"""
+     case_id = os.getenv('DAGPOC_CASE_ID') or None
++    case_kind = os.getenv('DAGPOC_CASE_KIND') or None
+     db_path = os.getenv('DAGPOC_DB_PATH') or None
+-    return Gateway(case_id=case_id, db_path=db_path)
++    return Gateway(case_id=case_id, case_kind=case_kind, db_path=db_path)
+ 
+ 
+ CONTRACT_GATEWAY = _build_gateway()

@@ -1,0 +1,23 @@
+Use case: infographic-diagram. Create a brand-new Figure 1 method architecture for the MIRA-Relay paper. Do not copy the lower feedback-strip layout from the reference. The essential design constraint is a single horizontal state-update chain at the same height as the highlighted released-state row.
+
+ROLE
+Show the method structure, not a timeline: frozen base score + released selected-only state → score → one selector; selected execution → frozen judge → binary chemical feedback; delayed selected-only release → update of exactly one state row.
+
+TEXT AND SYMBOLS
+Never write standalone provider letters A, B, C or any provider name. Use short labels only: Inputs, MIRA-Relay, Execution, Molecule + Endpoint, Features, Frozen scorer, base score, released state, residual, score, Eligible tools, Selector, Selected tool, Call, Return, Judge, Chemical feedback, Runtime ledger, selected-only queue, Release, Update. Equations only q=q⁰+Δ and τ_t=t+1+D. Fewer than 65 English words. No paragraphs.
+
+CANVAS AND STYLE
+White 2.7:1 landscape. Flat vector infographic with compact modules, pale-blue method panel, pale-cream execution panel, muted purple pending/release, blue selection/update, gray frozen records, amber judge/feedback, navy arrows. Use concrete grids, vector cells, molecule/document/lock/gear/clock icons. No gradient, 3-D, grid background, swimlane, giant ribbon, crossed-out object, watermark, or performance number.
+
+TOP ROW
+Left Inputs panel: molecule and endpoint icons labelled Molecule + Endpoint. Center method panel: Features grid → locked Frozen scorer → slim q⁰ vector. Lower-left of the same center panel: released-state register with three unlabeled rows and columns n and s; only middle row highlighted. Register → residual Δ. q⁰ + Δ → plus → score → Selector. Put a small neutral Eligible tools tray directly beside Selector, as part of its input; score has a short arrow into Selector. Selector emits one Selected tool. No line from Inputs or Eligible tools may enter the released-state register.
+Right Execution panel: Selected tool → Call → Return. Valid return → frozen endpoint Judge → Chemical feedback r∈{0,1}; runtime error → Runtime ledger dead-end. Runtime error never reaches feedback or state.
+
+CRITICAL SAME-HEIGHT FEEDBACK CHAIN
+Do NOT draw a bottom feedback band, lower strip, U-shaped path, long horizontal return, or vertical route from below. Put the released-state register in the lower-middle of the method panel. Directly to its RIGHT, on the exact vertical centerline of its highlighted middle row, place a compact blue Update card. Directly to the RIGHT of Update on that SAME centerline, place a purple Release clock labelled τ_t=t+1+D. Directly to the RIGHT of Release, on the SAME centerline, place a purple selected-only queue. The three cards must read visually left-to-right as: highlighted state row ← Update ← Release ← selected-only queue. Connect them with three short, horizontal, one-direction arrows; the Update arrowhead must enter the INTERIOR CENTER of the highlighted row cells. There must be no vertical segment in this chain and no arrow terminating on the register border. This is the only external write path into released state.
+
+FEEDBACK DROP
+Draw one short purple downward arrow from Chemical feedback to the selected-only queue. Keep the drop local; do not route it through the state register. Do not add a “Feedback” title.
+
+FINAL GRAPH CHECK
+Exactly one path q⁰+Δ→score→Selector→Selected tool→Call→Return→Judge→Chemical feedback→selected-only queue⇢Release→Update→highlighted state row. Runtime error ends at Runtime ledger. No A/B/C, no provider bias/family residual, no extra call, no fallback, no duplicate architecture, no temporal timeline. The same-height chain must be the visual signature.

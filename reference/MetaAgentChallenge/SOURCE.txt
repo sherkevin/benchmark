@@ -1,0 +1,15 @@
+arXiv:2606.04455
+abs: https://arxiv.org/abs/2606.04455
+pdf: https://arxiv.org/pdf/2606.04455
+topic: 真值外泄+防hack
+pulled: 2026-08-09 via arxiv MCP (arxiv_get_metadata / arxiv_read_paper)
+
+--- 2026-08-12 补充：全文+仓库拉取 ---
+paper html: https://arxiv.org/html/2606.04455v1  (HTTP 200, 938KB) -> paper_full_2606.04455v1.txt
+tables:     Table1/Table2 解析 -> tables_1_2.txt
+repo:       https://github.com/ant-research/meta-agent-challenge (Apache 2.0, 229 files)
+            via raw.githubusercontent.com (HTTP 200) -> repo/
+            含 aime/science/lcb 三域 instruction.md、base_agent.py、evaluation_api.py、
+            monitor.py、grader.py、docker-compose.yaml、真实数据 jsonl
+website:    https://meta-agent-challenge.com -> HTTP 403（公司安全代理拦截域名），未取到 leaderboard
+产出:       真实例子.md

@@ -1,0 +1,1 @@
+预测 data/demo_pipeline/MgB2.cif，并记录三个数值：A = MgB2 的 Tc，C = MgB2 的电声耦合常数 λ，E = MgB2 的形成能。请明确写出 A、C、E 的数值（保留 4 位以上小数）。

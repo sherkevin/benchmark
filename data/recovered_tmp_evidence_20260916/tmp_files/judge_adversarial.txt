@@ -1,0 +1,38 @@
+
+[完美(golden)] total=1.000
+    cp_sat_set=1.0
+    cp_ec_set=1.0
+    cp_excluded=1.0
+    cp_measured=1.0
+    cp_sat_mean=1.0
+
+[作弊·全报全库] total=0.774
+    cp_sat_set=0.1944
+    cp_ec_set=0.6735
+    cp_excluded=1.0
+    cp_measured=1.0
+    cp_sat_mean=1.0
+
+[作弊·excluded全报] total=0.200
+    cp_sat_set=0.0
+    cp_ec_set=0.0
+    cp_excluded=1.0
+    cp_measured=0.0
+    cp_sat_mean=0.0
+
+[空答案] total=0.000
+    cp_sat_set=0.0
+    cp_ec_set=0.0
+    cp_excluded=0.0
+    cp_measured=0.0
+    cp_sat_mean=0.0
+
+[背满足集+measured瞎填] total=0.600
+    cp_sat_set=1.0
+    cp_ec_set=1.0
+    cp_excluded=0.0
+    cp_measured=0.0
+    cp_sat_mean=1.0
+
+=== 真值规模 ===
+satisfying_set=7 ec_legal=33 excluded=26 全库=65

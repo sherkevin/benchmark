@@ -1,0 +1,22 @@
+
+Use v14 as the visual reference and make one strict information-flow correction. Preserve the compact 1600×440 flat-vector AAMAS figure, four phase tabs, colors, icons, typography, and every module placement as much as possible.
+
+The amber “terminal outcome” card must have exactly two incoming arrows:
+
+1. one short arrow from the grey “system failure” card;
+2. one short arrow from the amber “chemical correctness” card.
+
+Delete any vertical or diagonal arrow from “terminal record” directly into “terminal outcome”. The terminal record may feed only the grey system-failure branch through the runtime-status field. The frozen endpoint judge must remain between terminal record and chemical correctness. The visual topology must be:
+
+```
+terminal record → runtime status → system failure ───┐
+frozen endpoint judge → chemical correctness ────────┤→ terminal outcome
+                                                     ↓
+                                             selected outcome → queue → released outcome → relay update → S_τt → first action
+```
+
+Keep terminal outcome directly above selected outcome with one short straight downward arrow. Keep the lower chain in the same tight rightward order. Keep the purple selected-only queue labelled “τ_t = t + 1 + D”, time dots “t+1 … τ_t−1”, note “hidden until τ_t”, released outcome, relay update with “family residual + provider bias”, state cylinder “S_τt”, local circular-arrow “future state”, and “D=0: visible before next action”. Keep the grey unselected-output badge attached to the input card.
+
+Use exact labels only: “S_t + A_t”, “selector”, “one selected”, “provider”, “call”, “terminal record”, “output”, “runtime status”, “frozen endpoint”, “judge”, “chemical”, “correctness”, “system failure”, “terminal outcome”, “selected outcome”, “selected-only queue”, “τ_t = t + 1 + D”, “t+1 … τ_t−1”, “hidden until τ_t”, “released outcome”, “relay update”, “family residual + provider bias”, “S_τt”, “future state”, “first action at or after τ_t”, and “D=0: visible before next action”.
+
+Negative prompt: direct terminal-record-to-terminal-outcome arrow, terminal record bypassing endpoint judge, terminal record directly to selected outcome, terminal record directly to queue, system failure to selected outcome shortcut, chemical correctness skipping terminal outcome, selected outcome disconnected, queue bypass, long bottom loop, global feedback loop, grid, table, swimlane, large empty margins, extra prose, fake metrics, current truth before action, same-action feedback, instant learning, fallback ledger, diagnostic ledger, verifier, refusal, escalation, second call, gradients, 3-D, shadows, watermark.

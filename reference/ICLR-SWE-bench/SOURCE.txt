@@ -1,0 +1,6 @@
+conference: ICLR 2024
+title: SWE-bench: Can Language Models Resolve Real-World GitHub Issues?
+arxiv_id: 2310.06770v3
+arxiv_abs: http://arxiv.org/abs/2310.06770v3
+pdf_url: https://arxiv.org/pdf/2310.06770v3
+matched_arxiv_title: SWE-bench: Can Language Models Resolve Real-World GitHub Issues?

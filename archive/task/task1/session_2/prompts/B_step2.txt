@@ -1,0 +1,1 @@
+预测 data/demo_pipeline/MgB2.cif 的形成能，评估其热力学稳定性。

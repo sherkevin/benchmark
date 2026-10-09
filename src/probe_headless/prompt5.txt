@@ -1,0 +1,48 @@
+You are a materials scientist. From the candidate list below, find the SINGLE
+candidate with the MAXIMUM superconducting transition temperature (Tc).
+
+BUDGET: you may call get_property at most 8 times. There are
+        35 candidates — far more than your budget. Measure selectively;
+        do not settle prematurely if evidence suggests a better region exists.
+
+CANDIDATES (normalized composition formulas; use verbatim as identifiers):
+  O8.212Ca1Cu2Sr2Bi2
+  O8.231Ca1Cu2Sr2Bi2
+  O8Ca0.920Cu2Sr2.080Bi2
+  O6.210Ca1Cu2Ba2Hg1
+  O8.197Ca1Cu2Sr2Bi2
+  O8Ca0.800Cu2Sr2.200Bi2
+  O4Na0.071Cu1La1.929
+  O6.300Ca1Cu2Ba2Hg1
+  O6.220Ca1Cu2Ba2Hg1
+  O8.245Ca1Cu2Sr2Bi2
+  O6.310Ca1Cu2Ba2Hg1
+  O6.130Ca1Cu2Ba2Hg1
+  O6.160Ca1Cu2Ba2Hg1
+  O8.234Ca1Cu2Sr2Bi2
+  O6.100Ca1Cu2Ba2Hg1
+  O8.288Ca1Cu2Sr2Bi2
+  O6.140Ca1Cu2Ba2Hg1
+  O6.080Ca1Cu2Ba2Hg1
+  O4.047Cu1La2
+  O8.216Ca1Cu2Sr2Bi2
+  O8.214Ca1Cu2Sr2Bi2
+  O16.250Ca2Cu4Sr4Bi4
+  O8.051Ca1Cu2Sr2Bi2
+  O8.195Ca1Cu2Sr2Bi2
+  O7Cu3Zn0.300Y0.700Ba2
+  O7Cu3Y0.200Ba2Eu0.800
+  O8.198Ca1Cu2Sr2Bi2
+  O6.190Ca1Cu2Ba2Hg1
+  O6.240Ca1Cu2Ba2Hg1
+  O8.329Ca1Cu2Sr2Bi2
+  O7.290Co1Cu2Ba2Pr1
+  O6.270Ca1Cu2Ba2Hg1
+  O8.194Ca1Cu2Sr2Bi2
+  O8.272Ca1Cu2Sr2Bi2
+  O8.140Ca1Cu2Sr2Bi2
+
+TOOLS: literature_search (metadata only), get_property (measure tc /
+       element_count / family; costs budget), submit_answer (single best
+       candidate + reasoning + measured evidence).
+Every Tc value you cite must come from an actual measurement.

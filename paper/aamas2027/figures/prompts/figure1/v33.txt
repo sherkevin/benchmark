@@ -1,0 +1,45 @@
+Use case: infographic-diagram
+Asset type: Figure 1 method architecture for a top-conference machine-learning paper.
+
+Input images:
+- Image 1: Figure 1 v22, the scientific-content reference. Preserve its modules and causal topology, but redesign the composition.
+- Image 2: Figure 2 v26, the visual-style reference. Match its white paper background, compact cards, navy outlines, icon family, typography scale, arrow weight, and restrained blue/gray/amber/purple palette. Do not copy its temporal timeline.
+
+Primary request:
+Create a clean, high-end conference architecture figure for MIRA-Relay. The viewer should immediately see one central computation: a frozen base score and a released-state residual meet at a plus operator, become a score vector, and feed a selector. A small execution branch produces a judged selected result. A single compact delayed-feedback loop returns that selected result to the released state. The figure should look like a designed research diagram, not a slide full of text.
+
+Composition:
+- Wide landscape canvas, approximately 2.7:1, white background, compact margins, no unused upper half.
+- Do not use three large tinted panels or giant section headings. Use only three small local captions above groups: "input", "relay", "execution". Let the modules and arrows carry the story.
+- Arrange the central relay modules as a tight visual hub in the middle: Features and a locked Frozen score on the upper-left; Released state and Residual on the lower-left; a plus operator and a vertical score vector in the center; Selector and Selected tool on the right. The central hub must occupy most of the width.
+- Place the execution branch as a compact upper-right cluster: Call → Terminal record → Frozen endpoint judge → Chemical feedback. Runtime error goes down to a gray Runtime ledger dead end.
+- Place one compact return loop along the bottom: Chemical feedback → selected-only queue → purple dashed delay arrow labeled τ_t=t+1+D → Release → solid blue Update → the Released state register. This is the only feedback loop. The return path must visibly enter the state register, not stop at a border.
+- Use a small molecule icon and endpoint document at far left feeding the Features and released-state inputs. Show eligible tools as three generic icons in one small tray beside Selected tool. No provider identities.
+
+Modules and visual grammar:
+- Features: a small 3×4 gray feature grid inside a white card.
+- Frozen score: a white card with a tiny lock and a fixed weight grid; label it with words, not floating matrix symbols.
+- Released state: one blue register card with two columns of cells; label the card only "released state". It is the only persistent state store.
+- Residual: a small blue card with three stacked bars and the word "residual"; connect it from Released state to the plus operator.
+- Plus operator: a clear circular plus node. Show one short equation beside it: q=q^0+Δ. Do not add separate q⁰, W, n, s, or Δ labels elsewhere.
+- Score vector: a narrow vertical blue/gray bar immediately after the plus operator.
+- Selector: a blue rounded card with a simple arrow/chevron icon; selected tool is a single blue token with a calculator/tool icon.
+- Execution: cards for Call, Terminal record (with only output and runtime status), Frozen endpoint judge with a lock, and Chemical feedback with a flask icon and r∈{0,1}.
+- Queue: one purple queue/database icon and the short label selected-only queue. Release: one purple clock icon. Update: one blue circular-arrow icon.
+
+Text (verbatim, short labels only):
+"input", "relay", "execution", "molecule", "endpoint", "eligible tools", "Features", "Frozen score", "released state", "residual", "q=q^0+Δ", "Selector", "selected tool", "Call", "Terminal record", "output", "runtime status", "Frozen endpoint judge", "Chemical feedback", "r∈{0,1}", "Runtime ledger", "selected-only queue", "Release", "τ_t=t+1+D", "Update".
+
+Style/medium:
+Flat-vector scientific infographic with the polish of the local top-conference figure gallery. White paper background, dark navy text, fine navy/gray outlines, compact rounded cards, simple consistent line icons, small grids and registers, restrained shadows. Deep blue is the method/state color; light gray is frozen or diagnostic; amber is terminal judgment and chemical feedback; muted purple is only pending/release. Use one consistent stroke width and one arrowhead style throughout.
+
+Hard constraints:
+- Figure 1 is a method architecture, not a timeline. Do not create five chronological columns and do not duplicate Figure 2's decision → call → terminal → pending → release layout.
+- The center plus/score/selector hub must be the visual center. Do not make the execution branch or the queue the dominant element.
+- The released state is the only state store. Residual is a readout, not a second register.
+- Preserve the causal path selected call → terminal record → judge → chemical feedback → selected-only queue → delayed release → Update → released state. Runtime failure only reaches Runtime ledger.
+- Every label is at most two short lines. No paragraphs, captions, metrics, provider names, A/B/C letters, arbitrary letters, or explanatory prose.
+- Keep exactly two equations: q=q^0+Δ and τ_t=t+1+D. No other standalone symbols.
+- All arrows must be short, direct, attached to node borders, and non-crossing. No arrow may pass through a node or end in blank space.
+- Use compact modules with visible icons and internal structure. Avoid empty panels, giant colored backdrops, giant title bars, swimlanes, table backgrounds, dashed containers, crossed-out symbols, glossy gradients, 3-D, neon colors, or decorative clutter.
+- Match Figure 2 v26's visual texture and paper-scale readability, but use this distinct central-hub architecture layout.

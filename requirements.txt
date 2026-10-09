@@ -1,0 +1,30 @@
+# benchmark 跑批 + 判分的最小依赖（云端 X-5）
+#
+# 为何钉版本：mcp 已发生破坏性升级——2.0.0 删掉了 `mcp.server.fastmcp`，
+# 而所有 ws_mcp_server_*.py 都 `from mcp.server.fastmcp import FastMCP`。
+# 不钉 <2，`pip install mcp` 今天装到的是跑不起来的版本，换台机器就要重排查一遍
+# （云端首次搭环境的时间几乎全花在这上面）。
+#
+# 实测可用组合（云端 Linux py3.10.14 / 本地 mac）：mcp 1.29.0 + matplotlib 3.10.9。
+# py3.10 起即可，不需要 py3.12（ACTION_RULES 里"py3.9 装不了、需 py3.12"的旧说法
+# 已被云端 py3.10 实测推翻）。
+
+mcp<2
+matplotlib
+
+# rdkit：dag_poc 契约层 mock_server.py（9 个 agent 工具 literature_search /
+# search_candidates / get_entity / get_property / compare / submit_answer /
+# check_molecule_exists / edit_molecule / normalize_structure）的硬依赖——不装则
+# gateway 建实例时 _require_rdkit 直接 ModuleNotFoundError。
+# 第一组 8 道题的 ws_mcp_server_*.py 只用 mcp+stdlib、不需要 rdkit；但完整矩阵走
+# 9 工具契约层就必须有它。云端实测：rdkit 2026.03.5 装后 mock_server 9 工具暴露面验证通过。
+rdkit
+
+# scikit-learn：`src/probe_headless/probe_tool_conflicts.py` 在模块顶层就
+# `from sklearn import __version__`，并用 LogisticRegression 做裸基线、用
+# GroupShuffleSplit 按 Bemis-Murcko 骨架分组划分。不装则该模块及依赖它的
+# tool_conflict_census.py 连 import 都过不去（两个测试文件在收集阶段即 error）。
+# 钉 1.7.2 而非取最新：历史普查产物记录的 orchestrator 环境就是这个版本
+# （archive/cases/_methodology/tool_conflict_discovery/tool_manifest.json），
+# 换版本会让 LogisticRegression 基线数字与已冻结的读数失去可比性。
+scikit-learn==1.7.2

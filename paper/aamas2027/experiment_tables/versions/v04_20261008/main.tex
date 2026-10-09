@@ -1,0 +1,260 @@
+% v04: evidence-led layout, informed by actual Outstanding-paper experiment pages.
+% All measurements are retained from v02 / its sealed source summaries.
+\documentclass[10pt,letterpaper]{article}
+\usepackage[left=54pt,right=54pt,top=57pt,bottom=73pt]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{mathptmx}
+\usepackage{amsmath,amssymb,booktabs,array,multirow,caption,hyperref,pgfplots}
+\pgfplotsset{compat=1.18}
+\hypersetup{colorlinks=true,linkcolor=black,urlcolor=black}
+\captionsetup{font=small,labelfont=bf,justification=raggedright,singlelinecheck=false,skip=5pt,hypcap=false}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\newcommand{\MiraTableFont}{\fontsize{9}{11}\selectfont}
+\newcommand{\tnote}[1]{{\fontsize{8.5}{10}\selectfont\raggedright\par\vspace{3pt}#1\par}}
+\newcommand{\reviewheading}[1]{{\large\bfseries #1}\par\vspace{3pt}}
+\newcommand{\notrun}{\textemdash}
+\definecolor{MiraBlue}{HTML}{2E5DA1}
+\definecolor{GrayDark}{HTML}{515D6B}
+\definecolor{GrayMid}{HTML}{8895A7}
+\definecolor{BrownMuted}{HTML}{A58255}
+
+% BEGIN RESULT BLOCK: main-results | table* | E1
+\newcommand{\MiraMainCaption}{Pre-call selection on BBB: natural outcomes and recovery under controlled correctness drift.}
+\newcommand{\MiraMainLabels}{\label{tab:main-results}\label{tab:mechanism-results}}
+\newcommand{\MiraMainBody}{%
+\begingroup\centering\MiraTableFont\setlength{\tabcolsep}{11pt}\renewcommand{\arraystretch}{1.08}
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+& Natural & \multicolumn{3}{c}{Controlled drift} \\
+\cmidrule(l){3-5}
+Method & Success (\%) & Success (\%) & Gain (pp) & 95\% CI \\
+\midrule
+Random & 83.76 & \notrun & \notrun & \notrun \\
+Best Fixed & 88.15 & \notrun & \notrun & \notrun \\
+Frozen & \textbf{89.81} & 73.38 & reference & \notrun \\
+MIRA-Relative & \textbf{89.81} & \notrun & \notrun & \notrun \\
+\midrule
+Online SGD & 89.21 & 84.03 & $+10.66$ & $[+6.05,+15.45]$ \\
+Greedy LinUCB & 89.72 & 81.15 & $+7.77$ & $[+5.08,+10.72]$ \\
+BayesianRouter & 89.53 & 80.28 & $+6.90$ & $[+3.50,+10.41]$ \\
+\midrule
+\textbf{MIRA-Relay} & \textbf{89.81} & \textbf{87.56} & $+14.18$ & $[+9.61,+19.03]$ \\
+\midrule
+Retrospective Best Fixed$^{\dagger}$ & 90.45 & \notrun & \notrun & \notrun \\
+\bottomrule
+\end{tabular}\par
+\tnote{Gain is paired against Frozen. $\dagger$ Evaluator-only fixed provider. Bold marks the best deployable point estimate, including ties. \notrun: not in the recorded roster.}
+\endgroup}
+% END RESULT BLOCK
+
+% BEGIN RESULT BLOCK: credit-ablation | table* | E2
+\newcommand{\MiraCreditCaption}{Source-aligned attribution with matched cold start and release clock.}
+\newcommand{\MiraCreditLabels}{\label{tab:credit-ablation}}
+\newcommand{\MiraCreditBody}{%
+\begingroup\centering\MiraTableFont\setlength{\tabcolsep}{13pt}\renewcommand{\arraystretch}{1.10}
+\begin{tabular}{@{}lrr@{}}
+\toprule
+Contrast & Natural $\Delta$ [95\% CI] & Controlled $\Delta$ [95\% CI] \\
+\midrule
+Local $-$ Frozen & $+0.10\;[-1.08,+1.42]$ & $+14.40\;[+9.79,+19.23]$ \\
+Permutation $-$ Frozen & $+0.41\;[-0.47,+1.32]$ & $-1.27\;[-3.66,+0.95]$ \\
+\textbf{Local $-$ Permutation} & $-0.30\;[-1.42,+0.76]$ & $+15.67\;[+10.65,+20.74]$ \\
+\bottomrule
+\end{tabular}\par
+\tnote{Units: pp. Equal-weight scaffold-mean contrasts over 124 clusters; 90 replay streams per condition. This estimand differs from the pooled-call point estimates in Table~\ref{tab:main-results}.}
+\endgroup}
+% END RESULT BLOCK
+
+% BEGIN RESULT BLOCK: learned-prior | table | E3
+\newcommand{\MiraPriorCaption}{Cold-start accuracy on BBB development. The per-molecule oracle is evaluator-only.}
+\newcommand{\MiraPriorLabels}{\label{tab:learned-prior}}
+\newcommand{\MiraPriorBody}{%
+\begingroup\centering\MiraTableFont\setlength{\tabcolsep}{9pt}\renewcommand{\arraystretch}{1.08}
+\begin{tabular}{@{}lr@{}}
+\toprule
+Selector & Accuracy (\%) \\
+\midrule
+Best Fixed & 79.22 \\
+Raw Frozen & 79.36 \\
+Corrected Frozen & \textbf{80.19} \\
+\midrule
+BCE + auxiliary CLS & 78.53 / 78.95 \\
+BT + auxiliary CLS & 78.81 / 78.25 \\
+\midrule
+Per-molecule oracle$^{\dagger}$ & 85.60 \\
+\bottomrule
+\end{tabular}\par
+\tnote{Paired training seeds 0/1 are separated by `/'; one value denotes a deterministic result. $\dagger$ Uses unselected outputs.}
+\endgroup}
+% END RESULT BLOCK
+
+% BEGIN RESULT BLOCK: centering-diagnostic | table | E4
+\newcommand{\MiraCenterCaption}{Score scale and update rule on BBB development. Accuracy in \%.}
+\newcommand{\MiraCenterLabels}{\label{tab:centering-diagnostic}}
+\newcommand{\MiraCenterBody}{%
+\begingroup\centering\MiraTableFont\setlength{\tabcolsep}{6pt}\renewcommand{\arraystretch}{1.08}
+\begin{tabular}{@{}llrr@{}}
+\toprule
+Score & Update & Natural & Drift \\
+\midrule
+\multirow{3}{*}{Raw} & Frozen & 79.36 & 69.11 \\
+& Marginal & 79.18 & 77.29 \\
+& Query & 78.49 & 75.95 \\
+\midrule
+\multirow{3}{*}{Corrected} & Frozen & 80.19 & 63.30 \\
+& Marginal & 79.82 & 78.30 \\
+& Query & 80.33 & 78.67 \\
+\bottomrule
+\end{tabular}\par
+\tnote{Compare update rules within each scale; score correction also changes exposure to the intervention.}
+\endgroup}
+% END RESULT BLOCK
+
+% BEGIN RESULT BLOCK: cost-validity | table* | E5
+\newcommand{\MiraCostCaption}{CPU policy overhead ($\mu$s; lower is better).}
+\newcommand{\MiraCostLabels}{\label{tab:cost-validity}}
+\newcommand{\MiraCostBody}{%
+\begingroup\centering\MiraTableFont\setlength{\tabcolsep}{14pt}\renewcommand{\arraystretch}{1.08}
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+& \multicolumn{2}{c}{Natural menu} & Controlled \\
+\cmidrule(lr){2-3}\cmidrule(l){4-4}
+Method & Selection & Update & Update \\
+\midrule
+Random & 67.14 & 5.44 & \notrun \\
+Best Fixed & 5.82 & 0.68 & \notrun \\
+Frozen & 15.89 & 1.31 & 1.50 \\
+MIRA-Relative & 42.02 & 73.30 & \notrun \\
+\midrule
+Online SGD & 14.08 & 19.37 & 20.02 \\
+Greedy LinUCB & 128.63 & 90.90 & 92.32 \\
+BayesianRouter & 133.65 & 88.96 & 92.55 \\
+\midrule
+\textbf{MIRA-Relay} & 27.21 & 2.81 & 3.46 \\
+\bottomrule
+\end{tabular}\par
+\tnote{Mean of 30 stream-level p95 timings; macOS arm64. Excludes provider inference and I/O. All methods use one call per input. Live learner memory remains unmeasured.}
+\endgroup}
+% END RESULT BLOCK
+
+% BEGIN RESULT BLOCK: postcall-verification | table* | E6
+\newcommand{\MiraPostCaption}{Post-call refusal on the reused BBB holdout (secondary analysis).}
+\newcommand{\MiraPostLabels}{\label{tab:postcall-verification}\label{tab:postcall}}
+\newcommand{\MiraPostBody}{%
+\begingroup\centering\MiraTableFont\setlength{\tabcolsep}{14pt}\renewcommand{\arraystretch}{1.08}
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+Policy & Coverage (\%) & Accepted accuracy (\%) & Utility \\
+\midrule
+Always accept & 100.00 & 88.15 & $-0.1285$ \\
+Confidence refuse & 84.46 & \textbf{94.57} & $\mathbf{-0.0947}$ \\
+Always refuse & 0.00 & \notrun & $-0.2600$ \\
+\midrule
+Same-coverage random$^{\dagger}$ & 84.46 & 88.69 & $-0.1444$ \\
+\bottomrule
+\end{tabular}\par
+\tnote{$\dagger$ Evaluator-side conditional null. $U=-(W+0.25R+0.01C)/N$. All policies call once before accepting/refusing. Bold marks the best deployable point estimate.}
+\endgroup}
+% END RESULT BLOCK
+
+% BEGIN FIGURE BLOCK: delay-sensitivity
+\newcommand{\MiraDelayCaption}{Delay sensitivity. Paired gains over Frozen at the recorded delays; points are descriptive, with no uncertainty shown.}
+\newcommand{\MiraDelayBody}{%
+\begingroup\centering
+\pgfplotsset{miraaxis/.style={width=0.45\linewidth,height=1.70in,
+  axis lines=left,axis line style={black!60},tick align=outside,
+  tick label style={font=\fontsize{8.5}{10}\selectfont},
+  label style={font=\fontsize{9}{11}\selectfont},title style={font=\fontsize{9}{11}\selectfont},
+  xmin=-0.25,xmax=4.25,xtick={0,1,4},xlabel={Delay (ticks)},ylabel={Gain (pp)},
+  grid=major,xmajorgrids=false,grid style={black!8},clip=false},
+  miraours/.style={MiraBlue,very thick,mark=diamond*,mark size=2.5pt},
+  mirasgd/.style={GrayDark,thick,dashed,mark=*,mark size=2pt},
+  miraucb/.style={GrayMid,thick,densely dotted,mark=triangle*,mark size=2.5pt},
+  mirabayes/.style={BrownMuted,thick,dashdotted,mark=square*,mark size=2pt}}
+\begin{tikzpicture}
+\begin{axis}[miraaxis,name=left,title={(a) Natural menu},ymin=-1.05,ymax=0.50,
+  ytick={-1,-0.5,0,0.5},legend to name=miradelaylegend,legend columns=4,
+  legend style={draw=none,font=\fontsize{8.5}{10}\selectfont,/tikz/every even column/.append style={column sep=10pt}}]
+\addplot[mirasgd] coordinates {(0,-0.76)(1,-0.89)(4,-0.13)};
+\addlegendentry{Online SGD}
+\addplot[miraucb] coordinates {(0,-0.13)(1,0)(4,-0.13)};
+\addlegendentry{Greedy LinUCB}
+\addplot[mirabayes] coordinates {(0,-0.25)(1,-0.25)(4,-0.32)};
+\addlegendentry{BayesianRouter}
+\addplot[miraours] coordinates {(0,-0.13)(1,-0.13)(4,0.25)};
+\addlegendentry{MIRA-Relay}
+\end{axis}
+\begin{axis}[miraaxis,at={(left.outer east)},anchor=outer west,xshift=18pt,
+ title={(b) Controlled drift},ymin=0,ymax=16,ytick={0,4,8,12,16}]
+\addplot[mirasgd] coordinates {(0,11.59)(1,11.21)(4,9.17)};
+\addplot[miraucb] coordinates {(0,8.66)(1,7.01)(4,7.64)};
+\addplot[mirabayes] coordinates {(0,6.82)(1,6.94)(4,6.94)};
+\addplot[miraours] coordinates {(0,13.63)(1,14.52)(4,14.39)};
+\end{axis}
+\end{tikzpicture}
+\par\vspace{2pt}\ref{miradelaylegend}\par
+\endgroup}
+% END FIGURE BLOCK
+
+\begin{document}
+\reviewheading{Experimental results: core evidence}
+{\small After the Decision: Learning to Adapt from Delayed Outcomes\hfill Review v04}
+
+{\small\textbf{Common setup.} Four checkpoint-bound BBB providers, 157 held-out molecules, one call per input, and $D\in\{0,1,4\}$. Each method has 30 schedules and 4,710 recorded calls. Controlled drift flips the selected fit-best provider's label after tick 78. All paired intervals resample scaffold clusters.}
+
+\begin{minipage}{\linewidth}
+\captionof{table}{\MiraMainCaption}\MiraMainLabels
+\MiraMainBody
+\end{minipage}
+
+{\small On the natural menu, MIRA-Relay's paired gain is 0.00 pp (95\% CI $[-1.24,+1.40]$). It rescues and harms 82 decisions each. Under the specified drift, it rescues 780 and harms 112 decisions.}
+
+\vspace{5pt}
+\begin{minipage}{\linewidth}
+\MiraDelayBody
+\captionof{figure}{\MiraDelayCaption}\label{fig:delay-sensitivity}
+\end{minipage}
+
+\vspace{8pt}
+\begin{minipage}{\linewidth}
+\captionof{table}{\MiraCreditCaption}\MiraCreditLabels
+\MiraCreditBody
+\end{minipage}
+
+\newpage
+\reviewheading{Development diagnostics and deployment cost}
+{\small\textbf{Development setup.} The diagnostics use 722 molecules and five scaffold folds. Offline objectives use paired seeds; the update factorial uses three delays and 2,166 decisions per cell.}
+
+\noindent\begin{minipage}[t]{\dimexpr(\textwidth-24pt)/2\relax}
+\begin{minipage}[t][32pt][t]{\linewidth}
+\captionof{table}{\MiraPriorCaption}\MiraPriorLabels
+\end{minipage}
+\MiraPriorBody
+\end{minipage}\hfill
+\begin{minipage}[t]{\dimexpr(\textwidth-24pt)/2\relax}
+\begin{minipage}[t][32pt][t]{\linewidth}
+\captionof{table}{\MiraCenterCaption}\MiraCenterLabels
+\end{minipage}
+\MiraCenterBody
+\end{minipage}
+
+{\small The development panel has 471 all-correct, 147 mixed-correctness, and 104 all-wrong molecules. Corrected Frozen gets 579/722 right; the oracle gets 618/722, leaving 39 recoverable selection errors. Neither offline objective closes this gap in the tested recipe.}
+
+\vspace{7pt}
+\begin{minipage}{\linewidth}
+\captionof{table}{\MiraCostCaption}\MiraCostLabels
+\MiraCostBody
+\end{minipage}
+
+\vspace{12pt}
+\begin{minipage}{\linewidth}
+\captionof{table}{\MiraPostCaption}\MiraPostLabels
+\MiraPostBody
+\end{minipage}
+
+{\small This secondary analysis reuses the 157-molecule holdout: five policies fitted to development folds yield 785 records per policy. Confidence minus random is $+5.88$ pp accepted accuracy (95\% CI $[+2.77,+9.29]$); utility versus always accept improves by $+0.0338$ (95\% CI $[+0.0088,+0.0609]$). It does not estimate pre-call online gain.}
+
+\vspace{9pt}
+{\small\textbf{Experiment map.} E1 $\to$ Table~\ref{tab:main-results} and Figure~\ref{fig:delay-sensitivity}; E2 $\to$ Table~\ref{tab:credit-ablation}; E3 $\to$ Table~\ref{tab:learned-prior}; E4 $\to$ Table~\ref{tab:centering-diagnostic}; E5 $\to$ Table~\ref{tab:cost-validity}; E6 $\to$ Table~\ref{tab:postcall-verification}. Protocols and source hashes: companion README.}
+\end{document}

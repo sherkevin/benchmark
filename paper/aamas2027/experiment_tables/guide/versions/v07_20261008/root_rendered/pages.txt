@@ -1,0 +1,215 @@
+DESIGN GUIDE — CONDITIONAL TARGETS ARE NOT RESULTS                                                                                  v07 / 2026-10-08
+
+
+
+E1–E2: measured distribution over 128 arrival orders
+These M results were completed by the parallel experimental work and independently verified. One independent uniform permu-
+tation of the fixed 157-molecule cohort is one unit, averaging the same 30 fixed fit/seed/delay configurations. Methods share each
+order and execute full adaptive queues. The original order is excluded. This is order uncertainty on a fixed cohort, not uncertainty
+over new molecules or future candidates. Stress flips the fit-best provider from tick 78 in each order; which molecules receive the
+intervention changes with that order.
+Table 14: Order-mean accuracy and actual order SD (M); all delays averaged.
+
+
+                                                                              Natural               Controlled
+                                      Method                        Mean(%)           SD(pp)   Mean(%)           SD(pp)
+                                      Random M                              86.47       1.15           —             —
+                                      Fit-only Best Fixed M                 88.15       0.00           —             —
+                                      Frozen M                              89.81       0.00        75.75          1.46
+                                      Online SGD M                          89.05       0.61        82.22          2.87
+                                      LinUCB M
+                                      BayesianRouter M
+                                                                            89.70
+                                                                            89.72
+                                                                                        0.33
+                                                                                        0.57
+                                                                                                    76.90
+                                                                                                    79.60
+                                                                                                                   2.48
+                                                                                                                   1.64
+                                                                                                                                     E D
+                                      Marginal reliability M
+                                      MIRA-Relay M
+                                                                            89.80
+                                                                            89.52
+                                                                                        0.17
+                                                                                        0.49
+                                                                                                       —
+                                                                                                    86.96
+                                                                                                                     —
+                                                                                                                   1.46
+                                                                                                                         U         R
+                                      Credit permutation M                  89.86       0.46        71.40          3.72
+
+                                                                                                                     A S
+                                                                                                                 E
+These are order SDs, not the fit SDs on page 1. Natural Frozen is constant across orders. Natural MIRA mean is lower than Frozen; controlled recovery
+remains positive. Do not assume an improved future method will inherit these SDs.
+Table 15: Actual paired effect distributions (M), in pp; quantiles are not mean CIs.                  M
+                                                                                  OT
+                                 Matched contrast
+                                 Natural: MIRA–Frozen
+                                                                       Mean
+                                                                       -0.29
+                                                                               / N    SD
+                                                                                    0.49
+                                                                                            q025
+                                                                                           -1.18
+                                                                                                          q975
+                                                                                                      +0.54
+                                                                                                                     Wins
+                                                                                                                   36/128
+
+                                                   E
+                                 Controlled: MIRA–Frozen
+
+                                                  D
+                                 Controlled: MIRA–SGD
+                                                                      +11.21
+                                                                       +4.74
+                                                                                    2.46
+                                                                                    2.40
+                                                                                           +6.68
+                                                                                           +0.45
+                                                                                                     +15.68
+                                                                                                      +8.61
+                                                                                                                  128/128
+                                                                                                                  125/128
+
+                                                I
+                                 Controlled: Local–Perm.              +15.57        4.39   +6.05     +23.31       128/128
+
+
+                                              GU
+A positive central order quantile does not mean every order wins: MIRA–SGD ranges from -2.68 to +10.28pp, with 3 negative orders. The Local–Perm.
+
+
+                            T
+row is pooled correctness, not the equal-scaffold estimand on page 2.
+
+
+                           E
+Table 16: Cross-method dependence under controlled drift (M).
+
+
+                         G
+         A R               MIRA comparator
+                           SGD
+                                                      Cov.(pp2 )
+                                                          +2.31
+                                                                     Correlation
+                                                                              +0.55
+                                                                                        Paired SD(pp)
+                                                                                                   2.40
+                                                                                                            If independent(pp)
+                                                                                                                            3.22
+        T                  Frozen
+                           Permutation
+                                                          -0.91
+                                                          -1.66
+                                                                              -0.43
+                                                                              -0.31
+                                                                                                   2.46
+                                                                                                   4.39
+                                                                                                                            2.06
+                                                                                                                            4.00
+
+The last column is a counterexample to an incorrect independence assumption, not a valid error estimate. For natural Frozen, correlation is undefined
+because its vector is constant.
+                                                            s2A−B = s2A + s2B − 2 Cov(A, B).
+Case: A and B are MIRA and SGD accuracy on each of the 128 matched orders. The actual paired SD is 2.40pp; discarding their covariance gives
+3.22pp. With Frozen, negative covariance instead increases paired spread.
+Three distinct statistical objects. The recorded approximate 95% Monte Carlo interval for the controlled MIRA–SGD mean is
+[4.32,5.16]pp; the empirical 2.5/97.5% order quantiles are [0.45,8.61]pp. The recorded exact interval for its win probability is
+[93.30,99.51]% (125/128 wins). None is a predictive interval for a new method. The original-order budgets on page 2 are not
+transported here. Reproduction: distribution_audit_arrival_v1/ preserves order means, paired counts, covariance matrices and 654 hashed
+sources. The full run’s independent_full_v2/ verification closes all 128 orders; the earlier failed verifier is retained. No new policy was executed
+for this Guide.
+
+
+
+
+M: measured   B: conditional budget   T: research objective; no future CI                                                                          5
+DESIGN GUIDE — CONDITIONAL TARGETS ARE NOT RESULTS                                                                                  v07 / 2026-10-08
+
+
+
+Distribution checks for the scientist
+
+   Check                              Reference or expected signature                             Failure interpretation
+   Provider dependence                Preserve joint 4-bit patterns; split all-correct, mixed,    Independent provider errors overstate head-
+                                      all-wrong                                                   room
+   Paired errors                      Report rescue/harm/both-wrong and neutral action            A mean gain alone hides offsetting damage
+                                      changes
+   Fitted priors                      Use paired five-fit profiles; retain all seed results       Seed duplicates do not add evidence
+   Delay                              No same-decision feedback before selection;                 Early improvement suggests leakage or
+                                      matched prefix before release                               changed prior
+   Drift phase                        Compare pre/post error trajectory and released af-          A aggregate stress gain may hide slow re-
+                                      fected receipts                                             covery
+   Mechanism                          Candidate vs its own Frozen and its own permutation         A gain against an old comparator is not at-
+                                                                                                  tribution
+   Coverage                           Match accepted counts in each fit, not only their sum       More refusal or changed cohort confounds
+
+   Uncertainty                        Separate fit variation, new arrivals, new scaffolds,
+                                      random gate draws
+                                                                                                  accuracy
+
+
+                                                                                                                                E D
+                                                                                                  Fixed-trace reweighting is not a new trajec-
+                                                                                                  tory CI
+
+
+                                                                                                                  U           R
+What has high-confidence support, and what still needs evidence
+                                                                                                              A S
+Verified empirical structure: recorded denominators, provider-error overlap, paired rescue/harm, fit/delay/phase strata, source
+hashes and table identities. These are finite-cohort facts, not generalization estimates.               E
+                                                                                                 M
+Exact conditional requirements: given uniform α/β response, E1 pooled, scaffold and stratum budgets are calculated from
+
+                                                                                T
+the same recorded molecules. E6 utility follows its within-fit swap contract. Conditional validity does not establish attainable
+selectivity.
+                                                                               O
+                                                                              N
+Unresolved prediction: no calibrated future outcome distribution, seed SD or predictive CI exists for an unspecified new can-
+
+                                                                            /
+didate. Null and adverse effects remain plausible; the previous learned priors actually underperformed. The table should guide
+
+                                                   E
+which mechanism to repair, not imply certainty of winning.
+
+Before filling a prospective result matrix
+                                                  D
+                                                I
+                                              GU
+Freeze one candidate: features, prior, parameters, update rule, selected-only feedback, release clock, failure semantics and gate.
+Then match its own Frozen, online baselines and attribution controls. New arrival-order uncertainty requires full adaptive tra-
+jectories; unseen-scaffold generalization requires untouched data. The 157 inspected molecules cannot become a new unseen
+                            T
+confirmation cohort. Write a calibrated predictive interval only after its model and coverage have been justified.
+
+                           E
+                         G
+Evidence and reproducibility
+
+           R
+Measured reference: distribution_audit_v1/ contains 16 CSVs, 19 hashed sources, and an independent standard-library extractor. Actual E1
+
+         A
+records include 65,940 method/configuration/molecule rows; E2 includes 28,260. Their Local and Relay terminal vectors match completely. All seed
+
+        T
+dependencies are retained. conditional_requirements.json stores the response assumptions, fractional budget sums, fit/delay profiles, scaffold
+contrasts, and per-fit swap limits. build_distribution_guide.py performs no training, policy replay, model inference or random sampling.
+This Guide maps E1–E6 to body Tables 3–8 and Figure 3; the active review standard’s E6 untouched-confirmation gate is a different identifier. v01–v05
+remain archived; v05 passed arithmetic/visual checks but failed scientific target confidence. Its independently chosen means and smooth delay goals
+have been superseded. The Guide does not write target values into the real manuscript or measured-result preview.
+
+
+
+
+M: measured   B: conditional budget   T: research objective; no future CI                                                                          6
+

@@ -1,0 +1,122 @@
+Experimental results: core evidence
+After the Decision: Learning to Adapt from Delayed Outcomes                                                                             Review v03
+Common setup. Four checkpoint-bound BBB providers, 157 held-out molecules, one call per input, and D ∈ {0, 1, 4}. Each method has
+30 schedules and 4,710 recorded calls. Controlled drift flips the selected fit-best provider’s label after tick 78. All paired intervals resample
+scaffold clusters.
+Table 1: Pre-call selection on BBB. MIRA-Relay matches the frozen selector on the natural menu and improves recovery under controlled
+correctness drift.
+
+                                       Natural                        Controlled drift
+Method                            Success (%)          Success (%)       Gain (pp)                      95% CI
+Random                                   83.76                 —                —                               —
+Best Fixed                               88.15                 —                —                               —
+Frozen                                   89.81              73.38        reference                              —
+MIRA-Relative                            89.81                 —                —                               —
+Online SGD                               89.21              84.03            +10.66              [+6.05, +15.45]
+Greedy LinUCB                            89.72              81.15             +7.77              [+5.08, +10.72]
+BayesianRouter                           89.53              80.28             +6.90              [+3.50, +10.41]
+MIRA-Relay                               89.81              87.56            +14.18              [+9.61, +19.03]
+Retrospective Best Fixed†                90.45                  —                   —                           —
+Gain is paired against Frozen. † Evaluator-only fixed provider. Bold marks the best deployable point estimate, including ties. —: not in the recorded
+roster.
+On the natural menu, MIRA-Relay’s paired gain is 0.00 pp (95% CI [−1.24, +1.40]). It rescues and harms 82 decisions each. Under the
+specified drift, it rescues 780 and harms 112 decisions.
+
+                                     (a) Natural menu                                                           (b) Controlled drift
+                    0.5                                                                     16
+
+                                                                                            12
+
+
+       Gain (pp)                                                                Gain (pp)
+                      0
+                                                                                            8
+                   −0.5
+                                                                                            4
+                    −1                                                                      0
+                          0      1                                   4                            0         1                              4
+                                       Delay (ticks)                                                                Delay (ticks)
+
+                                                                         ??
+Figure 1: Delay sensitivity. Each point is a descriptive paired gain over Frozen at one recorded delay, not an independent task cohort or a
+confidence interval.
+
+Table 2: Source-aligned feedback attribution. Only the destination of each released residual changes; cold start and release clock are
+matched.
+
+Contrast                          Natural ∆ [95% CI]             Controlled ∆ [95% CI]
+Local − Frozen                 +0.10 [−1.08, +1.42]            +14.40 [+9.79, +19.23]
+Permutation − Frozen           +0.41 [−0.47, +1.32]             −1.27 [−3.66, +0.95]
+Local − Permutation            −0.30 [−1.42, +0.76]           +15.67 [+10.65, +20.74]
+Units: pp. Equal-weight scaffold-mean contrasts over 124 clusters; 90 replay streams per condition. This estimand differs from the pooled-call point
+estimates in Table ??.
+
+
+
+
+                                                                         1
+Development diagnostics and deployment cost
+Development setup. The diagnostics use 722 molecules and five scaffold folds. Offline objectives use paired seeds; the update factorial uses
+three delays and 2,166 decisions per cell.
+
+Table 3: Cold-start accuracy on BBB development. The                              Table 4: Score scale and update rule on BBB development.
+per-molecule oracle is evaluator-only.                                            Accuracy in %.
+
+Selector                    Accuracy (%)                                          Score        Update       Natural     Drift
+Best Fixed                            79.22                                                    Frozen         79.36    69.11
+Raw Frozen                            79.36                                       Raw          Marginal       79.18    77.29
+Corrected Frozen                      80.19                                                    Query          78.49    75.95
+BCE + auxiliary CLS          78.53 / 78.95                                                     Frozen         80.19    63.30
+BT + auxiliary CLS           78.81 / 78.25                                        Corrected    Marginal       79.82    78.30
+                                                                                               Query          80.33    78.67
+Per-molecule oracle†                  85.60
+                                                                                  Compare update rules within each scale; score correction also changes
+Paired training seeds 0/1 are separated by ‘/’; one value denotes a
+                                                                                  exposure to the intervention.
+deterministic result. † Uses unselected outputs.
+The development panel has 471 all-correct, 147 mixed-correctness, and 104 all-wrong molecules. Corrected Frozen gets 579/722 right; the
+oracle gets 618/722, leaving 39 recoverable selection errors. Neither offline objective closes this gap in the tested recipe.
+
+Table 5: CPU policy overhead in µs. The lightweight residual update has lower measured overhead than the matched gradient and posterior
+updates.
+
+                                Natural menu                 Controlled
+Method                    Selection           Update             Update
+Random                        67.14              5.44                   —
+Best Fixed                     5.82              0.68                   —
+Frozen                        15.89              1.31                 1.50
+MIRA-Relative                 42.02             73.30                   —
+Online SGD                    14.08             19.37             20.02
+Greedy LinUCB                128.63             90.90             92.32
+BayesianRouter               133.65             88.96             92.55
+MIRA-Relay                    27.21              2.81                 3.46
+Mean of 30 stream-level p95 timings; macOS arm64. Excludes provider inference and I/O. All methods use one call per input. Live learner memory
+remains unmeasured.
+
+
+Table 6: Post-call refusal on the existing held-out cohort (secondary analysis). Confidence gating improves accepted accuracy at matched
+coverage.
+
+Policy                             Coverage (%)           Accepted accuracy (%)                 Utility
+Always accept                             100.00                                 88.15        −0.1285
+Confidence refuse                          84.46                                 94.57        −0.0947
+Always refuse                               0.00                                    —         −0.2600
+Same-coverage random†                         84.46                              88.69        −0.1444
+† Evaluator-side conditional null. U = −(W + 0.25R + 0.01C)/N. All policies call once before accepting/refusing. Bold marks the best deployable
+point estimate.
+This secondary analysis reuses the 157-molecule holdout: five policies fitted to development folds yield 785 records per policy. Confi-
+dence minus random is +5.88 pp accepted accuracy (95% CI [+2.77, +9.29]); utility versus always accept improves by +0.0338 (95% CI
+[+0.0088, +0.0609]). It does not estimate pre-call online gain.
+
+Experiment map. E1 → Table ?? and Figure ??; E2 → Table ??; E3 → Table ??; E4 → Table ??; E5 → Table ??; E6 → Table ??. Complete
+
+
+
+                                                                             2
+intervals, event counts, pending memory measurements, and source hashes remain in the companion README and v02 detail pack.
+
+
+
+
+                                                                3
+

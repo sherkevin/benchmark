@@ -1,0 +1,201 @@
+Table 3 | FP-ADMET: a compendium of fingerprint-based ADMET prediction models | Journal of Cheminformatics | Springer Nature Link
+Skip to main content
+Log in
+Menu
+Find a journal
+Publish with us
+Track your research
+Search
+Saved research
+Cart
+Home
+Journal of Cheminformatics
+Article
+Table 3
+Table 3 Summary of the ADMET and other endpoints for which fingerprint-based regression models were evaluated
+From:
+FP-ADMET: a compendium of fingerprint-based ADMET prediction models
+Endpoint
+#Compounds
+Group
+Data source
+Aqueous solubility (
+\(\log\)
+S)
+9982
+[
+70
+]
+Intrinsic clearance (
+\(CL_{int}\)
+)
+244
+Excretion
+[
+71
+]
+Skin penetration (
+\(\log \ k_p\)
+)
+211
+Toxicity
+[
+72
+]
+Human serum albumin
+198
+[
+73
+,
+74
+]
+Human placenta barrier (clearance index)
+88
+Distribution
+[
+75
+]
+Cancer potency in mouse (
+\(\text {TD}_{{50}}\)
+)
+402
+Toxicity
+[
+76
+]
+Cancer potency in rat (
+\(\text {TD}_{{50}}\)
+)
+511
+Toxicity
+[
+76
+]
+Steady state volume distribution (
+\(\text {VD}_{{ss}}\)
+)
+1951
+Distribution
+[
+3
+,
+77
+]
+Distribution coefficient (
+\(\log\)
+D)
+7321
+[
+3
+,
+78
+]
+Fraction unbound in human plasma
+2319
+Distribution
+[
+79
+]
+Fraction unbound in the brain
+253
+Distribution
+[
+80
+]
+Human liver microsomal clearance
+5348
+Excretion
+[
+30
+]
+Rat liver microsomal clearance
+2166
+Excretion
+[
+30
+]
+Mouse liver microsomal clearance
+790
+Excretion
+[
+30
+]
+CACO-2 permeability
+2578
+Absorption
+[
+30
+]
+\(\text {pK}_a\)
+11041
+[
+81
+,
+82
+]
+MDCK cell line permeability
+701
+Absorption
+[
+3
+]
+Human renal clearance (
+\({CL}_r\)
+)
+636
+Excretion
+[
+83
+]
+Hemolytic toxicity (
+\(\log HD_{50}\)
+)
+875
+Toxicity
+[
+84
+]
+MDCK
+Madin-Darby canine kidney
+Back to article page
+Search
+Search by keyword or author
+Search
+Navigation
+Find a journal
+Publish with us
+Track your research
+Footer Navigation
+Discover content
+Journals A-Z
+Books A-Z
+Subjects A-Z
+Publish with us
+Journal finder
+Publish your research
+Language editing
+Open access publishing
+Products and services
+Our products
+Librarians
+Societies
+Partners and advertisers
+Our brands
+Springer
+Nature Portfolio
+BMC
+Palgrave Macmillan
+Apress
+Discover
+Corporate Navigation
+Your privacy choices/Manage cookies
+Your US state privacy rights
+Accessibility statement
+Terms and conditions
+Privacy policy
+Help and support
+Legal notice
+Cancel contracts here
+122.231.251.132
+Not affiliated
+© 2026 Springer Nature

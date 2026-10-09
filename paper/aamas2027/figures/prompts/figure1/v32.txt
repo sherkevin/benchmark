@@ -1,0 +1,36 @@
+Use case: infographic-diagram
+Asset type: Figure 1 method architecture for a top-conference machine-learning paper.
+
+Input images:
+- Image 1: the existing Figure 1 v21. Treat it as the scientific-content reference: preserve the method modules and causal connections, but redraw the visual design.
+- Image 2: Figure 2 v26. Treat it only as a style reference: borrow its crisp flat-vector cards, navy outlines, icon weight, typography scale, and restrained blue/gray/amber/purple palette. Do not copy its single-event timeline layout.
+
+Primary request:
+Redraw a compact, publication-ready architecture diagram for the MIRA-Relay method. The figure must make the method architecture visible at a glance: a frozen score, a released state, an online residual, a selector, one selected tool call, a frozen endpoint judge, and a selected-only delayed update. The visual center is the MIRA-Relay computation in the middle; the execution path is a smaller right-side exit; the delayed update returns as one compact bottom loop.
+
+Composition and structure:
+- Wide landscape canvas, about 2.7:1, white background, tightly packed with balanced margins.
+- Use three compact rounded grouping areas in one row: a small left "Inputs" area, the largest middle "MIRA-Relay" area, and a smaller right "Execution" area. Use very pale blue/cream fills only to separate regions; no large saturated panels and no empty upper half.
+- Left Inputs area: a simple molecule icon, a short endpoint document, a small eligible-tool tray made from three generic tool icons, and a blue released-state register with two columns of small cells. Do not write provider names or provider letters.
+- Middle MIRA-Relay area: show a small feature grid feeding a locked "Frozen score" card with a fixed weight grid; show the released-state register feeding a compact blue "residual" card; merge them in a clearly drawn plus operator into a vertical score vector labeled q=q^0+Δ; connect this directly to a blue selector card and one selected-tool token. Keep this computation centered and largest.
+- Right Execution area: show one selected tool call, a terminal record card containing only "output" and "runtime status", a locked frozen endpoint judge, and a small amber "chemical feedback" card with r∈{0,1}. A gray runtime-error branch ends in a gray runtime ledger and does not enter the chemical-feedback path.
+- Bottom return path: chemical feedback flows into one purple "selected-only queue" card, then a single purple dashed waiting arrow labeled τ_t=t+1+D reaches a purple "Release" clock card; Release has one short solid blue arrow to a blue "Update" card; Update has one solid blue arrow into the released-state register. Make this a compact U-shaped return loop that visibly closes the method, without duplicating terminal/output boxes.
+- The released-state register is the only persistent-state object. The residual card is a readout from that state, not a second state store. Keep the state-to-residual edge visible and unambiguous.
+
+Text (verbatim, short labels only):
+"Inputs", "MIRA-Relay", "Execution", "molecule", "endpoint", "eligible tools", "released state", "Features", "Frozen score", "residual", "q=q^0+Δ", "score", "Selector", "selected tool", "call", "terminal record", "output", "runtime status", "frozen endpoint judge", "chemical feedback", "r∈{0,1}", "runtime error", "runtime ledger", "selected-only queue", "Release", "τ_t=t+1+D", "Update".
+
+Style/medium:
+Flat vector scientific infographic, matching the local top-conference figure gallery. Use the same visual language as Figure 2 v26: white paper background, dark navy text, thin navy/gray outlines, compact rounded cards, simple line icons, small grids and registers, consistent arrowheads, restrained shadows, and no decorative illustration. Use deep blue for the method and state loop, light gray for frozen/external records, amber for terminal judging and chemical feedback, and muted purple only for pending/release.
+
+Constraints:
+- Preserve the scientific topology described above; do not invent a new algorithm, extra model, family-sharing block, or unselected outputs.
+- Figure 1 is an architecture figure, not a time-line figure. Do not arrange the whole image as five chronological columns and do not repeat Figure 2's decision/call/terminal/pending/release sequence as the main layout.
+- Use modules and icons rather than explanatory prose. Every module label is at most two short lines. No paragraph text.
+- Use only the two equations q=q^0+Δ and τ_t=t+1+D. Do not add probabilities, metrics, provider letters, or claims.
+- Keep all causal arrows short, direct, and attached to node borders. No crossing arrows, no arrowheads floating in empty space, no arrow passing through a module, and no ambiguous bypass from terminal record to released state.
+- Make the center computation and the bottom return loop occupy most of the canvas; remove large blank areas.
+- Make Figure 1 visually compatible with Figure 2 v26 in palette, stroke width, corner radius, icon scale, and typography, while keeping a different architecture layout.
+
+Avoid:
+photorealism, 3-D, glossy gradients, neon colors, giant title bars, swimlanes, table/grid backgrounds, dashed panel borders, crossed-out symbols, provider A/B/C labels, arbitrary letters, repeated outcome cards, excessive prose, oversized equations, tiny unreadable labels, disconnected modules, duplicate feedback loops, or a timeline-only composition.

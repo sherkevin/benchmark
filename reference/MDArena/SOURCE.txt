@@ -1,0 +1,5 @@
+arXiv:2608.02642
+abs: https://arxiv.org/abs/2608.02642
+pdf: https://arxiv.org/pdf/2608.02642
+topic: 分子动力学agent+process_reward
+pulled: 2026-08-09 via arxiv MCP (arxiv_get_metadata / arxiv_read_paper)

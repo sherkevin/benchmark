@@ -1,0 +1,6 @@
+arXiv:2602.02806
+abs: https://arxiv.org/abs/2602.02806
+pdf: https://arxiv.org/pdf/2602.02806
+topic: 【核心反例】把agent轨迹建模为图的线性扩展(=拓扑排序), MCMC推断潜在偏序; 明确指出枚举线性扩展是#P-hard
+pulled: 2026-08-09 反向证伪搜索(主动找反例)
+see: research/差异点证伪复核-20260809.md

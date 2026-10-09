@@ -1,0 +1,110 @@
+commit ab7a2db76fe9ffa6623d2cc093d7714496bf84cc
+Author: Jing Wu <jingwu.wu@alibaba-inc.com>
+Date:   Fri Aug 7 14:11:26 2026 +0800
+
+    六条线核查(实跑): E3-04 PR-34实测修好(双轨分派+MIXED告警, 用E4新trace实跑抽到证据4/6槽位mol_ids=26, 修复前全0, 测试143→155 passed); E5-03造出15道open(梯度三参数逐case落盘且有变化, 6道minimize+9道maximize, gt均不在visible_set, 判废如实报投造22→过门15判废7即31.8%与30%先验一致, 明写未为通过调小K/降n/改δ); E4-03落盘迁移完成(traces_new 27项, dag_poc/traces零改动)。未开工: E1-05、E6-03; E3-05待命(按定的优先级排task-04之后, 正确)。**登记PR-36自查**: 监工核查探针三次有bug得出反向结论差点误判工程师——①grep限于src/eval_matrix差点判E6未实现公式(实际在evaluate.py:764) ②grep extract_tool_data只命中1/9差点判E3没修(实际是分派器,真实抽取在_extract_new 9/9) ③正则丢掉比较符号把maximize的>=当<=判, 差点判E5的gate1退化(实际方向完全对齐)。病根: 用简化探针验复杂实现, 且'工程师没做好'比'我探针错了'更符合验收预期故易被采信。已定三条改进约束
+
+diff --git a/src/benchmark/evaluate.py b/src/benchmark/evaluate.py
+index ec75e9c..4e104af 100644
+--- a/src/benchmark/evaluate.py
++++ b/src/benchmark/evaluate.py
+@@ -680,6 +680,35 @@ def evaluate_grounding(payload, events, gw=None):
+     return out
+ 
+ 
++def _existence_budget_status(events):
++    """存在性查证预算状态扫描（任务 #52 / task-05 §1.2 约束 3 / ADR-0018 §4 H4）。
++
++    只扫 trace 录像中 check_molecule_exists 行，返 {'attempts', 'exhausted'}：
++      attempts  = 成功信封行数（服务端真实计数口径的 trace 侧镜像，供 goal §6
++                  步 6 平均 attempts 指标）；
++      exhausted = trace 中出现 ATTEMPTS_EXCEEDED 信封行（超预算拒绝）。
++
++    【H5 自证循环纪律，最高红线】本函数只消费错误码与行计数，绝不消费
++    exists 返值——评分依据仍是 ∈G_B（hit_gb 经 B 分区读取器独立重判）且经
++    B 侧性质复核；接口返 true 只是 agent 的停止信号。任何把 exists 接入得分
++    的改动都构成自证循环并可被暴力枚举攻破（goal §2b⑤ / ADR-0018 §4.3）。
++    超限是“预算耗尽罚 0”，不是“接口返存在→得分”。
++    旧 open 类（open_discovery 4 case，旧契约工具集）无该工具调用，永不触发；
++    fixed 类同理——本判据只对 open 判分链生效。"""
++    attempts, exhausted = 0, False
++    for e in events:
++        if e.get('tool') != 'check_molecule_exists':
++            continue
++        _, ret = _event_args_ret(e)
++        if not isinstance(ret, dict):
++            continue
++        if ret.get('error_code') == 'ATTEMPTS_EXCEEDED':
++            exhausted = True
++        elif 'error_code' not in ret:
++            attempts += 1
++    return {'attempts': attempts, 'exhausted': exhausted}
++
++
+ def _score_open_discovery(case, events, payload, response_json, ranked, best,
+                           case_id, reader=None):
+     """A/B 发现探索类 open 判分（修复四）：open_score = 𝟙[hit(G_B)] × 𝟙[grounding_pass]
+@@ -693,12 +722,19 @@ def _score_open_discovery(case, events, payload, response_json, ranked, best,
+     payload = payload if isinstance(payload, dict) else (response_json or {})
+     hit, gb_set, placeholder = hit_gb(best, case_id, reader=reader)
+     grounding = evaluate_grounding(payload, events)
+-    open_gate = hit and grounding['grounding_pass']
++    # 超限罚 0（任务 #52，只加判据不改其余逻辑）：trace 出现 check_molecule_exists
++    # 的 ATTEMPTS_EXCEEDED 信封行 ⇒ open_gate 强制关、open_score 强制 0
++    # （ADR-0018 §4 H4）。该判据是预算耗尽惩罚，与 exists 返值无任何关联
++    # （H5：返“存在”≠得分，评分依据仍是 ∈G_B 且经性质复核）。
++    ex = _existence_budget_status(events)
++    open_gate = hit and grounding['grounding_pass'] and not ex['exhausted']
+     open_score = 1.0 if open_gate else 0.0
+     scores = {k: 0.0 for k in CP_WEIGHTS}
+     extra = {'hit_gb': hit, 'grounding': grounding, 'open_gate': open_gate,
+              'open_score': open_score,
+-             'grounding_mode': 'placeholder' if placeholder else 'real'}
++             'grounding_mode': 'placeholder' if placeholder else 'real',
++             'existence_exhausted': ex['exhausted'],
++             'existence_attempts': ex['attempts']}
+     return scores, gb_set, ranked, best, extra
+ 
+ 
+@@ -857,7 +893,8 @@ def evaluate_no_path_violation(events, is_open=False, submitted=False,
+ 
+ 
+ def aggregate(scores, events=None, is_open=False, submitted=False,
+-              open_gate=None, open_score=None, grounding_mode=None):
++              open_gate=None, open_score=None, grounding_mode=None,
++              existence_exhausted=None):
+     """按 template.json 的 scoring 汇总：过程分 / 门控 / 最终任务分。
+ 
+     process    = sum(w_i * s_i) / sum(w_i)
+@@ -868,6 +905,11 @@ def aggregate(scores, events=None, is_open=False, submitted=False,
+     修复四（任务 #17，只加不改）：open_gate/open_score 非 None 时（仅 discovery
+     类 case）增写 open_gate / open_score / grounding_mode 三字段；fixed 与旧 open
+     路径缺省 None，返回字典与既有逐字段口径零差异。
++
++    任务 #52（task-05 §1.2 约束 3，只加不改）：existence_exhausted=True（trace
++    出现 check_molecule_exists 的 ATTEMPTS_EXCEEDED 信封行）⇒ open task_score
++    强制 0（ADR-0018 §4 H4 超限记 0 分）；缺省 None 时行为逐字段零变化。
++    惩罚依据是预算耗尽信号，与 exists 返值无关（H5 自证循环红线）。
+     """
+     total_w = sum(CP_WEIGHTS.values())
+     process = sum(CP_WEIGHTS[k] * scores.get(k, 0.0) for k in CP_WEIGHTS) / total_w
+@@ -886,6 +928,9 @@ def aggregate(scores, events=None, is_open=False, submitted=False,
+         out['open_gate'] = bool(open_gate)
+         out['open_score'] = open_score
+         out['grounding_mode'] = grounding_mode
++    if existence_exhausted:
++        out['existence_exhausted'] = True   # 留痕（goal §6 步 6 附报口径）
++        out['task_score'] = 0.0             # 超限记 0 分（ADR-0018 §4 H4）
+     return out
+ 
+ if __name__ == '__main__':
+@@ -927,7 +972,8 @@ if __name__ == '__main__':
+                             submitted=response is not None,
+                             open_gate=(om or {}).get('open_gate'),
+                             open_score=(om or {}).get('open_score'),
+-                            grounding_mode=(om or {}).get('grounding_mode'))
++                            grounding_mode=(om or {}).get('grounding_mode'),
++                            existence_exhausted=(om or {}).get('existence_exhausted'))
+             results_all.append({
+                 'case': case_name.replace('case_', ''), 'model': model,
+                 'gt': gt_id, 'best': best,

@@ -1,0 +1,33 @@
+Create a new complete AI-generated MIRA-Relay architecture figure using Image 1 (our v06) as the design to refine. Preserve its compact composition, dominant central method region, pale blue/cream/lavender grouping, concise labels, feature and weight miniatures, provider-indexed vectors, consistent typography and arrowheads. The other reference images are TableDART, CRITIC, and CollabLLM for academic visual quality only; never copy their content or results. Render the entire new figure, not a patch or a handwritten overlay.
+
+THE SCIENTIFIC MECHANISM
+Inputs are a molecule, an endpoint, and an eligible tool menu. The molecule's frozen representation and immutable fit-time scorer give one base score per provider. A separate released-counter register has one row per provider and n,s cells. It gives one residual per provider. Base-score and residual vectors add componentwise. A menu-restricted Select operator emits one selected tool. Only that selected call is executed. After it returns, valid output is judged, producing an identified chemical feedback event. That event waits in a selected-only queue until τₜ=t+1+D. Release then updates only the selected provider's counters. Those counters affect later selections through the residual and score computation. A runtime failure is kept separately and never becomes a chemical label. Do not invent a trainable backbone, shared residual scalar, another provider call, or any performance result.
+
+REQUIRED LAYOUT
+Landscape about 2.7:1, white canvas, compact margins. Three softly tinted regions with small headings: "Inputs", "MIRA-Relay", "Execution". MIRA-Relay is the widest region, about 44–48% of the width. Inputs about 16–18%; Execution about 32–34%. A short selected-feedback loop occupies the lower third below method and execution. No giant header ribbons, no enormous empty corner, no spreadsheet or swimlane grid. Use records, parameter grids, small counters, vectors, and a plus operator as the graphical vocabulary.
+
+INPUT AND ACTION ARROWS — FIX V06
+Draw the Molecule and Endpoint glyphs in the upper half of Inputs. Their arrows join and enter "Features"; do not leave them disconnected. A gray feature grid feeds a gray locked "Frozen scorer" with a fixed weight-matrix miniature. Its output is the A/B/C vector q⁰.
+The three tool cards A/B/C in "Eligible tools" are menu candidates. Connect their menu to the Select operator's eligibility port, not to Features or Frozen scorer. Route this thin neutral menu connector through a clear margin without crossing a module; its only destination is Select. The molecule input must not be mistaken for a candidate tool. Do not connect Eligible tools to a feature grid.
+
+METHOD INTERNAL ARROWS
+Blue "Released counters" with rows A,B,C and columns n,s → blue "Residual" → three-cell Δ vector → the + operator.
+Gray Frozen scorer → three-cell q⁰ vector → the same + operator.
+The + operator → three-cell q vector → "Select" → one "Selected tool" card.
+Place the small formula "q = q⁰ + Δ" by the plus operator. All three vectors have matching A/B/C order and no invented numeric entries. Highlight the B cell of q as the schematic selected choice; exactly one tool B is emitted, labelled B and aₜ. These are conceptual score cells, not a performance chart.
+
+PROVIDER IDENTITY — FIX V06
+B is the same provider throughout this illustrated event. Use B on Selected tool, on the small Chemical feedback event, and on the queued event card. On Released counters, ONLY row B's n,s cells receive the blue update highlight. Row A and row C must remain neutral and visually unchanged. Do not highlight row A when the selected tool is B. The feedback token can contain B and r∈{0,1}; this specifies a label type, not a claimed experiment result.
+
+EXECUTION AND FAILURE
+Selected tool B → "Call" → document-shaped "Return" with separate "output" and "status" fields. A short arrow labelled "valid" connects Return to frozen "Judge" (small snowflake), then to amber "Chemical feedback" B,r∈{0,1}. A separate short gray branch from status labelled "error" ends at "Runtime ledger". The failure branch does not enter the chemical feedback or residual update. Do not imply that every returned output is chemically correct; r can be 0 or 1.
+
+FEEDBACK AND STATE UPDATE — FIX V06
+Chemical feedback has one downward solid arrow that docks into a purple stack labelled "Selected-only queue", carrying event B. Queue → a LEFT-POINTING purple dashed waiting arrow → small "Release" gate labelled "τₜ = t + 1 + D" → a SOLID blue arrow → "Update" → one solid blue arrow that ends EXACTLY at the B row of Released counters. After the gate, the event is released; do not continue a dashed waiting line into the updated register.
+There is NO other outgoing arrow from Update, and no branch on the Update-to-counters connector. In particular remove v06's long line from the update path directly upward into Select. Released counters already feeds Residual → + → q → Select; that existing computation is the sole path through which the update affects a future choice. A tiny "Later decisions" note may sit by that path but must have NO separate arrow. No direct queue→Select, Update→Select, Return→released-state, or Judge→Update shortcut. Do not add a redundant released-state object or a second outcome chain. State can continue to use other released events while this event waits.
+
+STYLE AND TEXT
+Deep blue #2E5DA1 identifies online counters, residuals and selected action; pale blue #EEF4FC groups the method. Gray #E9EDF2 identifies frozen/external objects; cream and restrained amber #E8A02B identify evaluated feedback; muted purple #8C70B5 with pale lavender identifies the queue. Predominantly dark text, thin consistent linework, small corner radii and selective color. Keep the understated, clean academic texture of the references. No glossy or beveled UI cards. Keep visible prose below about 70 English words, two short lines at most per node, legible at a seven-inch paper width. Explanations belong in the caption.
+
+FORBIDDEN
+No canvas-wide grid or swimlanes (local feature/weight/counter cells are required), giant X, crossed-out provider, decorative robot, watermark, gradient, shadow, 3-D effects, axes, accuracy or performance data. No old family residual/provider bias, extra verifier, fallback/diagnostic outcome, refusal or additional tool call. No unselected output/label. No mismatch between selected B and updated counter row. No disconnected molecule/endpoint input. No candidate-menu-to-Features arrow. No bypass around the queue, release gate, or residual-score computation. Every arrow must terminate on its actual named node, not on the edge of a colored region.

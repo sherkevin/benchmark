@@ -1,0 +1,134 @@
+\begin{thebibliography}{19}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Abbasi-Yadkori et~al.(2011)Abbasi-Yadkori, P{\'a}l, and
+  Szepesv{\'a}ri]{abbasi2011improved}
+Abbasi-Yadkori, Yasin, P{\'a}l, D{\'a}vid, and Szepesv{\'a}ri, Csaba.
+\newblock Improved algorithms for linear stochastic bandits.
+\newblock In \emph{Advances in Neural Information Processing Systems}, pp.\
+  2312--2320, 2011.
+
+\bibitem[Abe \& Nakamura(1999)Abe and Nakamura]{abe1999learning}
+Abe, Naoki and Nakamura, Atsuyoshi.
+\newblock Learning to optimally schedule internet banner advertisements.
+\newblock In \emph{Proceedings of the Sixteenth International Conference on
+  Machine Learning}, pp.\  12--21. Morgan Kaufmann Publishers Inc., 1999.
+
+\bibitem[Agrawal \& Goyal(2013)Agrawal and Goyal]{agrawal2013thompson}
+Agrawal, Shipra and Goyal, Navin.
+\newblock Thompson sampling for contextual bandits with linear payoffs.
+\newblock In \emph{Proceedings of the 30th International Conference on Machine
+  Learning (ICML-13)}, pp.\  127--135, 2013.
+
+\bibitem[Auer et~al.(2002)Auer, Cesa-Bianchi, Freund, and
+  Schapire]{auer2002nonstochastic}
+Auer, Peter, Cesa-Bianchi, Nicolo, Freund, Yoav, and Schapire, Robert~E.
+\newblock The nonstochastic multiarmed bandit problem.
+\newblock \emph{SIAM Journal on Computing}, 32\penalty0 (1):\penalty0 48--77,
+  2002.
+
+\bibitem[Bastani \& Bayati(2015)Bastani and Bayati]{bastani2015online}
+Bastani, Hamsa and Bayati, Mohsen.
+\newblock Online decision-making with high-dimensional covariates.
+\newblock \emph{Available at SSRN 2661896}, 2015.
+
+\bibitem[Bubeck \& Cesa-Bianchi(2012)Bubeck and Cesa-Bianchi]{bubeck2012regret}
+Bubeck, S{\'e}bastien and Cesa-Bianchi, Nicolo.
+\newblock Regret analysis of stochastic and nonstochastic multi-armed bandit
+  problems.
+\newblock \emph{Foundations and Trends in Machine Learning}, 5\penalty0
+  (1):\penalty0 1--122, 2012.
+
+\bibitem[Chu et~al.(2011)Chu, Li, Reyzin, and Schapire]{chu2011contextual}
+Chu, Wei, Li, Lihong, Reyzin, Lev, and Schapire, Robert~E.
+\newblock Contextual bandits with linear payoff functions.
+\newblock In \emph{International Conference on Artificial Intelligence and
+  Statistics}, pp.\  208--214, 2011.
+
+\bibitem[Dudik et~al.(2011)Dudik, Hsu, Kale, Karampatziakis, Langford, Reyzin,
+  and Zhang]{dudik2011efficient}
+Dudik, Miroslav, Hsu, Daniel, Kale, Satyen, Karampatziakis, Nikos, Langford,
+  John, Reyzin, Lev, and Zhang, Tong.
+\newblock Efficient optimal learning for contextual bandits.
+\newblock In \emph{Proceedings of the Twenty-Seventh Conference Annual
+  Conference on Uncertainty in Artificial Intelligence}, pp.\  169--178. AUAI
+  Press, 2011.
+
+\bibitem[Klasnja et~al.(2015)Klasnja, Hekler, Shiffman, Boruvka, Almirall,
+  Tewari, and Murphy]{klasnja2015microrandomized}
+Klasnja, Predrag, Hekler, Eric~B., Shiffman, Saul, Boruvka, Audrey, Almirall,
+  Daniel, Tewari, Ambuj, and Murphy, Susan~A.
+\newblock Microrandomized trials: An experimental design for developing
+  just-in-time adaptive interventions.
+\newblock \emph{Health Psychology}, 34\penalty0 (Suppl):\penalty0 1220--1228,
+  Dec 2015.
+
+\bibitem[Li et~al.(2010)Li, Chu, Langford, and Schapire]{li2010contextual}
+Li, Lihong, Chu, Wei, Langford, John, and Schapire, Robert~E.
+\newblock A contextual-bandit approach to personalized news article
+  recommendation.
+\newblock In \emph{Proceedings of the 19th International Conference on World
+  Wide Web}, pp.\  661--670. ACM, 2010.
+
+\bibitem[Li et~al.(2011)Li, Chu, Langford, and Wang]{li2011unbiased}
+Li, Lihong, Chu, Wei, Langford, John, and Wang, Xuanhui.
+\newblock Unbiased offline evaluation of contextual-bandit-based news article
+  recommendation algorithms.
+\newblock In \emph{Proceedings of the fourth ACM international conference on
+  Web search and data mining}, pp.\  297--306. ACM, 2011.
+
+\bibitem[Liao et~al.(2015)Liao, Klasnja, Tewari, and Murphy]{liao2015sample}
+Liao, Peng, Klasnja, Predrag, Tewari, Ambuj, and Murphy, Susan~A.
+\newblock Sample size calculations for micro-randomized trials in mhealth.
+\newblock \emph{Statistics in medicine}, 2015.
+
+\bibitem[May et~al.(2012)May, Korda, Lee, and Leslie]{may2012optimistic}
+May, Benedict~C., Korda, Nathan, Lee, Anthony, and Leslie, David~S.
+\newblock Optimistic {Bayesian} sampling in contextual-bandit problems.
+\newblock \emph{The Journal of Machine Learning Research}, 13\penalty0
+  (1):\penalty0 2069--2106, 2012.
+
+\bibitem[Puterman(2005)]{puterman2005markov}
+Puterman, Martin~L.
+\newblock \emph{Markov decision processes: discrete stochastic dynamic
+  programming}.
+\newblock John Wiley \& Sons, 2005.
+
+\bibitem[Seldin et~al.(2011)Seldin, Auer, Shawe-Taylor, Ortner, and
+  Laviolette]{seldin2011pac}
+Seldin, Yevgeny, Auer, Peter, Shawe-Taylor, John~S., Ortner, Ronald, and
+  Laviolette, Fran{\c{c}}ois.
+\newblock {PAC-Bayesian} analysis of contextual bandits.
+\newblock In \emph{Advances in Neural Information Processing Systems}, pp.\
+  1683--1691, 2011.
+
+\bibitem[Slivkins(2014)]{slivkins2014contextual}
+Slivkins, Aleksandrs.
+\newblock Contextual bandits with similarity information.
+\newblock \emph{The Journal of Machine Learning Research}, 15\penalty0
+  (1):\penalty0 2533--2568, 2014.
+
+\bibitem[Sutton \& Barto(1998)Sutton and Barto]{sutton1998reinforcement}
+Sutton, Richard~S and Barto, Andrew~G.
+\newblock \emph{Reinforcement learning: An introduction}.
+\newblock MIT Press, 1998.
+
+\bibitem[Tewari \& Murphy(2017)Tewari and Murphy]{tewari2017ads}
+Tewari, Ambuj and Murphy, Susan~A.
+\newblock From ads to interventions: Contextual bandits in mobile health.
+\newblock In Rehg, Jim, Murphy, Susan~A., and Kumar, Santosh (eds.),
+  \emph{Mobile Health: Sensors, Analytic Methods, and Applications}. Springer,
+  2017.
+
+\bibitem[Valko et~al.(2013)Valko, Korda, Munos, Flaounas, and
+  Cristianini]{valko2013finite}
+Valko, Michal, Korda, Nathan, Munos, R{\'e}mi, Flaounas, Ilias, and
+  Cristianini, Nello.
+\newblock Finite-time analysis of kernelised contextual bandits.
+\newblock In \emph{Uncertainty in Artificial Intelligence}, pp.\  654, 2013.
+
+\end{thebibliography}

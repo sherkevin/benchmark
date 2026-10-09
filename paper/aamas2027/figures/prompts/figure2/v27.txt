@@ -1,0 +1,24 @@
+Use case: infographic-diagram. Create a completely new Figure 2 delayed-feedback event timeline for the MIRA-Relay paper. This is a companion to a separate architecture figure. The companion must explain temporal causality only, not repeat the architecture.
+
+CORE ROLE SEPARATION
+This image is a single-event time strip. It must show: decision at t → one selected call → terminal record → post-termination judge → chemical feedback → selected-only pending interval → release at τ_t=t+1+D → later released state → first later decision. The visual center is the waiting interval and the delayed release clock. Do not draw the feature extractor, frozen scorer, score vector, residual vector, q=q0+Δ, provider counters, candidate menu, state table, or any complete tool-selection architecture. Do not repeat an architecture panel.
+
+ABSOLUTE TEXT RESTRICTION
+Do not write the literal provider labels “A”, “B”, or “C” anywhere in the image. Do not put a single uppercase provider letter on any module, card, token, menu, state, or update object. Do not make up provider names. Use only generic short labels: “decision t”, “selected action”, “call”, “terminal record”, “output”, “runtime status”, “judge”, “chemical feedback”, “pending”, “release”, “released state”, “later decision”. The only mathematical labels are r∈{0,1} and τ_t=t+1+D. Avoid repeated letters and cryptic one-character labels.
+
+LAYOUT
+Use a clean white landscape canvas around 2.8:1, compact and paper-ready. Use one main horizontal event spine across the upper-middle: [decision t] → [selected action] → [call] → [terminal record] → [frozen endpoint judge] → [chemical feedback]. Use short arrows that dock exactly to neighboring cards. Under the terminal record, branch a small gray runtime-failure arrow to a “runtime ledger” dead-end; it must never enter chemical feedback or the pending queue.
+
+Below the chemical feedback, draw one purple selected-only pending card with a small stack icon and label “pending”; do not show a provider identity. From pending, draw one single purple dashed leftward or downward waiting edge to a compact purple release clock labelled once “τ_t=t+1+D”. Do not draw bidirectional arrows, repeated time beads, grid lines, swimlanes, or a second waiting path. After release, draw one solid blue edge to a compact blue “released state” card, then one solid blue edge to “first later decision”. Add a small nearby note “visible only at or after τ_t” if space permits. The current action must complete before any state update; no same-action feedback arrow.
+
+SEMANTIC BRANCHES
+The terminal record contains only two small fields, “output” and “runtime status”. A valid return goes to a lock/snowflake “frozen endpoint judge”, then to amber “chemical feedback” with r∈{0,1}. A runtime error goes to gray “runtime ledger” and ends there. The pending queue receives only the valid chemical feedback. The pending card is the only place where the feedback is hidden. Release is the only transition that makes the feedback visible to the later released state. Do not draw a direct terminal→released-state shortcut, a judge→state shortcut, or a queue bypass.
+
+VISUAL GRAMMAR
+Borrow only the visual language of the gallery and Figure 1 v07: pale-blue decision/selection accents, neutral gray external records, amber terminal/judge/feedback, muted purple pending/release, dark navy text, thin uniform outlines, simple document/gear/lock/clock icons, soft flat vector-like shapes, generous but controlled spacing. Use modules and arrows rather than explanatory paragraphs. No giant stage ribbons, no full-canvas table, no duplicated outcome cards, no crossed-out objects, no robots, no glossy 3-D, no gradients, no watermark, no performance values.
+
+DENSITY AND PAPER READABILITY
+Use fewer than 45 English words in the entire diagram. Each card has at most two short lines. Make the main event spine and the purple waiting interval dominant. Keep all labels readable at seven-inch paper width. Do not add a legend unless it contains only two tiny arrow samples: solid = completed/observed, dashed purple = waiting until release.
+
+FINAL NEGATIVE CHECK
+The final image must contain zero literal standalone provider letters A, B, C. It must not contain Features, Frozen scorer, Released counters, Residual, Select menu, q, Δ, n, s, provider bias, family residual, or a repeated architecture diagram. It must look like a temporal event timeline that complements the architecture figure, not a second architecture figure.

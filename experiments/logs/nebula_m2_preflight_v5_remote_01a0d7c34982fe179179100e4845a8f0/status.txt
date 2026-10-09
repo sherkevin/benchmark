@@ -1,0 +1,48 @@
++ /opt/homebrew/bin/nebula-cli task get 01a0d7c34982fe179179100e4845a8f0 -j damo_genomic_gene
+Task ID         01a0d7c34982fe179179100e4845a8f0
+  Status          SUCCESS
+  Application ID  xdl-6ab636164e57
+  Project         damo_genomic_gene
+  Queue           damo_genomic_gene_a800
+  Cluster         asi_zjk_pai_b
+  Queue Location  弹内
+  Card Type       A800-SXM4-80GB, 空闲GPU:21(8*1+7*1+6*1)
+  Worker          1 × (CPU: 15, GPU: 1, Mem: 240000M)
+  PS              --
+  Image           hub.docker.alibaba-inc.com/mdl/mdl0.6:user_cu128_gcc13_py3.10.13_torch280_20260320102910_accelerated
+  Custom Image    否
+  Git Path        git@gitlab.alibaba-inc.com:jingwu.jw/benchmark.git
+  Git Branch      --
+  Commit ID       71af7bb92c6620c7fdf218e451babeadf415f5d0
+  User            景午
+  Source          NEBULACTL
+  Storage         pangu
+  Created         9/25/2026, 4:51:35 PM
+  Updated         9/25/2026, 4:59:16 PM
+  Logview         https://nebula2.alibaba-inc.com/log/logview/xdl/view?task_id=01a0d7c34982fe179179100e4845a8f0
+  提交命令行           nebula-cli run mdl --user_params="--seed=0  --exploration-probability=0.8  --gate-batch-size=64  --confidence-delta=0.05  --call-cost=0.0" --queue=damo_genomic_gene_a800 --job_name=jingwu_dynamic_jev_freedman_preflight_002 --algo_name=pytorch280 --worker_count=1 --entry=src/probe_headless/nebula_m2_preflight.py --file.cluster_file=.neb_submit_j_ae96mt/cluster.json --git_path=git@gitlab.alibaba-inc.com:jingwu.jw/benchmark.git --commit_id=71af7bb92c6620c7fdf218e451babeadf415f5d0
+
+  🔧 Application
+  ────────────────────────────────────────────────────────
+  Application ID  xdl-6ab636164e57
+  Status          FINISHED
+  Created         9/25/2026, 4:52:54 PM
+
+  📦 Containers
+  ────────────────────────────────────────────────────────
+[2m+-------+-----------+------+----------+------------------------------------------------------------------------------------------------------------------+----------+[0m
+[1m[36m| Index | Role      | Rank | Status   | Host                                                                                                             | 退出码      |[0m
+[2m+-------+-----------+------+----------+------------------------------------------------------------------------------------------------------------------+----------+[0m
+| 0     | scheduler | 0    | RUNNING  | ]8;;https://asi-console.alibaba-inc.com/instances/terminal?name=xdl-6ab636164e57-scheduler-033.97.226.77]8;; | --       |
+| 0     | worker    | 0    | FINISHED | ]8;;https://asi-console.alibaba-inc.com/instances/terminal?name=xdl-6ab636164e57-worker-033.97.226.77]8;;    | 0 (正常退出) |
+[2m+-------+-----------+------+----------+------------------------------------------------------------------------------------------------------------------+----------+[0m
+
+  📊 Timeline
+  ────────────────────────────────────────────────────────
+[2m+-----------+--------------------------------------------------------+-----------------------+----------+[0m
+[1m[36m| Phase     | Message                                                | Time                  | Duration |[0m
+[2m+-----------+--------------------------------------------------------+-----------------------+----------+[0m
+| Created   | XDLJob xdl-6ab636164e57 is created.                    | 9/25/2026, 4:55:07 PM | 23s      |
+| Running   | XDLJob xdl/xdl-6ab636164e57 is running.                | 9/25/2026, 4:55:30 PM | 3m45s    |
+| Succeeded | XDLJob xdl/xdl-6ab636164e57 is successfully completed. | 9/25/2026, 4:59:15 PM | 0s       |
+[2m+-----------+--------------------------------------------------------+-----------------------+----------+[0m

@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="600" viewBox="0 0 1500 600" role="img" aria-labelledby="title desc">
+<title id="title">MIRA-Relay: dynamic tool selection from delayed selected feedback</title>
+<desc id="desc">Public molecular context and released history enter a selector with an immutable fit-only provider surface and a selected-only provider residual ledger. One provider is called. A runtime ledger records output and status; an independent frozen endpoint judge produces selected-only feedback. After a delay, a released selected provider updates its residual, while every selected scored provider updates only its own residual. Unselected providers never produce feedback.</desc>
+<defs>
+<marker id="arr" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="10" markerHeight="10" orient="auto"><path d="M0 0L12 6L0 12z" fill="#475467"/></marker>
+<marker id="blue" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="10" markerHeight="10" orient="auto"><path d="M0 0L12 6L0 12z" fill="#2E5DA1"/></marker>
+<marker id="amber" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="10" markerHeight="10" orient="auto"><path d="M0 0L12 6L0 12z" fill="#C97813"/></marker>
+<style>
+.t{font:700 30px Arial,Helvetica,sans-serif;fill:#183B63}.h{font:700 27px Arial,Helvetica,sans-serif;fill:#183B63}.l{font:700 25px Arial,Helvetica,sans-serif;fill:#183B63}.b{font:400 22px Arial,Helvetica,sans-serif;fill:#344054}.s{font:400 20px Arial,Helvetica,sans-serif;fill:#667085}.box{stroke-width:2.5}.fixed{fill:#EEF1F5;stroke:#98A2B3}.ours{fill:#E5EEFB;stroke:#2E5DA1}.event{fill:#FFF2D9;stroke:#C97813}.delay{fill:#EEE8F7;stroke:#6B4C9A}
+</style></defs>
+<rect width="1500" height="600" fill="#fff"/>
+<text x="30" y="40" class="t">MIRA-Relay: selected-only feedback becomes a live selector state</text>
+<text x="30" y="72" class="s">An immutable cold-start surface anchors the selector; a released selected outcome moves one provider residual.</text>
+<line x1="30" y1="92" x2="1470" y2="92" stroke="#D0D5DD" stroke-width="2"/>
+
+<!-- context and selector -->
+<rect x="30" y="120" width="395" height="300" rx="16" class="box fixed"/>
+<text x="52" y="155" class="h">1  Context → selection</text>
+<text x="52" y="187" class="b">molecule xₜ · endpoint eₜ · menu Aₜ</text>
+<text x="52" y="216" class="b">released history Hₜ</text>
+<rect x="52" y="240" width="160" height="112" rx="11" class="box fixed"/>
+<text x="132" y="270" class="l" text-anchor="middle">fit-only head</text>
+<text x="132" y="300" class="b" text-anchor="middle">frozen base score</text>
+<text x="132" y="330" class="s" text-anchor="middle">immutable online</text>
+<rect x="230" y="240" width="173" height="112" rx="11" class="box ours"/>
+<text x="316" y="270" class="l" text-anchor="middle">selected ledger</text>
+<text x="316" y="300" class="b" text-anchor="middle">provider residual</text>
+<text x="316" y="330" class="b" text-anchor="middle">released counters</text>
+<text x="52" y="383" class="b">score eligible providers → choose one aₜ</text>
+<text x="52" y="411" class="s">unselected outputs are never observed</text>
+
+<!-- provider call -->
+<line x1="435" y1="270" x2="465" y2="270" stroke="#475467" stroke-width="3" marker-end="url(#arr)"/>
+<rect x="465" y="155" width="270" height="225" rx="16" class="box fixed"/>
+<text x="488" y="190" class="h">2  One provider call</text>
+<rect x="488" y="220" width="224" height="58" rx="11" fill="#fff" stroke="#98A2B3" stroke-width="2"/>
+<text x="600" y="257" class="l" text-anchor="middle">aₜ only</text>
+<text x="488" y="316" class="b">output oₜ · status sₜ</text>
+<text x="488" y="350" class="s">others are not called</text>
+
+<!-- judge and queue -->
+<line x1="745" y1="270" x2="775" y2="270" stroke="#475467" stroke-width="3" marker-end="url(#arr)"/>
+<rect x="775" y="120" width="350" height="300" rx="16" class="box event"/>
+<text x="798" y="155" class="h">3  Record → judge → wait</text>
+<text x="798" y="190" class="b">runtime ledger: output + status</text>
+<text x="798" y="222" class="b">endpoint judge → chem. label</text>
+<rect x="798" y="244" width="304" height="70" rx="12" class="box delay"/>
+<text x="950" y="276" class="l" text-anchor="middle">delay queue</text>
+<text x="950" y="303" class="b" text-anchor="middle">release τₜ = t + 1 + D</text>
+<text x="798" y="350" class="s">truth hidden until release</text>
+<text x="798" y="381" class="s">runtime failure: no chemical label</text>
+<text x="798" y="411" class="s">unselected calls create no label</text>
+
+<!-- update -->
+<line x1="1135" y1="270" x2="1165" y2="270" stroke="#C97813" stroke-width="3" marker-end="url(#amber)"/>
+<rect x="1165" y="120" width="305" height="300" rx="16" class="box ours"/>
+<text x="1188" y="155" class="h">4  Released update</text>
+<text x="1188" y="193" class="b">challenger:</text>
+<text x="1188" y="224" class="b">provider residual +</text><text x="1188" y="250" class="b">released counters</text>
+<text x="1188" y="286" class="b">selected provider updates</text>
+<text x="1188" y="316" class="b">only after release</text>
+<text x="1188" y="350" class="s">runtime + unknown separate</text>
+<line x1="1188" y1="374" x2="1448" y2="374" stroke="#B8C0CC" stroke-width="2"/>
+<text x="1318" y="394" class="s" text-anchor="middle">visible at first tick ≥ τₜ</text>
+<text x="1318" y="412" class="s" text-anchor="middle">then choose the next action</text>
+
+<!-- feedback loop -->
+<path d="M1320,443 L1320,515 L220,515 L220,425" fill="none" stroke="#2E5DA1" stroke-width="3" stroke-dasharray="10 8" marker-end="url(#blue)"/>
+<text x="770" y="552" class="l" text-anchor="middle">released state feeds the next visible decision</text>
+</svg>

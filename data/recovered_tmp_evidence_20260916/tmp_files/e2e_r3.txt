@@ -1,0 +1,12 @@
+event: tree_resume
+data: {"thread_id": "tree-01ff36cb-5bfcc6"}
+
+event: tree_decided
+data: {"promoted": 0, "depth": 3}
+
+event: tree_synthesis
+data: {"content": "未找到可推进的研究方向。"}
+
+event: tree_done
+data: {"thread_id": "tree-01ff36cb-5bfcc6"}
+

@@ -1,0 +1,19 @@
+# 方法：读 data/tool_results/rdkit_descriptors.csv 的 canonical_smiles，
+#       用本机 RDKit 官方函数重算，与交付列逐分子比较（容差 1e-9）。
+# 样本：730 个分子；RDKit 版本见下。
+# 本机 RDKit 版本：2025.09.2
+
+## 交付列 logp_crippen_run1
+官方函数：rdkit.Chem.Crippen.MolLogP
+官方文档：https://www.rdkit.org/docs/source/rdkit.Chem.Crippen.html#rdkit.Chem.Crippen.MolLogP
+实测：730/730 逐位相等，最大绝对差 0.000e+00
+
+## 交付列 tpsa_run1
+官方函数：rdkit.Chem.rdMolDescriptors.CalcTPSA
+官方文档：https://www.rdkit.org/docs/source/rdkit.Chem.rdMolDescriptors.html#rdkit.Chem.rdMolDescriptors.CalcTPSA
+实测：730/730 逐位相等，最大绝对差 0.000e+00
+
+## 交付列 qed_run1
+官方函数：rdkit.Chem.QED.qed
+官方文档：https://www.rdkit.org/docs/source/rdkit.Chem.QED.html#rdkit.Chem.QED.qed
+实测：730/730 逐位相等，最大绝对差 1.110e-16

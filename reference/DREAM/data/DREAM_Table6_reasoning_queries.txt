@@ -1,0 +1,47 @@
+Table 6: Research queries for the “Reasoning Flaws Detection” experiment in Section ˜ 4.3 .
+
+ID
+
+Query
+
+1
+
+How will a 10% price cut affect unit sales next month for an e-commerce product line?
+
+2
+
+What assumptions about inflation, interest rates, and currency stability most influence predictions of stock market volatility in emerging economies over the next five years?
+
+3
+
+How will the adoption of renewable energy technologies impact global oil demand over the next decade?
+
+4
+
+What assumptions about hospital staffing, patient flow, and technology adoption most influence predictions of emergency department wait times over the next five years?
+
+5
+
+How will AI-powered recommendation engines affect consumer purchase diversity in online retail markets over the next two years?
+
+6
+
+What assumptions about monetary policy, housing supply, and demographic trends most influence predictions of urban housing prices over the next decade?
+
+7
+
+How will climate change affect agricultural crop yields in major exporting countries over the next 20 years?
+
+8
+
+What assumptions about vaccine distribution, mutation rates, and healthcare access most influence predictions of pandemic recovery times?
+
+9
+
+How will quantum computing adoption influence financial risk modeling practices over the next 15 years?
+
+10
+
+How would a heatwave next month affect ice cream demand?
+
+D.3 Grounding Beyond Citation Faithfulness

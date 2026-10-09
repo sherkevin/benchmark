@@ -1,0 +1,18 @@
+event: tree_start
+data: {"thread_id": "tree-d62568d4-3211a3", "goal": "MgB2超导"}
+
+event: tree_hypotheses
+data: {"hypotheses": [{"node_id": "d1_n0", "hypothesis": "在MgB2中引入石墨烯纳米片作为碳源掺杂，可有效替代硼位，提高上临界场且最小化Tc下降。", "objective": "研究石墨烯掺杂对MgB2超导性能的协同优化机制。"}, {"node_id": "d1_n1", "hypothesis": "通过低温化学溶液法合成MgB2纳米颗粒，可增加晶界密度和有效钉扎中心，从而提升临界电流密度。", "objective": "探索溶液合成法对MgB2微观结构和临界电流密度的影响。"}, {"node_id": "d1_n2", "hypothesis": "机械合金化引入的高密度晶界和堆垛层错可作为各向同性钉扎中心，显著提高MgB2的不可逆场。", "objective": "研究机械合金化工艺对MgB2微观缺陷和磁通钉扎行为的作用。"}, {"node_id": "d1_n3", "hypothesis": "超导-绝缘体-超导结的隧道谱能够直接测量MgB2的π带能隙，定量揭示带间耦合强度。", "objective": "通过隧道谱研究MgB2双能隙的温度和掺杂依赖性。"}, {"node_id": "d1_n4", "hypothesis": "在MgB2线材中施加轴向拉伸应变，可改变σ带费米面拓扑，从而调谐超导转变温度和上临界场。", "objective": "研究应变对MgB2线材超导性能的调控机制。"}]}
+
+event: tree_branch_done
+data: {"node_id": "d1_n0", "hypothesis": "在MgB2中引入石墨烯纳米片作为碳源掺杂，可有效替代硼位，提高上临界场且最小化Tc下降。", "status": "succeeded", "score": 0.0, "session_id": "cc374a40"}
+
+event: tree_branch_done
+data: {"node_id": "d1_n1", "hypothesis": "通过低温化学溶液法合成MgB2纳米颗粒，可增加晶界密度和有效钉扎中心，从而提升临界电流密度。", "status": "succeeded", "score": 0.0, "session_id": "5e99b998"}
+
+event: tree_branch_done
+data: {"node_id": "d1_n2", "hypothesis": "机械合金化引入的高密度晶界和堆垛层错可作为各向同性钉扎中心，显著提高MgB2的不可逆场。", "status": "succeeded", "score": 0.87, "session_id": "f6f47c0f"}
+
+event: tree_interrupt
+data: {"type": "research_tree_evaluate", "depth": 1, "goal": "MgB2超导", "branches": [{"node_id": "d1_n0", "hypothesis": "在MgB2中引入石墨烯纳米片作为碳源掺杂，可有效替代硼位，提高上临界场且最小化Tc下降。", "status": "succeeded", "score": 0.0, "recommended": "unknown", "summary": "## Branch Summary\n基于文献证据与材料模拟，本分支确认石墨烯纳米片（GNP）掺杂MgB₂确实可通过碳替代硼位和纳米夹杂物钉扎协同提升上临界场（Hc2），同时Tc下降幅度小于传统碳化物掺杂方案。但分散均匀性、过量掺杂导致的弱连接及反应路径不确定性仍是实用化障碍。\n\n## Claims\n1. **碳替代硼位主导上临界场增强**：石墨烯边缘碳原子在高温固相反应中部分替代MgB₂晶格中的硼", "failure_reason": ""}, {"node_id": "d1_n1", "hypothesis": "通过低温化学溶液法合成MgB2纳米颗粒，可增加晶界密度和有效钉扎中心，从而提升临界电流密度。", "status": "succeeded", "score": 0.0, "recommended": "unknown", "summary": "## Branch Summary\n低温化学溶液法合成MgB₂纳米颗粒，意图通过增加晶界密度和有效钉扎中心来提升临界电流密度（Jc）。初步调查显示，溶液法（如溶胶-凝胶、前驱体热解）可制备纳米级MgB₂前驱体，并在后续热处理中形成超导相。所得粉末的晶粒尺寸减小，晶界密度提高，磁滞回线分析表明低场下Jc有所增强。然而，溶液法引入的氧和碳杂质易形成MgO、MgB₂C₂等非超导相，削弱了晶粒间的连接性，", "failure_reason": ""}, {"node_id": "d1_n2", "hypothesis": "机械合金化引入的高密度晶界和堆垛层错可作为各向同性钉扎中心，显著提高MgB2的不可逆场。", "status": "succeeded", "score": 0.87, "recommended": "continue", "summary": "## Branch Summary\n针对“机械合金化引入高密度晶界和堆垛层错作为各向同性钉扎中心，显著提高MgB₂不可逆场”的假设，调查发现：机械合金化（高能球磨）确实能在MgB₂中引入纳米晶界和大密度堆垛层错，这些缺陷在微观上可充当各向同性或近似各向同性的钉扎中心，从而显著提升临界电流密度（Jc）并使不可逆场（Hirr）有一定程度的提高。然而，仅靠机械合金化实现的Hirr提升幅度通常有限（20 ", "failure_reason": ""}], "thread_id": "tree-d62568d4-3211a3"}
+

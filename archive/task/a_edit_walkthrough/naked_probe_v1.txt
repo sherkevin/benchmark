@@ -1,0 +1,61 @@
+  qwen3.7-max        q02 [加碳链CH2] 真值=lower  样本中 3/3
+  qwen3.7-max        q01 [加碳链CH2] 真值=lower  样本中 3/3
+  qwen3.7-max        q03 [减碳链CH2] 真值=higher 样本中 3/3
+  qwen3.7-max        q05 [加氯] 真值=lower  样本中 3/3
+  qwen3.7-max        q04 [减碳链CH2] 真值=higher 样本中 3/3
+  qwen3.7-max        q06 [加氯] 真值=lower  样本中 3/3
+  qwen3.7-max        q09 [加甲基] 真值=lower  样本中 3/3
+  qwen3.7-max        q08 [去氯] 真值=higher 样本中 3/3
+  qwen3.7-max        q07 [去氯] 真值=higher 样本中 3/3
+  qwen3.7-max        q12 [芳CH→芳N] 真值=higher 样本中 3/3
+  qwen3.7-max        q10 [加甲基] 真值=lower  样本中 3/3
+  qwen3.7-max        q11 [芳CH→芳N] 真值=higher 样本中 3/3
+  bailian/glm-5.2    q02 [加碳链CH2] 真值=lower  样本中 3/3
+  bailian/glm-5.2    q01 [加碳链CH2] 真值=lower  样本中 3/3
+  bailian/glm-5.2    q05 [加氯] 真值=lower  样本中 3/3
+  bailian/glm-5.2    q03 [减碳链CH2] 真值=higher 样本中 3/3
+  bailian/glm-5.2    q04 [减碳链CH2] 真值=higher 样本中 2/3
+  bailian/glm-5.2    q08 [去氯] 真值=higher 样本中 3/3
+  bailian/glm-5.2    q06 [加氯] 真值=lower  样本中 3/3
+  bailian/glm-5.2    q07 [去氯] 真值=higher 样本中 3/3
+  bailian/glm-5.2    q10 [加甲基] 真值=lower  样本中 3/3
+  bailian/glm-5.2    q09 [加甲基] 真值=lower  样本中 3/3
+  deepseek-v3.2      q01 [加碳链CH2] 真值=lower  样本中 3/3
+  deepseek-v3.2      q02 [加碳链CH2] 真值=lower  样本中 3/3
+  deepseek-v3.2      q03 [减碳链CH2] 真值=higher 样本中 2/3
+  deepseek-v3.2      q04 [减碳链CH2] 真值=higher 样本中 3/3
+  deepseek-v3.2      q05 [加氯] 真值=lower  样本中 3/3
+  deepseek-v3.2      q06 [加氯] 真值=lower  样本中 3/3
+  deepseek-v3.2      q07 [去氯] 真值=higher 样本中 3/3
+  deepseek-v3.2      q08 [去氯] 真值=higher 样本中 3/3
+  deepseek-v3.2      q09 [加甲基] 真值=lower  样本中 3/3
+  deepseek-v3.2      q10 [加甲基] 真值=lower  样本中 3/3
+  deepseek-v3.2      q11 [芳CH→芳N] 真值=higher 样本中 2/3
+  deepseek-v3.2      q12 [芳CH→芳N] 真值=higher 样本中 1/3
+  bailian/glm-5.2    q12 [芳CH→芳N] 真值=higher 样本中 2/2
+  bailian/glm-5.2    q11 [芳CH→芳N] 真值=higher 样本中 2/2
+
+===== 汇总（样本准确率 / 多数表决准确率） =====
+qwen3.7-max        样本 100.0%  多数表决 100.0%  (n=12)
+    加碳链CH2     100%
+    减碳链CH2     100%
+    加氯         100%
+    去氯         100%
+    加甲基        100%
+    芳CH→芳N     100%
+bailian/glm-5.2    样本 97.2%  多数表决 100.0%  (n=12)
+    加碳链CH2     100%
+    减碳链CH2     83%
+    加氯         100%
+    去氯         100%
+    加甲基        100%
+    芳CH→芳N     100%
+deepseek-v3.2      样本 88.9%  多数表决 91.7%  (n=12)
+    加碳链CH2     100%
+    减碳链CH2     83%
+    加氯         100%
+    去氯         100%
+    加甲基        100%
+    芳CH→芳N     50%
+
+参照：瞎猜 = 50%；常数答案基线 = 50%

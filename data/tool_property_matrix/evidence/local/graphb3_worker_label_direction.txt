@@ -1,0 +1,5 @@
+# 出处：/Users/jingwu/work/benchmark/src/probe_headless/model_workers/graphb3_worker.py（含 'positive_label_string' 或 'BBB+' 的行）
+line 69:     "        return 'BBB+'",
+line 347:         "positive_label_string": "BBB+",
+line 420:             "method": "single-logit sigmoid plus published BBB+ label rule",
+line 423:             "positive_label_string": "BBB+",

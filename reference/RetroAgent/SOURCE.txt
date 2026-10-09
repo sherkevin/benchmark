@@ -1,0 +1,21 @@
+arXiv:2607.14512
+abs: https://arxiv.org/abs/2607.14512
+pdf: https://arxiv.org/pdf/2607.14512
+topic: 逆合成结构化记忆
+pulled: 2026-08-09 via arxiv MCP (arxiv_get_metadata / arxiv_read_paper)
+
+--- 2026-08-12 全文补拉 ---
+venue: COLM 2026 (Published as a conference paper at COLM 2026)
+affil: UCLA / MIT / Amazon / UPenn (incl. Connor W. Coley, Wenhao Gao)
+code: https://github.com/SXKDZ/RetroAgent  (MIT license)  -> OK, code_snapshot/
+weights+data: https://huggingface.co/SXKDZ/RetroAgent -> FAILED (connection timeout, HTTP 000;
+  hf-mirror.com also timeout). datasets/uspto_190_targets.txt & chembl_1000.pkl NOT obtained.
+files:
+  arxiv_2607.14512v2.pdf   <- https://arxiv.org/pdf/2607.14512v2 (982 KB, HTTP 200)
+  arxiv_2607.14512v2.txt   <- pdftotext -layout (1436 lines; authoritative for Table 1/2/S1-S5 + App A-J)
+  arxiv_2607.14512v2.html  <- https://arxiv.org/html/2607.14512v2 (200, but LaTeXML build FAILS at Table 1 -> truncated)
+  code_snapshot/           <- via GitHub API + jsDelivr CDN (raw.githubusercontent not needed)
+benchmarks: USPTO-190 (in-distribution, 190 targets, mean depth 6.0) + ChEMBL-1000 (OOD, 1000 drug-like)
+real target molecule (App J, solved example 1, USPTO-190):
+  CC(C)c1ccc(-n2nc(O)c3c(=O)c4ccc(Cl)cc4[nH]c3c2=O)cc1   (C20H16ClN3O3, MW 381.82; RDKit-verified)
+see: 真实例子.md

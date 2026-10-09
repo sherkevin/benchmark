@@ -1,0 +1,1170 @@
+http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/ai-scheduler/<redacted-secret>.1<redacted-secret>.42+d<redacted-secret>e7369/ai_scheduler-<redacted-secret>.1<redacted-secret>.42+d<redacted-secret>e7369-py3-none-any.whl
+PATH: /usr/local/openmpi/bin:/opt/rh/gcc-toolset-13/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/conda/bin:/usr/local/nvidia/bin/:/usr/local/cuda/bin:/usr/local/cmake-3.3<redacted-secret>.2-linux-x86_64/bin:/usr/local/ninja:/home/admin/.local/bin:/usr/share/Modules/bin:/usr/local/openmpi/bin:/opt/rh/gcc-toolset-13/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/conda/bin:/usr/local/nvidia/bin/:/usr/local/cuda/bin:/usr/local/cmake-3.3<redacted-secret>.2-linux-x86_64/bin:/usr/local/ninja:/home/admin/.local/bin:/usr/local/openmpi/bin:/opt/rh/gcc-toolset-13/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/conda/bin:/usr/local/nvidia/bin/:/usr/local/cuda/bin:/usr/local/cmake-3.3<redacted-secret>.2-linux-x86_64/bin:/usr/local/ninja:/home/admin/.local/bin
+LD_PRELOAD: 
+LD_LIBRARY_PATH: /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages/third_party/swift/lib/:/opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages/:/usr/local/openmpi/lib:/opt/rh/gcc-toolset-13/root/usr/lib64:/opt/rh/gcc-toolset-13/root/usr/lib:/usr/local/lib64:/lib64:/usr/local/gcc75/lib:/usr/local/gcc75/lib64::/usr/local/nvidia/lib:/usr/local/nvidia/lib64:/usr/local/cuda/lib64:/usr/local/cuda/targets/x86_64-linux/lib:/usr/lib64:/pu:/opt/taobao/java/jre/lib/amd64/server:/apsara/alicpp/built/gcc-4.9.2/glog-<redacted-secret>.3.4/lib:/apsara/alicpp/built/gcc-4.9.2/gflags-2.1.2/lib:/apsara/alicpp/built/gcc-4.9.2/protobuf-2.4.1.ali/lib:/apsara/alicpp/built/gcc-4.9.2/odps-cryptography-1.<redacted-secret>.<redacted-secret>/lib:/apsara/alicpp/built/gcc-4.9.2/boost-1.58.<redacted-secret>.fix.thread/lib:/apsara/alicpp/built/gcc-4.9.2/openssl-1.<redacted-secret>.2a/lib:/apsara/alicpp/built/gcc-4.9.2/mysql-connector-c-6.1.6/lib:/apsara/alicpp/built/gcc-4.9.2/arrow-<redacted-secret>.16.<redacted-secret>/lib64:/apsara/alicpp/built/gcc-4.9.2/bzip2-1.<redacted-secret>.6/lib64:/apsara/alicpp/built/gcc-4.9.2/zstd-1.4.4/lib:/apsara/alicpp/built/gcc-4.9.2/libevent-2.<redacted-secret>.22.stable/lib64:/worker:/worker/lib:/opt/conda/envs/python3.1<redacted-secret>.13/lib
+2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:32:<redacted-secret>4 ossproxy.aone.alibaba-inc.com connection is ok. 
+2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:32:<redacted-secret>4 using dfget download agent install package: 
+--2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:32:<redacted-secret>4--  http://ossproxy.aone.alibaba-inc.com/aone2/build-service/api/v2/ossproxy/download?ns=Staragent&bucketName=staragent-ui&fileId=installpackage/agent2/current/linux/5/64/agent.tar.gz.md5&fileName=agent.tar.gz.md5&md5Sign=fe39<redacted-secret>3d47b<redacted-secret>1aaedf3e876379<redacted-secret>d17125
+current user[root] output path[/home/staragent/data/agent.tar.gz.md5]
+dfget version:3.1<redacted-secret>.25
+workspace:/root/.small-dragonfly/ sign:114-179<redacted-secret>447525.<redacted-secret><redacted-secret>5
+client:33.97.226.77 connected to node:11.134.196.41, sn:NOSN<redacted-secret><redacted-secret>:25:9d:95:ef:65
+init success...
+start download by dragonfly
+taskId:aa<redacted-secret>216d8c4d94578<redacted-secret>b492a1e71dcbbb19b<redacted-secret>c5ea5<redacted-secret>7f85342a657<redacted-secret>b8848aa1af42
+download SUCCESS(<redacted-secret>) cost(2.385s) length:33 reason:<redacted-secret>
+--2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:32:<redacted-secret>7--  http://ossproxy.aone.alibaba-inc.com/aone2/build-service/api/v2/ossproxy/download?ns=Staragent&bucketName=staragent-ui&fileId=installpackage/agent2/current/linux/5/64/agent.tar.gz&fileName=agent.tar.gz&md5Sign=ac22e2b1fe4d78def898<redacted-secret>b8a973f1293
+current user[root] output path[/home/staragent/data/agent.tar.gz]
+dfget version:3.1<redacted-secret>.25
+workspace:/root/.small-dragonfly/ sign:194-179<redacted-secret>447527.577
+client:33.97.226.77 connected to node:1<redacted-secret>.137.14<redacted-secret>.24, sn:NOSN<redacted-secret><redacted-secret>:25:9d:95:ef:65
+init success...
+start download by dragonfly
+taskId:4245c919b1f2852f6e<redacted-secret>34bb<redacted-secret>37d63eb9<redacted-secret><redacted-secret>cb7<redacted-secret>5<redacted-secret>d96a5349<redacted-secret>de3777b8f32ee4<redacted-secret>2
+download SUCCESS(<redacted-secret>) cost(7.715s) length:1<redacted-secret>89<redacted-secret>5862 reason:<redacted-secret>
+2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:32:15 download current agent.tar.gz success. 
+2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:32:15 download agent package success after <redacted-secret> times failed 
+bin/
+bin/staragentctl
+bin/dist/
+bin/dist/dfget.yaml
+bin/dist/dfget
+bin/sa_install_lock.sh
+bin/dfget
+bin/dnsresolver
+bin/hostinfo.sh
+bin/pluginctl
+bin/unzip
+bin/agent.sh
+bin/staragent2
+bin/sa_healthCheck.sh
+bin/staragentd
+bin/post_install.sh
+bin/hostinfo
+bin/staragentctl7u
+bin/init.sh
+bin/sa_install.sh
+bin/sa_recovery.sh
+bin/fakeStaragentctl7u
+BUILD
+conf/
+data/
+log/
+plugins/
+plugins/dragonfly2.src/
+plugins/dragonfly2.src/dragonfly2.zip
+plugins/dragonfly2.src/.update.flag
+plugins/dragonfly2.src/dragonfly2.cur/
+plugins/dragonfly2.src/dragonfly2.cur/dist/
+plugins/dragonfly2.src/dragonfly2.cur/dist/dfget.yaml
+plugins/dragonfly2.src/dragonfly2.cur/dist/dfget
+plugins/dragonfly2.src/dragonfly2.cur/.plugin.conf
+plugins/dragonfly2.src/dragonfly2.cur/local_data
+plugins/dragonfly2.src/dragonfly2.cur/dfget
+plugins/dragonfly2.src/dragonfly2.cur/init.sh
+plugins/dragonfly2.src/dragonfly2.zip.md5
+plugins/dragonfly2
+plugins/sa-ops-plugin
+plugins/dragonfly
+plugins/dragonfly.src/
+plugins/dragonfly.src/dragonfly.zip
+plugins/dragonfly.src/.update.flag
+plugins/dragonfly.src/dragonfly.cur/
+plugins/dragonfly.src/dragonfly.cur/.plugin.conf
+plugins/dragonfly.src/dragonfly.cur/local_data
+plugins/dragonfly.src/dragonfly.cur/dfget
+plugins/dragonfly.src/dragonfly.cur/dfget2
+plugins/dragonfly.src/dragonfly.zip.md5
+plugins/sa-ops-plugin.src/
+plugins/sa-ops-plugin.src/.update.flag
+plugins/sa-ops-plugin.src/sa-ops-plugin.zip.md5
+plugins/sa-ops-plugin.src/sa-ops-plugin.cur/
+plugins/sa-ops-plugin.src/sa-ops-plugin.cur/.plugin.conf
+plugins/sa-ops-plugin.src/sa-ops-plugin.cur/local_data
+plugins/sa-ops-plugin.src/sa-ops-plugin.cur/cert/
+plugins/sa-ops-plugin.src/sa-ops-plugin.cur/cert/ca.crt
+plugins/sa-ops-plugin.src/sa-ops-plugin.cur/cert/.emptyDirectoryKeep
+plugins/sa-ops-plugin.src/sa-ops-plugin.cur/README
+plugins/sa-ops-plugin.src/sa-ops-plugin.cur/test
+plugins/sa-ops-plugin.src/sa-ops-plugin.cur/init.sh
+plugins/sa-ops-plugin.src/sa-ops-plugin.zip
+plugins/osteam.src/
+plugins/osteam.src/.update.flag
+plugins/osteam.src/osteam.cur/
+plugins/osteam.src/osteam.cur/.plugin.conf
+plugins/osteam.src/osteam.cur/sudo.sh
+plugins/osteam.src/osteam.cur/pluginFileMeta.yaml
+plugins/osteam.src/osteam.cur/local_data
+plugins/osteam.src/osteam.cur/sysinfo_new.sh
+plugins/osteam.src/osteam.cur/cpwd.sh
+plugins/osteam.src/osteam.cur/logfile.sh
+plugins/osteam.src/osteam.cur/account.sh
+plugins/osteam.src/osteam.cur/appacc.sh
+plugins/osteam.src/osteam.cur/app_account.sh
+plugins/osteam.src/osteam.cur/user_view.sh
+plugins/osteam.src/osteam.cur/init.sh
+plugins/osteam.src/osteam.cur/funcs.sh
+plugins/osteam.src/osteam.cur/user_account.sh
+plugins/osteam.src/osteam.cur/sshkey_new.sh
+plugins/osteam.src/osteam.zip.md5
+plugins/osteam.src/osteam.zip
+plugins/osteam
+2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:32:16 extract agent tar package to /tmp/sa_tmp success 
+2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:32:16 no task running in agent, can stop now 
+2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:32:16 the local agent version is older or equal to 3.4.6, need to update agent.sh 
+2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:32:16 start to update agent.sh 
+2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:32:16 update agent.sh success 
+2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:32:18 stop agent and rm staragentd finish 
+2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:32:18 copy agent binary file finish 
+2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:32:18 插件sa-ops-plugin 软连接 /home/staragent/plugins/sa-ops-plugin 不存在，需要从安装包拷贝 
+2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:32:18 插件dragonfly 软连接 /home/staragent/plugins/dragonfly 不存在，需要从安装包拷贝 
+2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:32:18 插件osteam 软连接 /home/staragent/plugins/osteam 不存在，需要从安装包拷贝 
+2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:32:18 插件dragonfly2 软连接 /home/staragent/plugins/dragonfly2 不存在，需要从安装包拷贝 
+2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:32:22 using staragentctl restart agent success! 
+Looking in indexes: http://yum.tbsite.net/aliyun-pypi/simple/
+Collecting pip-plugin-dragonfly
+  Downloading http://yum.tbsite.net/aliyun-pypi/packages/pip-plugin-dragonfly/pip_plugin_dragonfly-1.5.<redacted-secret>-py2.py3-none-any.whl (25 kB)
+Installing collected packages: pip-plugin-dragonfly
+Successfully installed pip-plugin-dragonfly-1.5.<redacted-secret>
+[Dragonfly] Installed hook to: /root/.local/lib/python3.1<redacted-secret>/site-packages/usercustomize.py
+[Dragonfly] Target directory: /root/.local/lib/python3.1<redacted-secret>/site-packages
+[Dragonfly] The plugin will now be automatically loaded when Python starts
+install return code: 1
+[32m[Dragonfly][<redacted-secret>m P2P download plugin enabled (via environment variable)
+[32m[Dragonfly][<redacted-secret>m Minimum file size: <redacted-secret>MB
+Looking in indexes: http://yum.tbsite.net/pypi/simple
+Collecting pip==24.<redacted-secret>
+--2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:32:23--  http://yum.tbsite.net/pypi/packages/8a/6a/19e9fe<redacted-secret>4fca<redacted-secret>59ccf77<redacted-secret>861c7d5721ab4c2aebc539889e97c7977528a53b/pip-24.<redacted-secret>-py3-none-any.whl
+dfget version: v2.<redacted-secret>.9-ali-rc.8
+current user: root
+output path: /tmp/pip-24.<redacted-secret>-py3-none-any.whl
+init success and start to download
+taskID: 53bd662b2ac96a26a9c86caf5c98ab8d3a225cbea45c4b9c25932b96bfd4<redacted-secret>c53
+finish total length 211<redacted-secret>226 bytes
+download SUCCESS,  cost: 2714 ms
+[32m[Dragonfly][<redacted-secret>m Downloading 'pip-24.<redacted-secret>-py3-none-any.whl' via P2P network...
+[36m[Dragonfly][<redacted-secret>m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/pypi/packages/8a/6a/19e9fe<redacted-secret>4fca<redacted-secret>59ccf77<redacted-secret>861c7d5721ab4c2aebc539889e97c7977528a53b/pip-24.<redacted-secret>-py3-none-any.whl -o /tmp/pip-24.<redacted-secret>-py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][<redacted-secret>m Successfully downloaded 'pip-24.<redacted-secret>-py3-none-any.whl' via P2P
+  Downloading http://yum.tbsite.net/pypi/packages/8a/6a/19e9fe<redacted-secret>4fca<redacted-secret>59ccf77<redacted-secret>861c7d5721ab4c2aebc539889e97c7977528a53b/pip-24.<redacted-secret>-py3-none-any.whl
+     - 2.1 MB 1.1 GB/s <redacted-secret>:<redacted-secret><redacted-secret>:<redacted-secret><redacted-secret>
+Installing collected packages: pip
+  Attempting uninstall: pip
+    Found existing installation: pip 26.<redacted-secret>.1
+    Uninstalling pip-26.<redacted-secret>.1:
+      Successfully uninstalled pip-26.<redacted-secret>.1
+Successfully installed pip-24.<redacted-secret>
+Looking in indexes: http://yum.tbsite.net/pypi/simple
+[32m[Dragonfly][<redacted-secret>m P2P download plugin enabled (via environment variable)
+[32m[Dragonfly][<redacted-secret>m Minimum file size: <redacted-secret>MB
+Collecting ai-scheduler==<redacted-secret>.1<redacted-secret>.42+d<redacted-secret>e7369
+--2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:32:28--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/ai-scheduler/<redacted-secret>.1<redacted-secret>.42+d<redacted-secret>e7369/ai_scheduler-<redacted-secret>.1<redacted-secret>.42+d<redacted-secret>e7369-py3-none-any.whl
+dfget version: v2.<redacted-secret>.9-ali-rc.8
+current user: root
+output path: /tmp/ai_scheduler-<redacted-secret>.1<redacted-secret>.42+d<redacted-secret>e7369-py3-none-any.whl
+init success and start to download
+taskID: f<redacted-secret>8<redacted-secret>4868ce465d642f93f927d34f6aae2532<redacted-secret>ea74685c<redacted-secret>a7d826e<redacted-secret>84ee359e7b
+finish total length 29534<redacted-secret> bytes
+download SUCCESS,  cost: 18 ms
+[32m[Dragonfly][<redacted-secret>m Downloading 'ai_scheduler-<redacted-secret>.1<redacted-secret>.42+d<redacted-secret>e7369-py3-none-any.whl' via P2P network...
+[36m[Dragonfly][<redacted-secret>m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/ai-scheduler/<redacted-secret>.1<redacted-secret>.42+d<redacted-secret>e7369/ai_scheduler-<redacted-secret>.1<redacted-secret>.42+d<redacted-secret>e7369-py3-none-any.whl -o /tmp/ai_scheduler-<redacted-secret>.1<redacted-secret>.42+d<redacted-secret>e7369-py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][<redacted-secret>m Successfully downloaded 'ai_scheduler-<redacted-secret>.1<redacted-secret>.42+d<redacted-secret>e7369-py3-none-any.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/ai-scheduler/<redacted-secret>.1<redacted-secret>.42+d<redacted-secret>e7369/ai_scheduler-<redacted-secret>.1<redacted-secret>.42+d<redacted-secret>e7369-py3-none-any.whl
+     - 295.3 kB 736.3 MB/s <redacted-secret>:<redacted-secret><redacted-secret>:<redacted-secret><redacted-secret>
+Installing collected packages: ai-scheduler
+Successfully installed ai-scheduler-<redacted-secret>.1<redacted-secret>.42+d<redacted-secret>e7369
+Looking in indexes: http://yum.tbsite.net/pypi/simple/, http://yum.tbsite.net/aliyun-pypi/simple/, http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+[32m[Dragonfly][<redacted-secret>m P2P download plugin enabled (via environment variable)
+[32m[Dragonfly][<redacted-secret>m Minimum file size: <redacted-secret>MB
+Collecting kmontitor-client==<redacted-secret>.<redacted-secret>.<redacted-secret>
+--2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:32:29--  http://ados-nebula-v2.cn-zhangjiakou.oss.aliyuncs.com/nebula-one-proxy/ai_scheduler/kmontitor_client-<redacted-secret>.<redacted-secret>.<redacted-secret>-py3-none-any.whl
+dfget version: v2.<redacted-secret>.9-ali-rc.8
+current user: root
+output path: /tmp/kmontitor_client-<redacted-secret>.<redacted-secret>.<redacted-secret>-py3-none-any.whl
+init success and start to download
+taskID: 7bc81af3eabb6<redacted-secret>114c7be3283bcc<redacted-secret>f28<redacted-secret>5f93f47<redacted-secret>672d8edc2c3a36d3a6c9cd2
+finish total length 66<redacted-secret>42 bytes
+download SUCCESS,  cost: 18 ms
+[32m[Dragonfly][<redacted-secret>m Downloading 'kmontitor_client-<redacted-secret>.<redacted-secret>.<redacted-secret>-py3-none-any.whl' via P2P network...
+[36m[Dragonfly][<redacted-secret>m Command: /home/staragent/plugins/dragonfly/dfget -u http://ados-nebula-v2.cn-zhangjiakou.oss.aliyuncs.com/nebula-one-proxy/ai_scheduler/kmontitor_client-<redacted-secret>.<redacted-secret>.<redacted-secret>-py3-none-any.whl -o /tmp/kmontitor_client-<redacted-secret>.<redacted-secret>.<redacted-secret>-py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][<redacted-secret>m Successfully downloaded 'kmontitor_client-<redacted-secret>.<redacted-secret>.<redacted-secret>-py3-none-any.whl' via P2P
+  Downloading http://ados-nebula-v2.cn-zhangjiakou.oss.aliyuncs.com/nebula-one-proxy/ai_scheduler/kmontitor_client-<redacted-secret>.<redacted-secret>.<redacted-secret>-py3-none-any.whl
+     - 66.<redacted-secret> kB 614.8 MB/s <redacted-secret>:<redacted-secret><redacted-secret>:<redacted-secret><redacted-secret>
+Requirement already satisfied: thrift in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from kmontitor-client==<redacted-secret>.<redacted-secret>.<redacted-secret>) (<redacted-secret>.1<redacted-secret>.<redacted-secret>)
+Requirement already satisfied: six>=1.7.2 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from thrift->kmontitor-client==<redacted-secret>.<redacted-secret>.<redacted-secret>) (1.14.<redacted-secret>)
+Looking in indexes: http://yum.tbsite.net/pypi/simple/, http://yum.tbsite.net/aliyun-pypi/simple/, http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+[32m[Dragonfly][<redacted-secret>m P2P download plugin enabled (via environment variable)
+[32m[Dragonfly][<redacted-secret>m Minimum file size: <redacted-secret>MB
+Collecting pykmonitor==2.2.1
+--2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:32:31--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/pykmonitor/2.2.1/pykmonitor-2.2.1-py3-none-any.whl
+dfget version: v2.<redacted-secret>.9-ali-rc.8
+current user: root
+output path: /tmp/pykmonitor-2.2.1-py3-none-any.whl
+init success and start to download
+taskID: 8cbf8879d829cce<redacted-secret>eeea767c9<redacted-secret>85eb6<redacted-secret>98<redacted-secret>2d96e9ba21c7b737737<redacted-secret>b7e15277<redacted-secret>
+finish total length 19<redacted-secret>27 bytes
+download SUCCESS,  cost: 7 ms
+[32m[Dragonfly][<redacted-secret>m Downloading 'pykmonitor-2.2.1-py3-none-any.whl' via P2P network...
+[36m[Dragonfly][<redacted-secret>m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/pykmonitor/2.2.1/pykmonitor-2.2.1-py3-none-any.whl -o /tmp/pykmonitor-2.2.1-py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][<redacted-secret>m Successfully downloaded 'pykmonitor-2.2.1-py3-none-any.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/pykmonitor/2.2.1/pykmonitor-2.2.1-py3-none-any.whl
+     - 19.<redacted-secret> kB 441.1 MB/s <redacted-secret>:<redacted-secret><redacted-secret>:<redacted-secret><redacted-secret>
+Requirement already satisfied: thrift in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from pykmonitor==2.2.1) (<redacted-secret>.1<redacted-secret>.<redacted-secret>)
+Requirement already satisfied: six>=1.7.2 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from thrift->pykmonitor==2.2.1) (1.14.<redacted-secret>)
+Installing collected packages: pykmonitor
+  Attempting uninstall: pykmonitor
+    Found existing installation: pykmonitor 1.<redacted-secret>
+    Uninstalling pykmonitor-1.<redacted-secret>:
+      Successfully uninstalled pykmonitor-1.<redacted-secret>
+Successfully installed pykmonitor-2.2.1
+Looking in indexes: http://yum.tbsite.net/pypi/simple/, http://yum.tbsite.net/aliyun-pypi/simple/, http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+Requirement already satisfied: kazoo==2.9.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (2.9.<redacted-secret>)
+Requirement already satisfied: six in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from kazoo==2.9.<redacted-secret>) (1.14.<redacted-secret>)
+Looking in indexes: http://yum.tbsite.net/pypi/simple/, http://yum.tbsite.net/aliyun-pypi/simple/, http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+Requirement already satisfied: psutil==5.9.5 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (5.9.5)
+Looking in indexes: http://yum.tbsite.net/pypi/simple/, http://yum.tbsite.net/aliyun-pypi/simple/, http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+Requirement already satisfied: pynvml==12.<redacted-secret>.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (12.<redacted-secret>.<redacted-secret>)
+Requirement already satisfied: nvidia-ml-py<13.<redacted-secret>.<redacted-secret>a<redacted-secret>,>=12.<redacted-secret>.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from pynvml==12.<redacted-secret>.<redacted-secret>) (12.575.51)
+Looking in indexes: http://yum.tbsite.net/pypi/simple/, http://yum.tbsite.net/aliyun-pypi/simple/, http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+Requirement already satisfied: tornado==6.1 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (6.1)
+Looking in indexes: http://yum.tbsite.net/pypi/simple/, http://yum.tbsite.net/aliyun-pypi/simple/, http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+Requirement already satisfied: transitions==<redacted-secret>.9.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (<redacted-secret>.9.<redacted-secret>)
+Requirement already satisfied: six in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from transitions==<redacted-secret>.9.<redacted-secret>) (1.14.<redacted-secret>)
+Looking in indexes: http://yum.tbsite.net/pypi/simple/, http://yum.tbsite.net/aliyun-pypi/simple/, http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+[32m[Dragonfly][<redacted-secret>m P2P download plugin enabled (via environment variable)
+[32m[Dragonfly][<redacted-secret>m Minimum file size: <redacted-secret>MB
+Collecting thrift==<redacted-secret>.16.<redacted-secret>
+--2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:32:45--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/e4/23/dd951c9883cb49a73b75<redacted-secret>bdfe91e39d78e8a3f1f71756<redacted-secret>8634f381a197d5/thrift-<redacted-secret>.16.<redacted-secret>.tar.gz
+dfget version: v2.<redacted-secret>.9-ali-rc.8
+current user: root
+output path: /tmp/thrift-<redacted-secret>.16.<redacted-secret>.tar.gz
+init success and start to download
+taskID: 5912963b7<redacted-secret>9762d314d2698ed16a5c79999<redacted-secret>d58a69b52<redacted-secret>318afafeb1d9fb47e2
+finish total length 596<redacted-secret>5 bytes
+download SUCCESS,  cost: 18 ms
+[32m[Dragonfly][<redacted-secret>m Downloading 'thrift-<redacted-secret>.16.<redacted-secret>.tar.gz' via P2P network...
+[36m[Dragonfly][<redacted-secret>m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/e4/23/dd951c9883cb49a73b75<redacted-secret>bdfe91e39d78e8a3f1f71756<redacted-secret>8634f381a197d5/thrift-<redacted-secret>.16.<redacted-secret>.tar.gz -o /tmp/thrift-<redacted-secret>.16.<redacted-secret>.tar.gz --callsystem pypi --notbs
+[32m[Dragonfly][<redacted-secret>m Successfully downloaded 'thrift-<redacted-secret>.16.<redacted-secret>.tar.gz' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/e4/23/dd951c9883cb49a73b75<redacted-secret>bdfe91e39d78e8a3f1f71756<redacted-secret>8634f381a197d5/thrift-<redacted-secret>.16.<redacted-secret>.tar.gz
+     - 59.6 kB 657.7 MB/s <redacted-secret>:<redacted-secret><redacted-secret>:<redacted-secret><redacted-secret>
+  Preparing metadata (setup.py): started
+  Preparing metadata (setup.py): finished with status 'done'
+Requirement already satisfied: six>=1.7.2 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from thrift==<redacted-secret>.16.<redacted-secret>) (1.14.<redacted-secret>)
+Building wheels for collected packages: thrift
+  Building wheel for thrift (setup.py): started
+  Building wheel for thrift (setup.py): finished with status 'done'
+  Created wheel for thrift: filename=thrift-<redacted-secret>.16.<redacted-secret>-cp31<redacted-secret>-cp31<redacted-secret>-linux_x86_64.whl size=44<redacted-secret><redacted-secret>47 sha256=98be69439d4afff6873c6f49<redacted-secret>7dfdb2135c<redacted-secret>e2d75e85b11937429c8ffeb94ecf
+  Stored in directory: /root/.cache/pip/wheels/d1/99/b5/fcc45c37366f91a8fa5d4d753b863f1c4365<redacted-secret>2e53feff3488a
+Successfully built thrift
+Installing collected packages: thrift
+  Attempting uninstall: thrift
+    Found existing installation: thrift <redacted-secret>.1<redacted-secret>.<redacted-secret>
+    Uninstalling thrift-<redacted-secret>.1<redacted-secret>.<redacted-secret>:
+      Successfully uninstalled thrift-<redacted-secret>.1<redacted-secret>.<redacted-secret>
+Successfully installed thrift-<redacted-secret>.16.<redacted-secret>
+Looking in indexes: http://yum.tbsite.net/pypi/simple/, http://yum.tbsite.net/aliyun-pypi/simple/, http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+Requirement already satisfied: GPUtil==1.4.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (1.4.<redacted-secret>)
+Looking in indexes: http://yum.tbsite.net/pypi/simple/, http://yum.tbsite.net/aliyun-pypi/simple/, http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+Requirement already satisfied: requests==2.22.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (2.22.<redacted-secret>)
+Requirement already satisfied: chardet<3.1.<redacted-secret>,>=3.<redacted-secret>.2 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from requests==2.22.<redacted-secret>) (3.<redacted-secret>.4)
+Requirement already satisfied: idna<2.9,>=2.5 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from requests==2.22.<redacted-secret>) (2.8)
+Requirement already satisfied: urllib3!=1.25.<redacted-secret>,!=1.25.1,<1.26,>=1.21.1 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from requests==2.22.<redacted-secret>) (1.25.11)
+Requirement already satisfied: certifi>=2<redacted-secret>17.4.17 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from requests==2.22.<redacted-secret>) (2<redacted-secret>26.1.4)
+Looking in indexes: http://yum.tbsite.net/pypi/simple/, http://yum.tbsite.net/aliyun-pypi/simple/, http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+Requirement already satisfied: pyodps==<redacted-secret>.12.3 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (<redacted-secret>.12.3)
+Requirement already satisfied: requests>=2.4.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from pyodps==<redacted-secret>.12.3) (2.22.<redacted-secret>)
+Requirement already satisfied: pyarrow>=2.<redacted-secret>.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from pyodps==<redacted-secret>.12.3) (23.<redacted-secret>.<redacted-secret>)
+Requirement already satisfied: chardet<3.1.<redacted-secret>,>=3.<redacted-secret>.2 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from requests>=2.4.<redacted-secret>->pyodps==<redacted-secret>.12.3) (3.<redacted-secret>.4)
+Requirement already satisfied: idna<2.9,>=2.5 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from requests>=2.4.<redacted-secret>->pyodps==<redacted-secret>.12.3) (2.8)
+Requirement already satisfied: urllib3!=1.25.<redacted-secret>,!=1.25.1,<1.26,>=1.21.1 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from requests>=2.4.<redacted-secret>->pyodps==<redacted-secret>.12.3) (1.25.11)
+Requirement already satisfied: certifi>=2<redacted-secret>17.4.17 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from requests>=2.4.<redacted-secret>->pyodps==<redacted-secret>.12.3) (2<redacted-secret>26.1.4)
+Looking in indexes: http://yum.tbsite.net/pypi/simple/, http://yum.tbsite.net/aliyun-pypi/simple/, http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+[32m[Dragonfly][<redacted-secret>m P2P download plugin enabled (via environment variable)
+[32m[Dragonfly][<redacted-secret>m Minimum file size: <redacted-secret>MB
+Collecting openlm-hub>=<redacted-secret>.1.17
+--2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:32:57--  http://yum.tbsite.net/aliyun-pypi/packages/openlm-hub/openlm_hub-<redacted-secret>.1.32-py3-none-any.whl
+dfget version: v2.<redacted-secret>.9-ali-rc.8
+current user: root
+output path: /tmp/openlm_hub-<redacted-secret>.1.32-py3-none-any.whl
+init success and start to download
+taskID: d61bcf9<redacted-secret>991f71e1d7a3af<redacted-secret>a83ccf9d529<redacted-secret>9136e724712<redacted-secret>3c5a6cc4c1<redacted-secret>aac88b
+finish total length 97146 bytes
+download SUCCESS,  cost: 24 ms
+[32m[Dragonfly][<redacted-secret>m Downloading 'openlm_hub-<redacted-secret>.1.32-py3-none-any.whl' via P2P network...
+[36m[Dragonfly][<redacted-secret>m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/aliyun-pypi/packages/openlm-hub/openlm_hub-<redacted-secret>.1.32-py3-none-any.whl -o /tmp/openlm_hub-<redacted-secret>.1.32-py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][<redacted-secret>m Successfully downloaded 'openlm_hub-<redacted-secret>.1.32-py3-none-any.whl' via P2P
+  Downloading http://yum.tbsite.net/aliyun-pypi/packages/openlm-hub/openlm_hub-<redacted-secret>.1.32-py3-none-any.whl
+     - 97.1 kB 639.8 MB/s <redacted-secret>:<redacted-secret><redacted-secret>:<redacted-secret><redacted-secret>
+Requirement already satisfied: requests in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from openlm-hub>=<redacted-secret>.1.17) (2.22.<redacted-secret>)
+Requirement already satisfied: filelock in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from openlm-hub>=<redacted-secret>.1.17) (3.2<redacted-secret>.3)
+Requirement already satisfied: fsspec in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from openlm-hub>=<redacted-secret>.1.17) (2<redacted-secret>26.2.<redacted-secret>)
+Requirement already satisfied: ruamel.yaml in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from openlm-hub>=<redacted-secret>.1.17) (<redacted-secret>.19.1)
+Requirement already satisfied: ossfs in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from openlm-hub>=<redacted-secret>.1.17) (2<redacted-secret>25.5.<redacted-secret>)
+Requirement already satisfied: pydantic in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from openlm-hub>=<redacted-secret>.1.17) (2.12.5)
+Requirement already satisfied: pykmonitor>=2.1.2 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from openlm-hub>=<redacted-secret>.1.17) (2.2.1)
+Requirement already satisfied: thrift in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from pykmonitor>=2.1.2->openlm-hub>=<redacted-secret>.1.17) (<redacted-secret>.16.<redacted-secret>)
+Requirement already satisfied: aiooss2>=<redacted-secret>.2.11 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from ossfs->openlm-hub>=<redacted-secret>.1.17) (<redacted-secret>.2.11)
+Requirement already satisfied: oss2==2.18.4 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from ossfs->openlm-hub>=<redacted-secret>.1.17) (2.18.4)
+Requirement already satisfied: crcmod>=1.7 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from oss2==2.18.4->ossfs->openlm-hub>=<redacted-secret>.1.17) (1.7)
+Requirement already satisfied: pycryptodome>=3.4.7 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from oss2==2.18.4->ossfs->openlm-hub>=<redacted-secret>.1.17) (3.23.<redacted-secret>)
+Requirement already satisfied: aliyun-python-sdk-kms>=2.4.1 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from oss2==2.18.4->ossfs->openlm-hub>=<redacted-secret>.1.17) (2.16.5)
+Requirement already satisfied: aliyun-python-sdk-core>=2.13.12 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from oss2==2.18.4->ossfs->openlm-hub>=<redacted-secret>.1.17) (2.16.<redacted-secret>)
+Requirement already satisfied: six in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from oss2==2.18.4->ossfs->openlm-hub>=<redacted-secret>.1.17) (1.14.<redacted-secret>)
+Requirement already satisfied: chardet<3.1.<redacted-secret>,>=3.<redacted-secret>.2 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from requests->openlm-hub>=<redacted-secret>.1.17) (3.<redacted-secret>.4)
+Requirement already satisfied: idna<2.9,>=2.5 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from requests->openlm-hub>=<redacted-secret>.1.17) (2.8)
+Requirement already satisfied: urllib3!=1.25.<redacted-secret>,!=1.25.1,<1.26,>=1.21.1 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from requests->openlm-hub>=<redacted-secret>.1.17) (1.25.11)
+Requirement already satisfied: certifi>=2<redacted-secret>17.4.17 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from requests->openlm-hub>=<redacted-secret>.1.17) (2<redacted-secret>26.1.4)
+Requirement already satisfied: annotated-types>=<redacted-secret>.6.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from pydantic->openlm-hub>=<redacted-secret>.1.17) (<redacted-secret>.7.<redacted-secret>)
+Requirement already satisfied: pydantic-core==2.41.5 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from pydantic->openlm-hub>=<redacted-secret>.1.17) (2.41.5)
+Requirement already satisfied: typing-extensions>=4.14.1 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from pydantic->openlm-hub>=<redacted-secret>.1.17) (4.15.<redacted-secret>)
+Requirement already satisfied: typing-inspection>=<redacted-secret>.4.2 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from pydantic->openlm-hub>=<redacted-secret>.1.17) (<redacted-secret>.4.2)
+Requirement already satisfied: aiohttp<4,>=3.9.1 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from aiooss2>=<redacted-secret>.2.11->ossfs->openlm-hub>=<redacted-secret>.1.17) (3.13.3)
+Requirement already satisfied: aiohappyeyeballs>=2.5.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from aiohttp<4,>=3.9.1->aiooss2>=<redacted-secret>.2.11->ossfs->openlm-hub>=<redacted-secret>.1.17) (2.6.1)
+Requirement already satisfied: aiosignal>=1.4.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from aiohttp<4,>=3.9.1->aiooss2>=<redacted-secret>.2.11->ossfs->openlm-hub>=<redacted-secret>.1.17) (1.4.<redacted-secret>)
+Requirement already satisfied: async-timeout<6.<redacted-secret>,>=4.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from aiohttp<4,>=3.9.1->aiooss2>=<redacted-secret>.2.11->ossfs->openlm-hub>=<redacted-secret>.1.17) (5.<redacted-secret>.1)
+Requirement already satisfied: attrs>=17.3.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from aiohttp<4,>=3.9.1->aiooss2>=<redacted-secret>.2.11->ossfs->openlm-hub>=<redacted-secret>.1.17) (25.4.<redacted-secret>)
+Requirement already satisfied: frozenlist>=1.1.1 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from aiohttp<4,>=3.9.1->aiooss2>=<redacted-secret>.2.11->ossfs->openlm-hub>=<redacted-secret>.1.17) (1.8.<redacted-secret>)
+Requirement already satisfied: multidict<7.<redacted-secret>,>=4.5 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from aiohttp<4,>=3.9.1->aiooss2>=<redacted-secret>.2.11->ossfs->openlm-hub>=<redacted-secret>.1.17) (6.7.1)
+Requirement already satisfied: propcache>=<redacted-secret>.2.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from aiohttp<4,>=3.9.1->aiooss2>=<redacted-secret>.2.11->ossfs->openlm-hub>=<redacted-secret>.1.17) (<redacted-secret>.4.1)
+Requirement already satisfied: yarl<2.<redacted-secret>,>=1.17.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from aiohttp<4,>=3.9.1->aiooss2>=<redacted-secret>.2.11->ossfs->openlm-hub>=<redacted-secret>.1.17) (1.22.<redacted-secret>)
+Requirement already satisfied: jmespath<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.9.3 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from aliyun-python-sdk-core>=2.13.12->oss2==2.18.4->ossfs->openlm-hub>=<redacted-secret>.1.17) (<redacted-secret>.1<redacted-secret>.<redacted-secret>)
+Requirement already satisfied: cryptography>=3.<redacted-secret>.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from aliyun-python-sdk-core>=2.13.12->oss2==2.18.4->ossfs->openlm-hub>=<redacted-secret>.1.17) (46.<redacted-secret>.4)
+Requirement already satisfied: cffi>=2.<redacted-secret>.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from cryptography>=3.<redacted-secret>.<redacted-secret>->aliyun-python-sdk-core>=2.13.12->oss2==2.18.4->ossfs->openlm-hub>=<redacted-secret>.1.17) (2.<redacted-secret>.<redacted-secret>)
+Requirement already satisfied: pycparser in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from cffi>=2.<redacted-secret>.<redacted-secret>->cryptography>=3.<redacted-secret>.<redacted-secret>->aliyun-python-sdk-core>=2.13.12->oss2==2.18.4->ossfs->openlm-hub>=<redacted-secret>.1.17) (3.<redacted-secret>)
+Installing collected packages: openlm-hub
+  Attempting uninstall: openlm-hub
+    Found existing installation: openlm_hub <redacted-secret>.<redacted-secret>.56
+    Uninstalling openlm_hub-<redacted-secret>.<redacted-secret>.56:
+      Successfully uninstalled openlm_hub-<redacted-secret>.<redacted-secret>.56
+Successfully installed openlm-hub-<redacted-secret>.1.32
+Looking in indexes: http://yum.tbsite.net/pypi/simple/, http://yum.tbsite.net/aliyun-pypi/simple/, http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+[32m[Dragonfly][<redacted-secret>m P2P download plugin enabled (via environment variable)
+[32m[Dragonfly][<redacted-secret>m Minimum file size: <redacted-secret>MB
+Collecting alluxio-pfs>=<redacted-secret>.1.6a17
+--2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:32:59--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/alluxio-pfs/<redacted-secret>.1.6a18/alluxio_pfs-<redacted-secret>.1.6a18-py2.py3-none-any.whl
+dfget version: v2.<redacted-secret>.9-ali-rc.8
+current user: root
+output path: /tmp/alluxio_pfs-<redacted-secret>.1.6a18-py2.py3-none-any.whl
+init success and start to download
+taskID: e19db77ec5ab3<redacted-secret>62ad5ece4eba9b48e8b4c778f<redacted-secret>74928d68c4d36b6c3db22a16
+finish total length 63933 bytes
+download SUCCESS,  cost: 18 ms
+[32m[Dragonfly][<redacted-secret>m Downloading 'alluxio_pfs-<redacted-secret>.1.6a18-py2.py3-none-any.whl' via P2P network...
+[36m[Dragonfly][<redacted-secret>m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/alluxio-pfs/<redacted-secret>.1.6a18/alluxio_pfs-<redacted-secret>.1.6a18-py2.py3-none-any.whl -o /tmp/alluxio_pfs-<redacted-secret>.1.6a18-py2.py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][<redacted-secret>m Successfully downloaded 'alluxio_pfs-<redacted-secret>.1.6a18-py2.py3-none-any.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/alluxio-pfs/<redacted-secret>.1.6a18/alluxio_pfs-<redacted-secret>.1.6a18-py2.py3-none-any.whl
+     - 63.9 kB 739.2 MB/s <redacted-secret>:<redacted-secret><redacted-secret>:<redacted-secret><redacted-secret>
+Requirement already satisfied: six in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from alluxio-pfs>=<redacted-secret>.1.6a17) (1.14.<redacted-secret>)
+Requirement already satisfied: requests in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from alluxio-pfs>=<redacted-secret>.1.6a17) (2.22.<redacted-secret>)
+Requirement already satisfied: fsspec in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from alluxio-pfs>=<redacted-secret>.1.6a17) (2<redacted-secret>26.2.<redacted-secret>)
+Collecting mmh3 (from alluxio-pfs>=<redacted-secret>.1.6a17)
+--2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:<redacted-secret><redacted-secret>--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/e5/2b/8c74<redacted-secret><redacted-secret>a3<redacted-secret>5c7f718<redacted-secret>bf72476473decd15db7ad93f1283dc8<redacted-secret>177659ac433/mmh3-5.3.<redacted-secret>-cp31<redacted-secret>-cp31<redacted-secret>-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl
+dfget version: v2.<redacted-secret>.9-ali-rc.8
+current user: root
+output path: /tmp/mmh3-5.3.<redacted-secret>-cp31<redacted-secret>-cp31<redacted-secret>-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl
+init success and start to download
+taskID: c52716db<redacted-secret>1264c43f<redacted-secret>ed941ed58<redacted-secret>a58441aec17a48889b91c266852987b52328
+finish total length 1<redacted-secret>1127 bytes
+download SUCCESS,  cost: 2<redacted-secret> ms
+[32m[Dragonfly][<redacted-secret>m Downloading 'mmh3-5.3.<redacted-secret>-cp31<redacted-secret>-cp31<redacted-secret>-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl' via P2P network...
+[36m[Dragonfly][<redacted-secret>m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/e5/2b/8c74<redacted-secret><redacted-secret>a3<redacted-secret>5c7f718<redacted-secret>bf72476473decd15db7ad93f1283dc8<redacted-secret>177659ac433/mmh3-5.3.<redacted-secret>-cp31<redacted-secret>-cp31<redacted-secret>-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl -o /tmp/mmh3-5.3.<redacted-secret>-cp31<redacted-secret>-cp31<redacted-secret>-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl --callsystem pypi --notbs
+[32m[Dragonfly][<redacted-secret>m Successfully downloaded 'mmh3-5.3.<redacted-secret>-cp31<redacted-secret>-cp31<redacted-secret>-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/e5/2b/8c74<redacted-secret><redacted-secret>a3<redacted-secret>5c7f718<redacted-secret>bf72476473decd15db7ad93f1283dc8<redacted-secret>177659ac433/mmh3-5.3.<redacted-secret>-cp31<redacted-secret>-cp31<redacted-secret>-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl
+     - 1<redacted-secret>1.1 kB 721.4 MB/s <redacted-secret>:<redacted-secret><redacted-secret>:<redacted-secret><redacted-secret>
+Requirement already satisfied: chardet<3.1.<redacted-secret>,>=3.<redacted-secret>.2 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from requests->alluxio-pfs>=<redacted-secret>.1.6a17) (3.<redacted-secret>.4)
+Requirement already satisfied: idna<2.9,>=2.5 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from requests->alluxio-pfs>=<redacted-secret>.1.6a17) (2.8)
+Requirement already satisfied: urllib3!=1.25.<redacted-secret>,!=1.25.1,<1.26,>=1.21.1 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from requests->alluxio-pfs>=<redacted-secret>.1.6a17) (1.25.11)
+Requirement already satisfied: certifi>=2<redacted-secret>17.4.17 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from requests->alluxio-pfs>=<redacted-secret>.1.6a17) (2<redacted-secret>26.1.4)
+Installing collected packages: mmh3, alluxio-pfs
+Successfully installed alluxio-pfs-<redacted-secret>.1.6a18 mmh3-5.3.<redacted-secret>
+Looking in indexes: http://yum.tbsite.net/pypi/simple/, http://yum.tbsite.net/aliyun-pypi/simple/, http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+[32m[Dragonfly][<redacted-secret>m P2P download plugin enabled (via environment variable)
+[32m[Dragonfly][<redacted-secret>m Minimum file size: <redacted-secret>MB
+Collecting alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3
+--2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:<redacted-secret>2--  http://sample-lake.cn-beijing.oss.aliyuncs.com/paimon_test/alibabacloud_metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9_inner-1.<redacted-secret>.3-py3-none-any.whl
+dfget version: v2.<redacted-secret>.9-ali-rc.8
+current user: root
+output path: /tmp/alibabacloud_metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9_inner-1.<redacted-secret>.3-py3-none-any.whl
+init success and start to download
+taskID: <redacted-secret>7da<redacted-secret>37d5153<redacted-secret><redacted-secret>d97cc7<redacted-secret>8a69a9<redacted-secret>6c49619114fda<redacted-secret>7639599aa3dd54d1196513
+finish total length 29314 bytes
+download SUCCESS,  cost: 79 ms
+[32m[Dragonfly][<redacted-secret>m Downloading 'alibabacloud_metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9_inner-1.<redacted-secret>.3-py3-none-any.whl' via P2P network...
+[36m[Dragonfly][<redacted-secret>m Command: /home/staragent/plugins/dragonfly/dfget -u http://sample-lake.cn-beijing.oss.aliyuncs.com/paimon_test/alibabacloud_metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9_inner-1.<redacted-secret>.3-py3-none-any.whl -o /tmp/alibabacloud_metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9_inner-1.<redacted-secret>.3-py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][<redacted-secret>m Successfully downloaded 'alibabacloud_metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9_inner-1.<redacted-secret>.3-py3-none-any.whl' via P2P
+  Downloading http://sample-lake.cn-beijing.oss.aliyuncs.com/paimon_test/alibabacloud_metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9_inner-1.<redacted-secret>.3-py3-none-any.whl
+     - 29.3 kB 573.6 MB/s <redacted-secret>:<redacted-secret><redacted-secret>:<redacted-secret><redacted-secret>
+Collecting alibabacloud-tea-util<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.3.13 (from alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3)
+--2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:<redacted-secret>2--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/6b/29/6d<redacted-secret>56<redacted-secret>4c74f3b1326c317727c532e9<redacted-secret>54f56dca5299ff5b645f7342568<redacted-secret>d/alibabacloud_tea_util-<redacted-secret>.3.15-py3-none-any.whl
+dfget version: v2.<redacted-secret>.9-ali-rc.8
+current user: root
+output path: /tmp/alibabacloud_tea_util-<redacted-secret>.3.15-py3-none-any.whl
+init success and start to download
+taskID: 54c9d<redacted-secret>ada46183a4988d18a6a44477d3a6<redacted-secret>fa849ff<redacted-secret>c9be6516fc65b548a4cf6
+finish total length 67<redacted-secret>9 bytes
+download SUCCESS,  cost: 25 ms
+[32m[Dragonfly][<redacted-secret>m Downloading 'alibabacloud_tea_util-<redacted-secret>.3.15-py3-none-any.whl' via P2P network...
+[36m[Dragonfly][<redacted-secret>m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/6b/29/6d<redacted-secret>56<redacted-secret>4c74f3b1326c317727c532e9<redacted-secret>54f56dca5299ff5b645f7342568<redacted-secret>d/alibabacloud_tea_util-<redacted-secret>.3.15-py3-none-any.whl -o /tmp/alibabacloud_tea_util-<redacted-secret>.3.15-py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][<redacted-secret>m Successfully downloaded 'alibabacloud_tea_util-<redacted-secret>.3.15-py3-none-any.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/6b/29/6d<redacted-secret>56<redacted-secret>4c74f3b1326c317727c532e9<redacted-secret>54f56dca5299ff5b645f7342568<redacted-secret>d/alibabacloud_tea_util-<redacted-secret>.3.15-py3-none-any.whl
+     - 6.7 kB ? <redacted-secret>:<redacted-secret><redacted-secret>:<redacted-secret><redacted-secret>
+Collecting alibabacloud-tea-openapi<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.3.16 (from alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3)
+--2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:<redacted-secret>3--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/35/<redacted-secret><redacted-secret>/2f534f5884e5f299d9cb3a1e8be2def8<redacted-secret>71bc6a6e2a192ba4ff2a8cd5e<redacted-secret>2/alibabacloud_tea_openapi-<redacted-secret>.4.6-py3-none-any.whl
+dfget version: v2.<redacted-secret>.9-ali-rc.8
+current user: root
+output path: /tmp/alibabacloud_tea_openapi-<redacted-secret>.4.6-py3-none-any.whl
+init success and start to download
+taskID: 1b18921d5<redacted-secret>af8539781c6f43d866a8fc18<redacted-secret>2c294d253c995cd47ca4cb8569<redacted-secret>8<redacted-secret>
+finish total length 33448 bytes
+download SUCCESS,  cost: 8 ms
+[32m[Dragonfly][<redacted-secret>m Downloading 'alibabacloud_tea_openapi-<redacted-secret>.4.6-py3-none-any.whl' via P2P network...
+[36m[Dragonfly][<redacted-secret>m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/35/<redacted-secret><redacted-secret>/2f534f5884e5f299d9cb3a1e8be2def8<redacted-secret>71bc6a6e2a192ba4ff2a8cd5e<redacted-secret>2/alibabacloud_tea_openapi-<redacted-secret>.4.6-py3-none-any.whl -o /tmp/alibabacloud_tea_openapi-<redacted-secret>.4.6-py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][<redacted-secret>m Successfully downloaded 'alibabacloud_tea_openapi-<redacted-secret>.4.6-py3-none-any.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/35/<redacted-secret><redacted-secret>/2f534f5884e5f299d9cb3a1e8be2def8<redacted-secret>71bc6a6e2a192ba4ff2a8cd5e<redacted-secret>2/alibabacloud_tea_openapi-<redacted-secret>.4.6-py3-none-any.whl
+     - 33.4 kB 647.1 MB/s <redacted-secret>:<redacted-secret><redacted-secret>:<redacted-secret><redacted-secret>
+Collecting alibabacloud-openapi-util<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.2.2 (from alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3)
+--2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:<redacted-secret>3--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/<redacted-secret>8/46/9b217343648b366eb93447f5d93116e<redacted-secret>9a61956<redacted-secret><redacted-secret>5794aed5ef95a2e9e2e/alibabacloud_openapi_util-<redacted-secret>.2.4-py3-none-any.whl
+dfget version: v2.<redacted-secret>.9-ali-rc.8
+current user: root
+output path: /tmp/alibabacloud_openapi_util-<redacted-secret>.2.4-py3-none-any.whl
+init success and start to download
+taskID: b<redacted-secret>dc5eba9a9<redacted-secret>4471e3e<redacted-secret>1bbdde452b94484416f83c4f46bda46d3b1d5245f86d
+finish total length 7661 bytes
+download SUCCESS,  cost: 8 ms
+[32m[Dragonfly][<redacted-secret>m Downloading 'alibabacloud_openapi_util-<redacted-secret>.2.4-py3-none-any.whl' via P2P network...
+[36m[Dragonfly][<redacted-secret>m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/<redacted-secret>8/46/9b217343648b366eb93447f5d93116e<redacted-secret>9a61956<redacted-secret><redacted-secret>5794aed5ef95a2e9e2e/alibabacloud_openapi_util-<redacted-secret>.2.4-py3-none-any.whl -o /tmp/alibabacloud_openapi_util-<redacted-secret>.2.4-py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][<redacted-secret>m Successfully downloaded 'alibabacloud_openapi_util-<redacted-secret>.2.4-py3-none-any.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/<redacted-secret>8/46/9b217343648b366eb93447f5d93116e<redacted-secret>9a61956<redacted-secret><redacted-secret>5794aed5ef95a2e9e2e/alibabacloud_openapi_util-<redacted-secret>.2.4-py3-none-any.whl
+     - 7.7 kB ? <redacted-secret>:<redacted-secret><redacted-secret>:<redacted-secret><redacted-secret>
+Collecting alibabacloud-endpoint-util<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.<redacted-secret>.4 (from alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3)
+--2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:<redacted-secret>3--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/92/7d/8cc92a95c92<redacted-secret>e344835b<redacted-secret><redacted-secret>5af6ea45a<redacted-secret>db98763ad6ad19299d26892e6c8d/alibabacloud_endpoint_util-<redacted-secret>.<redacted-secret>.4.tar.gz
+dfget version: v2.<redacted-secret>.9-ali-rc.8
+current user: root
+output path: /tmp/alibabacloud_endpoint_util-<redacted-secret>.<redacted-secret>.4.tar.gz
+init success and start to download
+taskID: 97886eed934bfbb34dbdddc7c95<redacted-secret>65ce1593c32fe6f8a6c93c7db1e647ecb1ba
+finish total length 2813 bytes
+download SUCCESS,  cost: 8 ms
+[32m[Dragonfly][<redacted-secret>m Downloading 'alibabacloud_endpoint_util-<redacted-secret>.<redacted-secret>.4.tar.gz' via P2P network...
+[36m[Dragonfly][<redacted-secret>m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/92/7d/8cc92a95c92<redacted-secret>e344835b<redacted-secret><redacted-secret>5af6ea45a<redacted-secret>db98763ad6ad19299d26892e6c8d/alibabacloud_endpoint_util-<redacted-secret>.<redacted-secret>.4.tar.gz -o /tmp/alibabacloud_endpoint_util-<redacted-secret>.<redacted-secret>.4.tar.gz --callsystem pypi --notbs
+[32m[Dragonfly][<redacted-secret>m Successfully downloaded 'alibabacloud_endpoint_util-<redacted-secret>.<redacted-secret>.4.tar.gz' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/92/7d/8cc92a95c92<redacted-secret>e344835b<redacted-secret><redacted-secret>5af6ea45a<redacted-secret>db98763ad6ad19299d26892e6c8d/alibabacloud_endpoint_util-<redacted-secret>.<redacted-secret>.4.tar.gz
+     - 2.8 kB ? <redacted-secret>:<redacted-secret><redacted-secret>:<redacted-secret><redacted-secret>
+  Preparing metadata (setup.py): started
+  Preparing metadata (setup.py): finished with status 'done'
+Requirement already satisfied: cryptography>=3.<redacted-secret>.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from alibabacloud-openapi-util<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.2.2->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3) (46.<redacted-secret>.4)
+Collecting alibabacloud-credentials<2.<redacted-secret>.<redacted-secret>,>=1.<redacted-secret>.2 (from alibabacloud-tea-openapi<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.3.16->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3)
+--2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:<redacted-secret>3--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/89/4<redacted-secret>/8efa<redacted-secret>f2efb4<redacted-secret><redacted-secret>876f9355bde1<redacted-secret>4fe98b621648182d4f<redacted-secret>7615<redacted-secret>f26c64e77<redacted-secret>/alibabacloud_credentials-1.<redacted-secret>.12-py3-none-any.whl
+dfget version: v2.<redacted-secret>.9-ali-rc.8
+current user: root
+output path: /tmp/alibabacloud_credentials-1.<redacted-secret>.12-py3-none-any.whl
+init success and start to download
+taskID: 5112d17724fbe87633de58948a446da7<redacted-secret>2c8374ed4<redacted-secret>636e7fee24ec87f52f9e4
+finish total length 52<redacted-secret><redacted-secret><redacted-secret> bytes
+download SUCCESS,  cost: 8 ms
+[32m[Dragonfly][<redacted-secret>m Downloading 'alibabacloud_credentials-1.<redacted-secret>.12-py3-none-any.whl' via P2P network...
+[36m[Dragonfly][<redacted-secret>m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/89/4<redacted-secret>/8efa<redacted-secret>f2efb4<redacted-secret><redacted-secret>876f9355bde1<redacted-secret>4fe98b621648182d4f<redacted-secret>7615<redacted-secret>f26c64e77<redacted-secret>/alibabacloud_credentials-1.<redacted-secret>.12-py3-none-any.whl -o /tmp/alibabacloud_credentials-1.<redacted-secret>.12-py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][<redacted-secret>m Successfully downloaded 'alibabacloud_credentials-1.<redacted-secret>.12-py3-none-any.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/89/4<redacted-secret>/8efa<redacted-secret>f2efb4<redacted-secret><redacted-secret>876f9355bde1<redacted-secret>4fe98b621648182d4f<redacted-secret>7615<redacted-secret>f26c64e77<redacted-secret>/alibabacloud_credentials-1.<redacted-secret>.12-py3-none-any.whl
+     - 52.<redacted-secret> kB 686.1 MB/s <redacted-secret>:<redacted-secret><redacted-secret>:<redacted-secret><redacted-secret>
+Collecting alibabacloud-gateway-spi<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.<redacted-secret>.2 (from alibabacloud-tea-openapi<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.3.16->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3)
+--2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:<redacted-secret>3--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/45/85/8117<redacted-secret>c45e9d124<redacted-secret>736f9776a1c69<redacted-secret>b958c9755<redacted-secret>9381221b5f8d96<redacted-secret>b5376d/alibabacloud_gateway_spi-<redacted-secret>.<redacted-secret>.4-py3-none-any.whl
+dfget version: v2.<redacted-secret>.9-ali-rc.8
+current user: root
+output path: /tmp/alibabacloud_gateway_spi-<redacted-secret>.<redacted-secret>.4-py3-none-any.whl
+init success and start to download
+taskID: 32b71b66f573e8a<redacted-secret>9b41c3c516<redacted-secret>cefb7cc3f46fbdb549db9<redacted-secret>dc93425857e4b42
+finish total length 429<redacted-secret> bytes
+download SUCCESS,  cost: 18 ms
+[32m[Dragonfly][<redacted-secret>m Downloading 'alibabacloud_gateway_spi-<redacted-secret>.<redacted-secret>.4-py3-none-any.whl' via P2P network...
+[36m[Dragonfly][<redacted-secret>m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/45/85/8117<redacted-secret>c45e9d124<redacted-secret>736f9776a1c69<redacted-secret>b958c9755<redacted-secret>9381221b5f8d96<redacted-secret>b5376d/alibabacloud_gateway_spi-<redacted-secret>.<redacted-secret>.4-py3-none-any.whl -o /tmp/alibabacloud_gateway_spi-<redacted-secret>.<redacted-secret>.4-py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][<redacted-secret>m Successfully downloaded 'alibabacloud_gateway_spi-<redacted-secret>.<redacted-secret>.4-py3-none-any.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/45/85/8117<redacted-secret>c45e9d124<redacted-secret>736f9776a1c69<redacted-secret>b958c9755<redacted-secret>9381221b5f8d96<redacted-secret>b5376d/alibabacloud_gateway_spi-<redacted-secret>.<redacted-secret>.4-py3-none-any.whl
+     - 4.3 kB ? <redacted-secret>:<redacted-secret><redacted-secret>:<redacted-secret><redacted-secret>
+Collecting darabonba-core<2.<redacted-secret>.<redacted-secret>,>=1.<redacted-secret>.8 (from alibabacloud-tea-openapi<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.3.16->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3)
+--2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:<redacted-secret>3--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/7a/da/756ee6c61192<redacted-secret>57c<redacted-secret>14<redacted-secret>d67614e4db3b<redacted-secret>38c3<redacted-secret>c<redacted-secret>ee8f7b3f32<redacted-secret><redacted-secret>d2c49bff/darabonba_core-1.<redacted-secret>.9-py3-none-any.whl
+dfget version: v2.<redacted-secret>.9-ali-rc.8
+current user: root
+output path: /tmp/darabonba_core-1.<redacted-secret>.9-py3-none-any.whl
+init success and start to download
+taskID: 7487<redacted-secret>43bcb2966e4d3a<redacted-secret>eec453da371d5b3656de8a899<redacted-secret>974ceba<redacted-secret>99ab319d46
+finish total length 31336 bytes
+download SUCCESS,  cost: 9 ms
+[32m[Dragonfly][<redacted-secret>m Downloading 'darabonba_core-1.<redacted-secret>.9-py3-none-any.whl' via P2P network...
+[36m[Dragonfly][<redacted-secret>m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/7a/da/756ee6c61192<redacted-secret>57c<redacted-secret>14<redacted-secret>d67614e4db3b<redacted-secret>38c3<redacted-secret>c<redacted-secret>ee8f7b3f32<redacted-secret><redacted-secret>d2c49bff/darabonba_core-1.<redacted-secret>.9-py3-none-any.whl -o /tmp/darabonba_core-1.<redacted-secret>.9-py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][<redacted-secret>m Successfully downloaded 'darabonba_core-1.<redacted-secret>.9-py3-none-any.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/7a/da/756ee6c61192<redacted-secret>57c<redacted-secret>14<redacted-secret>d67614e4db3b<redacted-secret>38c3<redacted-secret>c<redacted-secret>ee8f7b3f32<redacted-secret><redacted-secret>d2c49bff/darabonba_core-1.<redacted-secret>.9-py3-none-any.whl
+     - 31.3 kB 459.4 MB/s <redacted-secret>:<redacted-secret><redacted-secret>:<redacted-secret><redacted-secret>
+Collecting alibabacloud-tea>=<redacted-secret>.3.3 (from alibabacloud-tea-util<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.3.13->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3)
+--2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:<redacted-secret>3--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/9a/7d/b22cb9a<redacted-secret>d4f396ee<redacted-secret>f3f9d7f26b76b9ed93d41<redacted-secret>1add7867a2c87ed2534f5/alibabacloud-tea-<redacted-secret>.4.3.tar.gz
+dfget version: v2.<redacted-secret>.9-ali-rc.8
+current user: root
+output path: /tmp/alibabacloud-tea-<redacted-secret>.4.3.tar.gz
+init success and start to download
+taskID: 5<redacted-secret>8a5786da68e6484234dcfa71bc9f6d4167564914f9<redacted-secret>44f3b23b32ebf3d48a<redacted-secret>
+finish total length 8785 bytes
+download SUCCESS,  cost: 14 ms
+[32m[Dragonfly][<redacted-secret>m Downloading 'alibabacloud-tea-<redacted-secret>.4.3.tar.gz' via P2P network...
+[36m[Dragonfly][<redacted-secret>m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/9a/7d/b22cb9a<redacted-secret>d4f396ee<redacted-secret>f3f9d7f26b76b9ed93d41<redacted-secret>1add7867a2c87ed2534f5/alibabacloud-tea-<redacted-secret>.4.3.tar.gz -o /tmp/alibabacloud-tea-<redacted-secret>.4.3.tar.gz --callsystem pypi --notbs
+[32m[Dragonfly][<redacted-secret>m Successfully downloaded 'alibabacloud-tea-<redacted-secret>.4.3.tar.gz' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/9a/7d/b22cb9a<redacted-secret>d4f396ee<redacted-secret>f3f9d7f26b76b9ed93d41<redacted-secret>1add7867a2c87ed2534f5/alibabacloud-tea-<redacted-secret>.4.3.tar.gz
+     - 8.8 kB ? <redacted-secret>:<redacted-secret><redacted-secret>:<redacted-secret><redacted-secret>
+  Preparing metadata (setup.py): started
+  Preparing metadata (setup.py): finished with status 'done'
+Collecting APScheduler<4.<redacted-secret>.<redacted-secret>,>=3.1<redacted-secret>.<redacted-secret> (from alibabacloud-credentials<2.<redacted-secret>.<redacted-secret>,>=1.<redacted-secret>.2->alibabacloud-tea-openapi<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.3.16->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3)
+--2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:<redacted-secret>4--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/42/c9/8638db32514dbb9157b3d8268<redacted-secret>c6faea89283523edf9ed2415ea3884f2ae/apscheduler-3.11.3-py3-none-any.whl
+dfget version: v2.<redacted-secret>.9-ali-rc.8
+current user: root
+output path: /tmp/apscheduler-3.11.3-py3-none-any.whl
+init success and start to download
+taskID: 3a326275ba6a877ce8b99f89497268ed47415<redacted-secret>ec69d164<redacted-secret>3cde881ba75fae9dd
+finish total length 66<redacted-secret>24 bytes
+download SUCCESS,  cost: 9 ms
+[32m[Dragonfly][<redacted-secret>m Downloading 'apscheduler-3.11.3-py3-none-any.whl' via P2P network...
+[36m[Dragonfly][<redacted-secret>m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/42/c9/8638db32514dbb9157b3d8268<redacted-secret>c6faea89283523edf9ed2415ea3884f2ae/apscheduler-3.11.3-py3-none-any.whl -o /tmp/apscheduler-3.11.3-py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][<redacted-secret>m Successfully downloaded 'apscheduler-3.11.3-py3-none-any.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/42/c9/8638db32514dbb9157b3d8268<redacted-secret>c6faea89283523edf9ed2415ea3884f2ae/apscheduler-3.11.3-py3-none-any.whl
+     - 66.<redacted-secret> kB 642.6 MB/s <redacted-secret>:<redacted-secret><redacted-secret>:<redacted-secret><redacted-secret>
+Collecting aiofiles<25.<redacted-secret>.<redacted-secret>,>=22.1.<redacted-secret> (from alibabacloud-credentials<2.<redacted-secret>.<redacted-secret>,>=1.<redacted-secret>.2->alibabacloud-tea-openapi<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.3.16->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3)
+--2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:<redacted-secret>4--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/a5/45/3<redacted-secret>bb92d442636f57<redacted-secret>cb5651bc661f52b61<redacted-secret>e2eec3f891a5dc3a4c3667db<redacted-secret>/aiofiles-24.1.<redacted-secret>-py3-none-any.whl
+dfget version: v2.<redacted-secret>.9-ali-rc.8
+current user: root
+output path: /tmp/aiofiles-24.1.<redacted-secret>-py3-none-any.whl
+init success and start to download
+taskID: 5937<redacted-secret>689744<redacted-secret>c55a2dc<redacted-secret><redacted-secret><redacted-secret>92f99458f46968<redacted-secret>e65<redacted-secret>81f76bb6179<redacted-secret>193cc12e382
+finish total length 15896 bytes
+download SUCCESS,  cost: 18 ms
+[32m[Dragonfly][<redacted-secret>m Downloading 'aiofiles-24.1.<redacted-secret>-py3-none-any.whl' via P2P network...
+[36m[Dragonfly][<redacted-secret>m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/a5/45/3<redacted-secret>bb92d442636f57<redacted-secret>cb5651bc661f52b61<redacted-secret>e2eec3f891a5dc3a4c3667db<redacted-secret>/aiofiles-24.1.<redacted-secret>-py3-none-any.whl -o /tmp/aiofiles-24.1.<redacted-secret>-py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][<redacted-secret>m Successfully downloaded 'aiofiles-24.1.<redacted-secret>-py3-none-any.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/a5/45/3<redacted-secret>bb92d442636f57<redacted-secret>cb5651bc661f52b61<redacted-secret>e2eec3f891a5dc3a4c3667db<redacted-secret>/aiofiles-24.1.<redacted-secret>-py3-none-any.whl
+     - 15.9 kB 42<redacted-secret>.3 MB/s <redacted-secret>:<redacted-secret><redacted-secret>:<redacted-secret><redacted-secret>
+Collecting alibabacloud-credentials-api<2.<redacted-secret>.<redacted-secret>,>=1.<redacted-secret>.<redacted-secret> (from alibabacloud-credentials<2.<redacted-secret>.<redacted-secret>,>=1.<redacted-secret>.2->alibabacloud-tea-openapi<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.3.16->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3)
+--2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:<redacted-secret>4--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/<redacted-secret>b/49/ff4<redacted-secret>1af96d77d4<redacted-secret>ab918<redacted-secret>96d831bd336<redacted-secret>f3eec6<redacted-secret>f1<redacted-secret>e65125e5789c4e617/alibabacloud_credentials_api-1.<redacted-secret>.1-py3-none-any.whl
+dfget version: v2.<redacted-secret>.9-ali-rc.8
+current user: root
+output path: /tmp/alibabacloud_credentials_api-1.<redacted-secret>.1-py3-none-any.whl
+init success and start to download
+taskID: c6dc2eaf9c792<redacted-secret>8ca83fcf641c36b81<redacted-secret>c178fa245db<redacted-secret>2a25<redacted-secret>94a983f3f51d<redacted-secret>9a
+finish total length 223<redacted-secret> bytes
+download SUCCESS,  cost: 9 ms
+[32m[Dragonfly][<redacted-secret>m Downloading 'alibabacloud_credentials_api-1.<redacted-secret>.1-py3-none-any.whl' via P2P network...
+[36m[Dragonfly][<redacted-secret>m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/<redacted-secret>b/49/ff4<redacted-secret>1af96d77d4<redacted-secret>ab918<redacted-secret>96d831bd336<redacted-secret>f3eec6<redacted-secret>f1<redacted-secret>e65125e5789c4e617/alibabacloud_credentials_api-1.<redacted-secret>.1-py3-none-any.whl -o /tmp/alibabacloud_credentials_api-1.<redacted-secret>.1-py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][<redacted-secret>m Successfully downloaded 'alibabacloud_credentials_api-1.<redacted-secret>.1-py3-none-any.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/<redacted-secret>b/49/ff4<redacted-secret>1af96d77d4<redacted-secret>ab918<redacted-secret>96d831bd336<redacted-secret>f3eec6<redacted-secret>f1<redacted-secret>e65125e5789c4e617/alibabacloud_credentials_api-1.<redacted-secret>.1-py3-none-any.whl
+     - 2.2 kB ? <redacted-secret>:<redacted-secret><redacted-secret>:<redacted-secret><redacted-secret>
+Requirement already satisfied: requests<3.<redacted-secret>.<redacted-secret>,>=2.21.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from alibabacloud-tea>=<redacted-secret>.3.3->alibabacloud-tea-util<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.3.13->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3) (2.22.<redacted-secret>)
+Requirement already satisfied: aiohttp<4.<redacted-secret>.<redacted-secret>,>=3.7.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from alibabacloud-tea>=<redacted-secret>.3.3->alibabacloud-tea-util<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.3.13->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3) (3.13.3)
+Requirement already satisfied: cffi>=2.<redacted-secret>.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from cryptography>=3.<redacted-secret>.<redacted-secret>->alibabacloud-openapi-util<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.2.2->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3) (2.<redacted-secret>.<redacted-secret>)
+Requirement already satisfied: typing-extensions>=4.13.2 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from cryptography>=3.<redacted-secret>.<redacted-secret>->alibabacloud-openapi-util<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.2.2->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3) (4.15.<redacted-secret>)
+Collecting websocket-client<2.<redacted-secret>.<redacted-secret>,>=1.6.<redacted-secret> (from darabonba-core<2.<redacted-secret>.<redacted-secret>,>=1.<redacted-secret>.8->alibabacloud-tea-openapi<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.3.16->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3)
+--2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:<redacted-secret>4--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/d5/d2/cc4dc1271e464942db7ee278baae2daa99ee77cb2af744<redacted-secret>25c<redacted-secret>4da585a3e/websocket_client-1.9.2-py3-none-any.whl
+dfget version: v2.<redacted-secret>.9-ali-rc.8
+current user: root
+output path: /tmp/websocket_client-1.9.2-py3-none-any.whl
+init success and start to download
+taskID: 569<redacted-secret>1f3ad182e83fbc673d5141fdf83739f4e79783a5f96cb53d162c<redacted-secret>1fba<redacted-secret>5e
+finish total length 95786 bytes
+download SUCCESS,  cost: 8 ms
+[32m[Dragonfly][<redacted-secret>m Downloading 'websocket_client-1.9.2-py3-none-any.whl' via P2P network...
+[36m[Dragonfly][<redacted-secret>m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/d5/d2/cc4dc1271e464942db7ee278baae2daa99ee77cb2af744<redacted-secret>25c<redacted-secret>4da585a3e/websocket_client-1.9.2-py3-none-any.whl -o /tmp/websocket_client-1.9.2-py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][<redacted-secret>m Successfully downloaded 'websocket_client-1.9.2-py3-none-any.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/d5/d2/cc4dc1271e464942db7ee278baae2daa99ee77cb2af744<redacted-secret>25c<redacted-secret>4da585a3e/websocket_client-1.9.2-py3-none-any.whl
+     - 95.8 kB 668.<redacted-secret> MB/s <redacted-secret>:<redacted-secret><redacted-secret>:<redacted-secret><redacted-secret>
+Requirement already satisfied: aiohappyeyeballs>=2.5.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from aiohttp<4.<redacted-secret>.<redacted-secret>,>=3.7.<redacted-secret>->alibabacloud-tea>=<redacted-secret>.3.3->alibabacloud-tea-util<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.3.13->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3) (2.6.1)
+Requirement already satisfied: aiosignal>=1.4.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from aiohttp<4.<redacted-secret>.<redacted-secret>,>=3.7.<redacted-secret>->alibabacloud-tea>=<redacted-secret>.3.3->alibabacloud-tea-util<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.3.13->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3) (1.4.<redacted-secret>)
+Requirement already satisfied: async-timeout<6.<redacted-secret>,>=4.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from aiohttp<4.<redacted-secret>.<redacted-secret>,>=3.7.<redacted-secret>->alibabacloud-tea>=<redacted-secret>.3.3->alibabacloud-tea-util<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.3.13->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3) (5.<redacted-secret>.1)
+Requirement already satisfied: attrs>=17.3.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from aiohttp<4.<redacted-secret>.<redacted-secret>,>=3.7.<redacted-secret>->alibabacloud-tea>=<redacted-secret>.3.3->alibabacloud-tea-util<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.3.13->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3) (25.4.<redacted-secret>)
+Requirement already satisfied: frozenlist>=1.1.1 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from aiohttp<4.<redacted-secret>.<redacted-secret>,>=3.7.<redacted-secret>->alibabacloud-tea>=<redacted-secret>.3.3->alibabacloud-tea-util<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.3.13->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3) (1.8.<redacted-secret>)
+Requirement already satisfied: multidict<7.<redacted-secret>,>=4.5 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from aiohttp<4.<redacted-secret>.<redacted-secret>,>=3.7.<redacted-secret>->alibabacloud-tea>=<redacted-secret>.3.3->alibabacloud-tea-util<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.3.13->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3) (6.7.1)
+Requirement already satisfied: propcache>=<redacted-secret>.2.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from aiohttp<4.<redacted-secret>.<redacted-secret>,>=3.7.<redacted-secret>->alibabacloud-tea>=<redacted-secret>.3.3->alibabacloud-tea-util<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.3.13->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3) (<redacted-secret>.4.1)
+Requirement already satisfied: yarl<2.<redacted-secret>,>=1.17.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from aiohttp<4.<redacted-secret>.<redacted-secret>,>=3.7.<redacted-secret>->alibabacloud-tea>=<redacted-secret>.3.3->alibabacloud-tea-util<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.3.13->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3) (1.22.<redacted-secret>)
+Collecting tzlocal>=3.<redacted-secret> (from APScheduler<4.<redacted-secret>.<redacted-secret>,>=3.1<redacted-secret>.<redacted-secret>->alibabacloud-credentials<2.<redacted-secret>.<redacted-secret>,>=1.<redacted-secret>.2->alibabacloud-tea-openapi<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.3.16->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3)
+--2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:<redacted-secret>5--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/9e/a4/<redacted-secret>17a7a6cbe387d961a688ec31364ae6<redacted-secret>a5c4e22c96ae9921b79a947c855d/tzlocal-5.4.4-py3-none-any.whl
+dfget version: v2.<redacted-secret>.9-ali-rc.8
+current user: root
+output path: /tmp/tzlocal-5.4.4-py3-none-any.whl
+init success and start to download
+taskID: d1a<redacted-secret>b34b2ab<redacted-secret>221a4e61a<redacted-secret>9e7c1143847d584d91a296fda8d7e339a6fc9b31bf
+finish total length 18115 bytes
+download SUCCESS,  cost: 8 ms
+[32m[Dragonfly][<redacted-secret>m Downloading 'tzlocal-5.4.4-py3-none-any.whl' via P2P network...
+[36m[Dragonfly][<redacted-secret>m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/9e/a4/<redacted-secret>17a7a6cbe387d961a688ec31364ae6<redacted-secret>a5c4e22c96ae9921b79a947c855d/tzlocal-5.4.4-py3-none-any.whl -o /tmp/tzlocal-5.4.4-py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][<redacted-secret>m Successfully downloaded 'tzlocal-5.4.4-py3-none-any.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/9e/a4/<redacted-secret>17a7a6cbe387d961a688ec31364ae6<redacted-secret>a5c4e22c96ae9921b79a947c855d/tzlocal-5.4.4-py3-none-any.whl
+     - 18.1 kB 381.2 MB/s <redacted-secret>:<redacted-secret><redacted-secret>:<redacted-secret><redacted-secret>
+Requirement already satisfied: pycparser in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from cffi>=2.<redacted-secret>.<redacted-secret>->cryptography>=3.<redacted-secret>.<redacted-secret>->alibabacloud-openapi-util<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.2.2->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3) (3.<redacted-secret>)
+Requirement already satisfied: chardet<3.1.<redacted-secret>,>=3.<redacted-secret>.2 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from requests<3.<redacted-secret>.<redacted-secret>,>=2.21.<redacted-secret>->alibabacloud-tea>=<redacted-secret>.3.3->alibabacloud-tea-util<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.3.13->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3) (3.<redacted-secret>.4)
+Requirement already satisfied: idna<2.9,>=2.5 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from requests<3.<redacted-secret>.<redacted-secret>,>=2.21.<redacted-secret>->alibabacloud-tea>=<redacted-secret>.3.3->alibabacloud-tea-util<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.3.13->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3) (2.8)
+Requirement already satisfied: urllib3!=1.25.<redacted-secret>,!=1.25.1,<1.26,>=1.21.1 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from requests<3.<redacted-secret>.<redacted-secret>,>=2.21.<redacted-secret>->alibabacloud-tea>=<redacted-secret>.3.3->alibabacloud-tea-util<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.3.13->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3) (1.25.11)
+Requirement already satisfied: certifi>=2<redacted-secret>17.4.17 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from requests<3.<redacted-secret>.<redacted-secret>,>=2.21.<redacted-secret>->alibabacloud-tea>=<redacted-secret>.3.3->alibabacloud-tea-util<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.3.13->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3) (2<redacted-secret>26.1.4)
+Building wheels for collected packages: alibabacloud-endpoint-util, alibabacloud-tea
+  Building wheel for alibabacloud-endpoint-util (setup.py): started
+  Building wheel for alibabacloud-endpoint-util (setup.py): finished with status 'done'
+  Created wheel for alibabacloud-endpoint-util: filename=alibabacloud_endpoint_util-<redacted-secret>.<redacted-secret>.4-py3-none-any.whl size=2699 sha256=6db1218b4ddd2f1ac53fd753bae9aac65a1a24<redacted-secret>4f4bf88e1b63bfab5a68da664
+  Stored in directory: /root/.cache/pip/wheels/11/df/1c/64d3c1787cede9ed659e79b8588e36caac1c<redacted-secret>56fddab9746ae
+  Building wheel for alibabacloud-tea (setup.py): started
+  Building wheel for alibabacloud-tea (setup.py): finished with status 'done'
+  Created wheel for alibabacloud-tea: filename=alibabacloud_tea-<redacted-secret>.4.3-py3-none-any.whl size=8443 sha256=bcffce9512ecb6a1764d3f37968bb1188e<redacted-secret>5<redacted-secret>5fd691ca79e2<redacted-secret>d26b43a25e4dbc
+  Stored in directory: /root/.cache/pip/wheels/92/e3/c4/6ca7997291e9b2c41f39e46<redacted-secret>ffffa4b1ff26d<redacted-secret>a46d38<redacted-secret>8fb8f
+Successfully built alibabacloud-endpoint-util alibabacloud-tea
+Installing collected packages: alibabacloud-endpoint-util, websocket-client, tzlocal, alibabacloud-credentials-api, aiofiles, APScheduler, alibabacloud-tea, darabonba-core, alibabacloud-tea-util, alibabacloud-credentials, alibabacloud-openapi-util, alibabacloud-gateway-spi, alibabacloud-tea-openapi, alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner
+Successfully installed APScheduler-3.11.3 aiofiles-24.1.<redacted-secret> alibabacloud-credentials-1.<redacted-secret>.12 alibabacloud-credentials-api-1.<redacted-secret>.1 alibabacloud-endpoint-util-<redacted-secret>.<redacted-secret>.4 alibabacloud-gateway-spi-<redacted-secret>.<redacted-secret>.4 alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner-1.<redacted-secret>.3 alibabacloud-openapi-util-<redacted-secret>.2.4 alibabacloud-tea-<redacted-secret>.4.3 alibabacloud-tea-openapi-<redacted-secret>.4.6 alibabacloud-tea-util-<redacted-secret>.3.15 darabonba-core-1.<redacted-secret>.9 tzlocal-5.4.4 websocket-client-1.9.2
+Looking in indexes: http://yum.tbsite.net/pypi/simple/, http://yum.tbsite.net/aliyun-pypi/simple/, http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+[32m[Dragonfly][<redacted-secret>m P2P download plugin enabled (via environment variable)
+[32m[Dragonfly][<redacted-secret>m Minimum file size: <redacted-secret>MB
+Collecting pypaimon_ali==1.5.dev<redacted-secret>
+--2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:<redacted-secret>8--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/pypaimon-ali/1.5.dev<redacted-secret>/pypaimon_ali-1.5.dev<redacted-secret>-py3-none-any.whl
+dfget version: v2.<redacted-secret>.9-ali-rc.8
+current user: root
+output path: /tmp/pypaimon_ali-1.5.dev<redacted-secret>-py3-none-any.whl
+init success and start to download
+taskID: e54d27273a774d53adfd7f<redacted-secret>5<redacted-secret>535<redacted-secret>6<redacted-secret><redacted-secret>d5<redacted-secret>9956bbe4e39942<redacted-secret>4f5bd6<redacted-secret>3a7<redacted-secret>2ec
+finish total length 81257<redacted-secret> bytes
+download SUCCESS,  cost: 11 ms
+[32m[Dragonfly][<redacted-secret>m Downloading 'pypaimon_ali-1.5.dev<redacted-secret>-py3-none-any.whl' via P2P network...
+[36m[Dragonfly][<redacted-secret>m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/pypaimon-ali/1.5.dev<redacted-secret>/pypaimon_ali-1.5.dev<redacted-secret>-py3-none-any.whl -o /tmp/pypaimon_ali-1.5.dev<redacted-secret>-py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][<redacted-secret>m Successfully downloaded 'pypaimon_ali-1.5.dev<redacted-secret>-py3-none-any.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/pypaimon-ali/1.5.dev<redacted-secret>/pypaimon_ali-1.5.dev<redacted-secret>-py3-none-any.whl
+     - 812.6 kB 818.2 MB/s <redacted-secret>:<redacted-secret><redacted-secret>:<redacted-secret><redacted-secret>
+Collecting fastavro<2,>=1.4 (from pypaimon_ali==1.5.dev<redacted-secret>)
+--2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:<redacted-secret>9--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/ee/e4/26512b52f583<redacted-secret>5b9d2194169de2e82c16d5131f<redacted-secret>a<redacted-secret>b6359e5<redacted-secret>d34faf4<redacted-secret>21/fastavro-1.12.2-cp31<redacted-secret>-cp31<redacted-secret>-manylinux2<redacted-secret>14_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl
+dfget version: v2.<redacted-secret>.9-ali-rc.8
+current user: root
+output path: /tmp/fastavro-1.12.2-cp31<redacted-secret>-cp31<redacted-secret>-manylinux2<redacted-secret>14_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl
+init success and start to download
+taskID: c49cf8d4d78bfe7338f85b23f2947de2e38a8da47cfaa924784c<redacted-secret>c19f156d3c2
+finish total length 3196799 bytes
+download SUCCESS,  cost: 21 ms
+[32m[Dragonfly][<redacted-secret>m Downloading 'fastavro-1.12.2-cp31<redacted-secret>-cp31<redacted-secret>-manylinux2<redacted-secret>14_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl' via P2P network...
+[36m[Dragonfly][<redacted-secret>m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/ee/e4/26512b52f583<redacted-secret>5b9d2194169de2e82c16d5131f<redacted-secret>a<redacted-secret>b6359e5<redacted-secret>d34faf4<redacted-secret>21/fastavro-1.12.2-cp31<redacted-secret>-cp31<redacted-secret>-manylinux2<redacted-secret>14_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl -o /tmp/fastavro-1.12.2-cp31<redacted-secret>-cp31<redacted-secret>-manylinux2<redacted-secret>14_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl --callsystem pypi --notbs
+[32m[Dragonfly][<redacted-secret>m Successfully downloaded 'fastavro-1.12.2-cp31<redacted-secret>-cp31<redacted-secret>-manylinux2<redacted-secret>14_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/ee/e4/26512b52f583<redacted-secret>5b9d2194169de2e82c16d5131f<redacted-secret>a<redacted-secret>b6359e5<redacted-secret>d34faf4<redacted-secret>21/fastavro-1.12.2-cp31<redacted-secret>-cp31<redacted-secret>-manylinux2<redacted-secret>14_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl
+     - 3.2 MB 64<redacted-secret>.3 MB/s <redacted-secret>:<redacted-secret><redacted-secret>:<redacted-secret><redacted-secret>
+Collecting packaging<26,>=21 (from pypaimon_ali==1.5.dev<redacted-secret>)
+--2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:<redacted-secret>9--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/2<redacted-secret>/12/38679<redacted-secret>34af332785aac877454<redacted-secret>895e234f4d<redacted-secret>7f75458<redacted-secret>4<redacted-secret>97de4b666afd8/packaging-25.<redacted-secret>-py3-none-any.whl
+dfget version: v2.<redacted-secret>.9-ali-rc.8
+current user: root
+output path: /tmp/packaging-25.<redacted-secret>-py3-none-any.whl
+init success and start to download
+taskID: 1665c7edd5bba18efd632<redacted-secret>3372ebf5e553f68<redacted-secret>4c<redacted-secret>1cf3c5ffb3aedadd<redacted-secret>d196ee
+finish total length 66469 bytes
+download SUCCESS,  cost: 24 ms
+[32m[Dragonfly][<redacted-secret>m Downloading 'packaging-25.<redacted-secret>-py3-none-any.whl' via P2P network...
+[36m[Dragonfly][<redacted-secret>m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/2<redacted-secret>/12/38679<redacted-secret>34af332785aac877454<redacted-secret>895e234f4d<redacted-secret>7f75458<redacted-secret>4<redacted-secret>97de4b666afd8/packaging-25.<redacted-secret>-py3-none-any.whl -o /tmp/packaging-25.<redacted-secret>-py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][<redacted-secret>m Successfully downloaded 'packaging-25.<redacted-secret>-py3-none-any.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/2<redacted-secret>/12/38679<redacted-secret>34af332785aac877454<redacted-secret>895e234f4d<redacted-secret>7f75458<redacted-secret>4<redacted-secret>97de4b666afd8/packaging-25.<redacted-secret>-py3-none-any.whl
+     - 66.5 kB 669.4 MB/s <redacted-secret>:<redacted-secret><redacted-secret>:<redacted-secret><redacted-secret>
+Collecting readerwriterlock<2,>=1 (from pypaimon_ali==1.5.dev<redacted-secret>)
+--2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:<redacted-secret>9--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/c2/5a/2f2e7fc<redacted-secret>26d5e64b54<redacted-secret>8aa3fbe<redacted-secret>296a64<redacted-secret>7b8481196cae4daacacb3a3ae<redacted-secret>/readerwriterlock-1.<redacted-secret>.9-py3-none-any.whl
+dfget version: v2.<redacted-secret>.9-ali-rc.8
+current user: root
+output path: /tmp/readerwriterlock-1.<redacted-secret>.9-py3-none-any.whl
+init success and start to download
+taskID: 8ed84736aa93fd5d8cf86813d8a<redacted-secret>9397bb238de34fd<redacted-secret>699b2ac918d1f4<redacted-secret>2<redacted-secret>be6
+finish total length 9999 bytes
+download SUCCESS,  cost: 28 ms
+[32m[Dragonfly][<redacted-secret>m Downloading 'readerwriterlock-1.<redacted-secret>.9-py3-none-any.whl' via P2P network...
+[36m[Dragonfly][<redacted-secret>m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/c2/5a/2f2e7fc<redacted-secret>26d5e64b54<redacted-secret>8aa3fbe<redacted-secret>296a64<redacted-secret>7b8481196cae4daacacb3a3ae<redacted-secret>/readerwriterlock-1.<redacted-secret>.9-py3-none-any.whl -o /tmp/readerwriterlock-1.<redacted-secret>.9-py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][<redacted-secret>m Successfully downloaded 'readerwriterlock-1.<redacted-secret>.9-py3-none-any.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/c2/5a/2f2e7fc<redacted-secret>26d5e64b54<redacted-secret>8aa3fbe<redacted-secret>296a64<redacted-secret>7b8481196cae4daacacb3a3ae<redacted-secret>/readerwriterlock-1.<redacted-secret>.9-py3-none-any.whl
+     - 1<redacted-secret>.<redacted-secret> kB ? <redacted-secret>:<redacted-secret><redacted-secret>:<redacted-secret><redacted-secret>
+Collecting zstandard<1,>=<redacted-secret>.19 (from pypaimon_ali==1.5.dev<redacted-secret>)
+--2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:<redacted-secret>9--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/fd/e5/6d36f92a197c3c17729a2125e29c169f46<redacted-secret>538a7d939a27eaaa6dcfcba8e/zstandard-<redacted-secret>.25.<redacted-secret>-cp31<redacted-secret>-cp31<redacted-secret>-manylinux2<redacted-secret>14_x86_64.manylinux_2_17_x86_64.whl
+dfget version: v2.<redacted-secret>.9-ali-rc.8
+current user: root
+output path: /tmp/zstandard-<redacted-secret>.25.<redacted-secret>-cp31<redacted-secret>-cp31<redacted-secret>-manylinux2<redacted-secret>14_x86_64.manylinux_2_17_x86_64.whl
+init success and start to download
+taskID: 949734d<redacted-secret>8f1a73332535c1c1895<redacted-secret>ee1de28741d2baa<redacted-secret>45df7aa626d3c8e3e1e5
+finish total length 5556583 bytes
+download SUCCESS,  cost: 7<redacted-secret> ms
+[32m[Dragonfly][<redacted-secret>m Downloading 'zstandard-<redacted-secret>.25.<redacted-secret>-cp31<redacted-secret>-cp31<redacted-secret>-manylinux2<redacted-secret>14_x86_64.manylinux_2_17_x86_64.whl' via P2P network...
+[36m[Dragonfly][<redacted-secret>m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/fd/e5/6d36f92a197c3c17729a2125e29c169f46<redacted-secret>538a7d939a27eaaa6dcfcba8e/zstandard-<redacted-secret>.25.<redacted-secret>-cp31<redacted-secret>-cp31<redacted-secret>-manylinux2<redacted-secret>14_x86_64.manylinux_2_17_x86_64.whl -o /tmp/zstandard-<redacted-secret>.25.<redacted-secret>-cp31<redacted-secret>-cp31<redacted-secret>-manylinux2<redacted-secret>14_x86_64.manylinux_2_17_x86_64.whl --callsystem pypi --notbs
+[32m[Dragonfly][<redacted-secret>m Successfully downloaded 'zstandard-<redacted-secret>.25.<redacted-secret>-cp31<redacted-secret>-cp31<redacted-secret>-manylinux2<redacted-secret>14_x86_64.manylinux_2_17_x86_64.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/fd/e5/6d36f92a197c3c17729a2125e29c169f46<redacted-secret>538a7d939a27eaaa6dcfcba8e/zstandard-<redacted-secret>.25.<redacted-secret>-cp31<redacted-secret>-cp31<redacted-secret>-manylinux2<redacted-secret>14_x86_64.manylinux_2_17_x86_64.whl
+     - 5.6 MB 711.5 MB/s <redacted-secret>:<redacted-secret><redacted-secret>:<redacted-secret><redacted-secret>
+Requirement already satisfied: pyyaml<7,>=5.4 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from pypaimon_ali==1.5.dev<redacted-secret>) (6.<redacted-secret>.3)
+Collecting pangudfs-client==1.1.2+lightsdk1.1.52 (from pypaimon_ali==1.5.dev<redacted-secret>)
+--2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:<redacted-secret>9--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/pangudfs-client/1.1.2%2Blightsdk1.1.52/pangudfs_client-1.1.2%2Blightsdk1.1.52-py3-none-linux_x86_64.whl
+dfget version: v2.<redacted-secret>.9-ali-rc.8
+current user: root
+output path: /tmp/pangudfs_client-1.1.2%2Blightsdk1.1.52-py3-none-linux_x86_64.whl
+init success and start to download
+taskID: 7ad16da2482c756825f2f297e7e3ef12d<redacted-secret>34f71438d311b7678<redacted-secret>db8146abbd7c
+finish total length 2<redacted-secret>325<redacted-secret>69 bytes
+download SUCCESS,  cost: 98 ms
+[32m[Dragonfly][<redacted-secret>m Downloading 'pangudfs_client-1.1.2%2Blightsdk1.1.52-py3-none-linux_x86_64.whl' via P2P network...
+[36m[Dragonfly][<redacted-secret>m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/pangudfs-client/1.1.2%2Blightsdk1.1.52/pangudfs_client-1.1.2%2Blightsdk1.1.52-py3-none-linux_x86_64.whl -o /tmp/pangudfs_client-1.1.2%2Blightsdk1.1.52-py3-none-linux_x86_64.whl --callsystem pypi --notbs
+[32m[Dragonfly][<redacted-secret>m Successfully downloaded 'pangudfs_client-1.1.2%2Blightsdk1.1.52-py3-none-linux_x86_64.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/pangudfs-client/1.1.2%2Blightsdk1.1.52/pangudfs_client-1.1.2%2Blightsdk1.1.52-py3-none-linux_x86_64.whl
+     - 2<redacted-secret>.3 MB 783.9 MB/s <redacted-secret>:<redacted-secret><redacted-secret>:<redacted-secret><redacted-secret>
+Requirement already satisfied: alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from pypaimon_ali==1.5.dev<redacted-secret>) (1.<redacted-secret>.3)
+Collecting cachetools<6,>=5 (from pypaimon_ali==1.5.dev<redacted-secret>)
+--2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:1<redacted-secret>--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/72/76/2<redacted-secret>fa66124dbe6be5cafeb312ece67de6b61dd91a<redacted-secret>247d1ea13db4ebb33c2/cachetools-5.5.2-py3-none-any.whl
+dfget version: v2.<redacted-secret>.9-ali-rc.8
+current user: root
+output path: /tmp/cachetools-5.5.2-py3-none-any.whl
+init success and start to download
+taskID: 94c779<redacted-secret><redacted-secret><redacted-secret>73a737b195f89432127f19ce173be<redacted-secret>583fc829a4d9ce23671f1<redacted-secret>7c4
+finish total length 1<redacted-secret><redacted-secret>8<redacted-secret> bytes
+download SUCCESS,  cost: 18 ms
+[32m[Dragonfly][<redacted-secret>m Downloading 'cachetools-5.5.2-py3-none-any.whl' via P2P network...
+[36m[Dragonfly][<redacted-secret>m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/72/76/2<redacted-secret>fa66124dbe6be5cafeb312ece67de6b61dd91a<redacted-secret>247d1ea13db4ebb33c2/cachetools-5.5.2-py3-none-any.whl -o /tmp/cachetools-5.5.2-py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][<redacted-secret>m Successfully downloaded 'cachetools-5.5.2-py3-none-any.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/72/76/2<redacted-secret>fa66124dbe6be5cafeb312ece67de6b61dd91a<redacted-secret>247d1ea13db4ebb33c2/cachetools-5.5.2-py3-none-any.whl
+     - 1<redacted-secret>.1 kB ? <redacted-secret>:<redacted-secret><redacted-secret>:<redacted-secret><redacted-secret>
+Collecting cramjam<3,>=1.3.<redacted-secret> (from pypaimon_ali==1.5.dev<redacted-secret>)
+--2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:11--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/db/7e/4f6ca98a4b474348e965a529b359184785d1119ab7c4c9ec128<redacted-secret>b8bea5<redacted-secret>a/cramjam-2.11.<redacted-secret>-cp31<redacted-secret>-cp31<redacted-secret>-manylinux_2_17_x86_64.manylinux2<redacted-secret>14_x86_64.whl
+dfget version: v2.<redacted-secret>.9-ali-rc.8
+current user: root
+output path: /tmp/cramjam-2.11.<redacted-secret>-cp31<redacted-secret>-cp31<redacted-secret>-manylinux_2_17_x86_64.manylinux2<redacted-secret>14_x86_64.whl
+init success and start to download
+taskID: 6c4f871e7ab194e<redacted-secret>94232a7876cb222da6c7d8656f5492<redacted-secret>449ac8919c61f4c8e
+finish total length 1981523 bytes
+download SUCCESS,  cost: 59 ms
+[32m[Dragonfly][<redacted-secret>m Downloading 'cramjam-2.11.<redacted-secret>-cp31<redacted-secret>-cp31<redacted-secret>-manylinux_2_17_x86_64.manylinux2<redacted-secret>14_x86_64.whl' via P2P network...
+[36m[Dragonfly][<redacted-secret>m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/db/7e/4f6ca98a4b474348e965a529b359184785d1119ab7c4c9ec128<redacted-secret>b8bea5<redacted-secret>a/cramjam-2.11.<redacted-secret>-cp31<redacted-secret>-cp31<redacted-secret>-manylinux_2_17_x86_64.manylinux2<redacted-secret>14_x86_64.whl -o /tmp/cramjam-2.11.<redacted-secret>-cp31<redacted-secret>-cp31<redacted-secret>-manylinux_2_17_x86_64.manylinux2<redacted-secret>14_x86_64.whl --callsystem pypi --notbs
+[32m[Dragonfly][<redacted-secret>m Successfully downloaded 'cramjam-2.11.<redacted-secret>-cp31<redacted-secret>-cp31<redacted-secret>-manylinux_2_17_x86_64.manylinux2<redacted-secret>14_x86_64.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/db/7e/4f6ca98a4b474348e965a529b359184785d1119ab7c4c9ec128<redacted-secret>b8bea5<redacted-secret>a/cramjam-2.11.<redacted-secret>-cp31<redacted-secret>-cp31<redacted-secret>-manylinux_2_17_x86_64.manylinux2<redacted-secret>14_x86_64.whl
+     - 2.<redacted-secret> MB 819.6 MB/s <redacted-secret>:<redacted-secret><redacted-secret>:<redacted-secret><redacted-secret>
+Collecting fsspec<2<redacted-secret>26,>=2<redacted-secret>23 (from pypaimon_ali==1.5.dev<redacted-secret>)
+--2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:11--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/51/c7/b64cae5dba3a1b138d7123ec36bb5ccd39d39939f184544<redacted-secret>7e5468f4763f/fsspec-2<redacted-secret>25.12.<redacted-secret>-py3-none-any.whl
+dfget version: v2.<redacted-secret>.9-ali-rc.8
+current user: root
+output path: /tmp/fsspec-2<redacted-secret>25.12.<redacted-secret>-py3-none-any.whl
+init success and start to download
+taskID: ba8af94a557d47f7bef4461767f2eea3e14cae19be7e31ee35e493<redacted-secret>c21f1f96c
+finish total length 2<redacted-secret>1422 bytes
+download SUCCESS,  cost: 44 ms
+[32m[Dragonfly][<redacted-secret>m Downloading 'fsspec-2<redacted-secret>25.12.<redacted-secret>-py3-none-any.whl' via P2P network...
+[36m[Dragonfly][<redacted-secret>m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/51/c7/b64cae5dba3a1b138d7123ec36bb5ccd39d39939f184544<redacted-secret>7e5468f4763f/fsspec-2<redacted-secret>25.12.<redacted-secret>-py3-none-any.whl -o /tmp/fsspec-2<redacted-secret>25.12.<redacted-secret>-py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][<redacted-secret>m Successfully downloaded 'fsspec-2<redacted-secret>25.12.<redacted-secret>-py3-none-any.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/51/c7/b64cae5dba3a1b138d7123ec36bb5ccd39d39939f184544<redacted-secret>7e5468f4763f/fsspec-2<redacted-secret>25.12.<redacted-secret>-py3-none-any.whl
+     - 2<redacted-secret>1.4 kB 7<redacted-secret>6.1 MB/s <redacted-secret>:<redacted-secret><redacted-secret>:<redacted-secret><redacted-secret>
+Collecting polars<2,>=1 (from pypaimon_ali==1.5.dev<redacted-secret>)
+--2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:12--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/51/6d/3<redacted-secret>14112c7f717d1253223faa13b6db3ac3a64ed<redacted-secret><redacted-secret>ab2a3bc1b942bc9cdd4/polars-1.44.2-py3-none-any.whl
+dfget version: v2.<redacted-secret>.9-ali-rc.8
+current user: root
+output path: /tmp/polars-1.44.2-py3-none-any.whl
+init success and start to download
+taskID: 5<redacted-secret>381df1f5<redacted-secret>ba79ab1dd69d36b2f917<redacted-secret>d9e<redacted-secret>38afbea48c38527b15898182b<redacted-secret>76
+finish total length 865768 bytes
+download SUCCESS,  cost: 3<redacted-secret> ms
+[32m[Dragonfly][<redacted-secret>m Downloading 'polars-1.44.2-py3-none-any.whl' via P2P network...
+[36m[Dragonfly][<redacted-secret>m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/51/6d/3<redacted-secret>14112c7f717d1253223faa13b6db3ac3a64ed<redacted-secret><redacted-secret>ab2a3bc1b942bc9cdd4/polars-1.44.2-py3-none-any.whl -o /tmp/polars-1.44.2-py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][<redacted-secret>m Successfully downloaded 'polars-1.44.2-py3-none-any.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/51/6d/3<redacted-secret>14112c7f717d1253223faa13b6db3ac3a64ed<redacted-secret><redacted-secret>ab2a3bc1b942bc9cdd4/polars-1.44.2-py3-none-any.whl
+     - 865.8 kB 795.4 MB/s <redacted-secret>:<redacted-secret><redacted-secret>:<redacted-secret><redacted-secret>
+Collecting pyarrow<2<redacted-secret>,>=16 (from pypaimon_ali==1.5.dev<redacted-secret>)
+--2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:12--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/ef/c9/68ab123ee1528699c4d5<redacted-secret>55f645ecd1dd68ff93e4699527249d<redacted-secret>2f55afeb/pyarrow-19.<redacted-secret>.1-cp31<redacted-secret>-cp31<redacted-secret>-manylinux_2_28_x86_64.whl
+dfget version: v2.<redacted-secret>.9-ali-rc.8
+current user: root
+output path: /tmp/pyarrow-19.<redacted-secret>.1-cp31<redacted-secret>-cp31<redacted-secret>-manylinux_2_28_x86_64.whl
+init success and start to download
+taskID: c39dbdf8b151b2c33e53d45359b63a6a31<redacted-secret>7<redacted-secret>54f9dcf81a<redacted-secret>63d8431<redacted-secret><redacted-secret>d49b36<redacted-secret>
+finish total length 42<redacted-secret>69<redacted-secret>36 bytes
+download SUCCESS,  cost: 1<redacted-secret>9 ms
+[32m[Dragonfly][<redacted-secret>m Downloading 'pyarrow-19.<redacted-secret>.1-cp31<redacted-secret>-cp31<redacted-secret>-manylinux_2_28_x86_64.whl' via P2P network...
+[36m[Dragonfly][<redacted-secret>m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/ef/c9/68ab123ee1528699c4d5<redacted-secret>55f645ecd1dd68ff93e4699527249d<redacted-secret>2f55afeb/pyarrow-19.<redacted-secret>.1-cp31<redacted-secret>-cp31<redacted-secret>-manylinux_2_28_x86_64.whl -o /tmp/pyarrow-19.<redacted-secret>.1-cp31<redacted-secret>-cp31<redacted-secret>-manylinux_2_28_x86_64.whl --callsystem pypi --notbs
+[32m[Dragonfly][<redacted-secret>m Successfully downloaded 'pyarrow-19.<redacted-secret>.1-cp31<redacted-secret>-cp31<redacted-secret>-manylinux_2_28_x86_64.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/ef/c9/68ab123ee1528699c4d5<redacted-secret>55f645ecd1dd68ff93e4699527249d<redacted-secret>2f55afeb/pyarrow-19.<redacted-secret>.1-cp31<redacted-secret>-cp31<redacted-secret>-manylinux_2_28_x86_64.whl
+     - 42.1 MB 784.4 MB/s <redacted-secret>:<redacted-secret><redacted-secret>:<redacted-secret><redacted-secret>
+Collecting pyroaring>=1.<redacted-secret>.<redacted-secret> (from pypaimon_ali==1.5.dev<redacted-secret>)
+--2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:13--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/87/f<redacted-secret>/82c4335651ae243eed411daa8e5acc1c62179a3e9<redacted-secret>35<redacted-secret>e4785c487e643a7/pyroaring-1.1.<redacted-secret>-cp31<redacted-secret>-cp31<redacted-secret>-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl
+dfget version: v2.<redacted-secret>.9-ali-rc.8
+current user: root
+output path: /tmp/pyroaring-1.1.<redacted-secret>-cp31<redacted-secret>-cp31<redacted-secret>-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl
+init success and start to download
+taskID: c87779947ef8a1657d<redacted-secret>45b7<redacted-secret>8a284c944835c3cd<redacted-secret>88ba<redacted-secret>b7bc966bf1c8a334d2
+finish total length 21716<redacted-secret><redacted-secret> bytes
+download SUCCESS,  cost: 53 ms
+[32m[Dragonfly][<redacted-secret>m Downloading 'pyroaring-1.1.<redacted-secret>-cp31<redacted-secret>-cp31<redacted-secret>-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl' via P2P network...
+[36m[Dragonfly][<redacted-secret>m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/87/f<redacted-secret>/82c4335651ae243eed411daa8e5acc1c62179a3e9<redacted-secret>35<redacted-secret>e4785c487e643a7/pyroaring-1.1.<redacted-secret>-cp31<redacted-secret>-cp31<redacted-secret>-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl -o /tmp/pyroaring-1.1.<redacted-secret>-cp31<redacted-secret>-cp31<redacted-secret>-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl --callsystem pypi --notbs
+[32m[Dragonfly][<redacted-secret>m Successfully downloaded 'pyroaring-1.1.<redacted-secret>-cp31<redacted-secret>-cp31<redacted-secret>-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/87/f<redacted-secret>/82c4335651ae243eed411daa8e5acc1c62179a3e9<redacted-secret>35<redacted-secret>e4785c487e643a7/pyroaring-1.1.<redacted-secret>-cp31<redacted-secret>-cp31<redacted-secret>-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl
+     - 2.2 MB 8<redacted-secret>9.4 MB/s <redacted-secret>:<redacted-secret><redacted-secret>:<redacted-secret><redacted-secret>
+Requirement already satisfied: pandas<3,>=1.5 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from pypaimon_ali==1.5.dev<redacted-secret>) (1.5.3)
+Requirement already satisfied: alibabacloud-tea-util<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.3.13 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3->pypaimon_ali==1.5.dev<redacted-secret>) (<redacted-secret>.3.15)
+Requirement already satisfied: alibabacloud-tea-openapi<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.3.16 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3->pypaimon_ali==1.5.dev<redacted-secret>) (<redacted-secret>.4.6)
+Requirement already satisfied: alibabacloud-openapi-util<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.2.2 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3->pypaimon_ali==1.5.dev<redacted-secret>) (<redacted-secret>.2.4)
+Requirement already satisfied: alibabacloud-endpoint-util<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.<redacted-secret>.4 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3->pypaimon_ali==1.5.dev<redacted-secret>) (<redacted-secret>.<redacted-secret>.4)
+Requirement already satisfied: python-dateutil>=2.8.1 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from pandas<3,>=1.5->pypaimon_ali==1.5.dev<redacted-secret>) (2.9.<redacted-secret>.post<redacted-secret>)
+Requirement already satisfied: pytz>=2<redacted-secret>2<redacted-secret>.1 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from pandas<3,>=1.5->pypaimon_ali==1.5.dev<redacted-secret>) (2<redacted-secret>25.2)
+Requirement already satisfied: numpy>=1.21.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from pandas<3,>=1.5->pypaimon_ali==1.5.dev<redacted-secret>) (1.26.4)
+Collecting polars-runtime-32==1.44.2 (from polars<2,>=1->pypaimon_ali==1.5.dev<redacted-secret>)
+--2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:14--  http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/e9/24/ed9982657c446dd5491b<redacted-secret>8937<redacted-secret>eea19672567357<redacted-secret>cfc61f7225a9fdd7ef<redacted-secret>/polars_runtime_32-1.44.2-cp31<redacted-secret>-abi3-manylinux_2_17_x86_64.manylinux2<redacted-secret>14_x86_64.whl
+dfget version: v2.<redacted-secret>.9-ali-rc.8
+current user: root
+output path: /tmp/polars_runtime_32-1.44.2-cp31<redacted-secret>-abi3-manylinux_2_17_x86_64.manylinux2<redacted-secret>14_x86_64.whl
+init success and start to download
+taskID: 469<redacted-secret>776e125<redacted-secret>215545b34e2a3b67e67a2<redacted-secret>86958c8efe5b282933a4c8a8b25376
+finish total length 49912258 bytes
+download SUCCESS,  cost: 12<redacted-secret> ms
+[32m[Dragonfly][<redacted-secret>m Downloading 'polars_runtime_32-1.44.2-cp31<redacted-secret>-abi3-manylinux_2_17_x86_64.manylinux2<redacted-secret>14_x86_64.whl' via P2P network...
+[36m[Dragonfly][<redacted-secret>m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/e9/24/ed9982657c446dd5491b<redacted-secret>8937<redacted-secret>eea19672567357<redacted-secret>cfc61f7225a9fdd7ef<redacted-secret>/polars_runtime_32-1.44.2-cp31<redacted-secret>-abi3-manylinux_2_17_x86_64.manylinux2<redacted-secret>14_x86_64.whl -o /tmp/polars_runtime_32-1.44.2-cp31<redacted-secret>-abi3-manylinux_2_17_x86_64.manylinux2<redacted-secret>14_x86_64.whl --callsystem pypi --notbs
+[32m[Dragonfly][<redacted-secret>m Successfully downloaded 'polars_runtime_32-1.44.2-cp31<redacted-secret>-abi3-manylinux_2_17_x86_64.manylinux2<redacted-secret>14_x86_64.whl' via P2P
+  Downloading http://yum.tbsite.net/mirrors/ppypi/nebula-ai/packages/e9/24/ed9982657c446dd5491b<redacted-secret>8937<redacted-secret>eea19672567357<redacted-secret>cfc61f7225a9fdd7ef<redacted-secret>/polars_runtime_32-1.44.2-cp31<redacted-secret>-abi3-manylinux_2_17_x86_64.manylinux2<redacted-secret>14_x86_64.whl
+     - 49.9 MB 811.6 MB/s <redacted-secret>:<redacted-secret><redacted-secret>:<redacted-secret><redacted-secret>
+Requirement already satisfied: typing-extensions in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from readerwriterlock<2,>=1->pypaimon_ali==1.5.dev<redacted-secret>) (4.15.<redacted-secret>)
+Requirement already satisfied: cryptography>=3.<redacted-secret>.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from alibabacloud-openapi-util<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.2.2->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3->pypaimon_ali==1.5.dev<redacted-secret>) (46.<redacted-secret>.4)
+Requirement already satisfied: alibabacloud-credentials<2.<redacted-secret>.<redacted-secret>,>=1.<redacted-secret>.2 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from alibabacloud-tea-openapi<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.3.16->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3->pypaimon_ali==1.5.dev<redacted-secret>) (1.<redacted-secret>.12)
+Requirement already satisfied: alibabacloud-gateway-spi<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.<redacted-secret>.2 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from alibabacloud-tea-openapi<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.3.16->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3->pypaimon_ali==1.5.dev<redacted-secret>) (<redacted-secret>.<redacted-secret>.4)
+Requirement already satisfied: darabonba-core<2.<redacted-secret>.<redacted-secret>,>=1.<redacted-secret>.8 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from alibabacloud-tea-openapi<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.3.16->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3->pypaimon_ali==1.5.dev<redacted-secret>) (1.<redacted-secret>.9)
+Requirement already satisfied: alibabacloud-tea>=<redacted-secret>.3.3 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from alibabacloud-tea-util<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.3.13->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3->pypaimon_ali==1.5.dev<redacted-secret>) (<redacted-secret>.4.3)
+Requirement already satisfied: six>=1.5 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from python-dateutil>=2.8.1->pandas<3,>=1.5->pypaimon_ali==1.5.dev<redacted-secret>) (1.14.<redacted-secret>)
+Requirement already satisfied: APScheduler<4.<redacted-secret>.<redacted-secret>,>=3.1<redacted-secret>.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from alibabacloud-credentials<2.<redacted-secret>.<redacted-secret>,>=1.<redacted-secret>.2->alibabacloud-tea-openapi<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.3.16->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3->pypaimon_ali==1.5.dev<redacted-secret>) (3.11.3)
+Requirement already satisfied: aiofiles<25.<redacted-secret>.<redacted-secret>,>=22.1.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from alibabacloud-credentials<2.<redacted-secret>.<redacted-secret>,>=1.<redacted-secret>.2->alibabacloud-tea-openapi<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.3.16->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3->pypaimon_ali==1.5.dev<redacted-secret>) (24.1.<redacted-secret>)
+Requirement already satisfied: alibabacloud-credentials-api<2.<redacted-secret>.<redacted-secret>,>=1.<redacted-secret>.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from alibabacloud-credentials<2.<redacted-secret>.<redacted-secret>,>=1.<redacted-secret>.2->alibabacloud-tea-openapi<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.3.16->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3->pypaimon_ali==1.5.dev<redacted-secret>) (1.<redacted-secret>.1)
+Requirement already satisfied: requests<3.<redacted-secret>.<redacted-secret>,>=2.21.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from alibabacloud-tea>=<redacted-secret>.3.3->alibabacloud-tea-util<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.3.13->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3->pypaimon_ali==1.5.dev<redacted-secret>) (2.22.<redacted-secret>)
+Requirement already satisfied: aiohttp<4.<redacted-secret>.<redacted-secret>,>=3.7.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from alibabacloud-tea>=<redacted-secret>.3.3->alibabacloud-tea-util<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.3.13->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3->pypaimon_ali==1.5.dev<redacted-secret>) (3.13.3)
+Requirement already satisfied: cffi>=2.<redacted-secret>.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from cryptography>=3.<redacted-secret>.<redacted-secret>->alibabacloud-openapi-util<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.2.2->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3->pypaimon_ali==1.5.dev<redacted-secret>) (2.<redacted-secret>.<redacted-secret>)
+Requirement already satisfied: websocket-client<2.<redacted-secret>.<redacted-secret>,>=1.6.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from darabonba-core<2.<redacted-secret>.<redacted-secret>,>=1.<redacted-secret>.8->alibabacloud-tea-openapi<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.3.16->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3->pypaimon_ali==1.5.dev<redacted-secret>) (1.9.2)
+Requirement already satisfied: aiohappyeyeballs>=2.5.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from aiohttp<4.<redacted-secret>.<redacted-secret>,>=3.7.<redacted-secret>->alibabacloud-tea>=<redacted-secret>.3.3->alibabacloud-tea-util<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.3.13->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3->pypaimon_ali==1.5.dev<redacted-secret>) (2.6.1)
+Requirement already satisfied: aiosignal>=1.4.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from aiohttp<4.<redacted-secret>.<redacted-secret>,>=3.7.<redacted-secret>->alibabacloud-tea>=<redacted-secret>.3.3->alibabacloud-tea-util<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.3.13->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3->pypaimon_ali==1.5.dev<redacted-secret>) (1.4.<redacted-secret>)
+Requirement already satisfied: async-timeout<6.<redacted-secret>,>=4.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from aiohttp<4.<redacted-secret>.<redacted-secret>,>=3.7.<redacted-secret>->alibabacloud-tea>=<redacted-secret>.3.3->alibabacloud-tea-util<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.3.13->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3->pypaimon_ali==1.5.dev<redacted-secret>) (5.<redacted-secret>.1)
+Requirement already satisfied: attrs>=17.3.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from aiohttp<4.<redacted-secret>.<redacted-secret>,>=3.7.<redacted-secret>->alibabacloud-tea>=<redacted-secret>.3.3->alibabacloud-tea-util<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.3.13->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3->pypaimon_ali==1.5.dev<redacted-secret>) (25.4.<redacted-secret>)
+Requirement already satisfied: frozenlist>=1.1.1 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from aiohttp<4.<redacted-secret>.<redacted-secret>,>=3.7.<redacted-secret>->alibabacloud-tea>=<redacted-secret>.3.3->alibabacloud-tea-util<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.3.13->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3->pypaimon_ali==1.5.dev<redacted-secret>) (1.8.<redacted-secret>)
+Requirement already satisfied: multidict<7.<redacted-secret>,>=4.5 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from aiohttp<4.<redacted-secret>.<redacted-secret>,>=3.7.<redacted-secret>->alibabacloud-tea>=<redacted-secret>.3.3->alibabacloud-tea-util<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.3.13->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3->pypaimon_ali==1.5.dev<redacted-secret>) (6.7.1)
+Requirement already satisfied: propcache>=<redacted-secret>.2.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from aiohttp<4.<redacted-secret>.<redacted-secret>,>=3.7.<redacted-secret>->alibabacloud-tea>=<redacted-secret>.3.3->alibabacloud-tea-util<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.3.13->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3->pypaimon_ali==1.5.dev<redacted-secret>) (<redacted-secret>.4.1)
+Requirement already satisfied: yarl<2.<redacted-secret>,>=1.17.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from aiohttp<4.<redacted-secret>.<redacted-secret>,>=3.7.<redacted-secret>->alibabacloud-tea>=<redacted-secret>.3.3->alibabacloud-tea-util<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.3.13->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3->pypaimon_ali==1.5.dev<redacted-secret>) (1.22.<redacted-secret>)
+Requirement already satisfied: tzlocal>=3.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from APScheduler<4.<redacted-secret>.<redacted-secret>,>=3.1<redacted-secret>.<redacted-secret>->alibabacloud-credentials<2.<redacted-secret>.<redacted-secret>,>=1.<redacted-secret>.2->alibabacloud-tea-openapi<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.3.16->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3->pypaimon_ali==1.5.dev<redacted-secret>) (5.4.4)
+Requirement already satisfied: pycparser in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from cffi>=2.<redacted-secret>.<redacted-secret>->cryptography>=3.<redacted-secret>.<redacted-secret>->alibabacloud-openapi-util<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.2.2->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3->pypaimon_ali==1.5.dev<redacted-secret>) (3.<redacted-secret>)
+Requirement already satisfied: chardet<3.1.<redacted-secret>,>=3.<redacted-secret>.2 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from requests<3.<redacted-secret>.<redacted-secret>,>=2.21.<redacted-secret>->alibabacloud-tea>=<redacted-secret>.3.3->alibabacloud-tea-util<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.3.13->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3->pypaimon_ali==1.5.dev<redacted-secret>) (3.<redacted-secret>.4)
+Requirement already satisfied: idna<2.9,>=2.5 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from requests<3.<redacted-secret>.<redacted-secret>,>=2.21.<redacted-secret>->alibabacloud-tea>=<redacted-secret>.3.3->alibabacloud-tea-util<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.3.13->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3->pypaimon_ali==1.5.dev<redacted-secret>) (2.8)
+Requirement already satisfied: urllib3!=1.25.<redacted-secret>,!=1.25.1,<1.26,>=1.21.1 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from requests<3.<redacted-secret>.<redacted-secret>,>=2.21.<redacted-secret>->alibabacloud-tea>=<redacted-secret>.3.3->alibabacloud-tea-util<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.3.13->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3->pypaimon_ali==1.5.dev<redacted-secret>) (1.25.11)
+Requirement already satisfied: certifi>=2<redacted-secret>17.4.17 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from requests<3.<redacted-secret>.<redacted-secret>,>=2.21.<redacted-secret>->alibabacloud-tea>=<redacted-secret>.3.3->alibabacloud-tea-util<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.3.13->alibabacloud-metastore2<redacted-secret>25<redacted-secret>6<redacted-secret>9-inner==1.<redacted-secret>.3->pypaimon_ali==1.5.dev<redacted-secret>) (2<redacted-secret>26.1.4)
+Installing collected packages: pyroaring, zstandard, readerwriterlock, pyarrow, polars-runtime-32, packaging, fsspec, fastavro, cramjam, cachetools, polars, pangudfs-client, pypaimon_ali
+  Attempting uninstall: pyarrow
+    Found existing installation: pyarrow 23.<redacted-secret>.<redacted-secret>
+    Uninstalling pyarrow-23.<redacted-secret>.<redacted-secret>:
+      Successfully uninstalled pyarrow-23.<redacted-secret>.<redacted-secret>
+  Attempting uninstall: packaging
+    Found existing installation: packaging 26.<redacted-secret>
+    Uninstalling packaging-26.<redacted-secret>:
+      Successfully uninstalled packaging-26.<redacted-secret>
+  Attempting uninstall: fsspec
+    Found existing installation: fsspec 2<redacted-secret>26.2.<redacted-secret>
+    Uninstalling fsspec-2<redacted-secret>26.2.<redacted-secret>:
+      Successfully uninstalled fsspec-2<redacted-secret>26.2.<redacted-secret>
+  Attempting uninstall: cachetools
+    Found existing installation: cachetools 7.<redacted-secret>.<redacted-secret>
+    Uninstalling cachetools-7.<redacted-secret>.<redacted-secret>:
+      Successfully uninstalled cachetools-7.<redacted-secret>.<redacted-secret>
+  Attempting uninstall: pangudfs-client
+    Found existing installation: pangudfs-client 1.<redacted-secret>.27+lightsdk1.1.28
+    Uninstalling pangudfs-client-1.<redacted-secret>.27+lightsdk1.1.28:
+      Successfully uninstalled pangudfs-client-1.<redacted-secret>.27+lightsdk1.1.28
+Successfully installed cachetools-5.5.2 cramjam-2.11.<redacted-secret> fastavro-1.12.2 fsspec-2<redacted-secret>25.12.<redacted-secret> packaging-25.<redacted-secret> pangudfs-client-1.1.2+lightsdk1.1.52 polars-1.44.2 polars-runtime-32-1.44.2 pyarrow-19.<redacted-secret>.1 pypaimon_ali-1.5.dev<redacted-secret> pyroaring-1.1.<redacted-secret> readerwriterlock-1.<redacted-secret>.9 zstandard-<redacted-secret>.25.<redacted-secret>
+Looking in indexes: http://yum.tbsite.net/pypi/simple/, http://yum.tbsite.net/aliyun-pypi/simple/, http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+[32m[Dragonfly][<redacted-secret>m P2P download plugin enabled (via environment variable)
+[32m[Dragonfly][<redacted-secret>m Minimum file size: <redacted-secret>MB
+Collecting mdl==<redacted-secret>.3.4
+--2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:21--  https://nebula-cv.cn-zhangjiakou.oss.aliyuncs.com/docker_image/mdl_packages/mdl-<redacted-secret>.3.4-py3-none-any.whl
+dfget version: v2.<redacted-secret>.9-ali-rc.8
+current user: root
+output path: /tmp/mdl-<redacted-secret>.3.4-py3-none-any.whl
+init success and start to download
+taskID: e3b8feb42716c7b6b91b34f892e749ea663e5b5ace2caad92c<redacted-secret>95b3<redacted-secret>833443aa
+finish total length 14<redacted-secret><redacted-secret>66 bytes
+download SUCCESS,  cost: 18 ms
+[32m[Dragonfly][<redacted-secret>m Downloading 'mdl-<redacted-secret>.3.4-py3-none-any.whl' via P2P network...
+[36m[Dragonfly][<redacted-secret>m Command: /home/staragent/plugins/dragonfly/dfget -u https://nebula-cv.cn-zhangjiakou.oss.aliyuncs.com/docker_image/mdl_packages/mdl-<redacted-secret>.3.4-py3-none-any.whl -o /tmp/mdl-<redacted-secret>.3.4-py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][<redacted-secret>m Successfully downloaded 'mdl-<redacted-secret>.3.4-py3-none-any.whl' via P2P
+  Downloading https://nebula-cv.cn-zhangjiakou.oss.aliyuncs.com/docker_image/mdl_packages/mdl-<redacted-secret>.3.4-py3-none-any.whl
+     - 14<redacted-secret>.1 kB 7<redacted-secret><redacted-secret>.2 MB/s <redacted-secret>:<redacted-secret><redacted-secret>:<redacted-secret><redacted-secret>
+Installing collected packages: mdl
+  Attempting uninstall: mdl
+    Found existing installation: mdl <redacted-secret>.3.1
+    Uninstalling mdl-<redacted-secret>.3.1:
+      Successfully uninstalled mdl-<redacted-secret>.3.1
+Successfully installed mdl-<redacted-secret>.3.4
+Looking in indexes: http://yum.tbsite.net/pypi/simple/, http://yum.tbsite.net/aliyun-pypi/simple/, http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+[32m[Dragonfly][<redacted-secret>m P2P download plugin enabled (via environment variable)
+[32m[Dragonfly][<redacted-secret>m Minimum file size: <redacted-secret>MB
+Collecting common-io==<redacted-secret>.8.26
+--2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:23--  http://nebula-cv.cn-zhangjiakou.oss.aliyuncs.com/docker_image/common_io/release/common_io-<redacted-secret>.8.26-cp31<redacted-secret>-cp31<redacted-secret>-linux_x86_64.whl
+dfget version: v2.<redacted-secret>.9-ali-rc.8
+current user: root
+output path: /tmp/common_io-<redacted-secret>.8.26-cp31<redacted-secret>-cp31<redacted-secret>-linux_x86_64.whl
+init success and start to download
+taskID: <redacted-secret>6296e7fe946bdc4adb3852a<redacted-secret>fed5e8cc994242cb51981efa8dde179df896<redacted-secret>28
+finish total length 35<redacted-secret>4399 bytes
+download SUCCESS,  cost: 32 ms
+[32m[Dragonfly][<redacted-secret>m Downloading 'common_io-<redacted-secret>.8.26-cp31<redacted-secret>-cp31<redacted-secret>-linux_x86_64.whl' via P2P network...
+[36m[Dragonfly][<redacted-secret>m Command: /home/staragent/plugins/dragonfly/dfget -u http://nebula-cv.cn-zhangjiakou.oss.aliyuncs.com/docker_image/common_io/release/common_io-<redacted-secret>.8.26-cp31<redacted-secret>-cp31<redacted-secret>-linux_x86_64.whl -o /tmp/common_io-<redacted-secret>.8.26-cp31<redacted-secret>-cp31<redacted-secret>-linux_x86_64.whl --callsystem pypi --notbs
+[32m[Dragonfly][<redacted-secret>m Successfully downloaded 'common_io-<redacted-secret>.8.26-cp31<redacted-secret>-cp31<redacted-secret>-linux_x86_64.whl' via P2P
+  Downloading http://nebula-cv.cn-zhangjiakou.oss.aliyuncs.com/docker_image/common_io/release/common_io-<redacted-secret>.8.26-cp31<redacted-secret>-cp31<redacted-secret>-linux_x86_64.whl
+     - 3.5 MB 82<redacted-secret>.2 MB/s <redacted-secret>:<redacted-secret><redacted-secret>:<redacted-secret><redacted-secret>
+Requirement already satisfied: pyodps==<redacted-secret>.12.3 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from common-io==<redacted-secret>.8.26) (<redacted-secret>.12.3)
+Requirement already satisfied: requests>=2.4.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from pyodps==<redacted-secret>.12.3->common-io==<redacted-secret>.8.26) (2.22.<redacted-secret>)
+Requirement already satisfied: pyarrow>=2.<redacted-secret>.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from pyodps==<redacted-secret>.12.3->common-io==<redacted-secret>.8.26) (19.<redacted-secret>.1)
+Requirement already satisfied: chardet<3.1.<redacted-secret>,>=3.<redacted-secret>.2 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from requests>=2.4.<redacted-secret>->pyodps==<redacted-secret>.12.3->common-io==<redacted-secret>.8.26) (3.<redacted-secret>.4)
+Requirement already satisfied: idna<2.9,>=2.5 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from requests>=2.4.<redacted-secret>->pyodps==<redacted-secret>.12.3->common-io==<redacted-secret>.8.26) (2.8)
+Requirement already satisfied: urllib3!=1.25.<redacted-secret>,!=1.25.1,<1.26,>=1.21.1 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from requests>=2.4.<redacted-secret>->pyodps==<redacted-secret>.12.3->common-io==<redacted-secret>.8.26) (1.25.11)
+Requirement already satisfied: certifi>=2<redacted-secret>17.4.17 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from requests>=2.4.<redacted-secret>->pyodps==<redacted-secret>.12.3->common-io==<redacted-secret>.8.26) (2<redacted-secret>26.1.4)
+Installing collected packages: common-io
+  Attempting uninstall: common-io
+    Found existing installation: common_io <redacted-secret>.8.19
+    Uninstalling common_io-<redacted-secret>.8.19:
+      Successfully uninstalled common_io-<redacted-secret>.8.19
+Successfully installed common-io-<redacted-secret>.8.26
+Looking in indexes: http://yum.tbsite.net/pypi/simple/, http://yum.tbsite.net/aliyun-pypi/simple/, http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple/
+[32m[Dragonfly][<redacted-secret>m P2P download plugin enabled (via environment variable)
+[32m[Dragonfly][<redacted-secret>m Minimum file size: <redacted-secret>MB
+Collecting lake-py-lib==<redacted-secret>.1.16
+--2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:38--  http://yum.tbsite.net/aliyun-pypi/packages/lake-py-lib/lake_py_lib-<redacted-secret>.1.16-py3.1<redacted-secret>-none-any.whl
+dfget version: v2.<redacted-secret>.9-ali-rc.8
+current user: root
+output path: /tmp/lake_py_lib-<redacted-secret>.1.16-py3.1<redacted-secret>-none-any.whl
+init success and start to download
+taskID: cd47879ab7f876<redacted-secret>2efc4858773a8c6b4988e24f5d165824c376dd8d5<redacted-secret>b8<redacted-secret>cffb
+finish total length 1<redacted-secret>198<redacted-secret>711 bytes
+download SUCCESS,  cost: 195 ms
+[32m[Dragonfly][<redacted-secret>m Downloading 'lake_py_lib-<redacted-secret>.1.16-py3.1<redacted-secret>-none-any.whl' via P2P network...
+[36m[Dragonfly][<redacted-secret>m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/aliyun-pypi/packages/lake-py-lib/lake_py_lib-<redacted-secret>.1.16-py3.1<redacted-secret>-none-any.whl -o /tmp/lake_py_lib-<redacted-secret>.1.16-py3.1<redacted-secret>-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][<redacted-secret>m Successfully downloaded 'lake_py_lib-<redacted-secret>.1.16-py3.1<redacted-secret>-none-any.whl' via P2P
+  Downloading http://yum.tbsite.net/aliyun-pypi/packages/lake-py-lib/lake_py_lib-<redacted-secret>.1.16-py3.1<redacted-secret>-none-any.whl
+     \ 1<redacted-secret>2.<redacted-secret> MB 792.3 MB/s <redacted-secret>:<redacted-secret><redacted-secret>:<redacted-secret><redacted-secret>
+Requirement already satisfied: redis in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from lake-py-lib==<redacted-secret>.1.16) (7.3.<redacted-secret>)
+Requirement already satisfied: thrift in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from lake-py-lib==<redacted-secret>.1.16) (<redacted-secret>.16.<redacted-secret>)
+Requirement already satisfied: lru-dict in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from lake-py-lib==<redacted-secret>.1.16) (1.4.1)
+Requirement already satisfied: protobuf==3.2<redacted-secret>.3 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from lake-py-lib==<redacted-secret>.1.16) (3.2<redacted-secret>.3)
+Requirement already satisfied: async-timeout>=4.<redacted-secret>.3 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from redis->lake-py-lib==<redacted-secret>.1.16) (5.<redacted-secret>.1)
+Requirement already satisfied: six>=1.7.2 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from thrift->lake-py-lib==<redacted-secret>.1.16) (1.14.<redacted-secret>)
+/opt/conda/envs/python3.1<redacted-secret>.13/bin/python: [/opt/conda/envs/python3.1<redacted-secret>.13/bin/python]
+ai_scheduler_wrapper_ok: [1]
+/opt/conda/envs/python3.1<redacted-secret>.13/bin/python -m ai_scheduler.wrapper --run_mode=dist --task_name=worker --app_id=xdl-6ab8<redacted-secret>f<redacted-secret>1<redacted-secret>b4c --zk_addr=zfs://ad-ea12<redacted-secret>-xdl-common-new.vip.tbsite.net:2187/psplus/xdl-6ab8<redacted-secret>f<redacted-secret>1<redacted-secret>b4c --config=../_nop_user_config.json --task_index=<redacted-secret>
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:44,436] [INFO] [AiScheduler#1] [ai_wrapper.py:59] Start execution
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:44,436] [INFO] [AiScheduler#1] [cluster_util.py:49] zk_address: [ad-ea12<redacted-secret>-xdl-common-new.vip.tbsite.net:2187]
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:44,436] [INFO] [AiScheduler#1] [cluster_util.py:49] zk_address: [ad-ea12<redacted-secret>-xdl-common-new.vip.tbsite.net:2187]
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:44,436] [INFO] [AiScheduler#1] [launcher_factory.py:28] zk_address: [ad-ea12<redacted-secret>-xdl-common-new.vip.tbsite.net:2187]
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:44,436] [INFO] [AiScheduler#1] [launcher_factory.py:29] opt.config: [../_nop_user_config.json]
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:44,436] [INFO] [AiScheduler#1] [launcher_factory.py:3<redacted-secret>] docker_image: [hub.docker.alibaba-inc.com/mdl/mdl<redacted-secret>.6:user_cu128_gcc13_py3.1<redacted-secret>.13_torch28<redacted-secret>_2<redacted-secret>26<redacted-secret>32<redacted-secret>1<redacted-secret>291<redacted-secret>_accelerated]
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:44,437] [INFO] [AiScheduler#1] [launcher_factory.py:48] Launcher: MdlLauncher
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:44,437] [INFO] [AiScheduler#1] [base_launcher.py:96] worker_dir: /checkpoint/binary/train_package
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:44,437] [INFO] [AiScheduler#1] [base_launcher.py:97] self.config_file: ../_nop_user_config.json
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:44,437] [INFO] [AiScheduler#1] [base_launcher.py:1<redacted-secret>1] path: [/checkpoint/binary/train_package/../_nop_user_config.json] exists.
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:44,437] [INFO] [AiScheduler#1] [base_launcher.py:1<redacted-secret>7] final json_conf_file: /checkpoint/binary/train_package/../_nop_user_config.json
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:45,438] [INFO] [AiScheduler#1] [util.py:8<redacted-secret>] /checkpoint/binary/train_package/../_nop_user_config.json
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:45,439] [INFO] [AiScheduler#1] [mdl_launcher.py:9<redacted-secret>] is_xla: False
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:45,439] [INFO] [AiScheduler#1] [mdl_launcher.py:91] is_ppu: False
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:45,439] [INFO] [AiScheduler#1] [mdl_launcher.py:92] is_rocm: False
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:45,656] [INFO] [AiScheduler#1] [cluster_util.py:2<redacted-secret>4] not ipv6 only cluster, nccl search ipv4 gid
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:49,459] [INFO] [AiScheduler#1] [mdl_launcher.py:427] local_rank=<redacted-secret> install install_requirements
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:49,462] [INFO] [AiScheduler#1] [pvc_runner.py:28<redacted-secret>] 包版本管理: 未配置 PACKAGE_VERSION_CONTROL_CONFIG，跳过
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:49,462] [INFO] [AiScheduler#1] [pip_cache_manager.py:133] LegacyPipCacheManager initialized, use_cache=False, task_name=worker, mos_uri=model.nebula_trial._NEBULA_INTERNAL_PIP_CACHE_/version=damo_genomic_gene_a8<redacted-secret><redacted-secret>/ckpt_id=pytorch28<redacted-secret>_96d6633<redacted-secret>18bcb4d289d1d1<redacted-secret>e227867b11b5<redacted-secret>e9f2<redacted-secret>5b4855ae1e5d2<redacted-secret>e7bbe5afa
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:49,462] [INFO] [AiScheduler#1] [pip_cache_manager.py:315] LegacyPipCacheManager: cache_mode=both
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:49,462] [INFO] [AiScheduler#1] [requirements_util.py:217] executing cmd: /opt/conda/envs/python3.1<redacted-secret>.13/bin/pip install --index-url http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple --extra-index-url http://yum.tbsite.net/aliyun-pypi/simple/ --trusted-host yum.tbsite.net -r /checkpoint/binary/train_package/requirements.txt --extra-index-url http://yum.tbsite.net/pypi/simple --user
+Looking in indexes: http://yum.tbsite.net/mirrors/ppypi/nebula-ai/simple, http://yum.tbsite.net/aliyun-pypi/simple/, http://yum.tbsite.net/pypi/simple
+[32m[Dragonfly][<redacted-secret>m P2P download plugin enabled (via environment variable)
+[32m[Dragonfly][<redacted-secret>m Minimum file size: <redacted-secret>MB
+Collecting mcp<2 (from -r /checkpoint/binary/train_package/requirements.txt (line 12))
+--2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:5<redacted-secret>--  http://yum.tbsite.net/pypi/packages/f5/f4/e58bc33317c92a<redacted-secret>2<redacted-secret>3664daaf<redacted-secret><redacted-secret>bf6f41166cc<redacted-secret>149e5d687<redacted-secret>a<redacted-secret>3f7cd<redacted-secret><redacted-secret>4a/mcp-1.3<redacted-secret>.<redacted-secret>-py3-none-any.whl
+dfget version: v2.<redacted-secret>.9-ali-rc.8
+current user: root
+output path: /tmp/mcp-1.3<redacted-secret>.<redacted-secret>-py3-none-any.whl
+init success and start to download
+taskID: f94fa378eb24f7c1<redacted-secret>6f5b3f8e99a56c17cfb<redacted-secret>74a84e1624a654aca17fd285edb
+finish total length 234581 bytes
+download SUCCESS,  cost: 46 ms
+[32m[Dragonfly][<redacted-secret>m Downloading 'mcp-1.3<redacted-secret>.<redacted-secret>-py3-none-any.whl' via P2P network...
+[36m[Dragonfly][<redacted-secret>m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/pypi/packages/f5/f4/e58bc33317c92a<redacted-secret>2<redacted-secret>3664daaf<redacted-secret><redacted-secret>bf6f41166cc<redacted-secret>149e5d687<redacted-secret>a<redacted-secret>3f7cd<redacted-secret><redacted-secret>4a/mcp-1.3<redacted-secret>.<redacted-secret>-py3-none-any.whl -o /tmp/mcp-1.3<redacted-secret>.<redacted-secret>-py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][<redacted-secret>m Successfully downloaded 'mcp-1.3<redacted-secret>.<redacted-secret>-py3-none-any.whl' via P2P
+  Downloading http://yum.tbsite.net/pypi/packages/f5/f4/e58bc33317c92a<redacted-secret>2<redacted-secret>3664daaf<redacted-secret><redacted-secret>bf6f41166cc<redacted-secret>149e5d687<redacted-secret>a<redacted-secret>3f7cd<redacted-secret><redacted-secret>4a/mcp-1.3<redacted-secret>.<redacted-secret>-py3-none-any.whl
+     - 234.6 kB 74<redacted-secret>.6 MB/s <redacted-secret>:<redacted-secret><redacted-secret>:<redacted-secret><redacted-secret>
+Requirement already satisfied: matplotlib in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from -r /checkpoint/binary/train_package/requirements.txt (line 13)) (3.9.2)
+Collecting rdkit (from -r /checkpoint/binary/train_package/requirements.txt (line 21))
+--2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:51--  http://yum.tbsite.net/pypi/packages/36/f2/7d98a3bf817b396d3247765955586a6bb4b6aab83b1483ca26cc81699<redacted-secret>97/rdkit-2<redacted-secret>26.3.6-cp31<redacted-secret>-cp31<redacted-secret>-manylinux_2_28_x86_64.whl
+dfget version: v2.<redacted-secret>.9-ali-rc.8
+current user: root
+output path: /tmp/rdkit-2<redacted-secret>26.3.6-cp31<redacted-secret>-cp31<redacted-secret>-manylinux_2_28_x86_64.whl
+init success and start to download
+taskID: 9ca19217bdaecc4e<redacted-secret>e73<redacted-secret>9268c5817<redacted-secret>a8e2259f51eb78829<redacted-secret>a9766fbcc9<redacted-secret>a9b4
+finish total length 38185<redacted-secret>34 bytes
+download SUCCESS,  cost: 11<redacted-secret> ms
+[32m[Dragonfly][<redacted-secret>m Downloading 'rdkit-2<redacted-secret>26.3.6-cp31<redacted-secret>-cp31<redacted-secret>-manylinux_2_28_x86_64.whl' via P2P network...
+[36m[Dragonfly][<redacted-secret>m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/pypi/packages/36/f2/7d98a3bf817b396d3247765955586a6bb4b6aab83b1483ca26cc81699<redacted-secret>97/rdkit-2<redacted-secret>26.3.6-cp31<redacted-secret>-cp31<redacted-secret>-manylinux_2_28_x86_64.whl -o /tmp/rdkit-2<redacted-secret>26.3.6-cp31<redacted-secret>-cp31<redacted-secret>-manylinux_2_28_x86_64.whl --callsystem pypi --notbs
+[32m[Dragonfly][<redacted-secret>m Successfully downloaded 'rdkit-2<redacted-secret>26.3.6-cp31<redacted-secret>-cp31<redacted-secret>-manylinux_2_28_x86_64.whl' via P2P
+  Downloading http://yum.tbsite.net/pypi/packages/36/f2/7d98a3bf817b396d3247765955586a6bb4b6aab83b1483ca26cc81699<redacted-secret>97/rdkit-2<redacted-secret>26.3.6-cp31<redacted-secret>-cp31<redacted-secret>-manylinux_2_28_x86_64.whl
+     - 38.2 MB 8<redacted-secret>3.4 MB/s <redacted-secret>:<redacted-secret><redacted-secret>:<redacted-secret><redacted-secret>
+Requirement already satisfied: anyio>=4.5 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from mcp<2->-r /checkpoint/binary/train_package/requirements.txt (line 12)) (4.12.1)
+Collecting httpx-sse>=<redacted-secret>.4 (from mcp<2->-r /checkpoint/binary/train_package/requirements.txt (line 12))
+--2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:52--  http://yum.tbsite.net/pypi/packages/d2/fd/6668e5aec43ab844de6fc74927e155a3b37bf4<redacted-secret>d7c379<redacted-secret>e49fc<redacted-secret>4<redacted-secret>6b6578/httpx_sse-<redacted-secret>.4.3-py3-none-any.whl
+dfget version: v2.<redacted-secret>.9-ali-rc.8
+current user: root
+output path: /tmp/httpx_sse-<redacted-secret>.4.3-py3-none-any.whl
+init success and start to download
+taskID: 7cecdcc3e172dc1fc6bad14f9c62fbce21afbcead4b6d4bf5b24f<redacted-secret>36<redacted-secret>14b4e4<redacted-secret>
+finish total length 896<redacted-secret> bytes
+download SUCCESS,  cost: 37 ms
+[32m[Dragonfly][<redacted-secret>m Downloading 'httpx_sse-<redacted-secret>.4.3-py3-none-any.whl' via P2P network...
+[36m[Dragonfly][<redacted-secret>m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/pypi/packages/d2/fd/6668e5aec43ab844de6fc74927e155a3b37bf4<redacted-secret>d7c379<redacted-secret>e49fc<redacted-secret>4<redacted-secret>6b6578/httpx_sse-<redacted-secret>.4.3-py3-none-any.whl -o /tmp/httpx_sse-<redacted-secret>.4.3-py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][<redacted-secret>m Successfully downloaded 'httpx_sse-<redacted-secret>.4.3-py3-none-any.whl' via P2P
+  Downloading http://yum.tbsite.net/pypi/packages/d2/fd/6668e5aec43ab844de6fc74927e155a3b37bf4<redacted-secret>d7c379<redacted-secret>e49fc<redacted-secret>4<redacted-secret>6b6578/httpx_sse-<redacted-secret>.4.3-py3-none-any.whl
+     - 9.<redacted-secret> kB ? <redacted-secret>:<redacted-secret><redacted-secret>:<redacted-secret><redacted-secret>
+Requirement already satisfied: httpx<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.27.1 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from mcp<2->-r /checkpoint/binary/train_package/requirements.txt (line 12)) (<redacted-secret>.28.1)
+Requirement already satisfied: jsonschema>=4.2<redacted-secret>.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from mcp<2->-r /checkpoint/binary/train_package/requirements.txt (line 12)) (4.26.<redacted-secret>)
+Requirement already satisfied: pydantic-settings>=2.5.2 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from mcp<2->-r /checkpoint/binary/train_package/requirements.txt (line 12)) (2.12.<redacted-secret>)
+Requirement already satisfied: pydantic<3.<redacted-secret>.<redacted-secret>,>=2.11.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from mcp<2->-r /checkpoint/binary/train_package/requirements.txt (line 12)) (2.12.5)
+Collecting pyjwt>=2.1<redacted-secret>.1 (from pyjwt[crypto]>=2.1<redacted-secret>.1->mcp<2->-r /checkpoint/binary/train_package/requirements.txt (line 12))
+--2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:52--  http://yum.tbsite.net/pypi/packages/9c/97/672cb32ce<redacted-secret>dfea44b74<redacted-secret>cb7b4f97<redacted-secret>38463b9cf7c<redacted-secret>ead1aacf595572851d6/pyjwt-2.14.<redacted-secret>-py3-none-any.whl
+dfget version: v2.<redacted-secret>.9-ali-rc.8
+current user: root
+output path: /tmp/pyjwt-2.14.<redacted-secret>-py3-none-any.whl
+init success and start to download
+taskID: f4<redacted-secret>e47e9c71b564cdf<redacted-secret>a9c724<redacted-secret>c51356264646a6ecd8ad9129e8152<redacted-secret>ae9c8283
+finish total length 32896 bytes
+download SUCCESS,  cost: 37 ms
+[32m[Dragonfly][<redacted-secret>m Downloading 'pyjwt-2.14.<redacted-secret>-py3-none-any.whl' via P2P network...
+[36m[Dragonfly][<redacted-secret>m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/pypi/packages/9c/97/672cb32ce<redacted-secret>dfea44b74<redacted-secret>cb7b4f97<redacted-secret>38463b9cf7c<redacted-secret>ead1aacf595572851d6/pyjwt-2.14.<redacted-secret>-py3-none-any.whl -o /tmp/pyjwt-2.14.<redacted-secret>-py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][<redacted-secret>m Successfully downloaded 'pyjwt-2.14.<redacted-secret>-py3-none-any.whl' via P2P
+  Downloading http://yum.tbsite.net/pypi/packages/9c/97/672cb32ce<redacted-secret>dfea44b74<redacted-secret>cb7b4f97<redacted-secret>38463b9cf7c<redacted-secret>ead1aacf595572851d6/pyjwt-2.14.<redacted-secret>-py3-none-any.whl
+     - 32.9 kB 621.1 MB/s <redacted-secret>:<redacted-secret><redacted-secret>:<redacted-secret><redacted-secret>
+Requirement already satisfied: python-multipart>=<redacted-secret>.<redacted-secret>.9 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from mcp<2->-r /checkpoint/binary/train_package/requirements.txt (line 12)) (<redacted-secret>.<redacted-secret>.22)
+Collecting sse-starlette>=1.6.1 (from mcp<2->-r /checkpoint/binary/train_package/requirements.txt (line 12))
+--2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:53--  http://yum.tbsite.net/pypi/packages/98/6a/2ba3ed4a69babf3afdddf7d8314a48d87562c<redacted-secret>a4422<redacted-secret>6bbc2a1b5<redacted-secret>d5efc<redacted-secret>/sse_starlette-3.4.11-py3-none-any.whl
+dfget version: v2.<redacted-secret>.9-ali-rc.8
+current user: root
+output path: /tmp/sse_starlette-3.4.11-py3-none-any.whl
+init success and start to download
+taskID: <redacted-secret>a352fc858e8a7d6cf344a2f3ead4<redacted-secret>d41e3d98cdfb3aa458a6<redacted-secret><redacted-secret>87e7d826919b
+finish total length 17122 bytes
+download SUCCESS,  cost: 57 ms
+[32m[Dragonfly][<redacted-secret>m Downloading 'sse_starlette-3.4.11-py3-none-any.whl' via P2P network...
+[36m[Dragonfly][<redacted-secret>m Command: /home/staragent/plugins/dragonfly/dfget -u http://yum.tbsite.net/pypi/packages/98/6a/2ba3ed4a69babf3afdddf7d8314a48d87562c<redacted-secret>a4422<redacted-secret>6bbc2a1b5<redacted-secret>d5efc<redacted-secret>/sse_starlette-3.4.11-py3-none-any.whl -o /tmp/sse_starlette-3.4.11-py3-none-any.whl --callsystem pypi --notbs
+[32m[Dragonfly][<redacted-secret>m Successfully downloaded 'sse_starlette-3.4.11-py3-none-any.whl' via P2P
+  Downloading http://yum.tbsite.net/pypi/packages/98/6a/2ba3ed4a69babf3afdddf7d8314a48d87562c<redacted-secret>a4422<redacted-secret>6bbc2a1b5<redacted-secret>d5efc<redacted-secret>/sse_starlette-3.4.11-py3-none-any.whl
+     - 17.1 kB 33<redacted-secret>.4 MB/s <redacted-secret>:<redacted-secret><redacted-secret>:<redacted-secret><redacted-secret>
+Requirement already satisfied: starlette>=<redacted-secret>.27 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from mcp<2->-r /checkpoint/binary/train_package/requirements.txt (line 12)) (<redacted-secret>.52.1)
+Requirement already satisfied: typing-extensions>=4.9.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from mcp<2->-r /checkpoint/binary/train_package/requirements.txt (line 12)) (4.15.<redacted-secret>)
+Requirement already satisfied: typing-inspection>=<redacted-secret>.4.1 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from mcp<2->-r /checkpoint/binary/train_package/requirements.txt (line 12)) (<redacted-secret>.4.2)
+Requirement already satisfied: uvicorn>=<redacted-secret>.31.1 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from mcp<2->-r /checkpoint/binary/train_package/requirements.txt (line 12)) (<redacted-secret>.4<redacted-secret>.<redacted-secret>)
+Requirement already satisfied: contourpy>=1.<redacted-secret>.1 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from matplotlib->-r /checkpoint/binary/train_package/requirements.txt (line 13)) (1.3.2)
+Requirement already satisfied: cycler>=<redacted-secret>.1<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from matplotlib->-r /checkpoint/binary/train_package/requirements.txt (line 13)) (<redacted-secret>.12.1)
+Requirement already satisfied: fonttools>=4.22.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from matplotlib->-r /checkpoint/binary/train_package/requirements.txt (line 13)) (4.61.1)
+Requirement already satisfied: kiwisolver>=1.3.1 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from matplotlib->-r /checkpoint/binary/train_package/requirements.txt (line 13)) (1.4.9)
+Requirement already satisfied: numpy>=1.23 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from matplotlib->-r /checkpoint/binary/train_package/requirements.txt (line 13)) (1.26.4)
+Requirement already satisfied: packaging>=2<redacted-secret>.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from matplotlib->-r /checkpoint/binary/train_package/requirements.txt (line 13)) (25.<redacted-secret>)
+Requirement already satisfied: pillow>=8 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from matplotlib->-r /checkpoint/binary/train_package/requirements.txt (line 13)) (1<redacted-secret>.4.<redacted-secret>)
+Requirement already satisfied: pyparsing>=2.3.1 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from matplotlib->-r /checkpoint/binary/train_package/requirements.txt (line 13)) (3.3.2)
+Requirement already satisfied: python-dateutil>=2.7 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from matplotlib->-r /checkpoint/binary/train_package/requirements.txt (line 13)) (2.9.<redacted-secret>.post<redacted-secret>)
+Requirement already satisfied: exceptiongroup>=1.<redacted-secret>.2 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from anyio>=4.5->mcp<2->-r /checkpoint/binary/train_package/requirements.txt (line 12)) (1.3.1)
+Requirement already satisfied: idna>=2.8 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from anyio>=4.5->mcp<2->-r /checkpoint/binary/train_package/requirements.txt (line 12)) (2.8)
+Requirement already satisfied: certifi in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from httpx<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.27.1->mcp<2->-r /checkpoint/binary/train_package/requirements.txt (line 12)) (2<redacted-secret>26.1.4)
+Requirement already satisfied: httpcore==1.* in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from httpx<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.27.1->mcp<2->-r /checkpoint/binary/train_package/requirements.txt (line 12)) (1.<redacted-secret>.9)
+Requirement already satisfied: h11>=<redacted-secret>.16 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from httpcore==1.*->httpx<1.<redacted-secret>.<redacted-secret>,>=<redacted-secret>.27.1->mcp<2->-r /checkpoint/binary/train_package/requirements.txt (line 12)) (<redacted-secret>.16.<redacted-secret>)
+Requirement already satisfied: attrs>=22.2.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from jsonschema>=4.2<redacted-secret>.<redacted-secret>->mcp<2->-r /checkpoint/binary/train_package/requirements.txt (line 12)) (25.4.<redacted-secret>)
+Requirement already satisfied: jsonschema-specifications>=2<redacted-secret>23.<redacted-secret>3.6 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from jsonschema>=4.2<redacted-secret>.<redacted-secret>->mcp<2->-r /checkpoint/binary/train_package/requirements.txt (line 12)) (2<redacted-secret>25.9.1)
+Requirement already satisfied: referencing>=<redacted-secret>.28.4 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from jsonschema>=4.2<redacted-secret>.<redacted-secret>->mcp<2->-r /checkpoint/binary/train_package/requirements.txt (line 12)) (<redacted-secret>.37.<redacted-secret>)
+Requirement already satisfied: rpds-py>=<redacted-secret>.25.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from jsonschema>=4.2<redacted-secret>.<redacted-secret>->mcp<2->-r /checkpoint/binary/train_package/requirements.txt (line 12)) (<redacted-secret>.3<redacted-secret>.<redacted-secret>)
+Requirement already satisfied: annotated-types>=<redacted-secret>.6.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from pydantic<3.<redacted-secret>.<redacted-secret>,>=2.11.<redacted-secret>->mcp<2->-r /checkpoint/binary/train_package/requirements.txt (line 12)) (<redacted-secret>.7.<redacted-secret>)
+Requirement already satisfied: pydantic-core==2.41.5 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from pydantic<3.<redacted-secret>.<redacted-secret>,>=2.11.<redacted-secret>->mcp<2->-r /checkpoint/binary/train_package/requirements.txt (line 12)) (2.41.5)
+Requirement already satisfied: python-dotenv>=<redacted-secret>.21.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from pydantic-settings>=2.5.2->mcp<2->-r /checkpoint/binary/train_package/requirements.txt (line 12)) (1.2.1)
+Requirement already satisfied: cryptography>=3.4.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from pyjwt[crypto]>=2.1<redacted-secret>.1->mcp<2->-r /checkpoint/binary/train_package/requirements.txt (line 12)) (46.<redacted-secret>.4)
+Requirement already satisfied: six>=1.5 in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from python-dateutil>=2.7->matplotlib->-r /checkpoint/binary/train_package/requirements.txt (line 13)) (1.14.<redacted-secret>)
+Requirement already satisfied: click>=7.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from uvicorn>=<redacted-secret>.31.1->mcp<2->-r /checkpoint/binary/train_package/requirements.txt (line 12)) (8.2.1)
+Requirement already satisfied: cffi>=2.<redacted-secret>.<redacted-secret> in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from cryptography>=3.4.<redacted-secret>->pyjwt[crypto]>=2.1<redacted-secret>.1->mcp<2->-r /checkpoint/binary/train_package/requirements.txt (line 12)) (2.<redacted-secret>.<redacted-secret>)
+Requirement already satisfied: pycparser in /opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages (from cffi>=2.<redacted-secret>.<redacted-secret>->cryptography>=3.4.<redacted-secret>->pyjwt[crypto]>=2.1<redacted-secret>.1->mcp<2->-r /checkpoint/binary/train_package/requirements.txt (line 12)) (3.<redacted-secret>)
+Installing collected packages: rdkit, pyjwt, httpx-sse, sse-starlette, mcp
+Successfully installed httpx-sse-<redacted-secret>.4.3 mcp-1.3<redacted-secret>.<redacted-secret> pyjwt-2.14.<redacted-secret> rdkit-2<redacted-secret>26.3.6 sse-starlette-3.4.11
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:56,61<redacted-secret>] [INFO] [AiScheduler#1] [requirements_util.py:229] install success, used time 7.15153694152832!
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:33:56,611] [INFO] [AiScheduler#1] [requirements_util.py:253] executing cmd: /opt/conda/envs/python3.1<redacted-secret>.13/bin/pip list --format=freeze
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret><redacted-secret>,782] [INFO] [AiScheduler#1] [env_report.py:52] General environment info:
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret><redacted-secret>,782] [INFO] [AiScheduler#1] [env_report.py:54] python version ******************* 3.1<redacted-secret>.13+gc (heads/release/3.1<redacted-secret>.13-inc_gc:866f61ca61, Feb 1<redacted-secret> 2<redacted-secret>26, <redacted-secret>7:37:52) [GCC 13.3.1 2<redacted-secret>24<redacted-secret>611 (Red Hat 13.3.1-2)]
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret><redacted-secret>,782] [INFO] [AiScheduler#1] [env_report.py:54] sys file system encoding ********* utf-8
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret><redacted-secret>,782] [INFO] [AiScheduler#1] [env_report.py:54] nvcc version ********************* 12.8
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret><redacted-secret>,782] [INFO] [AiScheduler#1] [env_report.py:54] torch install path *************** ['/opt/conda/envs/python3.1<redacted-secret>.13/lib/python3.1<redacted-secret>/site-packages/torch']
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret><redacted-secret>,782] [INFO] [AiScheduler#1] [env_report.py:54] torch version ******************** 2.8.<redacted-secret>
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret><redacted-secret>,782] [INFO] [AiScheduler#1] [env_report.py:54] torch cuda version *************** 12.8
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret><redacted-secret>,783] [INFO] [AiScheduler#1] [env_report.py:54] torchvision version ************** <redacted-secret>.23.<redacted-secret>
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret><redacted-secret>,828] [INFO] [AiScheduler#1] [odps_direct.py:39] Copy Python executable done.
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret><redacted-secret>,828] [INFO] [AiScheduler#1] [odps_direct.py:51] Launch nuwa cmd: [python2 /usr/local/nuwa_config_sync/nuwa_config_sync.py                      --mode prod --cluster AY118F --mount_tables_config                      cn-mongolia-in:ODPS,cn-zhangbei-in:ODPS,cn-shanghai-corp:ODPS                      --interval 9<redacted-secret><redacted-secret>]
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret><redacted-secret>,828] [INFO] [AiScheduler#1] [odps_direct.py:61] odps_io_config file path: [/checkpoint/binary/train_package/../odps_io_config]
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret><redacted-secret>,884] [INFO] [AiScheduler#1] [util.py:75] cmd: sudo mount -o size=24<redacted-secret><redacted-secret><redacted-secret><redacted-secret>M -o nr_inodes=1<redacted-secret><redacted-secret><redacted-secret><redacted-secret><redacted-secret><redacted-secret> -o noatime,nodiratime -o remount /dev/shm, ret: [<redacted-secret>]
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret><redacted-secret>,885] [INFO] [AiScheduler#1] [mdl_launcher.py:41<redacted-secret>] MdlLauncher:  cmds: ['./python_bin -u -X faulthandler /checkpoint/binary/train_package/src/probe_headless/nebula_fingerprint_online_diagnostic.py --input task/task49-pharma-benchmark-baseline-freeze/fingerprint_diagnostic_v1/inputs.json --input-sha256 a73f1cfcc<redacted-secret>ccb7f3d6<redacted-secret>7cbcfbd19d2dfacfb8539a775123af414a61c4<redacted-secret>4e3bdf --code-commit e453c<redacted-secret>647f58b533bcd<redacted-secret>75245b7ec1d72192<redacted-secret>f1e']
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret><redacted-secret>,885] [INFO] [AiScheduler#1] [mdl_launcher.py:527] MdlLauncher:  Successfully generated SubprocContainers
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret>1,<redacted-secret>59] [INFO] [AiScheduler#1] [gpu_utils.py:129] NvidiaUtils: pynvml initialized successfully
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret>1,<redacted-secret>59] [INFO] [AiScheduler#1] [executor.py:1<redacted-secret>4] Initializing Executor and redirect print.
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret>1,<redacted-secret>59] [INFO] [AiScheduler#1] [executor.py:1<redacted-secret>5] Executor RunningMode: [CurrentMode.Online] TaskName: [worker] TaskIndex: [<redacted-secret>] PanguCluster: [AY118F]
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret>1,<redacted-secret>59] [INFO] [AiScheduler#1] [executor.py:1<redacted-secret>9] ProcessRestart enabled: [False], max_local_fail_times: [<redacted-secret>], max_local_restart_times: [1<redacted-secret><redacted-secret><redacted-secret>], max_failover_times: [<redacted-secret>]
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret>1,<redacted-secret>59] [INFO] [AiScheduler#1] [executor.py:669] 'scheduler' in XDL_CONFIG['cluster'] and scheduler pod exists, skip background process.
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret>1,<redacted-secret>65] [INFO] [AiScheduler#1] [executor.py:51<redacted-secret>] create HBClient for global_rank: <redacted-secret>
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret>1,<redacted-secret>65] [INFO] [AiScheduler#1] [communication_api.py:189] Scheduler url cache miss, looking up scheduler address via zk (new zk connection).
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret>1,<redacted-secret>65] [INFO] [AiScheduler#1] [heart_beat_client_thread.py:128] HeartbeatClient: Starting...
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret>1,<redacted-secret>66] [INFO] [AiScheduler#1] [cluster_util.py:48] parse opt.zk_addr: ad-ea12<redacted-secret>-xdl-common-new.vip.tbsite.net:2187 got: list index out of range
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret>1,<redacted-secret>66] [INFO] [AiScheduler#1] [worker_heartbeat_manager.py:61] WorkerHeartbeatManager: Starting in per-client mode with 1 clients...
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret>1,<redacted-secret>66] [INFO] [AiScheduler#1] [cluster_util.py:49] zk_address: [ad-ea12<redacted-secret>-xdl-common-new.vip.tbsite.net:2187]
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret>1,<redacted-secret>66] [INFO] [AiScheduler#1] [executor.py:644] HealthChecker enabled (_NEBULA_HEALTH_CHECKER_ENABLED=true), starting...
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret>1,<redacted-secret>66] [INFO] [AiScheduler#1] [executor.py:519] StartHealthCheckerThread begin
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret>1,<redacted-secret>66] [INFO] [AiScheduler#1] [executor.py:52<redacted-secret>] StartHealthCheckerThread, pod_start_time: -1
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret>1,<redacted-secret>69] [INFO] [AiScheduler#1] [gpu_utils.py:129] NvidiaUtils: pynvml initialized successfully
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret>1,<redacted-secret>69] [INFO] [AiScheduler#1] [config.py:2<redacted-secret><redacted-secret>] [HealthChecker] config loaded: check_interval_sec=6<redacted-secret>, checkers={'gpu_checker': {'enabled': True, 'monitors': {'xid_monitor': {'enabled': True, 'interval_sec': 6<redacted-secret>, 'severity': 'WARNING', 'ranks': [], 'params': {'fatal_xid': []}}, 'ecc_monitor': {'enabled': True, 'interval_sec': 6<redacted-secret>, 'severity': 'WARNING', 'ranks': [], 'params': {}}, 'ettr_monitor': {'enabled': True, 'interval_sec': 6<redacted-secret>, 'severity': 'WARNING', 'ranks': [], 'params': {}}, 'temperature_monitor': {'enabled': True, 'interval_sec': 6<redacted-secret>, 'severity': 'WARNING', 'ranks': [], 'params': {'threshold_celsius': 9<redacted-secret>, 'duration_sec': 18<redacted-secret>}}}}, 'process_checker': {'enabled': True, 'monitors': {'log_refresh_monitor': {'enabled': True, 'interval_sec': 6<redacted-secret>, 'severity': 'WARNING', 'ranks': [], 'params': {'snapshot_trigger_secs': 36<redacted-secret><redacted-secret>, 'dump_stack_on_hang': True}}, 'ckpt_interval_monitor': {'enabled': False, 'interval_sec': 72<redacted-secret><redacted-secret>, 'severity': 'WARNING', 'ranks': [], 'params': {'max_interval_sec': 36<redacted-secret><redacted-secret>}}}}, 'pod_checker': {'enabled': True, 'monitors': {'load_average_monitor': {'enabled': True, 'interval_sec': 6<redacted-secret>, 'severity': 'WARNING', 'ranks': [], 'params': {'metric': 'load5', 'threshold': 8<redacted-secret>}}}}}
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret>1,<redacted-secret>71] [INFO] [AiScheduler#1] [connection.py:65<redacted-secret>] Connecting to ad-ea12<redacted-secret>-xdl-common-new.vip.tbsite.net(33.89.1<redacted-secret>8.16):2187, use_ssl: False
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret>1,144] [INFO] [AiScheduler#1] [client.py:532] Zookeeper connection established, state: CONNECTED
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret>1,144] [INFO] [AiScheduler#1] [zk_service.py:79] ✅ Connected to ZK: ad-ea12<redacted-secret>-xdl-common-new.vip.tbsite.net:2187
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret>1,156] [INFO] [AiScheduler#1] [zk_service.py:125] 🛡️ Background ephemeral node keeper started.
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret>1,157] [INFO] [AiScheduler#1] [process.py:4<redacted-secret>] process_checker.log_refresh_monitor config: snapshot_trigger_secs=36<redacted-secret><redacted-secret>, snapshot_ranks=None, snapshot_enable_gpu=True, fusion_mode=False
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret>1,157] [INFO] [AiScheduler#1] [thread.py:17<redacted-secret>] [HealthChecker] built 7 monitors: ['gpu_checker.xid_monitor', 'gpu_checker.ecc_monitor', 'gpu_checker.ettr_monitor', 'gpu_checker.temperature_monitor', 'process_checker.log_refresh_monitor', 'process_checker.ckpt_interval_monitor', 'pod_checker.load_average_monitor']
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret>1,157] [INFO] [AiScheduler#1] [thread.py:314] [HealthChecker] thread start ...
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret>1,157] [INFO] [AiScheduler#1] [thread.py:182] [HealthChecker] HealthChecker started.
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret>1,157] [INFO] [AiScheduler#1] [thread.py:323] [HealthChecker] check interval = 6<redacted-secret>s
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret>1,157] [INFO] [AiScheduler#1] [executor.py:523] StartHealthCheckerThread finish
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret>1,157] [INFO] [AiScheduler#1] [executor.py:531] StartSnapshotThread begin, base_rank=<redacted-secret>
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret>1,158] [INFO] [AiScheduler#1] [snapshot_thread.py:119] SnapshotThread: started, base_rank=<redacted-secret>, role=worker
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret>1,158] [INFO] [AiScheduler#1] [executor.py:539] StartSnapshotThread finish
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret>1,161] [INFO] [AiScheduler#1] [metrics_reporter.py:2<redacted-secret>6] Container assigned gpu type: [nvidia], gpu indx: [<redacted-secret>]
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret>1,26<redacted-secret>] [INFO] [AiScheduler#1] [metrics_reporter.py:94] ContainerMetricsReporter init, interval_seconds: [1<redacted-secret>], tags_dict: {'metric_from': 'xdl_wrapper', 'app_id': 'xdl-6ab8<redacted-secret>f<redacted-secret>1<redacted-secret>b4c', 'job_name': 'jingwu_task49_bt_online_<redacted-secret><redacted-secret>1', 'job_type': 'train', 'task_name': 'worker', 'task_index': <redacted-secret>, 'rank': <redacted-secret>, 'user': 'dengkaiwen.dkw', 'scheduler_queue': 'damo_genomic_gene_a8<redacted-secret><redacted-secret>', 'image_tag': 'user_cu128_gcc13_py3.1<redacted-secret>.13_torch28<redacted-secret>_2<redacted-secret>26<redacted-secret>32<redacted-secret>1<redacted-secret>291<redacted-secret>_accelerated', 'ip_addr': '33.97.226.77', 'gpu_cores_userdef': 1, 'gpu_idx': -1, 'device': 'gpu', 'version': 'mdl', 'hbo_method': <redacted-secret>, 'scheduler_type': 'priority-93<redacted-secret><redacted-secret>', 'calculate_cluster': 'asi_zjk_pai_b', 'signature': 'NO_SIGNATURE', 'is_odl': False, 'graphdef_signature': 'NO_GRAPHDEF_SIGNATURE', 'code_simhash': 'NO_CODE_SIMHASH', 'gpu_cores_assign': 1, 'gpu_name': 'NVIDIA_A8<redacted-secret><redacted-secret>-SXM4-8<redacted-secret>GB'}
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret>1,424] [INFO] [AiScheduler#1] [metrics_reporter.py:434] ContainerMetricsReporter init, metric_names: ['xdl.metrics.available_shm_bytes', 'xdl.metrics.cpu_assign', 'xdl.metrics.cpu_quota', 'xdl.metrics.cpu_usage', 'xdl.metrics.memory_assign', 'xdl.metrics.memory_quota', 'xdl.metrics.memory_usage', 'xdl.metrics.role_counter', 'xdl.metrics.shm_used_ratio', 'xdl.metrics.total_shm_bytes', 'xdl.metrics.used_shm_bytes', 'xdl.metrics.gpu_cores_assign', 'xdl.metrics.gpu_memory_usage', 'xdl.metrics.gpu_usage']
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret>1,424] [INFO] [AiScheduler#1] [executor.py:197] start execute once, fusion mode: False
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret>1,424] [INFO] [AiScheduler#1] [mdl_rendezvous_util.py:55] PytorchEnvs: Acquiring master info for Pytorch DDP...
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret>3,265] [INFO] [AiScheduler#1] [connection.py:617] Closing connection to ad-ea12<redacted-secret>-xdl-common-new.vip.tbsite.net:2187
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret>3,265] [INFO] [AiScheduler#1] [client.py:537] Zookeeper session closed, state: CLOSED
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret>3,266] [INFO] [AiScheduler#1] [zk_service.py:148] CloseOperation: ZkClient stopped.
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret>3,266] [INFO] [AiScheduler#1] [communication_api.py:196] Released NoticeBoard zk connection after scheduler url lookup.
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret>3,266] [INFO] [AiScheduler#1] [communication_api.py:2<redacted-secret>7] scheduler_addr:33.97.226.77, scheduler_port:2<redacted-secret>322, scheduler_prefix:http://33.97.226.77:2<redacted-secret>322/
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret>3,273] [INFO] [AiScheduler#1] [pykmonitor_reporter.py:5<redacted-secret>] ai_scheduler KMonitor initialized
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:<redacted-secret>3,273] [INFO] [AiScheduler#1] [pykmonitor_reporter.py:57] ai_scheduler KMonitor metrics registered successfully
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:11,434] [INFO] [AiScheduler#1] [mdl_rendezvous_util.py:72] set_ddp_master:[{'MASTER_ADDR': '33.97.226.77', 'MASTER_PORT': 51257, 'ALLOCATED_RANK': <redacted-secret>}]
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:11,434] [INFO] [AiScheduler#1] [mdl_rendezvous_util.py:78] PytorchEnvs: Successfully acquired master, master_addr: 33.97.226.77, master_port: 51257, rank: <redacted-secret>, allocated_rank: <redacted-secret>
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:41,471] [INFO] [AiScheduler#1] [subproc_container.py:79] execute command: [['./python_bin -u -X faulthandler /checkpoint/binary/train_package/src/probe_headless/nebula_fingerprint_online_diagnostic.py --input task/task49-pharma-benchmark-baseline-freeze/fingerprint_diagnostic_v1/inputs.json --input-sha256 a73f1cfcc<redacted-secret>ccb7f3d6<redacted-secret>7cbcfbd19d2dfacfb8539a775123af414a61c4<redacted-secret>4e3bdf --code-commit e453c<redacted-secret>647f58b533bcd<redacted-secret>75245b7ec1d72192<redacted-secret>f1e']] worker_dir: [/checkpoint/binary/train_package]  subprocess_env: <redacted environment>
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:41,472] [INFO] [AiScheduler#1] [subproc_container.py:94] subprocess 2675 launched for local rank <redacted-secret>, global rank <redacted-secret>, global index <redacted-secret>
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:41,472] [INFO] [AiScheduler#1] [executor.py:3<redacted-secret>4] subprocess 2675 launched for local rank <redacted-secret>, global rank <redacted-secret>
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:41,472] [INFO] [AiScheduler#1] [thread.py:229] [HealthChecker] register train processes, allocated ranks: [<redacted-secret>]
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:41,472] [INFO] [AiScheduler#1] [thread.py:244] [HealthChecker] pci_to_rank: rank=<redacted-secret>, slot=<redacted-secret>, gpu=<redacted-secret>, pci=<redacted-secret><redacted-secret><redacted-secret><redacted-secret><redacted-secret><redacted-secret><redacted-secret><redacted-secret>:13:<redacted-secret><redacted-secret>.<redacted-secret> -> <redacted-secret><redacted-secret><redacted-secret><redacted-secret>:13:<redacted-secret><redacted-secret>
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:41,472] [INFO] [AiScheduler#1] [thread.py:263] [HealthChecker] pid_to_rank: rank=<redacted-secret>, container_pid=2675
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:51,478] [INFO] [AiScheduler#1] [executor.py:34<redacted-secret>] execute_once Task [<redacted-secret>] done, ret of popen: [1]
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:51,478] [INFO] [AiScheduler#1] [subproc_container.py:162] Process group for rank <redacted-secret> index <redacted-secret> exited gracefully
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:51,482] [INFO] [AiScheduler#1] [executor.py:44<redacted-secret>] waiting for c4d to exit ...
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:53,484] [INFO] [AiScheduler#1] [executor.py:446] clean process for rank <redacted-secret> index <redacted-secret>, result: True)
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:53,489] [INFO] [AiScheduler#1] [executor.py:457] check_gpu_cleanup round 1: True
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:53,549] [INFO] [AiScheduler#1] [thread.py:392] [HealthChecker] task_index=<redacted-secret>, collected <redacted-secret> events from HealthChecker: 
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:53,549] [INFO] [AiScheduler#1] [diagnotor.py:158] 
+****************************************************************************************************
+[Exception] type=ImportError, rank=<redacted-secret>, pid=2675, msg=Traceback (most recent call last):
+  File "/checkpoint/binary/train_package/src/probe_headless/nebula_fingerprint_online_diagnostic.py", line 19, in <module>
+    from .pharma_fingerprint_diagnostic import RewardHead, loss_for, validate_inputs
+ImportError: attempted relative import with no known parent package
+
+****************************************************************************************************
+
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:53,549] [INFO] [AiScheduler#1] [executor.py:236] Reporting round diagnosis: task_index=<redacted-secret>, return_code=1, diag_keys=['Exception']
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:53,549] [INFO] [AiScheduler#1] [heart_beat_client_thread.py:275] HeartbeatClient: Reporting exception to scheduler: task_index=<redacted-secret>, allocated_rank=<redacted-secret>, restart_version=<redacted-secret>, rank=<redacted-secret>, ip=33.97.226.77, diag_keys=['Exception']
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:53,552] [INFO] [AiScheduler#1] [heart_beat_client_thread.py:293] HeartbeatClient: Exception reported successfully: task_index=<redacted-secret>, allocated_rank=<redacted-secret>, restart_version=<redacted-secret>, rank=<redacted-secret>
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:53,554] [INFO] [AiScheduler#1] [heart_beat_client_thread.py:232] HeartbeatClient: stopped.
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:53,554] [INFO] [AiScheduler#1] [worker_heartbeat_manager.py:76] WorkerHeartbeatManager: stopped.
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:53,554] [INFO] [AiScheduler#1] [mdl_launcher.py:545] MdlLauncher:  going to close.
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:56,2<redacted-secret>7] [INFO] [AiScheduler#1] [thread.py:185] [HealthChecker] enter stop
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:56,2<redacted-secret>7] [INFO] [AiScheduler#1] [thread.py:353] [HealthChecker] HealthChecker run loop exited.
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:56,2<redacted-secret>7] [INFO] [AiScheduler#1] [thread.py:195] [HealthChecker] HealthChecker stopped.
+
+zip error: Nothing to do! (try: zip -q -r /checkpoint/binary/train_package/python_bin_log_<redacted-secret>.zip . -i /checkpoint/binary/train_package/python_bin.*)
+
+zip error: Nothing to do! (try: zip -q -r /checkpoint/binary/train_package/lake_log_<redacted-secret>.zip . -i /checkpoint/binary/train_package/lake_pangu_logs/pangu*)
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:56,234] [INFO] [AiScheduler#1] [executor.py:169] Executor going to report_scheduler my exit code: 1
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:56,234] [INFO] [AiScheduler#1] [thread.py:185] [HealthChecker] enter stop
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:34:56,234] [INFO] [AiScheduler#1] [gpu_utils.py:143] NvidiaUtils: pynvml shutdown successfully
+[2<redacted-secret>26-<redacted-secret>9-27 <redacted-secret>2:35:<redacted-secret>2,92<redacted-secret>] [INFO] [AiScheduler#1] [heart_beat_client_thread.py:148] HeartbeatClient: Stopping heartbeat thread
+RedirectLogger initializing task_index: [<redacted-secret>]
+Start execution
+should_run_planner RUN_PLANNER: False
+should_run_planner RUN_PLANNER: False
+[C4D] RANK=<redacted-secret> /usr/bin/c4d -m 33.97.226.77 -l debug -e -f /var/log/c4d_log/c4d_<redacted-secret>.log -t /var/log/c4d_log/

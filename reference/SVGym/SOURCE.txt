@@ -1,0 +1,5 @@
+arXiv:2606.22425
+abs: https://arxiv.org/abs/2606.22425
+pdf: https://arxiv.org/pdf/2606.22425
+topic: 晶体发现Gym环境
+pulled: 2026-08-09 via arxiv MCP (arxiv_get_metadata / arxiv_read_paper)

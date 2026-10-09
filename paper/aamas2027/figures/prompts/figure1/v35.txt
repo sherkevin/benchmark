@@ -1,0 +1,26 @@
+Use case: infographic-diagram
+Asset type: Figure 1 method architecture for a top-conference machine-learning paper.
+
+Input images:
+- Image 1: Figure 1 v24, the edit target. Preserve its clean compact architecture, visual style, labels, colors, and all correct arrows.
+- Image 2: Figure 2 v26, style reference only. Keep the same flat-vector paper texture, card shapes, navy outlines, icon family, typography scale, and restrained palette. Do not copy its timeline layout.
+
+Single semantic correction:
+The small "eligible tools" tray is a candidate menu, not persistent state. Remove the current arrow that appears to connect eligible tools to the released-state register. Move the eligible-tools tray slightly right so it sits directly beneath or beside the blue Selector card, and draw one short solid blue arrow from the tray into Selector. The tray may contain three generic tool icons, but no provider names or letters. The molecule and endpoint remain far-left inputs feeding Features. The only arrow entering the released-state register from outside its own module must remain the solid-blue Update arrow from below.
+
+Keep every other part of Figure 1 v24 unchanged:
+- central hub: Features → Frozen score, released state → residual, plus operator with q=q^0+Δ, score vector, Selector → selected tool;
+- execution branch: Call → Terminal record → Frozen endpoint judge → Chemical feedback, with Runtime ledger as the gray runtime-error dead end;
+- bottom loop: Chemical feedback → selected-only queue → one purple dashed arrow pointing left to Release, then solid-blue Release → Update → released state;
+- three small captions input, relay, execution; no bracket lines or giant headers;
+- no provider names, no A/B/C labels, no repeated outcome cards, no Figure 2 timeline.
+
+Style/medium:
+Flat-vector scientific infographic with top-conference polish. White background, dark navy text, fine navy/gray outlines, compact rounded cards, consistent line icons and arrowheads. Deep blue for method/state, gray for frozen/diagnostic, amber for terminal/chemical feedback, muted purple only for pending/release.
+
+Hard constraints:
+- Keep exactly two equations: q=q^0+Δ and τ_t=t+1+D.
+- Released state is the only persistent state store; residual is a readout.
+- Candidate menu feeds Selector only; it must not feed state, residual, score, or execution directly.
+- All edges are short, direct, attached to node borders, non-crossing, and have one clear direction. No floating arrowheads, bypasses, duplicated arrows, or timeline-only layout.
+- Every label is at most two short lines. No explanatory paragraphs, metrics, extra symbols, arbitrary letters, glossy gradients, 3-D, neon colors, swimlanes, grid backgrounds, crossed-out symbols, or decorative clutter.

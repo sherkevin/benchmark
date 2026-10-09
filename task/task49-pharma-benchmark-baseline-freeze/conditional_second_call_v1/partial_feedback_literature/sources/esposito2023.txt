@@ -1,0 +1,1652 @@
+                Delayed Bandits: When Do Intermediate Observations Help?
+
+
+                    Emmanuel Esposito * 1 2 Saeed Masoudian * 3 Hao Qiu 1 Dirk van der Hoeven 4
+                                     Nicolò Cesa-Bianchi 1 5 Yevgeny Seldin 3
+
+
+                             Abstract                                       and acceptance/rejection decisions for scientific papers are
+      We study a K-armed bandit with delayed feed-                          observed with delay after manuscript submissions. The
+      back and intermediate observations. We consider                       impact of delay on the performance of sequential decision
+      a model where intermediate observations have a                        makers, measured by regret, has been extensively studied
+      form of a finite state, which is observed immedi-                     under full information and bandit feedback, and in stochas-
+      ately after taking an action, whereas the loss is                     tic and adversarial environments. Yet, in many situations
+      observed after an adversarially chosen delay. We                      in real life intermediate observations may be available to
+      show that the regime of the mapping of states to                      the learner. For example, a health check-up might give a
+      losses determines the complexity of the problem,                      preliminary indication on the effect of a treatment, an ad-
+      irrespective of whether the mapping of actions to                     vertisement click might be a precursor for an upcoming
+      states is stochastic or adversarial. If the mapping                   purchase, and preliminary reviews might provide some in-
+      of states to losses                                                   formation regarding an upcoming acceptance or rejection
+                       p is adversarial, then the regret                    decision. In this work we study when, and how, intermedi-
+      rate is of order (K + d)T (within log factors),
+      where T is the time horizon and d is a fixed delay.                   ate observations can be used to reduce the impact of delay
+      This matches the regret rate of a K-armed bandit                      in observing the final outcome of an action in a multi-armed
+      with delayed feedback and without intermediate                        bandit setting.
+      observations, implying that intermediate observa-                     Online learning with delayed feedback and intermediate
+      tions are not helpful. However, if the mapping                        observations was studied by Mann et al. (2019) in a
+      of states to losses is stochastic,
+                                 q       we show that the                   full-information setting, and then by Vernade et al. (2020)
+                                                      
+      regret grows at a rate of     K + min{|S|, d} T                       in a nonstationary stochastic bandit setting. In the paper
+      (within log factors), implying that if the number                     of Vernade et al. (2020), at each time step the learner
+      |S| of states is smaller than the delay, then in-                     chooses an action and immediately observes a signal (also
+      termediate observations help. We also provide                         called state) belonging to a finite set. The actual loss (i.e.,
+      refined high-probability regret upper bounds for                      feedback) incurred by the learner in that time step is only
+      non-uniform delays, together with experimental                        received with delay, which can be fixed or random. More
+      validation of our algorithms.                                         formally, the observed state is drawn from a distribution that
+                                                                            only depends on the chosen action, and the incurred loss is
+                                                                            drawn from a distribution that only depends on the observed
+1. Introduction                                                             state (and not on the chosen action), forming a Markov chain.
+
+Delay is an ubiquitous phenomenon that many sequential de-                    Action no delay           State        delay dt    Loss
+cision makers have to deal with. For example, outcomes of                        At                  St = st (At )               ℓt (St )
+medical treatments are often observed with delay, purchase
+events happen with delay after advertisement impressions,                   The work of Vernade et al. (2020) studies a setting, where
+  *                      1                                                  st are nonstationary and ℓt are i.i.d. stochastic.
+    Equal contribution Università degli Studi di Milano, Milan,
+Italy 2 Istituto Italiano di Tecnologia, Genoa, Italy 3 University of       In this work, we consider two possible regimes for the map-
+Copenhagen, Copenhagen, Denmark 4 Korteweg-de Vries Institute               pings st from actions to states (stochastic and adversarial)
+for Mathematics University of Amsterdam, Amsterdam, Nether-
+lands 5 Politecnico di Milano, Milan, Italy. Correspondence to: Em-         and two possible regimes for the mappings ℓt from states
+manuel Esposito <emmanuel@emmanuelesposito.it>,                             to losses (also stochastic and adversarial). Altogether, we
+Saeed Masoudian <saeed.masoudian@di.ku.dk>.                                 study four different regimes, defined by the combination of
+                                                                            the first and the second mapping type.
+Proceedings of the 40 th International Conference on Machine
+Learning, Honolulu, Hawaii, USA. PMLR 202, 2023. Copyright                  We characterize (within logarithmic factors) the minimax re-
+2023 by the author(s).
+
+                                                                        1
+                                 Delayed Bandits: When Do Intermediate Observations Help?
+
+gret rates for all of them, by giving upper and lower bounds.        tors by using an E XP 3-style algorithm (Auer et al., 2002b),
+Similar to Vernade et al., we assume that the states are ob-         whereas Zimmert & Seldin (2020) have reduced the gap to
+served instantaneously, and we assume that the losses are            the lower bound down to constants by using a Tsallis-INF
+observed with delay d. We show that the minimax regret               approach (Zimmert & Seldin, 2021). Follow up works have
+rate is fully determined by the regime of the states to losses       studied adversarial multi-armed bandits with non-uniform
+mapping, regardless of the regime of the actions to states           delays (Thune et al., 2019; Bistritz et al., 2019; 2022; Gy-
+mapping. The results are informally summarized in the                orgy & Joulani, 2021; Van der Hoeven & Cesa-Bianchi,
+following table, where K denotes the number of actions,              2022) with Zimmert & Seldin (2020) providing a minimax
+S denotes the number of states, and T denotes the time               optimal algorithm and Masoudian et al. (2022) deriving a
+horizon. It is assumed that the losses belong to the [0, 1]          matching lower bound and a best-of-both-worlds extension.
+interval.                                                            Two key techniques for handling non-uniform delays are
+                                                                     skipping, introduced by Thune et al. (2019), and algorithm
+  States to losses mapping     Regret (within log factors)           parametrization by the number of outstanding observations
+                                                                     (an observed quantity at action time), as opposed to the de-
+                                     p
+         Adversarial                    (K + d)T
+                                q                                   lays (an unobserved quantity at action time), introduced by
+          Stochastic                K + min{S, d} T                  Zimmert & Seldin (2020).
+                                                                     Paper structure In Section 2 we provide a formal prob-
+All of our upper bounds hold with high probability (with             lem definition. In Section 3 we introduce two algorithms,
+respect to the learner’s internal randomization) irrespective        MetaBIO and MetaAdaBIO, for the model of bandits
+of the regime of the action to states mapping.                       with intermediate observations. In Section 4 we analyze
+We recall that (within logarithmic factors) the minimax re-          both algorithms and prove high-probability regret bounds for
+gret rate in multi-armed banditspwith delays without interme-        the setting of adversarial action-state mappings and stochas-
+diate observations is of order (K + d)T (Cesa-Bianchi                tic losses. In Section 5 we provide the lower bounds, and
+et al., 2019). Therefore, we conclude that if the mapping            in Section 6 experimental evaluation, concluding with a
+from states to actions is adversarial, then intermediate ob-         discussion in Section 7.
+servations do not help (in the minimax sense), because the
+regret rates are the same irrespective of whether the inter-         2. Problem definition
+mediate observations are used or not, and irrespective of
+whether the mapping from actions to states is stochastic or          We consider an online learning setting with a finite set A =
+adversarial. However, if the mapping from states to losses           [K] of K ≥ 2 actions and a finite set S = [S] of S ≥ 2
+is stochastic, and the number S of states is smaller than            states. In each round t = 1, 2, . . . the learner picks an
+the delay d, then intermediate observations are helpful, and         action At ∈ A and receives a state St = st (At ) ∈ S as
+we provide an algorithm, MetaAdaBIO, √       which is able to       an intermediate observation according to some mapping
+exploit them. Our result improves on the O  e KST regret             st ∈ S A . The learner also incurs a loss ℓt (St ) ∈ [0, 1],
+bound obtained by Vernade et al. (2020) for the case of              which is only observed at the end of round t + dt , where
+stochastic and stationary action to states mapping. Our algo-        the delay dt ≥ 0 is revealed to the learner only when the
+rithm also applies to a more general setting of non-uniform          observation is received.
+delays (dt )t∈[T ] where we achieve a high-probability re-           The difficulty of this learning task depends on three elements
+                      p
+gret bound of order KT + min{ST, DT } (ignoring log-                 all initially unknown to the learner:
+arithmic factors). This improves upon the total delay term
+DT = d1 + · · · + dT similarly to the respective term in the         • the sequence of action-state mappings s1 , . . . , sT ∈ S A ;
+fixed delay setting.                                                 • the sequence of loss vectors ℓ1 , . . . , ℓT ∈ [0, 1]S ;
+Related work Adaptive clinical trials have served an inspi-
+                                                                     • the sequence of delays d1 , . . . , dT ∈ N, where dt ≤ T −t
+ration for the multi-armed bandit model (Thompson, 1933),
+                                                                       for all t ∈ [T ] without loss of generality.
+and, interestingly, they have also pushed the field to study
+the effect of delayed feedback (Simon, 1977; Eick, 1988).            Note that unlike standard bandits, here the losses are func-
+In the bandit setting Joulani et al. (2013) have studied a           tions of the states instead of the actions. However, since ac-
+stochastic setting with random delays, whereas Neu et al.            tions are chosen without a-priori information on the action-
+(2010; 2014) have studied a nonstochastic setting with con-          state mappings, learners have no direct control on the losses
+stant delays.
+         √      Cesa-Bianchi
+                 √            et al. (2019) have shown an            they will incur and, because of the delays, they also have
+Ω(max{ KT , dT ln K}) lower bound for nonstochas-                    no immediate feedback on the loss associated with the ob-
+tic bandits with uniformly delayed feedback, and an upper            served states. Note also that, for all t ≥ 1, the states st (a)
+bound matching the lower bound within logarithmic fac-               for a ̸= At and the losses ℓt (s) for s ̸= St are never re-
+
+                                                                 2
+                                     Delayed Bandits: When Do Intermediate Observations Help?
+
+vealed to the algorithm. For brevity, we refer to this setting         of waiting for the actual loss. They are the steps highlighted
+as (delayed) Bandits with Intermediate Observations (BIO).             in green in Algorithm 1. For all t ∈ [T ] and s ∈ S, we use
+In the setting of stochastic losses, we assume the loss vec-           θet (s) to denote the mean estimate of θ(s) at round t and
+tors ℓt ∈ [0, 1]S are sampled i.i.d. from some fixed but               nt (s) to denote the number of observations for state s that
+unknown distribution Q, and let θ ∈ [0, 1]S be the un-                 we want to observe before using θet (s). We add a subscript
+known vector of expected losses for the states. That is,               t to L(s) in Algorithm 1 to denote the set of observations
+ℓt (s) ∼ Q(· | s) has mean θ(s) for each t ∈ [T ] and s ∈ S.           we have collected at the end of round t. Thus, θet (s) uses
+Note that we allow dependencies between the stochastic                 Nt (s) = |Lt (s)| observations.
+losses of distinct states in the same round, but require losses
+to be independent across rounds. In the setting of stochastic          Algorithm 1: MetaBIO
+action-state mappings, we assume that each observed state              Input: Algorithm B for standard delayed bandits,
+St is independently drawn from a fixed but unknown distri-                     confidence parameter δ ∈ (0, 1)
+bution P (· | At ). If both losses and action-state mappings           Initialize L(s) = ∅ for all s ∈ S
+are stochastic, then ℓt (St ) is independent of At given St .          for t = 1, . . . , T do
+When losses or action-state mappings are adversarial, we                   Get At from B
+always assume oblivious adversaries.                                       Observe St = st (At )
+Our main quantity of interest                                              for j : j + dj = t do
+                              P is the regret measured via the                 Receive (j, ℓj (Sj ))
+learner’s cumulative loss t ℓt (St ), where St = st (At )
+and (At )t≥1 is the sequence of learner’s actions. In case                     Update L(Sj ) = L(Sj ) ∪ {(j, ℓj (Sj ))}
+of stochastic
+    P           losses, we define the learner’s performance                Initialize feedback set M = ∅
+by t θ(St ). In case of stochastic action-state mappings,                  Compute nt (St )
+we average each
+              P instantaneous loss over the random choice                  if |L(St )| ≥ nt (St ) then
+of
+P  the state:     s ℓt (s)P (s | At ) for adversarial losses and                Add t to M
+   s θ(s)P (s | A t ) for stochastic losses. Regret is always              for j : j + dj = t ∧ |L(Sj )| < nj (Sj ) do
+computed according to the best action with respect to appro-                   Add j to M
+priate notion of cumulative loss. In particular, for stochastic
+state-action mappings, the cumulative losses of the best                   for j ∈ M do
+action are                                                                     Compute θet (Sj ) from L(Sj )        // using δ
+                          T X
+                         X                                                     Feed (j, Aj , θet (Sj )) to B
+                   min            ℓt (s)P (s | a)
+                  a∈A
+                        t=1 s∈S
+
+and
+                       T X
+                       X                                               Fixed delay setting. When all rounds have delay d, we
+                 min              θ(s)P (s | a) .                      simply choose nt (s) = d for all s ∈ S, t ∈ [T ]. In other
+                 a∈A
+                        t=1 s∈S                                        words, if we have at least d observations for some state, then
+                                                                       we can compensate for the effect of delays and construct
+3. Algorithm                                                           a well concentrated
+                                                                                      P      mean estimate
+                                                                                                            around the actual mean.
+                                                                       Let θbt (s) = j∈Lt (s) ℓj (s) Nt (s). Then our mean loss
+In this section we introduce MetaBIO (Algorithm 1) that                estimate is a lower confidence bound for θ(s) defined by
+transforms any algorithm B tailored for the delayed setting
+without intermediate observations into an algorithm for our
+                                                                                                                      
+                                                                                                                1
+setting. We then propose MetaAdaBIO, a modification of                              θet (s) = max 0, θbt (s) − εt (s)              (1)
+                                                                                                                2
+MetaBIO that delivers an improved regret bound for our                              q
+setting.                                                               for εt (s) = Nt2(s) ln 4STδ .
+The idea of MetaBIO is to reduce the impact of delays
+                                                                       Arbitrary delay setting. In the arbitrary delay setting,
+using the information we get from intermediate observations.
+                                                                       where we do not have preliminary knowledge of delays, we
+More precisely, if we have enough observations for the
+                                                                       can not use the delays to set nt (s). Instead, at the end of time
+current state St at time t, we immediately feed to B the
+                                                                       t, we have access to the number of outstanding observations
+estimate of the mean loss of this state as if it were the actual
+                                                                       σt = {j ∈ [t] : j + dj > t} , which is different from prior
+loss at time t; otherwise, we wait for dt time steps and refine
+                                                                       works that consider outstanding observation at the beginning
+our estimate using the additional loss observations.
+                                                                       of the round. Then, for any s ∈ S, we may set nt (s) = σt .
+The are two key steps in the design of our algorithm: how              With this choice, incurring zero delay at some round implies
+we construct the mean estimate and when we use it instead              that we received at least half of all the observations we could
+
+                                                                   3
+                                      Delayed Bandits: When Do Intermediate Observations Help?
+
+have received in the no-delay setting (see Appendix B.4). In                Algorithm 2: MetaAdaBIO
+Section 4 we see that this ensures our mean estimate is well                Input: Algorithm B for standard delayed bandits,
+concentrated around its mean.                                                       confidence parameter δ ∈ (0, 1)
+Since Algorithm 1 waits for the actual loss at time t only                  Initialize D0 = 0
+if Nt (St ) < σt , then det = dt 1[Nt (St ) < σt ] is the actual            for t = 1, . . . , T do
+delay incurred by the algorithm, and Lt+det (s) is the set of                   Get At from B
+observations used to compute the estimate of the mean loss                      for j : j + dj = t do
+at time t. Because some observations may arrive at the same                         Receive (j, ℓj (Sj ))
+time, the high-probability analysis of MetaBIO requires                             Feed (j, Aj , ℓj (Sj )) to B
+                                                                                Set σt = j=1 1[j + dj > t]
+                                                                                            Pt−1
+these observations to be ordered. More precisely, we con-
+struct our mean estimate at time t + det for the feedback of                    Update Dt = Dt−1 + σt
+round t using the set                                                           if Dt (3 ln K + ln(6/δ)) > 49ST ln 8ST
+                                                                                                                    δ then
+                                                                                    break
+           n                                                  o
+L′t (s) = (j, ℓj (s)) ∈ Lt+det (s) j + dej = t+ det ⇒ j < t .
+                                                                            if t < T then
+Letting Nt′ (s) = |L′t (s)|, we define the empirical mean                        Run MetaBIO(B, δ/2) for the remaining rounds
+                                 X         ℓj (s)
+                   θbt (s) =                       .             (2)
+                                           Nt′ (s)
+                               j∈L′t (s)
+                           q                                                which considers the realized losses instead of their means.
+Then, we set εt (s) =            2       4ST                                The two quantities are close with high probability: each
+                               Nt′ (s) ln δ
+                                       and define the mean
+                                                                            inequality
+loss estimator similarly to Equation (1).
+                                                                                 p                                p
+The MetaAdaBIO algorithm. As we said already, the goal                          − 2T ln(2K/δ) ≤ RT − RT ≤ 2T ln(2/δ) (3)
+of intermediate observations is to reduce the impact of de-
+lays. However, if the number of states is too large compared                individually holds with probability at least 1 − δ for any
+to the average delay, then the information we get from inter-               given δ ∈ (0, 1) (see Lemma A.1).
+                                                                                           PT
+mediate observations could be misleading. To address this                   Let DT =         t=1 dt be the total delay. We start by
+issue, we introduce MetaAdaBIO (Algorithm 2). Given                         showing an upper bound on the total actual delay D   eT =
+a horizon T ,1 this algorithm runs B (which is tailored for
+                                                                               t=1 dt 1[Nt (St ) < σt ] ≤ DT incurred by MetaBIO.
+                                                                            P  T
+the setting without intermediate observations) until the total              Then, we provide a high-probability regret analysis of both
+incurred delay exceeds ST , and then switches to MetaBIO.                   MetaBIO and MetaAdaBIO.
+We precise that MetaAdaBIO computes Dt as the sum of
+outstanding observation counts up to round t, which is then                 More precisely, we can show that MetaBIO incurs the
+used in the switching condition.                                            delays of no more than min{2Sσmax , T } rounds, where
+                                                                            σmax = maxt∈[T ] σt . In the worst case, these rounds corre-
+                                                                            spond with those from the set
+4. Regret Analysis                                                                          n                                 o
+We analyze MetaBIO and MetaAdaBIO in the setting                               Φ ∈ arg max DJ : |J | = min{2Sσmax , T } . (4)
+                                                                                     J ⊆[T ]
+of adversarial action-state mappings and stochastic losses
+where the regret is defined by
+                                                                                                           P
+                                                                            where we denote DJ =              t∈J dt for any J ⊆ [T ].
+                   T                       T                                Note that the set Φ is fully determined by the delay se-
+                   X                       X
+           RT =           θ(St ) − min            θ(st (a)) .               quence d1 , . . . , dT . Moreover, the total delay incurred by
+                                    a∈A                                     MetaBIO cannot be worse than the sum of delays corre-
+                   t=1                      t=1
+                                                                            sponding to the rounds in Φ, as stated in the lemma below.
+Our analysis guarantees a bound on RT that holds with high
+probability (and not just in expectation). A related notion of
+regret is                                                                   Lemma 4.1 (Total actual delay). If MetaBIO is run with
+                                                                            any algorithm B on delays (dt )t∈[T ] , then D
+                                                                                                                         eT ≤ DΦ .
+                    T
+                    X                        T
+                                             X
+           RT =           ℓt (St ) − min           ℓt (st (a))              Lemma 4.1 (proof in Appendix B.1) implies that, if all
+                                     a∈A
+                    t=1                      t=1                            delays are bounded by dmax , then D   eT ≤ 2Sσmax dmax ,
+   1
+    Note that we may remove the a-priori knowledge of T by                  which does not depend on T . In the fixed-delay setting with
+using a doubling trick at the cost of a polylog factor in the regret.       delay d, for example, we get a total effective delay of at
+See Remark 4.7 for further details.                                         most 2Sd2 , rather than the total delay dT we would incur
+
+                                                                        4
+                                  Delayed Bandits: When Do Intermediate Observations Help?
+
+without access to intermediate observations (when T is large           losses with probability at least 1 − δ satisfies
+enough).                                                                                                   r
+                                                                                       p                              4ST
+We now turn MetaBIO into a concrete algorithm by in-                           RT ≤ 2 2KT CK,3δ + 7 ST ln
+                                                                                                                        δ
+stantiating B. Specifically, we use DAda-Exp3 (Gyorgy &                                  p                 σmax + 2 4
+Joulani, 2021), a variant of Exp3 which does not use inter-                           + 2 DΦ CK,3δ +                  ln .         (6)
+                                                                                                               2          δ
+mediate observations and is robust to delays. DAda-Exp3
+has the following regret bound.                                        We begin the analysis of Theorem 4.3 by decomposing the
+Theorem 4.2 (Gyorgy & Joulani (2021, Corollary 4.2)).                  regret into two parts: (i) the regret RT of DAda-Exp3 with
+For any δ ∈ (0, 1), the regret with respect to realized losses         losses θet (St ), and (ii) the gap RT − RT , corresponding to
+of DAda-Exp3 in the adversarial bandits with arbitrary                 the cumulative error of the estimates fed to DAda-Exp3.
+delays with probability at least 1 − δ satisfies                       For the first part, we follow an approach similar to Gyorgy
+                                                                       & Joulani (2021) and apply Neu (2015, Lemma 1) to ob-
+           p
+     RT ≤ 2 3(2KT + DT ) ln K                                          tain a concentration bound for the loss estimates defined
+            r                                                        using importance weighting along with implicit exploration.
+               2KT + DT     σmax       2                               When using the actual losses, the application of Neu (2015,
+          +               +      + 1 ln .
+                 3 ln K       2        δ                               Lemma 1) is straightforward. However, when the mean loss
+                                                                       estimate θet (St ) is used rather than the actual loss, there is
+While Theorem 4.2 shows a high-probability bound on RT ,               a potential dependency between the chosen action At and
+Equation (3) shows that a high-probability bound for one               θet (St ). In Appendix B.3 we carefully design a filtration to
+notion of regret ensures a high-probability bound for the              show that we may indeed use the high-probability regret
+other. Although the original bound by Gyorgy & Joulani                 bound of DAda-Exp3 in order to upper bound the first part
+(2021) was stated with dmax instead of σmax , we can replace           (regret RT defined in terms of the estimates θet ).
+the former with the latter by observing that, in the analysis of       The second part requires to bound the cumulative error of
+Gyorgy & Joulani (2021, Theorem 4.1), they only use dmax               our estimator in (2) for the observed states {St }t∈[T ] . To
+to upper bound the number of outstanding observations.                 this end, we use the Azuma-Hoeffding inequality to control
+Note that σmax is never larger than dmax , indicating it is                                                                   √
+                                                                       the error of these estimates. Doing so causes a O(  e ST )
+a well-behaved term that is not vulnerable to a few large              term to appear in the regret bound. The detailed proof of
+delays. See Masoudian et al. (2022, Lemma 3) for a refined             this part is in Appendix B.4, together with the proof of
+quantification of the relation between σmax and dmax .                 Theorem 4.3.
+If we consider a fixed confidence level δ ∈ (0, 1), then we                                    √
+                                                                       The presence of the eO( ST ) term in the regret bound im-
+can make the learning rate ηt and the implicit exploration             plies that, when S ≫ max{DT /T, K}, using intermediate
+term γt in DAda-Exp3 depend on the specific value of δ so              feedback leads to no advantage over ignoring it. So we
+as to achieve an improved regret bound (see Appendix B.2).             ideally want to recover the original bound in (5) when this
+This allows us to show that in the BIO setting with adver-             happens. MetaAdaBIO solves this issue and gives the fol-
+sarial action-state mappings and stochastic losses, the regret         lowing regret guarantee. The proof of this result is deferred
+RT of DAda-Exp3 is upper bounded by                                    to Appendix B.5. We remark that, to achieve this bound,
+                                                                       before the eventual switch we use algorithm DAda-Exp3
+    p             p           σmax + 2 2                               with confidence parameter set to δ/3 so as to guarantee
+   2 2KT CK,6δ + 2 DT CK,6δ +         ln                    (5)
+                                 2       δ                             a high-probability bound on Rt∗ with probability at least
+                                                                       1 − δ/2 over the first t∗ rounds that DAda-Exp3 runs by
+with probability at least 1 − δ, where
+                                                                       itself.
+                                         12                            Theorem 4.4. Let δ ∈ (0, 1). If we run MetaAdaBIO
+                  CK,δ = 3 ln K + ln        .                          with DAda-Exp3, then the regret of MetaAdaBIO in the
+                                          δ
+                                                                       BIO setting with adversarial action-state mappings and
+                                                                       stochastic losses with probability at least 1 − δ satisfies
+Next, we state the regret bound for MetaBIO. We remark                               ( r                             )
+that we initialize DAda-Exp3 with confidence parameter                                            8ST p
+δ/2 so as to guarantee the high-probability bound as in (5)             RT ≤ 3 min 7 ST ln            , DT CK,2δ                   (7)
+                                                                                                   δ
+with probability at least 1 − δ/2 as required.
+                                                                               p                 p                               8
+Theorem 4.3. Let δ ∈ (0, 1). If we run MetaBIO using                       + 6 KT CK,2δ + 2 DΦ CK,2δ + (σmax + 2) ln .
+                                                                                                                                 δ
+DAda-Exp3, then the regret of MetaBIO in the BIO set-
+ting with adversarial action-state mappings and stochastic             If we consider any upper bound dmax on the delays
+
+                                                                   5
+                                     Delayed Bandits: When Do Intermediate Observations Help?
+
+(dt )t∈[T ] , we can further observe that the regret RT of           MetaAdaBIO in the BIO setting with adversarial action-
+MetaAdaBIO (with DAda-Exp3) satisfies                                state mappings and stochastic losses satisfies
+          √              n√         √                     o                     √         p
+ RT = O
+      e        KT + min          S
+                                                  p
+                                         T + dmax , dmax T              E[RT ] ≤ 4 2KT + 8DΦ ln K
+                                                                                         n p                 p       o
+                                                                                 + 2 min 6 ST ln(2ST ), 8DT ln K .
+with high probability. This also follows from the fact that,
+as previously mentioned, we can bound the total delay of             Remark 4.7. In MetaBIO, we can replace T by t2 in the
+MetaBIO by DΦ ≤ 2Sd2max .                                            definition of the confidence intervals for (2) and remove
+Given the previous regret bounds, we observe that we may             the need for prior knowledge of the time horizon T . In
+further improve the dependency on the delays by adopting             MetaAdaBIO, we could use a doubling trick to avoid the
+the idea of skipping rounds with large delays when comput-           prior knowledge of T in the switching condition. On the
+ing the learning rates. This “skipping” idea was introduced          other hand, it is not required to know the number of states S
+by Thune et al. (2019) and has been leveraged by Gyorgy &            for expectation bounds on the regret of MetaBIO. However,
+Joulani (2021) to show that DAda-Exp3 can achieve a re-              removing the prior knowledge of S in the high-probability
+fined high-probability regret bound—see Gyorgy & Joulani             regret bounds is challenging. Indeed, to the best of our
+(2021, Theorem 5.1). As a consequence, we can indeed pro-            knowledge, there is no result in BIO that avoids prior knowl-
+vide an improved bound in our setting by following similar           edge on the number of states. Lifting this requirement in
+steps as in the proof of Theorem 4.3. The only main change           the high-probability analysis is thus an interesting question
+is the adoption of the version of DAda-Exp3 that uses the            for future work.
+skipping procedure.
+Corollary 4.5. Let δ ∈ (0, 1). If we run MetaBIO with                5. Lower Bounds
+DAda-Exp3 with skipping (Gyorgy & Joulani, 2021, The-                The lower bounds in this section are for the expected regret
+orem 5.1), then the regret of MetaBIO in the BIO set-                E[RT ]. Since our algorithms provide high-probability guar-
+ting with adversarial action-state mappings and stochastic           antees, the upper bounds also apply to the expected regret.
+losses with probability at least 1 − δ satisfies                     Throughout this section we will make use of constant delay
+                            r                                       √ dt = d for all t ∈ [T ]. We will first prove a general
+                                                                     i.e.
+             p                ST       1                                KT lower bound for all algorithms in BIO, after which
+RT = O           KT CK,δ +       ST ln
+                                  + ln
+                               δ       δ                             we specialize to particular cases.
+                            n     q          o                                                √     
+                                                                     We start by proving a Ω KT lower bound for any algo-
+              p
+             + CK,δ ln K min |R| + DΦ\R ln K    .
+                             R⊆Φ                                     rithm in our setting and for any combination of stochastic
+                                                                     or adversarial action-state mappings and loss vectors. The
+This result could also be extended in a similar way to               construction is a reduction to the standard bandits lower
+MetaAdaBIO, so as to achieve the best result from the                bound construction.
+presence of intermediate feedback.                                   Theorem 5.1. Irrespective to whether the action-state map-
+So far, we have provided some high-probability guaran-               pings and loss vectors are stochastic or adversarial, there
+tees for the regret of both MetaBIO and MetaAdaBIO, by               exists a sequence of losses such that any (possibly√
+                                                                                                                        random-
+                                                                                                                             
+which we can derive some expectation bounds as well (e.g.,           ized) algorithm in BIO suffers regret E[RT ] = Ω KT .
+by setting δ ≈ 1/T ). However, using the empirical mean
+                                                                     Proof. Our construction only uses two states h1 and h2 . The
+estimators θbt as the mean loss estimators at time t and work-
+                                                                     loss vectors, which are deterministic and do not change over
+ing directly with the expected regret allows us to improve
+                                                                     time, are defined as follows: ℓt (h1 ) = 1 and ℓt (h2 ) = 0
+the achievable bound by a polylogarithmic factor. Hence,
+                                                                     for all t ≥ 0. The stochastic action-state mapping, which is
+for the expected regret we use Tsallis-INF (Zimmert
+                                                                     also constant over time, is given by
+& Seldin, 2020), a learning algorithm for the standard de-
+layed bandit problem that uses a hybrid regularizer to deal                              (
+                                                                                           h1 with probability pa
+with delays and gives a minimax-optimal expected regret                         st (a) =
+bound. The proof of this expected regret upper bound is in                                 h2 with probability 1 − pa
+Appendix B.6.
+                                                                     for all a ∈ A and t ≥ 0, where the probabilities pa are to
+Proposition 4.6. If we execute MetaAdaBIO with                       be determined. Thus, the loss of an arm a is ℓt (st (a)) =
+Tsallis-INF (Zimmert
+                   √     & Seldin,
+                                p 2020), and use the                 ℓt (h1 ) = 1 with probability pa and ℓt (st (a)) = ℓt (h2 ) =
+switching condition 8Dt ln K > 6 ST ln(2ST ) at each                 0 with probability 1 − pa . Since the loss is determined
+                            Pt
+round t ∈ [T ], where Dt = j=1 σj , then the regret of               by the state, the learner receives bandit feedback without
+
+                                                                 6
+                                   Delayed Bandits: When Do Intermediate Observations Help?
+
+delay. We can √ then  choose pa for a ∈ A to mimic the                  any (possibly randomized) algorithm suffers regret
+standard Ω KT distribution-free bandit lower bound—                                        n       √ p          o
+e.g., see Slivkins et al. (2019, Chapter 2). By Yao’s minimax                 E[RT ] = Ω min (d + 1) S, (d + 1)T    .
+principle, the same lower bound also applies to the case with
+adversarial action-state mappings. Since the loss vectors are
+deterministic, this covers all possible cases in BIO.                    This term is also present in the dynamic regret bound of
+                                                                         NSD-UCRL2, but it is necessarily incurred from their anal-
+                                                                         ysis even in the stationary case (Vernade et al., 2020, Theo-
+Adversarial action-state mapping          and stochastic losses.         rem 1).
+                                  √
+We first prove a lower bound ST for any number K ≥ 2                     This last lower bound implies that the regret of our algo-
+of actions. However, we do need a minor generalization                   rithm is near-optimal. Since the lower bound of Theorem 5.1
+of our setting to allow correlation between unseen losses.               applies to the case where the action-state mapping is adver-
+Specifically, we allow all pairs of losses ℓj (s), ℓj ′ (s′ ) of         sarial and the losses are stochastic, we find the following
+distinct states s ̸= s′ to be correlated if j > j ′ and j−j ′ ≤ d,       result as a corollary of Theorem 5.1, Theorem 5.2, and
+while we guarantee the i.i.d. nature of losses for any fixed             Theorem 5.3.
+state. Since E[ℓt (St )] = E[θ(St )], this does not affect the
+                                                                         Corollary 5.4. Suppose that the action-state mapping is
+analysis for the upper bound on the regret of our algorithms
+                                                                         adversarial, the losses are stochastic, and that dt = d for
+since E[RT ] ≤ E[RT ] (see Lemma A.3). However, for a
+                                                                         all t ∈ [T ]. If T ≥ 1 + min{S, d}, then there exists a dis-
+high-probability upper bound, we need√to relate RT and
+                                                                         tribution of losses and a sequence of action-state mappings
+RT , which now leads  √ to an additive O( ST ) term rather
+                                            e
+                                                                         such that any (possibly randomized) algorithm suffers regret
+than an additive O( T ) term as in Equation (3).
+                    e
+                         √                                                                   √      p                       √ 
+In the proof of the ST lower bound, we leverage the                       E[RT ] = Ω max        KT , min{S, d}T , (d + 1) S .
+fact that losses are independent only across time steps for
+a fixed state, while they may depend on the losses of the                Stochastic action-state mappings and adversarial losses.
+other states. Note that our lower bound holds even when the              In this case we recover the standard lower bound for adver-
+learner knows the action-state assignments beforehand.                   sarial bandits with bounded delay.
+Theorem 5.2. Suppose that the action-state mapping is                    Theorem 5.5. Suppose that the action-state mapping is
+adversarial and the losses are stochastic and that dt = d                stochastic, the losses are adversarial, and that dt = d
+for all t ∈ [T ]. If T ≥ min{S, d} then there exists a distri-           for all t ∈ [T ]. Then there exists a stochastic action-
+bution of losses and a sequence of action-state mappings                 state mapping and a sequence of losses such that any
+such that anyp (possibly randomized) algorithm suffers regret
+E[RT ] = Ω min{S, d}T .
+                                                                        (possibly√
+                                                                                   randomized)
+                                                                                          √     algorithm suffers regret E[RT ] =
+                                                                         Ω max       KT , dT .
+
+We provide a sketch of the proof of Theorem 5.2 (see Ap-
+pendix C for the full proof). First, suppose that S ≤ 2d.                Proof. Since by Theorem√5.1 we   already know that any
+For the construction of the lower bound we only consider                 algorithm must suffer Ω KT regret, we only need to
+                                                                                   √
+two actions and equally split the states over these two                  show a Ω( dT ) lower bound. We use two states, h1 and h2 .
+actions. Then, we divide the T time steps in blocks of                   Our action-state mapping is deterministic and, for all t ≥ 0,
+length S/2 ≤ d. In each block, each state has the same                   assigns st (a) = h1 to all but one action a⋆ , to which the
+loss. Since the block length is smaller then the delay, we               mapping assigns st (a⋆ ) = h2 . We now have constructed
+have effectively created a two-armed bandit problem with                 a two-armed bandit problem
+                                                                                                √     with delayed feedback and T
+T ′ = T /(S/2) rounds √ and         √ [0,
+                            loss range  S/2], for which                rounds, for which a Ω( dT ) lower bound is known (Cesa-
+we can prove a Ω S T ′ = Ω ST lower bound by                             Bianchi et al., 2019).
+showing an equivalent lower bound for the full information
+setting. If S > 2d, we use√the same  construction with only
+                                
+2d states, and obtain a Ω dT lower bound.                                Adversarial action-state mappings, adversarial losses.
+                                                                         Since we can recover the construction of the lower bound in
+Finally, we can show the following lower bound, whose                    Theorem 5.5, we have the following result.
+proof can be found in Appendix C.
+                                                                         Corollary 5.6. Suppose that the action-state mapping is
+Theorem 5.3. Suppose that the action-state mapping is                    adversarial, the losses are adversarial, and that dt = d for
+adversarial, the losses are stochastic, and that dt = d for              all t ∈ [T ]. Then there exists an action-state mapping and
+all t ∈ [T ]. If T ≥ d + 1 then there exists a distribution of           a sequence of losses such that any (possibly√ randomized)
+                                                                                                                             √      
+losses and a sequence of action-state mappings such that                 algorithm suffers regret E[RT ] = Ω max         KT , dT .
+
+                                                                     7
+                                                         Delayed Bandits: When Do Intermediate Observations Help?
+
+6. Experiments                                                                                       the loss means fixed. We set K = 4, S = 3, and we con-
+                                                                                                     sider multiple instances for the different values of delays
+We empirically compare our algorithm MetaBIO with                                                    as in the previous experiment. The interval between two
+the following baselines: DAda-Exp3 (Gyorgy & Joulani,                                                consecutive changes in the distribution of action-state map-
+2021) for adversarial delayed bandits without intermediate                                           pings grows exponentially. See Table 2 in Appendix D for
+observations (which we used to instantiate the algorithm                                             details. Figure 2 shows that MetaBIO and MetaBIO with
+B), the standard UCB1 algorithm (Auer et al., 2002a) for                                             “skipping” outperform both UCB1 and NSD-UCRL2.
+stochastic bandits without delays and intermediate obser-
+vations, and NSD-UCRL2 (Vernade et al., 2020) for non-
+stationary stochastic action-state mappings and stochastic                                                              (a) d = 50                                   (b) d = 100
+                                                                                                      900                                               900
+losses. We run all experiments with a time horizon of                                                 800
+                                                                                                                DAda-Exp3                               800
+                                                                                                                Meta-BIO
+T = 104 . All our plots show the cumulative regret of                                                 700       Meta-BIO with skipping                  700
+                                                                                                      600       UCB                                     600
+the algorithms considered as a function of time. The per-                                             500
+                                                                                                                NSD-UCRL2                               500
+formance of each algorithm is averaged over 20 indepen-                                               400                                               400
+                                                                                                      300                                               300
+dent runs in every experiment, and the shaded areas con-
+                                                                                                      200                                               200
+sider a range centered around the mean with half-width                                                100                                               100
+corresponding to the empirical standard deviation of these                                             0
+                                                                                                            0    2000     4000    6000   8000   10000
+                                                                                                                                                         0
+                                                                                                                                                              0   2000   4000   6000   8000   10000
+20 repetitions. In the first two experiments, we consider
+                                                                                                                    (c) d = 200                               (d) dt ∼ Laplace(50, 25)
+both fixed delays d ∈ {50, 100, 200} and random delays                                                900                                               900
+                                                                                                      800                                               800
+dt ∼ Laplace(50, 25) sampled i.i.d. from the Laplace dis-                                             700                                               700
+tribution with E[dt ] = 50.                                                                           600                                               600
+                                                                                                      500                                               500
+                                                                                                      400                                               400
+                   (a) d = 50                                   (b) d = 100                           300                                               300
+ 900                                               900
+ 800
+           DAda-Exp3                               800
+                                                                                                      200                                               200
+           Meta-BIO                                                                                   100                                               100
+ 700       Meta-BIO with skipping                  700
+                                                                                                       0                                                 0
+ 600                                               600                                                      0    2000     4000    6000   8000   10000         0   2000   4000   6000   8000   10000
+
+ 500                                               500
+ 400                                               400                                               Figure 2. Cumulative regret over time for the adversarial action-
+ 300                                               300                                               state mapping when delays are fixed or random. All algorithms
+ 200                                               200
+                                                                                                     have small variance except for UCB1 and NSD-UCRL2.
+ 100                                               100
+  0                                                 0
+       0    2000     4000    6000   8000   10000         0   2000   4000   6000   8000   10000
+
+
+               (c) d = 200                               (d) dt ∼ Laplace(50, 25)
+                                                                                                     Experiment 3: utility of intermediate observations. Here
+ 900                                               900                                               we set K = 8, d = 100, and investigate how the perfor-
+ 800                                               800
+ 700                                               700
+                                                                                                     mance of MetaBIO changes when the number S of states
+ 600                                               600                                               varies in {4, 6, 8, 10, 12}. The mean loss is always 0.2 for
+ 500                                               500
+                                                                                                     the optimal state and 1 for the others. The optimal action
+ 400                                               400
+ 300                                               300
+                                                                                                     always maps to the optimal state. The suboptimal actions
+ 200                                               200                                               map to the optimal state with probability 0.6 and map to a
+ 100                                               100
+                                                                                                     random suboptimal state with probability 0.4. This implies
+  0                                                 0
+       0    2000     4000    6000   8000   10000         0   2000   4000   6000   8000   10000
+                                                                                                     that the expected loss of each arm remains constant when
+Figure 1. Cumulative regret over time for the stochastic action-                                     the number of states changes. Figure 3 shows that the regret
+state mapping when delays are fixed or random.                                                       gap between MetaBIO and DAda-Exp3 shrinks as the
+                                                                                                     number of states increases. This observation confirms our
+Experiment 1: stochastic action-state mappings. Here                                                 theoretical findings about the dependency of the regret on
+we use a stationary version of the experiments in (Vernade                                           the number of states, which lead to a larger improvement
+et al., 2020)—see Table 1 in Appendix D for details. We set                                          the fewer they are.
+K = 4 and S = 3, while we repeat this experiment for the
+                                                                                                     Experiment 4: performance of MetaAdaBIO when
+previously mentioned values of delays. Figure 1 shows that,
+                                                                                                     S < d. We use the same setting as in Experiment 1
+across all delay regimes, MetaBIO largely improves on the
+                                                                                                     with delay d = 20.2 Figure 4 shows the performance
+performance of DAda-Exp3 by exploiting intermediate
+                                                                                                     of MetaAdaBIO compared with both DAda-Exp3 and
+observations.
+                                                                                                            2
+Experiment 2: adversarial action-state mappings. In this                                                 Compared to the switching condition used for the analysis of
+                                                                                                     MetaAdaBIO, we replace 49ST ln 8ST      δ
+                                                                                                                                                 with ST . This change
+construction, we simulate the adversarial mapping using a                                            allows the switching condition to be triggered more easily to
+construction adapted from (Zimmert & Seldin, 2021): we                                               provide a better visualization of the behaviour of MetaAdaBIO,
+alternate between two stochastic mappings while keeping                                              while it only introduces a polylog factor in its regret bound.
+
+                                                                                                 8
+                                  Delayed Bandits: When Do Intermediate Observations Help?
+
+                                                                            700       DAda-Exp3
+      800
+                                                                            600       Meta-BIO
+                                                                                      Meta-Ada-BIO
+                                                                            500
+      600
+                                                                            400
+      400                                                                   300
+                                            DAda-Exp3                       200
+      200                                   Meta-BIO(S=4)
+                                            Meta-BIO(S=6)
+                                            Meta-BIO(S=8)                   100
+                                            Meta-BIO(S=10)
+        0                                   Meta-BIO(S=12)                    0
+            0     2000     4000    6000     8000     10000                        0     2000    4000    6000     8000    10000
+
+Figure 3. Cumulative regret over time of both DAda-Exp3 and           Figure 5. Cumulative regret over time of DAda-Exp3, MetaBIO
+MetaBIO with different numbers of states S ∈ {4, 6, 8, 10, 12}.       and MetaAdaBIO when S > d.
+
+
+                                                                      7. Future Work
+MetaBIO. Before the switching point, MetaAdaBIO runs
+DAda-Exp3 (up to independent internal randomization).                 The work of Vernade et al. (2020) also considers a non-
+Afterwards, MetaAdaBIO switches to MetaBIO (which                     stationary action-state mapping and derive regret bounds
+in turn runs DAda-Exp3 as a subroutine) and quickly                   for the switching regret. Preliminary results suggest that,
+aligns with its performance. Note that, at the switching time,        as long as there is an algorithm that can provide bounds on
+MetaAdaBIO uses (via MetaBIO) the same instance of                    the switching regret with delayed feedback, our ideas also
+DAda-Exp3 that was already running, rather than start-                transfer to this setting. Unfortunately, there is currently no
+ing a new instance. It can be shown that our analysis                 algorithm that can provide bounds on the switching regret
+of MetaAdaBIO applies to this variant as well without                 with delayed feedback and we leave this as a promising
+changes in the order of the bound.                                    direction for future work.
+
+                                                                      Acknowledgements
+      400
+                 DAda-Exp3
+                 Meta-BIO                                             EE, NCB, and HQ are partially supported by the MIUR
+                 Meta-Ada-BIO                                         PRIN grant Algorithms, Games, and Digital Markets (AL-
+      300                                                             GADIMAR), by the EU Horizon 2020 ICT-48 research and
+                                                                      innovation action under grant agreement 951847, project
+      200
+                                                                      ELISE (European Learning and Intelligent Systems Excel-
+                                                                      lence), and by the FAIR (Future Artificial Intelligence Re-
+                                                                      search) project, funded by the NextGenerationEU program
+      100
+                                                                      within the PNRR-PE-AI scheme (M4C2, investment 1.3,
+                                                                      line on Artificial Intelligence). SM acknowledges funding
+        0                                                             from the European Union’s Horizon 2020 research and inno-
+            0     2000     4000    6000     8000     10000            vation programme under the Marie Skłodowska-Curie grant
+                                                                      agreement No 801199. YS acknowledges partial support
+Figure 4. Cumulative regret over time of DAda-Exp3, MetaBIO
+                                                                      by the Independent Research Fund Denmark, grant num-
+and MetaAdaBIO. The vertical blue line marks the switching
+                                                                      ber 9040-00361B. This work was mostly done while DvdH
+point of MetaAdaBIO.
+                                                                      was at the University of Milan partially supported by the
+                                                                      MIUR PRIN grant Algorithms, Games, and Digital Markets
+                                                                      (ALGADIMAR) and partially supported by Netherlands
+                                                                      Organization for Scientific Research (NWO), grant number
+Experiment 5: performance of MetaAdaBIO when                          VI.Vidi.192.095.
+S > d. We use a setting that is almost identical to that of
+Experiment 3 (Section 6), except we set d = 4 and S = 14.
+The performance of the three algorithms is shown in Fig-
+                                                                      References
+ure 5. We can observe that MetaAdaBIO does not switch                 Auer, P., Cesa-Bianchi, N., and Fischer, P. Finite-time
+to MetaBIO and its performance is thus the same as that of              analysis of the multiarmed bandit problem. Machine
+DAda-Exp3, whereas MetaBIO incurs a larger regret.                     Learning, 47(2-3), 2002a.
+
+                                                                  9
+                                 Delayed Bandits: When Do Intermediate Observations Help?
+
+Auer, P., Cesa-Bianchi, N., Freund, Y., and Schapire, R. E.           Simon, R. Adaptive treatment assignment methods and
+ The nonstochastic multiarmed bandit problem. SIAM                      clinical trials. Biometrics, 33, 1977.
+ Journal on Computing, 32(1), 2002b.
+                                                                      Slivkins, A. et al. Introduction to multi-armed bandits.
+Bistritz, I., Zhou, Z., Chen, X., Bambos, N., and Blanchet,             Foundations and Trends® in Machine Learning, 12(1-
+  J. H. Online EXP3 learning in adversarial bandits with                 2), 2019.
+  delayed feedback. In Advances in Neural Information
+                                                                      Thompson, W. R. On the likelihood that one unknown
+  Processing Systems, 2019.
+                                                                        probability exceeds another in view of the evidence of
+Bistritz, I., Zhou, Z., Chen, X., Bambos, N., and Blanchet, J.          two samples. Biometrika, 25, 1933.
+  No weighted-regret learning in adversarial bandits with
+                                                                      Thune, T. S., Cesa-Bianchi, N., and Seldin, Y. Nonstochastic
+  delays. Journal of Machine Learning Research, 23, 2022.
+                                                                        multiarmed bandits with unrestricted delays. Advances
+Cesa-Bianchi, N., Gentile, C., and Mansour, Y. Delay and                in Neural Information Processing Systems, 32, 2019.
+  cooperation in nonstochastic bandits. Journal of Machine            Vernade, C., György, A., and Mann, T. A. Non-stationary de-
+  Learning Research, 20, 2019.                                          layed bandits with intermediate observations. In Proceed-
+                                                                        ings of the 37th International Conference on Machine
+Eick, S. G. The two-armed bandit with delayed responses.
+                                                                        Learning, volume 119, 2020.
+  The Annals of Statistics, 1988.
+                                                                      Zimmert, J. and Seldin, Y. An optimal algorithm for ad-
+Gyorgy, A. and Joulani, P. Adapting to delays and data
+                                                                        versarial bandits with arbitrary delays. In Proceedings
+  in adversarial multi-armed bandits. In Proceedings of
+                                                                        on the International Conference on Artificial Intelligence
+  the 38th International Conference on Machine Learning,
+                                                                        and Statistics, 2020.
+ volume 139, 2021.
+                                                                      Zimmert, J. and Seldin, Y. Tsallis-INF: An optimal algo-
+Van der Hoeven, D. and Cesa-Bianchi, N. Nonstochas-                     rithm for stochastic and adversarial bandits. Journal of
+  tic bandits and experts with arm-dependent delays. In                 Machine Learning Research, 22, 2021.
+  International Conference on Artificial Intelligence and
+  Statistics, 2022.
+
+Joulani, P., Gyorgy, A., and Szepesvári, C. Online learning
+  under delayed feedback. In International Conference on
+  Machine Learning, 2013.
+
+Mann, T. A., Gowal, S., György, A., Hu, H., Jiang, R., Lak-
+ shminarayanan, B., and Srinivasan, P. Learning from
+ delayed outcomes via proxies with applications to recom-
+ mender systems. In International Conference on Machine
+ Learning, 2019.
+
+Masoudian, S., Zimmert, J., and Seldin, Y. A best-of-
+ both-worlds algorithm for bandits with delayed feedback.
+ In Advances in Neural Information Processing Systems,
+ 2022.
+
+Neu, G. Explore no more: Improved high-probability regret
+  bounds for non-stochastic bandits. In Advances in Neural
+  Information Processing Systems, 2015.
+
+Neu, G., György, A., Szepesvári, C., and Antos, A. On-
+  line markov decision processes under bandit feedback.
+  In Advances in Neural Information Processing Systems,
+  2010.
+
+Neu, G., György, A., Szepesvári, C., and Antos, A. Online
+  markov decision processes under bandit feedback. IEEE
+ Transactions on Automatic Control, 59, 2014.
+
+                                                                 10
+                                 Delayed Bandits: When Do Intermediate Observations Help?
+
+A. Auxiliary Results
+Lemma A.1. Consider any algorithm that picks actions (At )t∈[T ] in the adversarial delayed bandits problem with
+intermediate feedback with arbitrary action-state mappings (st )t∈[T ] and i.i.d. loss vectors (ℓt )t∈[T ] . Then, for any given
+δ ∈ (0, 1),                           p                                            p
+                         RT − RT ≤ 2T ln(2/δ)           and       RT − RT ≤ 2T ln(2K/δ)
+individually hold with probability at least 1 − δ.
+
+Proof. First, observe that we can relate the two notions of regret as
+                                     T
+                                     X                              T
+                                                                    X                   T
+                                                                                        X
+                                                             
+                       RT = RT +            θ(St ) − ℓt (St ) + min   ℓt (st (a)) − min   θ(st (a)) .
+                                                                       a∈A                            a∈A
+                                      t=1                                     t=1                            t=1
+                                                                       |                        {z                         }
+                                                                                                (△)
+
+By Azuma-Hoeffding inequality, we can show that each side of
+                                s                                        s
+                                               T                              
+                                  T      1      X                         T    1
+                              −      ln ′ ≤          θ(St ) − ℓt (St ) ≤     ln ′                                              (8)
+                                   2     δ      t=1
+                                                                           2    δ
+holds with probability at least 1 − δ ′ . Now, define
+                                            T
+                                            X                                                          T
+                                                                                                       X
+                            a∗ℓ ∈ arg min         ℓt (st (a))         and         a∗θ ∈ arg min              θ(st (a)) .
+                                    a∈A     t=1                                             a∈A        t=1
+
+On the one hand, observe that
+                                                                                            s
+                                            T                        T                               
+                                            X                        X                          T    1
+                                  (△) ≤           ℓt (st (a∗θ )) −         θ(st (a∗θ )) ≤         ln ′ ,
+                                            t=1                      t=1
+                                                                                                2    δ
+where the last inequality holds with probability at least 1 − δ ′ by Azuma-Hoeffding inequality. On the other hand, we can
+show that
+                                             X T                   T
+                                                                   X
+                                      (△) ≥       ℓt (st (a∗ℓ )) −   θ(st (a∗ℓ )) =: (⋄) .
+                                                   t=1                      t=1
+However, in this case a∗ℓ depends on the entire sequence ℓ1 , . . . , ℓT . We thus need to use a union bound in order to show that
+                          s       ! X                                                      s        !
+                                                       T                     T
+                             T     K                 X                      X                    T     K
+            P (⋄) ≤ −          ln ′       ≤       P       ℓt (st (a)) −         θ(st (a)) ≤ −      ln ′       ≤ δ′ ,
+                             2     δ                  t=1                   t=1
+                                                                                                 2      δ
+                                                  a∈A
+
+where the last inequality follows by Azuma-Hoeffding inequality. We conclude the proof by setting δ ′ = δ/2.
+Lemma A.2. The estimates (θbt )Tt=1 defined in Equation (2) are such that |θbt (s) − θ(s)| ≤ 12 εt (s) simultaneously holds for
+all t ∈ [T ] and all s ∈ S with probability at least 1 − δ/2.
+
+Proof. In a similar way as in Vernade et al. (2020), define Xm (s) to be the empirical mean estimate for θ(s) which
+uses the first m ∈ [T ] observed losses corresponding to state s ∈ S. Notice that θbt (s) = XNt′ (s) (s), while we define
+          q
+ε′m (s) = m   2
+                ln( 4ST                     ′
+                     δ ) so that εt (s) = εNt′ (s) (s). We can additionally observe that E[Xm (s)] = θ(s). Then, we can use
+Azuma-Hoeffding inequality to show that
+                                                                                                         
+                     \ \                          1
+                                                                    \    \   
+                                                                                                   1
+                                                                                                          
+                P            |θbt (s) − θ(s)| ≤ εt (s)  ≥ P                  |Xm (s) − θ(s)| ≤ ε′m (s) 
+                                                   2                                               2
+                   s∈S t∈[T ]                                                 s∈S m∈[T ]
+
+                                                                                  X T
+                                                                                   X             1 ′         2
+                                                                     ≥1−2                   e− 2 εm (s) m
+                                                                                  s∈S m=1
+                                                                        δ
+                                                                     =1− ,
+                                                                        2
+
+                                                                       11
+                                     Delayed Bandits: When Do Intermediate Observations Help?
+
+where we also used a union bound in the second inequality.
+
+Lemma A.3. Consider any algorithm that picks actions (At )t∈[T ] in the BIO setting with adversarial action-state mappings
+(st )t∈[T ] and stochastic loss vectors (ℓt )t∈[T ] . Assume that the losses for any fixed state are i.i.d., whereas pairs of losses
+ℓj (s), ℓj ′ (s′ ) of distinct states s ̸= s′ might be correlated when j > j ′ and j − j ′ ≤ dj ′ . Then, it holds that E[RT ] ≤ E[RT ],
+where the expectation is with respect to the stochasticity of the losses and the randomness of the algorithm.
+
+
+Proof. We know that E[ℓt (st (a))] = θ(st (a)) for any fixed a ∈ A and all t ∈ [T ]. We further observe that
+                                                          h                      i
+                                           E[ℓt (St )] = E E[ℓt (st (At )) | At ] = E[θ(St )]
+
+holds for all t ∈ [T ], as At is independent of losses that can be correlated with ℓt . Now, define
+
+                                           T
+                                           X                                             T
+                                                                                         X
+                               ∗                                             ∗
+                              aℓ ∈ arg min   ℓt (st (a))          and       aθ ∈ arg min   θ(st (a))     .
+                                     a∈A t=1                                       a∈A t=1
+
+
+Then, we conclude the proof by showing that
+
+                              T
+                                                   " T               #
+                              X                     X
+                                                                ∗
+                  E[RT ] =          E[ℓt (St )] − E    ℓt (st (aℓ ))
+                              t=1                    t=1
+                              T
+                                                   " T              #  T             T
+                              X                     X                  X             X
+                                                                ∗
+                          ≥         E[ℓt (St )] − E    ℓt (st (aθ )) =   E[θ(St )] −   θ(st (a∗θ )) = E[RT ] .
+                              t=1                    t=1                  t=1            t=1
+
+
+
+
+B. High-Probability Regret Bound
+B.1. Total delay bound
+Lemma 4.1 (Total actual delay). If MetaBIO is run with any algorithm B on delays (dt )t∈[T ] , then D
+                                                                                                    eT ≤ DΦ .
+
+
+Proof of Lemma 4.1. For any s ∈ S, we define Ts = {t ∈ [T ] : St = s} to be the set of all rounds when the state observed
+by the learner corresponds to s. Denote by ts the last time step t ∈ Ts such that Nt (s) < σt and let Cs = {t ∈ Ts : t ≤ ts }
+be those rounds in Ts that come no later than ts . According to the choice of ts , all the rounds in Ts for which learner waits for
+the respective delayed loss, must belong to Cs , while the learner incurs det = 0 delay for rounds t ∈ Ts \ Cs . Now we partition
+Cs into two sets: the observed set Csobs = {t ∈ Cs : t + dt ≤ ts } and the outstanding set Csout = {t ∈ Cs : t + dt > ts }.
+From the choice of ts , we can see that the number of rounds in Csobs is
+
+                                                   |Csobs | ≤ Nts (s) < σts ≤ σmax ,
+
+and the number of rounds in Csout is
+                                                   |Csout | ≤ σts ≤ σmax .
+                                                            S
+Therefore, we have |Cs | ≤ 2σmax . So if we define Call = s∈S Cs , then |Call | ≤ min{2Sσmax , T } = |Φ|. This also implies
+that
+                                                 XT          X         X
+                                                      det ≤       dt ≤    dt
+                                                       t=1       t∈Call         t∈Φ
+
+by definition of Φ.
+
+                                                                    12
+                                   Delayed Bandits: When Do Intermediate Observations Help?
+
+B.2. Improved Regret for DAda-Exp3 for Fixed δ
+We follow the analysis of Theorem 4.1 in Gyorgy & Joulani (2021, Appendix A) and our goal is to use the knowledge of
+δ ∈ (0, 1) to tune the learning rates (ηt )t∈[T ] and the implicit exploration terms (γt )t∈[T ] , accordingly. Let d1 , . . . , dT be
+                                                                        PT
+the sequence of delays perceived by DAda-Exp3, and let DT = t=1 dt be its total delay. Furthermore, let σt be the
+number of outstanding observations of DAda-Exp3 at the beginning of round t ∈ [T ]. Suppose that we take γt = cηt with
+c > 0 for all t ∈ [T ], then following the same analysis as in Gyorgy & Joulani (2021, Appendix A), we end up with the
+following regret bound that holds with probability at least 1 − 2δ ′ for any δ ′ ∈ (0, 1/2):
+                              T
+                    ln(K) X                              ln(K/δ ′ ) σmax + c + 1
+             RT ≤          +     ηt (σt + (c + 1)K) +              +             ln(1/δ ′ )
+                      ηT     t=1
+                                                           2cηT          2c
+                                                  T
+                                  ln(K/δ ′ )                                                      ln(1/δ ′ )
+                                             X
+                     1                                                      σmax + 1
+                  =      ln(K) +              +      ηt (σt−1 + (c + 1)K) +          ln(1/δ ′ ) +            .
+                    ηT                2c         t=1
+                                                                               2c                    2
+
+                               r
+                                   (c+1)Kt+ tj=1 σj
+                                              P
+Therefore, by taking ηt−1 =                 1
+                                   2 ln(K)+ c ln(K/δ ′ )
+                                                         , we get the following bound with probability at least 1 − 2δ ′ :
+
+                    v                    !
+                    u              T
+                                                      ln(K/δ ′ )                           ln(1/δ ′ )
+                                                                 
+                    u             X                                  σmax + 1
+              RT ≤ 2t (c + 1)KT +     σt    2 ln(K) +              +          ln(1/δ ′ ) +            .
+                                  t=1
+                                                         c              2c                    2
+
+               PT
+We know that t=1 σt = DT by definition of σt . Then, we can set c = 1 to obtain that the regret RT (as per the original
+notion of regret used in Gyorgy & Joulani (2021)) is
+                          p                              p                            σmax + 2
+                 RT ≤ 2    2KT (3 ln(K) + ln(1/δ ′ )) + 2 DT (3 ln(K) + ln(1/δ ′ )) +          ln(1/δ ′ )                         (9)
+                                                                                         2
+with probability at least 1 − 2δ ′ .
+From Lemma A.1, we have that                                        p
+                                                    RT ≤ RT +           2T ln(2/δ ′ )                                            (10)
+                                        ′                                                                ′
+holds with probability at least 1 − δ . So, combining Equations (9) and (10), and setting δ = 3δ , we can upper bound our
+notion of regret RT as
+              p                         p              p                         σmax + 2
+        RT ≤ 2 2KT (3 ln(K) + ln(3/δ)) + 2T ln(6/δ) + 2 DT (3 ln(K) + ln(3/δ)) +          ln(3/δ)                                (11)
+                                                                                    2
+with probability at least 1 − δ.
+
+B.3. Reduction to DAda-Exp3 via MetaBIO
+Based on the reduction via MetaBIO, we require that B guarantee a regret bound
+                                                      T
+                                                      X                       T
+                                                                              X
+                                              bB
+                                              R T =         θet (St ) − min         θet (st (a))                                 (12)
+                                                                        a∈A
+                                                      t=1                     t=1
+                                                                                             
+that holds with high probability when the losses experienced by B are of the form θet st (a) . Note that, even though the
+action-state mappings s1 , . . . , sT are unknown to the learner, we can provide those losses as long as B requires bandit
+feedback only. Indeed, we can compute θet (St ) defined in Equations (1) and (2), while we cannot determine st (a) for all
+actions a ∈ A that are not At . As mentioned in Section 4, in this work we consider DAda-Exp3 (Gyorgy & Joulani, 2021)
+as algorithm B used by MetaBIO. In what follows, we refer to this specific choice for the algorithm B.
+The analysis of DAda-Exp3 for the high-probability bound (Theorem 4.2) is such that most steps only require that the loss
+of each action is bounded in [0, 1]. Then, those steps apply for any such sequence of loss vectors. However, the crucial part
+of that analysis that requires attention is the application of Lemma 1 from Neu (2015). We restate it below for reference.
+
+                                                                   13
+                                 Delayed Bandits: When Do Intermediate Observations Help?
+
+Before that, we introduce the notation required for stating the result. We consider a learner choosing actions A1 , . . . , AT
+according to probability distributions p1 , . . . , pT over actions. We denote by Ft−1 the observation history of the learner until
+the beginning of round t. The result uses importance-weighted estimates for the losses ℓ1 , . . . , ℓT with implicit exploration,
+where the implicit exploration parameter is γt ≥ 0 for each time t. These loss estimates are defined as
+                                                 1[At = a]
+                                       ℓet (a) =             ℓt (a)      ∀t ∈ [T ], ∀a ∈ A .                                  (13)
+                                                 pt (a) + γt
+
+Lemma B.1 (Neu (2015, Lemma 1)). Let γt and αt (a) be nonnegative Ft−1 -measurable random variables such that
+αt (a) ≤ 2γt , for all t ∈ [T ] and all a ∈ A. Let ℓet (a) be as in (13). Then,
+                                            T X
+                                            X K
+                                                                             
+                                                      αt (a) ℓet (a) − ℓt (a) ≤ ln(1/δ)
+                                            t=1 a=1
+
+holds with probability at least 1 − δ for any δ ∈ (0, 1).
+
+In our case, we require an analogous result that work when loss vectors correspond with our estimates θe1 , . . . , θeT . However,
+these estimate have a dependency with the past actions chosen by the learner. This requires some nontrivial changes in the
+proof of Neu (2015, Lemma 1).
+Before that, we introduce some crucial definitions for this proof. Let ρ(t) = t + dt be the arrival time for the realized
+loss ℓt (St ) of the state St observed at time t ∈ [T ]. Let ρe(t) = t + det be instead the arrival time perceived by algorithm
+B relative to its choice of At at time t, i.e., when B receives θet (St ). This also means that θet (St ) is only defined at time
+ρe(t) ≤ ρ(t).
+Let π : [T ] → [T ] be the permutation of [T ] that orders rounds according to their value of ρe. In other words, π satisfies the
+following property:
+
+                       π(r) < π(t)      ⇐⇒        ρe(r) < ρe(t) ∨ (e
+                                                                   ρ(r) = ρe(t) ∧ r < t)         ∀r, t ∈ [T ] .               (14)
+
+This permutation allows us to sort rounds according to the order in which MetaBIO feeds B with a respective estimate for
+the mean loss. In particular, the r-th round in this order corresponds with the round tr = π −1 (r), for any r ∈ [T ]. Hence,
+we can equivalently define the round tr as the round such that its estimate θetr (Str ) for the mean loss θ(Str ) is the r-th
+estimate received by B.
+Define
+                                Fr = {(j, Aj , Sj , ℓj (Sj )) | j ∈ [T ], π(j) ≤ r}       ∀r ∈ [T ]                           (15)
+as the information observed by B by the end to the time step when we feed it the estimate relative to round tr . Note that
+this defines a filtration, as Fr−1 ⊆ Fr for all r ∈ [T ], which has some desirable properties thanks to the ordering π we
+consider. In particular, we have that detr , εtr , ptr , Nt′r are Fr−1 -measurable random variables by the way we define them.
+This property is also due to the fact that Ntr and L′tr are determined when conditioning on Fr−1 . Moreover, we are now
+interested in the following importance-weighted loss estimates with implicit exploration:
+                                               1[At = a] e
+                                     ℓet (a) =             θt (st (a))     ∀t ∈ [T ], ∀a ∈ A .                                (16)
+                                               pt (a) + γt
+
+Corollary B.2. Let γtr and αtr (a) be non-negative Fr−1 -measurable random variables such that αtr (a) ≤ 2γtr , for all
+r ∈ [T ] and all a ∈ A. Let ℓet (a) be as in (16). Then,
+                                         T X
+                                         X K
+                                                                                 
+                                                    αt (a) ℓet (a) − θet (st (a)) ≤ ln(1/δ)
+                                          t=1 a=1
+
+holds with probability at least 1 − δ for any δ ∈ (0, 1).
+
+Proof. We follow the proof of Neu (2015, Lemma 1) by considering any realization ℓ1 , . . . , ℓT of the losses. The main
+difference is that, when defining the supermartingale as in the original proof, we need to consider the terms of the sum in the
+
+                                                                 14
+                                 Delayed Bandits: When Do Intermediate Observations Help?
+
+order denoted by π instead of the increasing order of t. For this reason, we rewrite the sum from the statement by following
+the order given by π:
+                                          XT X K
+                                                                                   
+                                                  αtr (a) ℓetr (a) − θetr (str (a)) .
+                                             r=1 a=1
+
+
+At this point, we need prove that E ℓetr (a) Fr−1 ≤ θetr (str (a)), where we recall that tr = π −1 (r). Also recall that εtr ,
+                                                 
+
+ptr and γtr are Fr−1 -measurable. This property allows us to prove the inequality with the conditional expectation of θbt
+instead of the one with the actual optimistic estimates θet , by the definition of the latter. In other words, we now need to
+prove that E ℓbtr (a) Fr−1 ≤ θbtr (str (a)), where ℓbt (a) = p1t[A t =a] b
+                          
+                                                                 (a)+γt θt (st (a)).
+
+We can consider two cases depending on whether detr < dtr is true or not (and, thus, we are in the case detr = dtr ). In the
+first case, note that the realized losses used for computing θbtr (str (a)) correspond to time steps in L′tr (str (a)), for which
+there is a corresponding tuple in Fr−1 . Therefore, we have that θbtr (str (a)) is Fr−1 -measurable, and we can show that
+                                                      1[Atr = a]            1[dtr < dtr ]
+               h                            i                             e
+             E ℓbtr (a)1[detr < dtr ] Fr−1 = E
+                                                                                               X
+                                                                    Fr−1       ′                      ℓj (str (a)) .
+                                                     ptr (a) + γtr           Ntr (str (a))   ′          j∈Ltr (str (a))
+
+In the second case, we have that detr = dtr , which implies that tr ∈ L′tr (str (a)) in the case Atr = a. This means that we
+have a corresponding tuple in Fr−1 only for rounds in L′tr (str (a)) \ {tr }. Nonetheless, this does not pose an issue since we
+have the indicator 1[Atr = a], and thus Str = st (a). Indeed, we have that
+                                                                                                                 
+              h                          i         1 [A    = a]    1 [ d   = d    ]
+            E ℓbtr (a)1[detr = dtr ] Fr−1 = E
+                                                        tr              tr     tr
+                                                                       e               X
+                                                                 ·                             ℓj (str (a)) Fr−1 
+                                                  ptr (a) + γtr Nt′r (str (a))       ′        j∈Ltr (str (a))
+
+                                                   1[Atr = a]                         1[detr = dtr ]
+                                                                                                           X
+                                              =E                           Fr−1                                             ℓj (str (a))
+                                                  ptr (a) + γtr                        Nt′r (str (a))
+                                                                                                        j∈L′tr (str (a))
+                                                                                                             j̸=tr
+
+                                                         1[Atr = a]           1[dtr = dtr ]
+                                                                             e
+                                                 +E                   Fr−1                    ℓt (st (a))
+                                                        ptr (a) + γtr         Nt′r (str (a)) r r
+                                                   1[Atr = a]            1[dtr = dtr ]
+                                                                        e                   X
+                                              =E                   Fr−1    ′                           ℓj (str (a))
+                                                  ptr (a) + γtr          Ntr (str (a))      ′           j∈Ltr (str (a))
+
+and therefore the inequality
+                                              1[Atr = a]
+                           h           i                                      
+                         E ℓtr (a) Fr−1 = E
+                             b                                             Fr−1 θbtr (str (a)) ≤ θbtr (str (a))
+                                             ptr (a) + γtr
+is true because 1[det < dt ] + 1[det = dt ] = 1 for all t ∈ [T ], and by definition of θbt .
+                                                                             
+As already mentioned, this is equivalent to proving that E ℓetr (a) Fr−1 ≤ θetr (str (a)) holds. By using a notation similar
+                                    er = PK αt (a)ℓet (a) and λr = PK αt (a)θet (st (a)), the process (Zr )r∈[T ] with
+to the original proof, if we define λ        a=1    r      r                  a=1    r       r r
+            Pr e
+Zr = exp( j=1 (λj − λj )) is a supermartingale with respect to (Fr )r∈[T ] which has the same properties as in the proof of
+Neu (2015, Lemma 1). This concludes the current proof by following a similar reasoning as in the original one.
+
+Thanks to this result, we can conclude that the adoption of DAda-Exp3 for the reduction via MetaBIO can guarantee a
+high-probability regret bound on R                                                   eT = PT det instead of DT .
+                                  b B as stated in Theorem 4.2, but with total delay D
+                                    T                                                      t=1
+
+
+B.4. Regret of MetaBIO
+By Lemma A.2, we have that
+                                 T
+                                 X                       T
+                                                         X                      T
+                                                                                X                         T
+                                                                                                          X
+                          RT ≤         θet (St ) − min         θet (st (a)) +                    bB +
+                                                                                      εt (St ) = R               εt (St )                  (17)
+                                                                                                  T
+                                                 a∈A
+                                 t=1                     t=1                    t=1                        t=1
+
+                                                                     15
+                                   Delayed Bandits: When Do Intermediate Observations Help?
+
+                                         bB (Equation (12)) is the regret of algorithm B when fed with (θet ◦ st )t∈[T ] as
+with probability at least 1 − δ/2, where RT
+losses.
+Lemma B.3. Conditioning on the event as stated in Lemma A.2, the sum of errors suffered from MetaBIO by using the
+loss estimates (θet )t∈[T ] from Equations (1) and (2) is
+
+                                                                     s
+                                             T
+                                                                 √ 
+                                                                              
+                                             X                             4ST
+                                                 εt (St ) ≤ 4 + 2 2 ST ln        .
+                                             t=1
+                                                                            δ
+
+
+
+Proof. First, observe that we can rewrite the sum of errors as
+
+                                  T                  T                              T
+                                                           εt (St )1[det < dt ] +         εt (St )1[det = dt ] .
+                                  X                  X                              X
+                                        εt (St ) =
+                                  t=1                t=1                            t=1
+
+
+We now provide an upper bound for the first sum of errors. For any s ∈ S, we define Ts = {t ∈ [T ] : St = s} to be the set
+of all rounds when the state observed by the learner corresponds to s. We can bound it as
+
+             T
+                   εt (St )1[det < dt ] =              εt (s)1[det < dt ]
+             X                              XX
+
+             t=1                            s∈S t∈Ts
+                                            s                 s
+                                                 4ST X X             1
+                                        = 2 ln                            1[det < dt ]
+                                                  δ               Nt′ (s)
+                                                       s∈S t∈Ts
+                                           s                  s
+                                                4ST X X              1
+                                        ≤ 2 ln                            1[det < dt ]                             (because Nt′ (s) ≥ 12 Mt (s))
+                                                  δ               Mt (s)
+                                                       s∈S t∈Ts
+                                           s        X
+                                                4ST        p
+                                        ≤ 4 ln                MT (s)                                      (since Mt (s) is increasing over Ts )
+                                                  δ
+                                                       s∈S
+                                           s            
+                                                    4ST
+                                        ≤ 4 ST ln           ,
+                                                     δ
+
+
+where the second inequality holds because Nt′ (St ) = Nt (St ) ≥P   1
+                                                                    2 Mt (St ) when dt < dt since Mt (St ) ≤ Nt (St ) + σt ,
+                                                                                    e
+while the last one follows by Jensen’s inequality and the fact that s∈S MT (s) = T .
+
+As a last step, we provide an upper bound to the second sum. Let Js = {r ∈ Ts : der = dr } and notice that |Js | ≤ |Ts | =
+MT (s). Observe that ρ(t) = ρe(t) for each round t such that det = dt , and thus by Equation (14) we have that
+
+                                    π(r) < π(t) ⇐⇒ ρ(r) < ρ(t) ∨ (ρ(r) = ρ(t) ∧ r < t)
+
+                                                                           
+for all r, t ∈ [T ] such that der = dr and det = dt . Define νs : Js → |Js | by
+
+                                          νs (t) = |{r ∈ Js : π(r) ≤ π(t)}|                  ∀t ∈ Js .
+
+Observe that νs (t) ≤ Nt′ (s) = |L′t (s)| for all s ∈ S and all t ∈ Js . This is due to the fact that νs (t) counts a subset of
+L′t (s); to be precise, we have that νs (t) = |L′t (s) ∩ Js |. Moreover, notice that the condition π(r) ≤ π(t) defines a total
+order over Js . Hence, νs (t) counts the number of elements of Js preceding t ∈ Js (including t itself) in this total order.
+
+                                                                       16
+                                 Delayed Bandits: When Do Intermediate Observations Help?
+                                                         
+This implies that νs is a bijection between Js and |Js | . Then, using a similar reasoning as before, we show that
+                                            s           X X s
+                  T
+                                                   4ST                      1
+                     εt (St )1[det = dt ] = 2 ln                            ′ (s) 1[dt = dt ]
+                X
+                                                                                    e
+                 t=1
+                                                     δ                   N t
+                                                            s∈S t∈Ts
+                                            s           X X s
+                                                   4ST                      1
+                                          = 2 ln                                                            (by definition of Js )
+                                                     δ                   Nt′ (s)
+                                                            s∈S t∈Js
+                                            s                      s
+                                                   4ST X X                 1
+                                          ≤ 2 ln                                              (since νs (t) ≤ Nt′ (s) for t ∈ Js )
+                                                     δ                   νs (t)
+                                                            s∈S t∈Js
+                                             s            X
+                                                    4ST          p
+                                          ≤ 2 2 ln                  |Js |                              (since νs (t) is bijective)
+                                                       δ
+                                                             s∈S
+                                             s            
+                                                    4ST X p
+                                          ≤ 2 2 ln                  MT (s)                                (since |Js | ≤ MT (s))
+                                                       δ
+                                                             s∈S
+                                             s               
+                                                         4ST
+                                          ≤ 2 2ST ln              .                                     (by Jensen’s inequality)
+                                                           δ
+
+
+Theorem 4.3. Let δ ∈ (0, 1). If we run MetaBIO using DAda-Exp3, then the regret of MetaBIO in the BIO setting with
+adversarial action-state mappings and stochastic losses with probability at least 1 − δ satisfies
+                                                                 r
+                                               p                            4ST
+                                       RT ≤ 2 2KT CK,3δ + 7 ST ln
+                                                                              δ
+                                                 p               σmax + 2 4
+                                             + 2 DΦ CK,3δ +                 ln .                               (6)
+                                                                     2          δ
+
+Proof of Theorem 4.3. By Equation (17), the regret RT can be bounded as
+                                                 T                   r
+                                            B
+                                                X
+                                                                 B          4ST
+                                  RT ≤ R T +
+                                          b         εt (St ) ≤ RT + 7 ST ln
+                                                               b
+                                                t=1
+                                                                             δ
+
+with probability at least 1 − δ/2, where the last inequality follows by Lemma B.3. From what we argued in Appendix B.3,
+we can upper bound R    b B using the high-probability regret bound of DAda-Exp3. Notice that the delays incurred by
+                          T
+DAda-Exp3 via MetaBIO are those given when providing the estimates (θet )t∈[T ] . We denote these delays by de1 , . . . , deT ,
+and the total delay perceived by DAda-Exp3 is thus D    eT = PT det . Hence, from the improved bound for DAda-Exp3
+                                                                  t=1
+in Equation (9), we have that
+
+                                                               eT (3 ln(K) + ln(4/δ)) + σmax + 2 ln(4/δ)
+                          p                                 q
+                    B
+                 RT ≤ 2 2KT (3 ln(K) + ln(4/δ)) + 2 D
+                  b
+                                                                                           2
+holds with probability at least 1 − δ/2. The combination of the above two inequalities, together with Lemma 4.1, concludes
+the proof.
+
+B.5. Regret of MetaAdaBIO
+Theorem 4.4. Let δ ∈ (0, 1). If we run MetaAdaBIO with DAda-Exp3, then the regret of MetaAdaBIO in the BIO
+setting with adversarial action-state mappings and stochastic losses with probability at least 1 − δ satisfies
+                                             ( r                            )
+                                                         8ST p
+                                 RT ≤ 3 min 7 ST ln            , DT CK,2δ                                      (7)
+                                                          δ
+                                       p                p                              8
+                                    + 6 KT CK,2δ + 2 DΦ CK,2δ + (σmax + 2) ln .
+                                                                                       δ
+                                                               17
+                                   Delayed Bandits: When Do Intermediate Observations Help?
+
+Proof of Theorem 4.4. Let t∗ ∈ [T ] be the last round before MetaAdaBIO switches from DAda-Exp3 to MetaBIO, i.e.,
+                                                                       ∗
+                                                                                   PT
+the last round that satisfies Dt∗ CK,4δ ≤ 49ST ln 8STδ . Then, define a ∈ arg mina  t=1 θ(st (a)). We may decompose
+regret as
+                                 ∗
+                               t
+                               X                             T
+                                                               X                       
+                       RT =             θ(St ) − θ(st (a∗ )) +     θ(St ) − θ(st (a∗ ))
+                               t=1                                t=t∗ +1
+                                   ∗                   ∗
+                               t
+                               X                      t
+                                                      X                       T
+                                                                              X                      T
+                                                                                                     X
+                           ≤           θ(St ) − min         θ(st (a)) +             θ(St ) − min              θ(st (a)) .
+                                               a∈A                                          a∈A
+                               t=1                    t=1                 t=t∗ +1                   t=t∗ +1
+                               |                {z                 }      |                  {z                      }
+                                               R t∗                                        Rt∗ :T
+
+The incurred delay until time t∗ is Dt∗ . Thus, from Equation (11), we get that the following bound
+                                                    r
+                                  p                         12      p                σmax + 2 6
+                         Rt∗ ≤ 2 2Kt CK,2δ + 2t∗ ln
+                                          ∗                    + 2 Dt∗ CK,2δ +                ln                            (18)
+                                                             δ                           2       δ
+holds with probability at least 1 − δ/2, where we recall that CK,δ = 3 ln K + ln(12/δ). If our algorithm never switches,
+       ∗
+p t = T andp
+then              we get the bound in (18) for RT . Note that this is no greater than the upper bound in the statement as
+   DT CK,2δ ≤ 7 ST ln(8ST /δ) by definition of t∗ in this case.
+                                              p                     p                                       p
+Otherwise, we use the switching condition Dt∗ CK,2δ ≤ 7 ST ln(8ST /δ) along with the fact that t∗ ln(12/δ) ≤
+p
+   Kt∗ CK,2δ to get
+                                                                r
+                                       p
+                                               ∗
+                                                                        8ST    σmax + 2 6
+                              Rt∗ ≤ 3 2Kt CK,2δ + 14 ST ln                  +             ln .                              (19)
+                                                                          δ          2       δ
+Furthermore, Theorem 4.3 directly gives us an upper bound for Rt∗ :T since MetaAdaBIO runs MetaBIO for t > t∗ with
+the confidence parameter set to δ/2. We just need to bound the total incurred delays of these rounds, namely D   et∗ :T . Let σt′
+be the outstanding observations for any round t > t as perceived by the execution of MetaBIO starting after round t∗ ,
+                                                         ∗
+
+that is, when considering only delays (dt )t>t∗ . It is immediate to observe that σt′ ≤ σt and thus maxt>t∗ σt′ ≤ maxt>t∗ σt .
+Moreover, from Lemma 4.1 we have
+                                                          Det∗ :T ≤ DΦ′ ,
+where Φ′ denotes a set of min{T − t∗ , 2Sσmax
+                                          ′                                                            ′
+                                              } rounds with the largest delays among (dt )t>t∗ , with σmax = maxt>t∗ σt′ .
+So we have
+                                                     DΦ′ ≤ DΦ
+due to the fact that |Φ′ | = min{T − t∗ , 2Sσmax
+                                             ′
+                                                 } ≤ min{T, 2Sσmax } = |Φ|. Therefore, from Theorem 4.3 we obtain
+                                                      r
+                                                              8ST                     σmax + 2 8
+                               q                                      p
+                    Rt∗ :T ≤ 2 2K(T − t∗ )CK,3δ + 7 ST ln          + 2 DΦ CK,3δ +              ln                 (20)
+                                                               δ                          2       δ
+with
+√ probability
+     √           √ 1 − δ/2. We conclude the proof by combining Equations (19) and (20) along with the fact that
+              at least
+ t∗ + T − t∗ ≤ 2T to get that the bound
+                                    ( r                       )
+                  p                           8ST p                p                             8
+        RT ≤ 6 KT CK,2δ + 3 min 7 ST ln            , DT CK,2δ + 2 DΦ CK,2δ + (σmax + 2) ln
+                                               δ                                                 δ
+
+holds with probability at least 1 − δ.
+
+B.6. Expected Regret Analysis of MetaAdaBIO with Tsallis-INF
+Proposition
+          √ 4.6. If we execute
+                           p     MetaAdaBIO with Tsallis-INF (Zimmert         Pt& Seldin, 2020), and use the switching
+condition 8Dt ln K > 6 ST ln(2ST ) at each round t ∈ [T ], where Dt = j=1 σj , then the regret of MetaAdaBIO
+in the BIO setting with adversarial action-state mappings and stochastic losses satisfies
+                                              √        p
+                                  E[RT ] ≤ 4 2KT + 8DΦ ln K
+                                                    n p                p             o
+                                             + 2 min 6 ST ln(2ST ), 8DT ln K .
+
+                                                                       18
+                                Delayed Bandits: When Do Intermediate Observations Help?
+
+Proof of Proposition 4.6. We begin by studying of expected regret of MetaBIO and we then give a regret analysis of
+MetaAdaBIO. When running MetaBIO, we use the unbiased empirical mean estimators (θbt )t∈[T ] as the mean loss
+estimates, rather than the lower confidence bounds (θet )t∈[T ] . The expected regret is defined as
+                                                    T
+                                                    X                    T
+                                                                         X
+                                         E[RT ] =          E[θ(St )] −          θ(st (a∗ )) ,
+                                                    t=1                  t=1
+                      PT
+where a∗ = mina∈A t=1 θ(st (a)). Here we use a version of Tsallis-INF that is tailored for the delayed bandits
+problem (Zimmert & Seldin, 2020), which guarantees a bound in expectation on the regret
+                                                           T
+                                                           X                   T
+                                                                               X
+                                         b Tsallis
+                                         R T       (a) =         θbt (St ) −         θbt (st (a))
+                                                           t=1                 t=1
+
+against any fixed action a ∈ A, using the loss estimates {θbt }t∈[T ] . Observe that this regret is defined in terms of our
+estimates, as required in our case. By Zimmert & Seldin (2020, Theorem 1), Tsallis-INF guarantees that its expected
+regret is
+                              " T              T
+                                                             #
+          h
+              Tsallis ∗
+                         i     X               X
+                                                          ∗
+                                                                 √        q                 √         p
+        E RTb        (a ) = E       θt (St ) −
+                                    b            θt (st (a )) ≤ 4 KT + 8D
+                                                 b                            eT ln K ≤ 4 KT + 8DΦ ln K ,
+                               t=1           t=1
+
+where the last inequality uses Lemma 4.1. Then, we can focus on our notion of regret and use the above regret bound to
+obtain that
+                      h                       i     h                 i
+            E[RT ] = E RT − R  b Tsallis (a∗ ) + E R  b Tsallis (a∗ )
+                                 T                      T
+                      " T                         #    " T                                 #
+                        X                                X                                   h                 i
+                                                                         ∗            ∗        b Tsallis (a∗ )
+                                                                                        
+                   =E        θ(St ) − θbt (St ) + E            θbt (st (a )) − θ(st (a )) + E R     T
+                        t=1                           t=1
+                    " T                    # " T                            #
+                     X                       X
+                                                          ∗            ∗
+                                                                             √    p
+                  ≤E    θ(St ) − θt (St ) + E
+                                 b               θt (st (a )) − θ(st (a )) + 4 KT + 8DΦ ln K .
+                                                 b                                                                       (21)
+                        t=1                           t=1
+                        |         {z         }
+                                  ∆
+
+
+We know that our mean estimator is unbiased. Therefore, we have that E[θbt (st (a∗ ))] = θ(st (a∗ )) for any t ∈ [T ], meaning
+that the second term in the right-hand side of (21) is equal to zero.
+On the other hand, we can apply Lemma A.2 to get the following bound for ∆ that holds with probability at least 1 − δ/2
+for any δ ∈ (0, 1):                                       ( T                  )
+                                                              1X
+                                               ∆ ≤ min              εt (St ), T ,                                      (22)
+                                                              2 t=1
+                             q
+where we recall that εt (s) = N ′2(s) ln 4ST
+                                           δ . In particular, the inequality ∆ ≤ T is true in general. By Lemma B.3, we can
+                                 t
+bound the right-hand side of (22) as
+                                                  T                 r
+                                               1X                 7            4ST
+                                                      εt (St ) ≤       ST ln
+                                               2 t=1              2              δ
+                                                                                                                   
+when conditioning on the event as in the statement of Lemma A.2. If we denote such an event as E, we have that P E ≤ δ/2
+                       p
+and that E[∆ | E] ≤ 72 ST ln(4ST /δ). As a consequence, we notice that
+                                                                  r
+                                                         7                4ST    δ     p
+                E[∆] = E[∆ | E]P(E) + E ∆ | E P E ≤                 ST ln          + T ≤ 5 ST ln(2ST ) + 1
+                                                                2              δ    2
+ p in the last inequality we set δ = 2/T . Since we assume that S ≥ 2, we can easily observe that E[∆] ≤
+where
+6 ST ln(2ST ). Plugging this into Equation (21) gives us
+                                          √        p        p
+                               E[RT ] ≤ 4 KT + 8DΦ ln K + 6 ST ln(2ST ) .                            (23)
+
+                                                                 19
+                                   Delayed Bandits: When Do Intermediate Observations Help?
+
+At this point, we can proceed to the proof of the overall bound on the expected regret of MetaAdaBIO. The behaviour of
+MetaAdaBIO follows the same principle as before, but the switching condition is different:
+                                             p                p
+                                                8Dt ln K > 6 ST ln(2ST ) .
+Similar to the analysis of MetaAdaBIO in Appendix B.5, we decompose the regret into
+                              ∗                        ∗
+                             t
+                             X                        t
+                                                      X                        T
+                                                                               X                        T
+                                                                                                        X
+                  E[RT ] ≤         E[θ(St )] − min           θ(st (a)) +             E[θ(St )] − min             θ(st (a)) ,
+                                                a∈A                                             a∈A
+                             t=1                       t=1                 t=t∗ +1                     t=t∗ +1
+                             |                 {z                   }      |                   {z                       }
+                                               R t∗                                           Rt∗ :T
+                                        √           p
+where t∗ is the last round satisfying       8Dt∗ ≤ 6   ST ln(2ST ). Then, we have
+                                                           √         p
+                                              E[Rt∗ ] ≤ 4 Kt∗ + 8Dt∗ ln K .                                                (24)
+                                                                                √                 p
+If t∗ = T then Rt∗ = RT and we get the bound in (24), where we note that 8DT ln K ≤ 6 ST ln(2ST ) by definition
+of t∗ in this case, and we can replace DT by DT . Otherwise, t∗ < T and we can apply the bound for MetaBIO from (23),
+along with the fact that the total incurred delay after round t∗ is upper bounded by DΦ , in order to derive an upper bound for
+E[Rt∗ :T ] that is                            p                p                p
+                                E[Rt∗ :T ] ≤ 4 K(T − t∗ ) + 8DΦ ln K + 6 ST ln(2ST ) .                                     (25)
+                                √            p                                ∗
+Finally, if we use the fact that 8Dt∗ ≤ 6 ST ln(2ST ) (by definition of t ) in (24), and combine it with (25), we conclude
+that                                √          p                      n p              p              o
+                        E[RT ] ≤ 4 2KT + 8DΦ ln K + 2 min 6 ST ln(2ST ), 8DT ln K ,
+                                    √       √           √
+where we also used the fact that t∗ + T − t∗ ≤ 2T .
+
+C. Proofs for the Lower Bounds
+Theorem 5.2. Suppose that the action-state mapping is adversarial and the losses are stochastic and that dt = d for all
+t ∈ [T ]. If T ≥ min{S, d} then there exists a distribution ofplosses and a sequence
+                                                                                    of action-state mappings such that any
+(possibly randomized) algorithm suffers regret E[RT ] = Ω min{S, d}T .
+
+Proof of Theorem 5.2. Assume without loss of generality that K = 2 and let S = {h1 , . . . , hS } be the finite set of possible
+states. Let S ′ = ⌊min{S/2, d}⌋ and let I1 , . . . , IT be the actions chosen by the considered algorithm. Split the T time steps
+into m = ⌊T /S ′ ⌋ blocks B1 , . . . , Bm of equal size S ′ , eventually leaving ≤ S ′ − 1 extra time steps. We assume with no
+loss of generality that the last step corresponds to the end of the m-th block. The feedback formed by the losses of the
+actions chosen by the algorithm in a certain block is received only after the last time step of the same block since S ≤ 2d.
+Define bi = (i − 1)S ′ + 1 for all i ∈ [m]. We assume that the learner receives all the realized losses ℓt (st (A)) for all t ∈ Bi
+and all A ∈ {1, 2} at the end of each block, which means that we are in a full information setting, as this only helps the
+algorithm.
+Now, we define a specific sequence of assignments from actions to states, and construct losses so that the expected regret
+becomes sufficiently large. Let st (A) = h2(t−bi )+A for all t ∈ Bi , all i ∈ [m] and all A ∈ {1, 2}; this means that, for the
+                                                                  states h1 and h2 respectively, then to h3 and h4 respectively
+first time step of any block, actions 1 and 2 will be assigned to q
+                                                                1        S′
+in the next time step of the same block, and so on. Let ε = 4 2T ln(4/3)       ∈ [0, 41 ] and let θ(A) ∈ R2 be a vector of mean
+                    (A)
+losses such that θi = 12 − I{i = A}ε, for each A ∈ {1, 2}. We simplify the notation with EA [·] = E · θ(A) and
+                                                                                                                          
+                     
+PA (·) = P · θ(A) , where the conditioning on θ(A) means that we sample losses for each state assigned to i ∈ {1, 2}
+                                                             (A)
+such that they are Bernoulli random variables with mean θi . In particular, conditioning on θ(A) , we sample independent
+                                                        (A)
+Bernoulli random variables X1i , . . . , Xm
+                                          i
+                                            with mean θi , one for each block, for i ∈ {1, 2}. Then, the losses are defined as
+                i
+ℓt (st (i)) = Xj for each t ∈ Bj and each j ∈ [m].
+We can now proceed to show a lower bound for the expected pseudo-regret. Let Ti be the number of times the learner
+chooses action i over all T time steps. The expected pseudo-regret over the two instances determined by θ(k) for k ∈ {1, 2}
+adds up to
+                                     E1 [RT ] + E2 [RT ] = ε(2T − E1 [T1 ] − E2 [T2 ]) .
+
+                                                                    20
+                                  Delayed Bandits: When Do Intermediate Observations Help?
+
+Following the standard analysis, we show that the difference E2 [T2 ] − E1 [T2 ] is such that
+                                                                          r
+                                                                            1
+                             E2 [T2 ] − E1 [T2 ] ≤ T · dTV (P2 , P1 ) ≤ T     DKL (P1 ∥ P2 ) ,
+                                                                            2
+where the last step follows by Pinsker’s inequality.
+Let λi = {(It , ℓt (St (1)), ℓt (St (2))) | t ∈ Bi } be the feedback set known to the learner by the end of block Bi , and let
+λi = (λ1 , . . . , λi ) be the tuple of all feedback sets up to the end of block Bi . Denote by Pk,i (·) the probability measure of
+feedback tuples λi conditioned on θ(A) . By the chain rule for the relative entropy, we can observe that
+                                               m
+                                               XX
+                           DKL (P1 ∥ P2 ) =               P1 (λi−1 )DKL (P1,i (· | λi−1 )∥ P2,i (· | λi−1 ))
+                                               i=1 λi−1
+                                               m X
+                                               X
+                                           ≤              P1 (λi−1 )16ε2 ln(4/3)
+                                               i=1 λi−1
+                                                     2
+                                           = 16mε ln(4/3) ,
+
+where we used the fact that each relative entropy DKL (P1,i (· | λi−1 ) ∥ P2,i (· | λi−1 )) corresponds to the sum of the relative
+entropy between two Bernoulli distributions with means 1/2 and 1/2−ε and that between Bernoulli distributions with means
+1/2 − ε and 1/2, respectively, which is upper bounded by 16ε2 ln(4/3) for ε ∈ [0, 1/4]. This follows by an application of
+the chain rule for the relative entropy, as well as from the fact that the distribution of It is the same under both P1,i (· | λi−1 )
+and P2,i (· | λi−1 ), for all t ∈ Bi and any λi−1 . Therefore, we have that
+                                                                         p
+                                             E2 [T2 ] − E1 [T2 ] ≤ 2εT    2m ln(4/3)
+
+which also implies that
+                                                   r                 !               s                   s
+                                                T                          εT   1         ⌊S/2⌋T     1          ST
+               E1 [RT ] + E2 [RT ] ≥ εT 1 − 2ε 2 ′ ln(4/3)               =    ≥                    ≥                   ,
+                                                S                           2   8        2 ln(4/3)   8       6 ln(4/3)
+
+                                     ′
+where we used the facts that m ≤ T /Sq and that ⌊S/2⌋ ≥ S/3 for any integer S ≥ 2. This means that the expected
+                                        1         ST
+pseudo-regret of the learner has to be 16      6 ln(4/3) at least in one of the two instances. Now, for S > 2d we use the same
+                                                                                     p
+construction, but now we only use 2d states, which leads to the promised Ω(              min{S, d}T ) lower bound.
+
+Theorem 5.3. Suppose that the action-state mapping is adversarial, the losses are stochastic, and that dt = d for all
+t ∈ [T ]. If T ≥ d + 1 then there exists a distribution of losses and a sequence of action-state mappings such that any
+(possibly randomized) algorithm suffers regret
+                                                     n         √ p            o
+                                    E[RT ] = Ω min (d + 1) S, (d + 1)T              .
+
+
+Proof of Theorem 5.3. Let S ′ = min{⌊ S2 ⌋, ⌊ d+1 T
+                                                     ⌋} ≥ 1. We consider the first (d + 1)S ′ rounds of the game and divide
+            ′
+them into S blocks B1 , . . . , BS ′ of same length d + 1. In this way, we ensure that the feedback for any time step in some
+block is revealed to the learner only after its final round.
+Without loss of generality, we can assume that the learner observes all the losses of one block immediately after its
+last time step; this only helps the learner since they would observe only the incurred losses at possibly later rounds
+otherwise. We can further simplify the problem by assuming that losses are deterministic functions of the states, i.e., ℓt ≡ θ
+for every round t. This also means that the problem turns into an easier, full-information version of our problem with
+deterministic losses. Now, let the adversary choose the action-state mappings such that for each block index i and each
+action a ∈ A, St (a) = St′ (a) ∈ {s2i−1 , s2i } for all t, t′ ∈ Bi . Furthermore, we assume that the losses are chosen such
+that θ(s2i−1 ) ∈ {0, 1} and θ(s2i ) = 1 − θ(s2i−1 ) for all i ∈ [S ′ ]. In this construction, the learner cannot obtain any useful
+information from the states of a block because of the delays. Moreover, the states observed in one block are not observed
+again in the other blocks.
+
+                                                                   21
+                                Delayed Bandits: When Do Intermediate Observations Help?
+
+It thus suffices to prove a lower bound for a standard full information game with S ′ rounds and loss range [0, d + 1]. Hence,
+we can conclude that the expected regret of any algorithm has to be
+                                                 √              n       √ p               o
+                              E[RT ] = Ω (d + 1) S ′ = Ω min (d + 1) S, (d + 1)T                  .
+
+
+
+
+D. Action-State Mappings and Loss Means Used in the Experiments
+Table 1 and Table 2 describe the instances used to generate the data for the experiments of Section 6.
+
+                                          Mean loss      s=1        s=2        s=3
+                                            θ(s)           0.2        0.4        0.8
+                                          Mapping        P (1|a)    P (2|a)    P (3|a)
+                                           a=1             0.8        0.1        0.1
+                                           a=2             0.4        0.5        0.1
+                                           a=3             0.3        0.7        0.0
+                                           a=4             0.5        0.3        0.2
+
+                     Table 1. Mean losses and stochastic action-state mapping for Experiment 1 in Section 6.
+
+
+                                          Mean loss      s=1     s=2            s=3
+                                            θ(s)           0        1            1
+                                                        Environment 1
+                                           Mapping      P (1|a) P (2|a)        P (3|a)
+                                            a=1          0.06     0.47          0.47
+                                            a=2            0      0.50          0.50
+                                            a=3            0      0.50          0.50
+                                            a=4            0      0.50          0.50
+                                                        Environment 2
+                                           Mapping      P (1|a) P (2|a)        P (3|a)
+                                            a=1            1        0             0
+                                            a=2          0.94     0.03          0.03
+                                            a=3          0.94     0.03          0.03
+                                            a=4          0.94     0.03          0.03
+
+                     Table 2. Mean losses and stochastic action-state mappings for Experiment 2 in Section 6.
+
+
+
+
+                                                               22
+

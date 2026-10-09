@@ -1,0 +1,11 @@
+# E3 交接材料 · 固化文件 MD5 清单（2026-08-07 生成）
+# 校验（macOS）：cd task/E4-agent-harness搭建/e3_handover && diff <(md5 -r case_*.jsonl case_*_response.json | sort) <(grep -v '^#' MD5SUMS | sort)  → 应无输出
+ec21e771d2a093b436072677e9f64b6a case_cardiac_sotalol__moonshot_kimi-k3.jsonl
+9828d532d5c8d531bbae2111264f46dc case_cardiac_sotalol__moonshot_kimi-k3_full.jsonl
+6dd66094909dba51aaa95c985a5c605e case_cardiac_sotalol__moonshot_kimi-k3_response.json
+a31bbc405c68a05abacee6af9d96ea97 case_cns_metoprolol__bailian_glm-5.2.jsonl
+9f788486fb772abf8567571ec17f98be case_cns_metoprolol__bailian_glm-5.2_full.jsonl
+601596cf4c496b785ff2abe0635f4502 case_cns_metoprolol__bailian_glm-5.2_response.json
+bce595479c3bbd60d17fab0bf8f1b821 case_cns_metoprolol__moonshot_kimi-k3.jsonl
+c493ebe9fd1441f6d18e7a267edd707c case_cns_metoprolol__moonshot_kimi-k3_full.jsonl
+5d1ed6be1f964250ab0fc22aeb39c573 case_cns_metoprolol__moonshot_kimi-k3_response.json

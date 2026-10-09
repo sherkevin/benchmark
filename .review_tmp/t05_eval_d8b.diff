@@ -1,0 +1,341 @@
+commit d8b393a4a2c77c2595895e996945e6d3989695d1
+Author: Jing Wu <jingwu.wu@alibaba-inc.com>
+Date:   Fri Aug 7 15:38:36 2026 +0800
+
+    task-05 §3（任务 #54）：E5 质量门第二条判据接口 composition_grounding_gate + 出入参文档
+    
+    ①接口落码（src/benchmark/evaluate.py，E5 直接 import）：composition_grounding_gate(case_id, anchor, edit_op, gt, evidence_set, tol=None, gw=None)——五条子判据全真即过门：anchor_in_A（per-case 视图 visible_entity_ids 在场走视图，不在场回落全局 A 条件②口径）/ edit_applied（applied=True 前置的造题期形态：分子域 _rdkit_edit 真实可施加性、detail 文法与组成侧同源避免工具面旧文法双口径；材料域占位口径放行并留痕）/ hops_within_limit（算子总数 n≤2）/ composition_equal（ε=0.02 固定、分子域剥 H、同分异构判相等——纯复用 #53 纯函数组口径零偏离）/ evidence_all_queryable（backend get_property_A.jsonl A 视图按 case_ref 行可见性优先，回落 mock_db；grounded 同容差）。非法入参一律 ValueError fail fast。
+    ②材料域占位口径如实声明：工具面 edit_molecule 不受理材料键锚点（实跑 ANCHOR_NOT_IN_A）、晶体实体 ID applied=True 回显锚点——details.notes 留痕，断裂不修、收口归 #55 登记。
+    ③第一条质量门（A 内无替代解穷举）归 E1-05 在途不越界，分工与调用顺序写入文档。
+    ④出入参文档：tools契约规范.md §6（签名/入参逐字段类型约束来源/出参逐字段/第一条关系/占位口径/错误行为/测试基线）+ 代码 docstring 全量。
+    ⑤测试：tests/test_composition_gate_task05.py qualitygate_ 组 9 函数 19 用例（正例/异构 gt/组成不等/跳数 2 过 3 拒/缺 applied/材料占位/视图内外/证据三原因+tol/非法输入 11 项）。全量 195 passed + 1 skipped（176+19），唯一失败 test_material_key_recompute 为他人材料侧在途改动，保持对照口径不触碰。
+
+diff --git a/src/benchmark/evaluate.py b/src/benchmark/evaluate.py
+index ca916a0..a105ab3 100644
+--- a/src/benchmark/evaluate.py
++++ b/src/benchmark/evaluate.py
+@@ -911,6 +911,324 @@ def evaluate_grounding(payload, events, gw=None):
+     return out
+ 
+ 
++# ── E5 质量门第二条判据（task-05 §3 / 任务 #54，ADR-0018 §2.3 线索可达）────
++# 第一条质量门（A 内无替代解穷举）归 E1-05 per-case 视图穷举接口（在途），
++# 本函数不得包含该逻辑；两条判据的分工与调用顺序见 report.md task-05 §3 章节。
++
++
++def _load_per_case_view(case_id, backend_root=None):
++    """per-case 视图文件（E1-05，schema per_case_view_v1）只读装载：
++    <backend>/per_case_views/<case_id>.json → dict；不在场/畸形 → None
++    （质量门回落全局 A 口径，不 raise——视图缺位是过渡期合法状态）。
++    backend 根优先走 A 侧读取器登记路径，缺位回落仓库默认 data/backend。"""
++    root = backend_root
++    if not root:
++        root = os.path.join(os.path.dirname(os.path.abspath(__file__)),
++                            '..', '..', 'dag_poc', 'data', 'backend')
++    path = os.path.join(root, 'per_case_views', f'{case_id}.json')
++    try:
++        with open(path, encoding='utf-8') as f:
++            view = json.load(f)
++    except (OSError, ValueError):
++        return None
++    return view if isinstance(view, dict) else None
++
++
++def _a_property_table(case_id, backend_root=None):
++    """A 侧性质真值表（backend/get_property/get_property_A.jsonl，只读）：
++    {(entity_id, prop): value}。行可见性按 case_ref：None（全局行）与
++    == case_id 的 case 行入表，其余 case 行不可见（per-case 视图口径）。
++    不在场/畸形 → None（回落 mock_db _entity_props 派生口径，与 E3 其余
++    通道 backend 优先/过渡回落口径一致）。"""
++    root = backend_root
++    if not root:
++        root = os.path.join(os.path.dirname(os.path.abspath(__file__)),
++                            '..', '..', 'dag_poc', 'data', 'backend')
++    path = os.path.join(root, 'get_property', 'get_property_A.jsonl')
++    table = {}
++    try:
++        with open(path, encoding='utf-8') as f:
++            for line in f:
++                line = line.strip()
++                if not line:
++                    continue
++                rec = json.loads(line)
++                ref = rec.get('case_ref')
++                if ref is not None and ref != case_id:
++                    continue
++                eid, prop = rec.get('entity_id'), rec.get('prop')
++                if isinstance(eid, str) and isinstance(prop, str):
++                    table[(eid, prop)] = rec.get('value')
++    except (OSError, ValueError):
++        return None
++    return table
++
++
++def composition_grounding_gate(case_id, anchor, edit_op, gt, evidence_set,
++                               tol=None, gw=None):
++    """E5 质量门第二条判据（线索可达）——task-05 §3（任务 #54）落码，
++    E5 造题脚本直接 import 调用：from evaluate import composition_grounding_gate
++    （src/benchmark 在 sys.path）。造题期离线跑，不依赖活体 Gateway 会话态
++    （内部自建 judge 侧 Gateway 实例，只读 A 侧数据；B 文件句柄零接触）。
++
++    签名：composition_grounding_gate(case_id, anchor, edit_op, gt,
++                                     evidence_set, tol=None, gw=None) -> dict
++
++    入参（逐字段约束与来源见 report.md「task-05 §3」章节）：
++      case_id      : str，非空。per-case 视图标识；视图在场 → anchor ∈ 该 case
++                     visible_entity_ids；不在场 → 回落全局 A 口径（条件②同源）。
++      anchor       : str，非空。锚点，三种形态都受理：A 分子实体 ID（身份档
++                     get_entity_A.jsonl）/ dummy atom SMILES / 材料身份键
++                     <reduced_formula>_SG<号>。
++      edit_op      : dict，恰含 {'anchor','operator','detail'}（answer_schema 0.3.0
++                     edit_op 同形状）；'anchor' 须与 anchor 入参一致；operator ∈
++                     {'add_atom'(＋n e), 'remove_atom'(−n e)}（组成封闭集，
++                     ADR-0018 §2.3）；detail 文法 <token>|<token>*<n>。
++      gt           : str，非空。金标准：匿名式串 / 材料身份键 / 实体 ID / dummy
++                     SMILES 四形态（composition_of 同判别序）。来源：per-case
++                     视图 gt.composition 序列化匿名式串，或 B 侧身份键。
++      evidence_set : list[dict]，每条恰含 {'mol','prop','value'}（cited_values
++                     同形状）；可为空列表（查得性空真）。
++      tol          : dict | None。仅作用于性质值比对（{prop: 容差}，语义同
++                     Gateway.grounded：字符串/布尔严格、数值缺省 0.1）；
++                     **组成 ε 为裁定 2 写死的固定常量 COMPOSITION_EPSILON，
++                     不受 tol 影响**（与 #53 条件③口径完全一致）。
++      gw           : gateway 模块（可选，测试注入接缝），缺省 _import_gateway()。
++
++    行为：复用 #53 纯函数组（composition_of / apply_composition_edit /
++    composition_equal / parse_edit_detail），口径与条件③完全一致——ε=0.02、
++    跳数=算子总数≤2、edit_molecule applied=True 真实可施加性前置、分子域剥 H。
++    【材料域占位口径，如实声明】工具面 edit_molecule 锚点校验不受理材料键锚点
++    （实跑返 ANCHOR_NOT_IN_A）、晶体实体 ID 锚点 applied=True 回显锚点——材料域
++    编辑行当前为占位口径，本门材料域 edit_applied 同按占位口径放行并在
++    details['notes'] 留痕；断裂收口归任务 #55 登记。
++
++    出参（E5 可直接消费：pass=False 即换 gt 重配，failures 即判废原因）：
++      {'pass': bool,                     # 总判据 = 五条子判据全真
++       'edit_applied': bool,             # 编辑真实可施加性（applied=True 前置）
++       'composition_equal': bool,        # edit_op(anchor) 组成变换 == gt 组成
++       'hops_within_limit': bool,        # 算子总数（detail 计数 n）≤2
++       'anchor_in_A': bool,              # anchor ∈ 该 case 可见集/全局 A
++       'evidence_all_queryable': bool,   # evidence_set 每条 A 侧 get_property 查得
++                                         #（真值源 backend get_property_A.jsonl
++                                         #  A 视图优先，不在场回落 mock_db）
++       'details': {...}}                 # 逐项诊断 + failures 失败原因清单
++
++    非法输入（形状错误）raise ValueError——报错而非静默通过（造题期 fail fast）。"""
++    gwmod = gw or _import_gateway()
++    if gwmod is None:
++        raise ValueError('gateway 模块不可用，质量门无法执行')
++    # ── 入参形状校验（非法 → ValueError，不得静默通过）────────────────────
++    if not isinstance(case_id, str) or not case_id.strip():
++        raise ValueError(f'case_id 须为非空字符串，收到 {case_id!r}')
++    for name, v in (('anchor', anchor), ('gt', gt)):
++        if not isinstance(v, str) or not v.strip():
++            raise ValueError(f'{name} 须为非空字符串，收到 {v!r}')
++    if not isinstance(edit_op, dict) \
++            or set(edit_op) != {'anchor', 'operator', 'detail'}:
++        raise ValueError(
++            'edit_op 须为恰含 anchor/operator/detail 的对象，'
++            f'收到 {edit_op!r}')
++    if edit_op['anchor'] != anchor:
++        raise ValueError(
++            f'edit_op.anchor 与 anchor 入参不一致：'
++            f'{edit_op["anchor"]!r} != {anchor!r}')
++    if edit_op['operator'] not in ('add_atom', 'remove_atom'):
++        raise ValueError(
++            f'edit_op.operator 超出组成封闭算子集 {{add_atom, remove_atom}}：'
++            f'{edit_op["operator"]!r}')
++    if not (edit_op['detail'] is None or isinstance(edit_op['detail'], str)):
++        raise ValueError(
++            f'edit_op.detail 须为字符串或 null，收到 {edit_op["detail"]!r}')
++    if not isinstance(evidence_set, list):
++        raise ValueError(f'evidence_set 须为列表，收到 {type(evidence_set).__name__}')
++    for i, ev in enumerate(evidence_set):
++        if (not isinstance(ev, dict) or set(ev) != {'mol', 'prop', 'value'}
++                or not isinstance(ev.get('mol'), str)
++                or not isinstance(ev.get('prop'), str)):
++            raise ValueError(
++                f'evidence_set[{i}] 形状非法（须恰含 mol/prop/value，'
++                f'mol/prop 为字符串）：{ev!r}')
++    if tol is not None and not isinstance(tol, dict):
++        raise ValueError(f'tol 须为 dict 或 None，收到 {tol!r}')
++
++    judge = gwmod.Gateway(tol=dict(tol or {}))
++    details = {'case_id': case_id, 'epsilon': COMPOSITION_EPSILON,
++               'hop_limit': COMPOSITION_HOP_LIMIT, 'notes': [], 'failures': []}
++
++    # ── ① anchor_in_A：per-case 视图在场走 visible_entity_ids，不在场回落
++    #    全局 A 口径（与 evaluate_grounding 条件②同源：实体 ID 全集 ∪ 材料
++    #    身份键 == ∪ A 分子 canonical SMILES 全集）。──────────────────────
++    a_ids = set(judge.db.get('admet', {})) | set(judge.db.get('structures', {}))
++    try:
++        material_keys = judge._material_key_universe()
++    except Exception:
++        material_keys = {}
++    anchor_s = anchor.strip()
++    anchor_eid = material_keys.get(anchor_s)      # 材料键 → 实体 ID（== 口径）
++    view = _load_per_case_view(case_id,
++                               getattr(judge, '_a_identity_root', None))
++    if view and isinstance(view.get('visible_entity_ids'), list):
++        details['anchor_source'] = 'per_case_view'
++        visible = set(view['visible_entity_ids'])
++        ok_anchor = anchor_s in visible or (anchor_eid is not None
++                                            and anchor_eid in visible)
++        if not ok_anchor and anchor_eid is None:
++            # SMILES 锚点：canonical 与可见集内分子实体的匿名域 SMILES 比对
++            try:
++                canon = gwmod.canonical_chemical(anchor_s)
++            except Exception:
++                canon = None
++            if canon is not None:
++                _, smiles_map = judge._a_identity
++                vis_canon = {gwmod.canonical_chemical((smiles_map or {}).get(e))
++                             for e in visible if (smiles_map or {}).get(e)}
++                ok_anchor = canon in vis_canon
++        if not ok_anchor:
++            details['failures'].append(
++                f'anchor 不在 case {case_id} 可见集（visible_entity_ids）')
++    else:
++        details['anchor_source'] = 'global_A_fallback'
++        ok_anchor = anchor_s in a_ids or anchor_eid is not None
++        if not ok_anchor:
++            try:
++                canon = gwmod.canonical_chemical(anchor_s)
++            except Exception:
++                canon = None
++            ok_anchor = canon is not None \
++                and canon in judge._a_smiles_universe()
++        if not ok_anchor:
++            details['failures'].append(
++                'anchor 不在全局 A 口径（实体 ID/材料键/canonical SMILES 均未命中）'
++                '；per-case 视图不在场，已回落全局口径')
++
++    # ── ② edit_applied：edit_molecule applied=True 前置（与 #53 条件③裁定 3
++    #    同语义的造题期形态：对锚点实判编辑真实可施加性，无 trace 可依赖）。
++    #    分子域走 _rdkit_edit 真实结构判断（经 parse_edit_detail 对齐组成侧
++    #    detail 文法，n 次重复施加，避免与工具面旧文法双口径）；材料域占位
++    #    口径放行并留痕（见 docstring 断裂声明）。──────────────────────────
++    domain = _anchor_carrier_domain(anchor_s, judge)
++    parsed = parse_edit_detail(edit_op['detail'])
++    hops = parsed[2] if parsed is not None else 1
++    details['hops'] = hops
++    if domain == 'material':
++        edit_applied = True
++        details['notes'].append(
++            '材料域编辑为占位口径：工具面 edit_molecule 不受理材料键锚点'
++            '（实跑 ANCHOR_NOT_IN_A）、晶体实体 ID 锚点 applied=True 回显锚点；'
++            '断裂收口归任务 #55')
++    else:
++        edit_applied = False
++        smiles = None
++        if anchor_s in a_ids:
++            smiles = judge._entity_smiles(anchor_s)
++        elif anchor_eid is not None:
++            smiles = judge._entity_smiles(anchor_eid)
++        else:
++            smiles = anchor_s
++        try:
++            from rdkit import Chem
++        except ImportError:
++            Chem = None
++        if Chem is not None and parsed is not None:
++            mol = Chem.MolFromSmiles(smiles) if isinstance(smiles, str) else None
++            if mol is not None:
++                if parsed[0] == 'element':
++                    sym = parsed[1]
++                else:   # 匿名 label token：结构层无元素语义，取 '*' 不可施加
++                    sym = None
++                ok = sym is not None
++                cur = mol
++                for _ in range(parsed[2]):
++                    if not ok:
++                        break
++                    ok, prod = gwmod._rdkit_edit(
++                        cur, edit_op['operator'], sym)
++                    if ok:
++                        cur = Chem.MolFromSmiles(prod)
++                        ok = cur is not None
++                edit_applied = ok
++        if not edit_applied:
++            details['failures'].append(
++                'edit_molecule applied=True 前置不满足（分子域真实结构判断'
++                '不可施加；材料域为占位口径不受此限）')
++
++    # ── ③ hops_within_limit：算子总数（detail 计数 n）≤ COMPOSITION_HOP_LIMIT
++    hops_ok = hops <= COMPOSITION_HOP_LIMIT
++    if not hops_ok:
++        details['failures'].append(
++            f'编辑算子总数 {hops} 超上限 {COMPOSITION_HOP_LIMIT}')
++
++    # ── ④ composition_equal：edit_op(anchor) 组成变换 == gt 组成（条件③
++    #    身份判据原样复用：分子域两侧剥 H、ε 固定、同分异构判相等是预期）。
++    anchor_comp = composition_of(anchor_s, judge)
++    transformed = apply_composition_edit(
++        anchor_comp, edit_op['operator'], edit_op['detail'])
++    gt_comp = composition_of(gt.strip(), judge)
++    if domain == 'molecule':
++        h_label = _element_to_label_map().get('H')
++        if h_label is not None:
++            if isinstance(transformed, dict):
++                transformed = {k: v for k, v in transformed.items()
++                               if k != h_label}
++            if isinstance(gt_comp, dict):
++                gt_comp = {k: v for k, v in gt_comp.items() if k != h_label}
++    comp_ok = transformed is not None and gt_comp is not None \
++        and composition_equal(transformed, gt_comp)
++    details['composition'] = {'anchor': anchor_comp, 'transformed': transformed,
++                              'gt': gt_comp, 'match': comp_ok}
++    if not comp_ok:
++        details['failures'].append(
++            'edit_op(anchor) 组成变换与 gt 组成多重集不等'
++            f'（ε={COMPOSITION_EPSILON}）；anchor/gt 组成解析失败同判不等')
++
++    # ── ⑤ evidence_all_queryable：每条 A 侧 get_property 查得且值相符。
++    #    真值源：backend get_property_A.jsonl（A 视图，按 case_ref 可见性）
++    #    优先，不在场回落 mock_db _entity_props（过渡期兼容）。值比对走
++    #    Gateway.grounded 同一容差逻辑（字符串/布尔严格、数值 tol[prop]
++    #    缺省 0.1；tol 入参已在 judge 构造时注入）。
++    prop_table = _a_property_table(
++        case_id, getattr(judge, '_a_identity_root', None))
++    details['evidence_source'] = ('backend_get_property_A' if prop_table is not None
++                                  else 'mock_db_fallback')
++    unqueryable = []
++    for ev in evidence_set:
++        actual, found = None, False
++        if prop_table is not None and (ev['mol'], ev['prop']) in prop_table:
++            actual, found = prop_table[(ev['mol'], ev['prop'])], True
++        else:
++            entry, props = judge._entity_props(ev['mol'])
++            if entry is not None and ev['prop'] in props:
++                actual, found = props[ev['prop']], True
++        if not found:
++            mol_known = (prop_table is not None
++                         and any(k[0] == ev['mol'] for k in prop_table)) \
++                or judge._entity_props(ev['mol'])[0] is not None
++            unqueryable.append({**ev, 'reason': 'UNKNOWN_PROPERTY' if mol_known
++                                else 'UNKNOWN_ENTITY'})
++            continue
++        judge.observed.setdefault(
++            (ev['mol'], ev['prop']), set()).add(actual)
++        if not judge.grounded(ev['mol'], ev['prop'], ev['value']):
++            unqueryable.append({**ev, 'reason': 'VALUE_MISMATCH',
++                                'actual': actual})
++    evidence_ok = not unqueryable
++    details['evidence_unqueryable'] = unqueryable
++    if not evidence_ok:
++        details['failures'].append(
++            f'evidence_set 有 {len(unqueryable)} 条 A 侧不可查得'
++            '（UNKNOWN_ENTITY/UNKNOWN_PROPERTY/VALUE_MISMATCH，逐条见 '
++            'details.evidence_unqueryable）')
++
++    out = {'pass': ok_anchor and edit_applied and hops_ok and comp_ok
++           and evidence_ok,
++           'anchor_in_A': ok_anchor, 'edit_applied': edit_applied,
++           'hops_within_limit': hops_ok, 'composition_equal': comp_ok,
++           'evidence_all_queryable': evidence_ok,
++           'details': details}
++    return out
++
++
+ def _existence_budget_status(events):
+     """存在性查证预算状态扫描（任务 #52 / task-05 §1.2 约束 3 / ADR-0018 §4 H4）。
+ 

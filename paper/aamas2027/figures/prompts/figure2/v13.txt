@@ -1,0 +1,22 @@
+
+Use the v12 image as a style reference, but redraw the feedback junction with the exact topology below. Preserve the same white flat-vector AAMAS style, 1600×440 landscape canvas, four compact tabs DECIDE / EXECUTE + JUDGE / DELAYED FEEDBACK / UPDATE, navy/grey/amber/purple colors, icons, typography, and dense spacing.
+
+The topology is non-negotiable. Use this centered arrangement in the middle of the canvas:
+
+```
+chemical correctness  ───────┐
+system failure       ────────┤→ terminal outcome
+                              │
+                              ↓
+                      selected outcome → selected-only queue → released outcome → relay update → S_τt → first action
+```
+
+The amber “terminal outcome” card is the only source of the lower feedback chain. Place it directly above the navy “selected outcome” card. Draw one short vertical arrow from the bottom center of terminal outcome to the top center of selected outcome. Draw no arrow from system failure directly to selected outcome. Draw no arrow from terminal record directly to the queue. Draw no arrow from terminal outcome directly to released outcome or relay update.
+
+The upper chain remains: light-grey input card “S_t + A_t” with attached eye-slash badge “unselected output” / “not observed” → navy “selector” → navy “one selected” / “provider” → light-grey “call” → amber “terminal record” with inset “output” and “runtime status” → amber “frozen endpoint” / “judge” → amber “chemical” / “correctness”. Runtime status branches to grey “system failure”; chemical correctness and system failure both enter the amber terminal outcome junction. The branch arrows may use short elbows, but they must visibly end at terminal outcome.
+
+The lower chain starts at selected outcome and runs rightward with no interruption: navy “selected outcome” → purple “selected-only queue” with second line “τ_t = t + 1 + D” → navy “released outcome” → navy “relay update” with second line “family residual + provider bias” → navy state cylinder “S_τt” → light-grey “first action at or after τ_t”. The queue is between selected outcome and released outcome. Put grey time dots “t+1 … τ_t−1” and the tiny note “hidden until τ_t” above the queue. Use one purple dashed waiting segment through the queue. Under the state cylinder write only “D=0: visible before next action”. Add only a small local navy circular-arrow glyph labelled “future state” near S_τt. Do not draw any global bottom return arrow.
+
+Keep exact text only: “S_t + A_t”, “selector”, “one selected”, “provider”, “call”, “terminal record”, “output”, “runtime status”, “frozen endpoint”, “judge”, “chemical”, “correctness”, “system failure”, “terminal outcome”, “selected outcome”, “selected-only queue”, “τ_t = t + 1 + D”, “t+1 … τ_t−1”, “hidden until τ_t”, “released outcome”, “relay update”, “family residual + provider bias”, “S_τt”, “first action at or after τ_t”, and “D=0: visible before next action”.
+
+Negative prompt: selected outcome sourced from system failure, selected outcome under input, selected outcome under relay update, terminal outcome bypassed, terminal record to queue shortcut, terminal outcome to released outcome shortcut, queue bypass, queue after released outcome, long bottom loop, global return arrow, disconnected lower chain, grid, table, swimlane, spreadsheet, large empty margins, oversized headers, extra prose, fake metrics, current truth before action, same-action feedback, instant learning, fallback ledger, diagnostic ledger, verifier, refusal, escalation, second call, gradients, 3-D, shadows, watermark.

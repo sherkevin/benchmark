@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="academic-paper">
+<head>
+<meta charset="utf-8">
+<title>过程可判定性：长程科学智能体评测基准调研</title>
+<link rel="stylesheet" href="assets/fonts.css">
+<link rel="stylesheet" href="assets/base.css">
+<link rel="stylesheet" id="theme-link" href="assets/themes/academic-paper.css">
+<link rel="stylesheet" href="assets/animations/animations.css">
+<style>
+  /* 学术汇报补充样式：表格更密、引用更轻 */
+  .cite{font-size:.72em;color:var(--text-3);font-style:italic}
+  table.dense{font-size:.78em;line-height:1.45}
+  table.dense th{white-space:nowrap}
+  .tag-hard{background:#e8f0e8;color:#1a5a2a;border:1px solid rgba(26,90,42,.3);padding:1px 6px;font-size:.74em}
+  .tag-soft{background:#f8ece8;color:#8a1a1a;border:1px solid rgba(138,26,26,.3);padding:1px 6px;font-size:.74em}
+  .tag-mid{background:#f8f4e8;color:#8a6a1a;border:1px solid rgba(138,106,26,.3);padding:1px 6px;font-size:.74em}
+  .gap-box{border-left:3px solid var(--accent-3);background:var(--bg-soft);padding:10px 14px;margin-top:10px}
+  .num-big{font-size:2.1em;font-weight:700;color:var(--accent);line-height:1}
+  .paper-card{border:1px solid var(--border);padding:12px 14px;background:var(--surface)}
+  .paper-card h4{margin:0 0 6px;font-size:.95em}
+  .paper-card .meta{font-size:.72em;color:var(--text-3);margin-bottom:6px}
+  .arch{font-family:var(--font-mono,ui-monospace,monospace);font-size:.74em;background:var(--surface-2);
+        border:1px solid var(--border);padding:8px 10px;white-space:pre;overflow-x:auto;line-height:1.5}
+</style>
+</head>
+<body>
+<div class="deck" data-themes="academic-paper,minimal-white,editorial-serif" data-theme-base="assets/themes/">
+
+<!-- ══════════════════ 1 封面 ══════════════════ -->
+<section class="slide is-active" data-title="封面">
+  <div class="deck-header"><span class="eyebrow">组会汇报 · 文献调研</span><span class="eyebrow">2026-08</span></div>
+  <div class="anim-stagger-list">
+    <p class="kicker">Survey · Long-Horizon Science Agent Benchmarks</p>
+    <h1 class="h1 anim-fade-up" data-anim="fade-up">
+      过程可判定性<br><span class="gradient-text">长程科学智能体</span>评测基准调研
+    </h1>
+    <p class="lede">从 LLM 基准到 Agent 基准，从终态正确到过程正确 —— 现状、难点与八种构建范式</p>
+    <div class="row wrap mt-l">
+      <span class="pill pill-accent">40+ benchmark</span>
+      <span class="pill">8 种构建范式</span>
+      <span class="pill">全部附 arXiv 可核验</span>
+    </div>
+  </div>
+  <div class="deck-footer"><span class="dim2">调研期 2026-07 · 多渠道并行检索交叉核验</span><span class="slide-number"></span></div>
+  <div class="notes">今天汇报的是长程科学智能体评测基准的调研。核心问题只有一个：当任务需要几十步才能完成时，我们怎么判断智能体"走对了路"，而不只是"答案碰对了"。全部结论都附 arXiv 编号，可以直接核验。</div>
+</section>
+
+<!-- ══════════════════ 2 目录 ══════════════════ -->
+<section class="slide" data-title="目录">
+  <div class="deck-header"><span class="eyebrow">Outline</span></div>
+  <h2 class="h2">汇报结构</h2>
+  <div class="grid g2 mt-l">
+    <div>
+      <div class="paper-card mb-m">
+        <h4>一 · 问题定位</h4>
+        <p class="dim2" style="font-size:.82em;margin:0">Agent 基准与 LLM 基准差在哪 · 科学域又特殊在哪</p>
+      </div>
+      <div class="paper-card mb-m">
+        <h4>二 · 现状全景</h4>
+        <p class="dim2" style="font-size:.82em;margin:0">九个领域分类 · 榜单生态 · 覆盖度与空白</p>
+      </div>
+      <div class="paper-card">
+        <h4>三 · 三个核心难点</h4>
+        <p class="dim2" style="font-size:.82em;margin:0">判定失灵 · 过程不可见 · 标注不可持续</p>
+      </div>
+    </div>
+    <div>
+      <div class="paper-card mb-m">
+        <h4>四 · 八种构建范式</h4>
+        <p class="dim2" style="font-size:.82em;margin:0">金标准从哪来 · 判分怎么做 · 硬度分级</p>
+      </div>
+      <div class="paper-card mb-m">
+        <h4>五 · 逐范式代表工作</h4>
+        <p class="dim2" style="font-size:.82em;margin:0">每类 1–2 篇 · 含实现机制与架构拆解</p>
+      </div>
+      <div class="paper-card">
+        <h4>六 · 结论与未覆盖空白</h4>
+        <p class="dim2" style="font-size:.82em;margin:0">四条正交指标 · 一处结构性缺口</p>
+      </div>
+    </div>
+  </div>
+  <div class="deck-footer"><span class="dim2">共 6 节</span><span class="slide-number"></span></div>
+  <div class="notes">分六节。前三节讲清问题和难点，第四五节是主体——八种构建范式加代表论文，最后收在一处结构性空白上。</div>
+</section>
+
+<!-- ══════════════════ 3 章节分隔：问题定位 ══════════════════ -->
+<section class="slide" data-title="一·问题定位">
+  <p class="kicker">Section One</p>
+  <h1 class="h1">问题定位</h1>
+  <p class="lede">同样叫 benchmark，评 Agent 和评 LLM 是两件不同的事</p>
+  <div class="deck-footer"><span class="dim2">§1</span><span class="slide-number"></span></div>
+  <div class="notes">先把概念分清楚，否则后面讨论难点会混。</div>
+</section>
+
+<!-- ══════════════════ 4 LLM vs Agent 基准 ══════════════════ -->
+<section class="slide" data-title="LLM 基准 vs Agent 基准">
+  <div class="deck-header"><span class="eyebrow">§1.1 概念辨析</span></div>
+  <h2 class="h2">一次问答，还是一段轨迹</h2>
+  <table class="dense mt-m">
+    <thead>
+      <tr><th style="width:16%"></th><th style="width:42%">LLM 基准</th><th style="width:42%">Agent 基准</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><b>评测对象</b></td><td>模型的一次输出</td><td>模型在环境中的<b>一整段行为轨迹</b></td></tr>
+      <tr><td><b>输入形态</b></td><td>题面即全部信息</td><td>题面 + 工具 + 环境反馈，信息需主动获取</td></tr>
+      <tr><td><b>交互轮数</b></td><td>1 轮</td><td>数十至数百轮（RE-Bench 允许长时间自主迭代）</td></tr>
+      <tr><td><b>失败模式</b></td><td>答错</td><td>答错 · 中途跑偏 · 空转 · 用错工具 · 目标漂移</td></tr>
+      <tr><td><b>判分位置</b></td><td>终态（对答案）</td><td>终态 + <b>过程中的中间卡点</b></td></tr>
+      <tr><td><b>可复现性</b></td><td>温度固定即近似确定</td><td>轨迹分叉，需报 pass^k 稳定性</td></tr>
+      <tr><td><b>典型代表</b></td><td>GPQA · SciBench · ChemBench（2700+ 化学问答）</td><td>SciCode · SUPER · RE-Bench · TheAgentCompany</td></tr>
+    </tbody>
+  </table>
+  <div class="gap-box">
+    <b>关键差异不在难度，在<u>可判定的粒度</u>。</b>LLM 基准只需要一个金标准答案；Agent 基准要回答"第 17 步走对了没有"，
+    而这一步的正确性往往没有现成标签。
+  </div>
+  <div class="deck-footer"><span class="dim2">ChemBench arXiv:2404.01475 · RE-Bench arXiv:2411.15114</span><span class="slide-number"></span></div>
+  <div class="notes">这张表是全篇的基础。最后一行对比最直观：ChemBench 有 2700 多道化学问答，本质是考知识；SciCode 那类要看智能体一步步怎么算的。差异不在难度，在能不能判定过程。</div>
+</section>
+
+<!-- ══════════════════ 5 长程稳定性的实证 ══════════════════ -->
+<section class="slide" data-title="长程稳定性实证">
+  <div class="deck-header"><span class="eyebrow">§1.2 为什么终态成功率不够</span></div>
+  <h2 class="h2">三组实证数字</h2>
+  <div class="grid g3 mt-l">
+    <div class="paper-card">
+      <div class="num-big">&lt;25%</div>
+      <p class="dim2" style="font-size:.8em;margin:6px 0 0"><b>τ-bench 的 pass^8</b><br>
+      零售域同任务连跑 8 次全成功的比例。gpt-4o 单次成功率远高于此 ——
+      <b>长程稳定性远低于单次成功率</b>。</p>
+      <p class="cite">arXiv:2406.12045</p>
+    </div>
+    <div class="paper-card">
+      <div class="num-big">11%</div>
+      <p class="dim2" style="font-size:.8em;margin:6px 0 0"><b>TRAIL 的错误定位准确率</b><br>
+      给 SOTA 长上下文模型一段失败轨迹，让它指出错在哪一步 ——
+      最好的 Gemini-2.5-pro <b>只得 11%</b>。</p>
+      <p class="cite">arXiv:2505.08638</p>
+    </div>
+    <div class="paper-card">
+      <div class="num-big">78.2%</div>
+      <p class="dim2" style="font-size:.8em;margin:6px 0 0"><b>PRM800K 的过程监督</b><br>
+      按步骤给分（78.2%）显著优于只按结果给分（72.4%），
+      <b>过程信号确实携带额外信息</b>。</p>
+      <p class="cite">arXiv:2305.20050</p>
+    </div>
+  </div>
+  <div class="gap-box">
+    三个数字指向同一件事：<b>只看终态，会把"差一步失败"和"完全跑偏"记成同一个 0 分</b>；
+    而模型自己也不擅长事后找出错在哪 —— 所以过程判定必须在出题时就埋好，不能靠事后归因。
+  </div>
+  <div class="deck-footer"><span class="dim2">§1.2</span><span class="slide-number"></span></div>
+  <div class="notes">这三个数字我建议记住。第一个说明长程任务不稳定，第二个说明让模型自己找错不靠谱，第三个说明过程信号有价值。合起来就是：过程卡点得在出题时埋。</div>
+</section>
+
+<!-- ══════════════════ 6 科学域的特殊性 ══════════════════ -->
+<section class="slide" data-title="科学域的特殊性">
+  <div class="deck-header"><span class="eyebrow">§1.3 Science 基准又特殊在哪</span></div>
+  <h2 class="h2">金标准的来源变了</h2>
+  <div class="grid g2 mt-m">
+    <div>
+      <h3 class="h3" style="font-size:1em">通用 Agent 域</h3>
+      <p class="dim2" style="font-size:.84em">金标准可以<b>人为规定</b>：订票要订到指定航班、代码要通过指定测试、
+      网页要点到指定按钮。任务是人造的，答案自然是人定的。</p>
+      <div class="arch mt-s">任务 → 人定目标状态 → 状态比对</div>
+    </div>
+    <div>
+      <h3 class="h3" style="font-size:1em">科学域</h3>
+      <p class="dim2" style="font-size:.84em">金标准<b>来自自然界或既有文献</b>，出题人无权规定。
+      于是只有三条路能拿到答案。</p>
+      <div class="arch mt-s">① 从已发表论文反向抽取
+② 用物理/化学 oracle 现场算
+③ 从公开数据库直接取</div>
+    </div>
+  </div>
+  <table class="dense mt-l">
+    <thead><tr><th style="width:22%">科学域的特有约束</th><th>具体表现</th></tr></thead>
+    <tbody>
+      <tr><td><b>答案空间开放</b></td><td>化学空间大到无法穷举，Tartarus 明确"无标准答案"，只能定义可计算的优化目标</td></tr>
+      <tr><td><b>正确性有物理性</b></td><td>PoseBusters 实测发现 AI 方法常生成<b>物理上无效</b>的 3D 构象 —— 答案格式对、化学上不成立</td></tr>
+      <tr><td><b>专业门槛高</b></td><td>SciCode 需 ≥2 位 PhD 手工拆题写金标准；ScienceAgentBench 需领域专家逐题定成功标准</td></tr>
+      <tr><td><b>污染风险高</b></td><td>金标准藏在已发表论文里，模型可能预训练时见过 —— 抗污染靠新论文或隐藏测试集</td></tr>
+      <tr><td><b>可及性受限</b></td><td>真实实验昂贵，多数基准以模拟 oracle 或数据库回放替代湿实验</td></tr>
+    </tbody>
+  </table>
+  <div class="deck-footer"><span class="dim2">Tartarus arXiv:2209.12487 · PoseBusters arXiv:2308.05777 · SciCode arXiv:2407.13168</span><span class="slide-number"></span></div>
+  <div class="notes">科学域和通用域最大的差别：金标准不是我们说了算。订票任务可以规定"必须订这班"，但"这个分子溶解度多少"由自然界决定。所以科学基准的构建方式，本质是围绕"怎么拿到可信答案"展开的。</div>
+</section>
+
+<!-- ══════════════════ 7 章节分隔：现状 ══════════════════ -->
+<section class="slide" data-title="二·现状全景">
+  <p class="kicker">Section Two</p>
+  <h1 class="h1">现状全景</h1>
+  <p class="lede">九个领域、四十余个基准，以及一处系统性空白</p>
+  <div class="deck-footer"><span class="dim2">§2</span><span class="slide-number"></span></div>
+  <div class="notes">这节把地图铺开。</div>
+</section>
+
+<!-- ══════════════════ 8 九类总览 ══════════════════ -->
+<section class="slide" data-title="九类总览">
+  <div class="deck-header"><span class="eyebrow">§2.1 领域分类</span></div>
+  <h2 class="h2">科学智能体基准的九个门类</h2>
+  <table class="dense mt-m">
+    <thead><tr><th style="width:5%">类</th><th style="width:17%">领域</th><th style="width:46%">代表基准</th><th style="width:32%">任务形态</th></tr></thead>
+    <tbody>
+      <tr><td><b>0</b></td><td>聚合套件</td><td><b>AstaBench</b>（2400+ 样例 / 11 基准 / 57 agent）</td><td>把多个科学基准统一到成本感知框架</td></tr>
+      <tr><td><b>1</b></td><td>数据驱动发现</td><td><b>DiscoveryBench</b>（264 任务）· <b>ScienceAgentBench</b>（102 任务）· DSBench</td><td>给数据与任务，写分析代码或找假设</td></tr>
+      <tr><td><b>2</b></td><td>科研编程复现</td><td><b>SciCode</b>（80 主 → 338 子）· <b>CORE-Bench</b></td><td>把科研计算拆成可测子任务</td></tr>
+      <tr><td><b>3</b></td><td>ML 研究工程</td><td><b>MLAgentBench</b> · MLE-bench · <b>RE-Bench</b> · PaperBench</td><td>端到端做 ML 实验或复现论文</td></tr>
+      <tr><td><b>4</b></td><td>化学与分子发现</td><td>ChemBench · ChemCrow · ChemToolAgent · <b>TOMG-Bench</b> · <b>TDC+PMO</b> · GuacaMol · MOSES</td><td>化学知识、工具调用、生成物 oracle 反查</td></tr>
+      <tr><td><b>4b</b></td><td>结构与对接</td><td><b>PoseBusters</b> · <b>PoseBench</b></td><td>最终 3D 构象的物理合理性检查</td></tr>
+      <tr><td><b>5</b></td><td>生物与生信</td><td>LAB-Bench · BixBench · <b>BiomniBench</b> · BioPlanner</td><td>生信工作流复现、实验协议规划</td></tr>
+      <tr><td><b>6</b></td><td>材料</td><td>LLM4Mat-bench · CrystalGym · <b>Tartarus</b> · <b>MADE</b>（2026）</td><td>属性预测、逆向设计、闭环发现</td></tr>
+      <tr><td><b>7</b></td><td>理解与推理</td><td>CURIE（429 文档）· SciBench · GPQA · OlympiadBench</td><td>长文档理解、专业推理、信息抽取</td></tr>
+      <tr><td><b>8</b></td><td>端到端研究</td><td>AI Scientist · ResearchBench · PaperArena</td><td>从想法到论文的全流程</td></tr>
+    </tbody>
+  </table>
+  <div class="deck-footer"><span class="dim2">加粗者为本次重点展开 · 全部附 arXiv 见附录</span><span class="slide-number"></span></div>
+  <div class="notes">九类。注意类 4、4b、6 是化学材料，占比很重——因为这些领域有现成的计算 oracle，容易做自动判分。类 7 其实是 LLM 基准而不是 Agent 基准，放进来是因为文献里常混在一起谈。</div>
+</section>
+
+<!-- ══════════════════ 9 硬度分布 ══════════════════ -->
+<section class="slide" data-title="判分硬度分布">
+  <div class="deck-header"><span class="eyebrow">§2.2 关键切面</span></div>
+  <h2 class="h2">按"判分硬度 × 判分位置"重新排列</h2>
+  <p class="lede">硬判定 = 可执行断言 / 规则匹配 / 状态比对 / 单元测试，不含 LLM 裁判与人工</p>
+  <table class="dense mt-m">
+    <thead><tr><th style="width:20%"></th><th style="width:40%">仅终态判分</th><th style="width:40%">含过程中间卡点</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><span class="tag-hard">硬判定</span></td>
+        <td>Tartarus · TDC+PMO · GuacaMol · MOSES · TOMG-Bench · PoseBusters · PoseBench · LLM4Mat-bench · CORE-Bench · MLE-bench · DSBench · SWE-bench · τ-bench<br><span class="dim2" style="font-size:.8em">数量最多，机制成熟</span></td>
+        <td><b>SciCode</b> · <b>SUPER</b> · <b>LongProc</b> · <b>TravelPlanner</b> · <b>Commit0</b> · <b>AgentBoard</b> · <b>AgentQuest</b> · <b>USACO</b> · <b>RE-Bench</b> · DevBench（部分）<br><span class="dim2" style="font-size:.8em">仅 10 个，且多数非科学域</span></td>
+      </tr>
+      <tr>
+        <td><span class="tag-soft">软判定<br>（LLM/人工）</span></td>
+        <td>AI Scientist · ResearchBench · PaperArena<br><span class="dim2" style="font-size:.8em">同行评审模拟，主观性强</span></td>
+        <td>PaperBench（8316 叶子 rubric）· <b>BiomniBench</b>（6 维 rubric）· ProcessBench · PRM800K · Who&amp;When · TRAIL · MultiAgentBench<br><span class="dim2" style="font-size:.8em">思路对，判定不硬</span></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="gap-box">
+    <b>右上角这一格是关键。</b>硬判定 + 过程卡点的基准只有 10 个，其中科学域仅 SciCode、SUPER、RE-Bench 三个；
+    而<b>科学域中真正做过程级评测的 BiomniBench，用的是 rubric 加 LLM 打分</b> —— 落在右下角。
+  </div>
+  <div class="deck-footer"><span class="dim2">§2.2 · 分类依据见 §4 八范式</span><span class="slide-number"></span></div>
+  <div class="notes">这张是全篇最重要的一张。把基准按两个维度摆开之后，右上角那一格明显是稀疏的——硬判定加过程卡点，只有十个，科学域只有三个。这就是后面要讲的空白。</div>
+</section>
+
+<!-- ══════════════════ 10 榜单生态 ══════════════════ -->
+<section class="slide" data-title="榜单生态">
+  <div class="deck-header"><span class="eyebrow">§2.3 评测生态</span></div>
+  <h2 class="h2">榜单不定义卡点，卡点由底层基准决定</h2>
+  <table class="dense mt-m">
+    <thead><tr><th style="width:18%">榜单</th><th style="width:14%">主办</th><th style="width:40%">收录内容</th><th style="width:28%">中间卡点</th></tr></thead>
+    <tbody>
+      <tr><td><b>HAL</b></td><td>Princeton</td><td>SWE-bench Verified · USACO · AppWorld · τ-bench，成本感知</td><td>取决于底层（USACO 按测试点部分给分）</td></tr>
+      <tr><td><b>METR</b></td><td>METR</td><td>RE-Bench · HCAST</td><td><b>RE-Bench 连续 scoring</b></td></tr>
+      <tr><td><b>Artificial Analysis</b></td><td>商业</td><td>Terminal-Bench Hard · SWE-bench · SciCode</td><td>底层决定</td></tr>
+      <tr><td><b>Epoch AI</b></td><td>Epoch</td><td>METR 时间跨度 · FrontierMath</td><td>连续时间跨度</td></tr>
+    </tbody>
+  </table>
+  <div class="gap-box">
+    主流榜单仍以<b>终态成功率 + 成本</b>为主轴。含硬中间卡点的底层基准只有两个：
+    USACO（测试点比例）与 RE-Bench（连续评分函数）。
+  </div>
+  <div class="deck-footer"><span class="dim2">§2.3</span><span class="slide-number"></span></div>
+  <div class="notes">补充这节是因为常有人问"榜单是怎么测的"。答案是榜单自己不定义卡点，它只是把底层基准打包。所以想改变评测方式，得从底层基准做起。</div>
+</section>
+
+<!-- ══════════════════ 11 章节分隔：难点 ══════════════════ -->
+<section class="slide" data-title="三·核心难点">
+  <p class="kicker">Section Three</p>
+  <h1 class="h1">三个核心难点</h1>
+  <p class="lede">为什么"过程级硬判定"至今稀缺</p>
+  <div class="deck-footer"><span class="dim2">§3</span><span class="slide-number"></span></div>
+  <div class="notes">知道了空白在哪，接下来问为什么会有这个空白。三个原因。</div>
+</section>
+
+<!-- ══════════════════ 12 难点一：判定失灵 ══════════════════ -->
+<section class="slide" data-title="难点一·判定失灵">
+  <div class="deck-header"><span class="eyebrow">§3.1 难点一</span></div>
+  <h2 class="h2">LLM 当裁判会失灵，而且有直接证据</h2>
+  <div class="paper-card mt-m">
+    <p class="meta">ChemCrow · Nature Machine Intelligence 2024 · 论文摘要原文</p>
+    <p style="font-size:1.02em;font-style:italic;margin:8px 0;color:var(--accent-3)">
+      “GPT-4 as an evaluator cannot distinguish between clearly wrong GPT-4 completions
+      and ChemCrow's performance.”
+    </p>
+    <p class="dim2" style="font-size:.84em;margin:0">
+      译：把 GPT-4 当评测者时，它<b>分不清"明显错误的 GPT-4 输出"和"ChemCrow 的真实表现"</b>。
+      这是作者在自己论文里报告的负面结果。
+    </p>
+  </div>
+  <div class="grid g2 mt-l">
+    <div>
+      <h3 class="h3" style="font-size:.95em">为什么在科学域尤其严重</h3>
+      <ul class="dim2" style="font-size:.84em">
+        <li>科学正确性依赖<b>物理与化学约束</b>，不依赖文本合理性 —— 而 LLM 判的是后者</li>
+        <li>PoseBusters 实测：AI 生成的 3D 构象<b>看着像分子、物理上不成立</b>，文本层面无法识别</li>
+        <li>裁判与被测同源时（都是 GPT-4），错误模式相关，误判方向一致</li>
+      </ul>
+    </div>
+    <div>
+      <h3 class="h3" style="font-size:.95em">现有应对</h3>
+      <ul class="dim2" style="font-size:.84em">
+        <li><b>换成计算 oracle</b>：RDKit 现算、物理模拟、能量计算（类 4/4b/6 主流做法）</li>
+        <li><b>换成可执行断言</b>：单元测试、正则匹配执行日志（SciCode / SUPER）</li>
+        <li><b>保留 LLM 但只做辅助</b>：SciCode 让 GPT-4 当红队查假阳性，<b>不参与出题</b></li>
+      </ul>
+    </div>
+  </div>
+  <div class="deck-footer"><span class="dim2">ChemCrow (Nat. Mach. Intell. 2024) · PoseBusters arXiv:2308.05777</span><span class="slide-number"></span></div>
+  <div class="notes">这句原话我建议大家记一下，它是 LLM judge 失灵最硬的证据——不是别人批评的，是 ChemCrow 作者自己在摘要里报的。所以科学域的判分主流是换成计算 oracle 或可执行断言。</div>
+</section>
+
+<!-- ══════════════════ 13 难点二：过程不可见 ══════════════════ -->
+<section class="slide" data-title="难点二·过程不可见">
+  <div class="deck-header"><span class="eyebrow">§3.2 难点二</span></div>
+  <h2 class="h2">中间状态没有天然标签</h2>
+  <p class="lede">终态有金标准（论文报了结果），但"第 17 步该是什么状态"，文献里没写</p>
+  <table class="dense mt-m">
+    <thead><tr><th style="width:24%">卡点构建范式</th><th style="width:38%">机制</th><th style="width:38%">代价</th></tr></thead>
+    <tbody>
+      <tr><td><b>① 出题时埋点</b><br><span class="tag-hard">硬</span></td>
+          <td>出题人在设计任务时就定义中间卡点，用可执行断言表达</td>
+          <td>需要出题人懂领域且懂工程；<b>当前硬路线主流</b></td></tr>
+      <tr><td><b>② 事后逐步人工标注</b><br><span class="tag-soft">软</span></td>
+          <td>请人逐步阅读轨迹并打标</td>
+          <td>信号最密，但 <b>PRM800K 用了 80 万步标注，成本不可持续</b></td></tr>
+      <tr><td><b>③ 事后错误归因</b><br><span class="tag-soft">软</span></td>
+          <td>对冻结轨迹标注"最早错在哪一步"</td>
+          <td>是"阅卷"不是"考试"；被测对象变成挑错模型（ProcessBench / TRAIL）</td></tr>
+      <tr><td><b>④ 纯终态对照</b><br><span class="tag-mid">硬但粗</span></td>
+          <td>只比最终答案</td>
+          <td><b>无法区分"差一步失败"与"完全跑偏"</b></td></tr>
+    </tbody>
+  </table>
+  <div class="gap-box">
+    只有范式①能同时做到"硬判定"与"评测干活的智能体"。②③被成本和定位问题挡住，④信息量不足。
+  </div>
+  <div class="deck-footer"><span class="dim2">PRM800K arXiv:2305.20050 · ProcessBench arXiv:2412.06559 · TRAIL arXiv:2505.08638</span><span class="slide-number"></span></div>
+  <div class="notes">这张讲清了为什么大家不做过程判定——不是不想做，是四条路里三条都有硬伤。只有出题时埋点这条走得通，但它要求出题人既懂领域又懂工程。</div>
+</section>
+
+<!-- ══════════════════ 14 难点三：成本 ══════════════════ -->
+<section class="slide" data-title="难点三·成本">
+  <div class="deck-header"><span class="eyebrow">§3.3 难点三</span></div>
+  <h2 class="h2">专家标注不可规模化，但有两条降本路径</h2>
+  <div class="grid g2 mt-m">
+    <div>
+      <h3 class="h3" style="font-size:.95em">成本的来源</h3>
+      <ul class="dim2" style="font-size:.84em">
+        <li><b>SciCode</b>：≥2 位 PhD 手工拆子问题、写金标准解、设计断言</li>
+        <li><b>ScienceAgentBench</b>：专家逐题写 gold 程序 + 定任务专属成功标准</li>
+        <li><b>BixBench</b>：资深生信专家复现已发表研究，再整理成任务</li>
+        <li><b>PaperBench</b>：20 篇论文拆出 <b>8316 个叶子 rubric</b> 节点</li>
+      </ul>
+      <p class="dim2" style="font-size:.82em">共同点：人力投入与题量<b>线性相关</b>。</p>
+    </div>
+    <div>
+      <h3 class="h3" style="font-size:.95em">两条已被验证的降本路径</h3>
+      <div class="paper-card mb-s">
+        <h4>任务族模板 + 实例填槽</h4>
+        <p class="dim2" style="font-size:.8em;margin:0">
+        <b>AgentBoard 实证</b>：全部 134 个 ALFWorld 任务的 subgoal 只用了约
+        <b>6 种骨架</b> —— 模板写一次，实例自动填。</p>
+      </div>
+      <div class="paper-card">
+        <h4>金标准由程序生成</h4>
+        <p class="dim2" style="font-size:.8em;margin:0">
+        <b>SciCode 做法</b>：target 数值不是人写的，而是<b>跑金标准解自动生成</b>再存档；
+        判分器是写一次全体复用的通用 harness。</p>
+      </div>
+    </div>
+  </div>
+  <div class="gap-box">
+    结论：<b>人应该花在"设计一个任务族"上，不该花在"标注第 500 个实例"上。</b>
+  </div>
+  <div class="deck-footer"><span class="dim2">AgentBoard arXiv:2401.13178 · SciCode arXiv:2407.13168 · PaperBench arXiv:2504.01848</span><span class="slide-number"></span></div>
+  <div class="notes">成本这块有解。AgentBoard 那个数据很有说服力：134 个任务只用了 6 种骨架，说明长程任务是可以批量合成的。关键是人力投在模板层而不是实例层。</div>
+</section>
+
+<!-- ══════════════════ 15 章节分隔：八范式 ══════════════════ -->
+<section class="slide" data-title="四·八种构建范式">
+  <p class="kicker">Section Four</p>
+  <h1 class="h1">八种构建范式</h1>
+  <p class="lede">金标准从哪来、判分怎么做、硬到什么程度</p>
+  <div class="deck-footer"><span class="dim2">§4</span><span class="slide-number"></span></div>
+  <div class="notes">这是全篇主体。把四十多个基准的构建方式归纳成八种范式。</div>
+</section>
+
+<!-- ══════════════════ 16 八范式总表 ══════════════════ -->
+<section class="slide" data-title="八范式总表">
+  <div class="deck-header"><span class="eyebrow">§4.1 归纳</span></div>
+  <h2 class="h2">八种范式一览</h2>
+  <table class="dense mt-m">
+    <thead><tr><th style="width:4%">#</th><th style="width:19%">范式</th><th style="width:26%">金标准怎么来</th><th style="width:23%">判分方式</th><th style="width:28%">代表基准</th></tr></thead>
+    <tbody>
+      <tr><td><b>①</b></td><td><b>论文反向抽取</b></td><td>研究者读论文，提炼任务与金标准假设</td><td>按 facet 比对，常含 LLM <span class="tag-mid">半硬</span></td><td>DiscoveryBench · ScienceAgentBench · CURIE · BixBench</td></tr>
+      <tr><td><b>②</b></td><td><b>专家手工出题 + 写测试</b></td><td>领域 PhD 拆子问题、写 gold，target 跑 gold 自动生成</td><td>可执行断言 <span class="tag-hard">硬</span></td><td><b>SciCode</b> · ScienceAgentBench 的 VER 维度</td></tr>
+      <tr><td><b>③</b></td><td><b>harvest 现成资产</b></td><td>直接取公开数据库、竞赛、论文代码胶囊</td><td>数值或测试比对 <span class="tag-hard">硬</span></td><td><b>CORE-Bench</b> · MLE-bench · LLM4Mat-bench · DSBench</td></tr>
+      <tr><td><b>④</b></td><td><b>环境 + 连续评分</b></td><td>作者写 scoring 函数或 RL 环境</td><td>连续分，随时可测 <span class="tag-hard">硬</span></td><td><b>RE-Bench</b> · MLAgentBench · CrystalGym</td></tr>
+      <tr><td><b>⑤</b></td><td><b>rubric 过程打分</b></td><td>专家定多维评分细则</td><td>rubric + LLM <span class="tag-soft">软</span></td><td>PaperBench（8316 叶子）· <b>BiomniBench</b>（6 维）</td></tr>
+      <tr><td><b>⑥</b></td><td><b>考题整理</b></td><td>教材、考试、专家多源汇编</td><td>选项或数值自动 <span class="tag-hard">硬但无过程</span></td><td>ChemBench · LAB-Bench · GPQA · SciBench</td></tr>
+      <tr><td><b>⑦</b></td><td><b>oracle 终态反查</b></td><td>oracle 现场算，无需预存答案</td><td>确定性打分 <span class="tag-hard">硬 · 纯终态</span></td><td><b>Tartarus</b> · <b>TDC+PMO</b> · GuacaMol · MOSES · TOMG-Bench · PoseBusters</td></tr>
+      <tr><td><b>⑧</b></td><td><b>闭环环境 + 效率指标</b></td><td>环境 + oracle 预算 + 基线算法</td><td>发现效率 <span class="tag-hard">硬 · 评效率</span></td><td><b>MADE</b>（2026）</td></tr>
+    </tbody>
+  </table>
+  <div class="gap-box">
+    <b>范式与硬度的对应关系是结构性的</b>：②④能做到过程级硬判定，因为断言与评分函数可随时求值；
+    ⑦⑧硬但只评终态或效率；①⑤靠语义比对，天然带软判定。
+  </div>
+  <div class="deck-footer"><span class="dim2">§4.1 · 后续逐范式展开代表工作</span><span class="slide-number"></span></div>
+  <div class="notes">这张表是调研的核心产出。八种范式，右边两列是关键——判分硬不硬、代表是谁。接下来一个个展开，每个挑一到两篇看实现。</div>
+</section>
+
+<!-- ══════════════════ 17 范式② SciCode ══════════════════ -->
+<section class="slide" data-title="范式②·SciCode">
+  <div class="deck-header"><span class="eyebrow">§5.1 范式② 专家手工出题 + 写测试</span><span class="eyebrow tag-hard">硬 · 过程级</span></div>
+  <h2 class="h2">SciCode：把科研计算拆成 338 个可断言的子问题</h2>
+  <p class="cite">arXiv:2407.13168 · NeurIPS 2024 · 物理/数学/材料/生物/化学 16 个子域</p>
+  <div class="grid g2 mt-m">
+    <div>
+      <h3 class="h3" style="font-size:.95em">构建流程</h3>
+      <div class="arch">80 个主问题（来自教材与真实科研代码）
+   ↓ ≥2 位 PhD 手工拆解
+338 个有依赖关系的子问题
+   ↓ 专家为每个子问题写金标准解
+金标准解 → 跑一遍 → 自动生成 target 数值
+   ↓ 存入 HDF5
+判分器：通用 harness（写一次全体复用）
+   ↓
+GPT-4 仅当红队查假阳性，不参与出题</div>
+      <p class="dim2" style="font-size:.8em;margin-top:8px">
+      关键设计：<b>人只负责拆题和写解，答案数值由程序算</b> —— 避免人工抄录误差，也降低标注量。</p>
+    </div>
+    <div>
+      <h3 class="h3" style="font-size:.95em">判分机制</h3>
+      <div class="arch">每个子问题携带一组断言：
+    assert np.allclose(f(x), target)
+
+子问题通过率  →  过程分（中间卡点）
+全部子问题通过 →  主问题解决</div>
+      <h3 class="h3 mt-m" style="font-size:.95em">一个真实案例</h3>
+      <p class="dim2" style="font-size:.82em">
+      主问题 <b>Berendsen thermostat</b>（分子动力学控温算法）被科学家拆成
+      <b>12 个有依赖的子问题</b>：从速度标定因子、动能计算，到耦合时间常数，逐步搭出完整算法。
+      每一步都有独立断言 —— 第 5 步错了，第 5 步就拿 0 分，不影响前 4 步的得分。</p>
+      <div class="gap-box">
+        <b>为什么这是过程级硬判定的范本</b>：卡点在出题时定义、用可执行断言表达、
+        判定过程不含任何 LLM 或人工。
+      </div>
+    </div>
+  </div>
+  <div class="deck-footer"><span class="dim2">范式② · 本次调研认定与目标形态最贴合的一篇</span><span class="slide-number"></span></div>
+  <div class="notes">SciCode 是这个范式最干净的实现。两个设计值得学：一是 target 由跑金标准解自动生成，人不抄数字；二是 GPT-4 只当红队查假阳性，不参与出题。Berendsen thermostat 那个例子说明拆题粒度——一个算法拆 12 步。</div>
+</section>
+
+<!-- ══════════════════ 18 范式② SUPER ══════════════════ -->
+<section class="slide" data-title="范式②·SUPER">
+  <div class="deck-header"><span class="eyebrow">§5.1 范式② 第二例</span><span class="eyebrow tag-hard">硬 · 过程级</span></div>
+  <h2 class="h2">SUPER：用执行日志的正则谓词当卡点</h2>
+  <p class="cite">arXiv:2409.07440 · 任务形态为「跑通科研仓库并复现指标」</p>
+  <div class="grid g2 mt-m">
+    <div>
+      <h3 class="h3" style="font-size:.95em">机制：landmark</h3>
+      <p class="dim2" style="font-size:.84em">
+      任务标注一组 <b>landmarks（正则表达式）</b>，对应「执行到这一步必然出现的确定性输出」。
+      判分器用正则搜索智能体的执行历史，命中比例即过程分。</p>
+      <div class="arch">任务 colbert：
+  “在我的数据上训练 ColBERT 并报告 last_loss”
+
+landmarks（示意）：
+  ① 模型正确加载 → 匹配特定 warning 行
+  ② 开始打印 loss → 匹配 loss 输出格式行
+  ③ …
+
+evaluate_checkpoints()
+  → 正则搜执行历史 → 命中率 = 过程分
+终态：last_loss 数值精确比对 = 终态分</div>
+    </div>
+    <div>
+      <h3 class="h3" style="font-size:.95em">这个设计的价值</h3>
+      <ul class="dim2" style="font-size:.84em">
+        <li><b>不需要修改被测程序</b> —— 卡点信号取自 stdout，对智能体完全透明</li>
+        <li><b>可按任务族模板复用</b> —— 同类仓库的 landmark 骨架相似</li>
+        <li><b>纯正则，完全硬判定</b> —— 无 LLM 参与</li>
+      </ul>
+      <h3 class="h3 mt-m" style="font-size:.95em">与 SciCode 的分工差异</h3>
+      <table class="dense">
+        <tbody>
+          <tr><td style="width:30%"><b>SciCode</b></td><td>卡点是<b>代码产物</b>的断言（算得对不对）</td></tr>
+          <tr><td><b>SUPER</b></td><td>卡点是<b>执行痕迹</b>的谓词（有没有走到这一步）</td></tr>
+        </tbody>
+      </table>
+      <p class="dim2" style="font-size:.82em">两者互补：前者判正确性，后者判路径完成度。</p>
+    </div>
+  </div>
+  <div class="deck-footer"><span class="dim2">范式② · coding 与科研执行方向的一号参考</span><span class="slide-number"></span></div>
+  <div class="notes">SUPER 的 landmark 思路很实用——不用改被测程序，从 stdout 抓必经的输出行。它跟 SciCode 是互补的：SciCode 判算得对不对，SUPER 判有没有走到这一步。</div>
+</section>
+
+<!-- ══════════════════ 19 范式④ RE-Bench ══════════════════ -->
+<section class="slide" data-title="范式④·RE-Bench">
+  <div class="deck-header"><span class="eyebrow">§5.2 范式④ 环境 + 连续评分</span><span class="eyebrow tag-hard">硬 · 卡点的高级形态</span></div>
+  <h2 class="h2">RE-Bench：把「偏没偏」变成「离目标多远」</h2>
+  <p class="cite">arXiv:2411.15114 · METR · 7 个开放式 ML 研究工程环境</p>
+  <div class="grid g2 mt-m">
+    <div>
+      <h3 class="h3" style="font-size:.95em">核心机制：连续评分函数</h3>
+      <p class="dim2" style="font-size:.84em">
+      不设离散卡点，而是给每个环境写一个<b>连续 scoring function</b>，
+      任意时刻都能对当前状态求值，并<b>相对人类专家表现归一化</b>。</p>
+      <div class="arch">环境（如「优化某 GPU kernel」）
+   ↓ agent 长时间自主迭代
+任意时刻均可调用 score(state)
+   ↓ 相对 human expert 归一化
+得分曲线 = 过程健康度的连续刻画
+   ↓
+agent 自己也能调 score 自查</div>
+    </div>
+    <div>
+      <h3 class="h3" style="font-size:.95em">为什么说是「高级形态」</h3>
+      <ul class="dim2" style="font-size:.84em">
+        <li><b>信息量最大</b>：离散卡点只有通过或不通过，连续评分给出完整轨迹曲线</li>
+        <li><b>无需预设路径</b>：不假设智能体按某个顺序做，只问「现在离目标多远」</li>
+        <li><b>智能体可自查</b>：把评分函数暴露给智能体，构成真实的研究工程场景</li>
+      </ul>
+      <div class="gap-box">
+        <b>代价</b>：要求任务目标本身可连续量化。ML 工程（优化指标）天然满足；
+        而「合成路线对不对」这类离散判断无法直接套用。
+      </div>
+      <h3 class="h3 mt-m" style="font-size:.95em">被榜单采纳</h3>
+      <p class="dim2" style="font-size:.82em">
+      METR 主榜直接收录，是主流榜单里<b>仅有的两个带硬中间卡点的底层基准之一</b>（另一个是 USACO 的测试点比例）。</p>
+    </div>
+  </div>
+  <div class="deck-footer"><span class="dim2">范式④ · 连续评分是过程量度量的上限形态</span><span class="slide-number"></span></div>
+ <div class="notes">RE-Bench 的连续评分是这个领域最优雅的做法——不预设路径，只问离目标多远，而且智能体自己能查。限制是任务目标得能连续量化，所以适合 ML 工程，不适合判断合成路线对不对。</div>
+</section>
+
+<!-- ══════════════════ 20 范式⑦ Tartarus / TDC+PMO ══════════════════ -->
+<section class="slide" data-title="范式⑦·oracle 反查">
+  <div class="deck-header"><span class="eyebrow">§5.3 范式⑦ oracle 终态反查</span><span class="eyebrow tag-hard">硬 · 纯终态</span></div>
+  <h2 class="h2">Tartarus 与 TDC+PMO：用物理模拟当金标准</h2>
+  <p class="lede">这是科学域特有的范式 —— 答案不存在于任何数据库，而是<b>现场算出来的</b></p>
+  <div class="grid g2 mt-m">
+    <div class="paper-card">
+      <h4>Tartarus：逆向分子设计</h4>
+      <p class="meta">arXiv:2209.12487 · NeurIPS 2023 D&amp;B</p>
+      <p class="dim2" style="font-size:.82em">
+      智能体产出 SMILES 分子式，用<b>五个物理模拟脚本</b>当 oracle 打分：
+      OLED 能隙、光伏转换效率、三靶点对接、反应活化能。</p>
+      <div class="arch">起始池：GDB-13 / HCE 公开库
+靶点：PDB 真实蛋白
+判分器：5 个物理模拟脚本（写一次复用）
+自带基线：遗传算法（solver 无关）</div>
+      <p class="dim2" style="font-size:.8em;margin-top:6px">
+      作者明确写「<b>无标准答案</b>」——化学空间太大无法穷举，所以目标定义为<b>可计算的优化目标</b>而非固定答案。</p>
+    </div>
+    <div class="paper-card">
+      <h4>TDC + PMO：oracle 库与预算制</h4>
+      <p class="meta">TDC: NeurIPS 2021 D&amp;B · PMO: NeurIPS 2022</p>
+      <p class="dim2" style="font-size:.82em">
+      提供 <code>oracle(smiles) → 分数</code> 接口库；PMO 把 23 个 oracle 包成
+      <b>「1 万次调用预算」</b>的优化任务 —— 预算本身就是难度构件。</p>
+      <div class="arch">判分分两档（源码 oracle.py 实证）：
+A 类 确定性公式
+   QED / SA / logP — RDKit 现算，纯硬
+B 类 ML 预测器
+   DRD2 / GSK3β / JNK3 活性
+   hERG / ClinTox 毒性
+   — 确定但带模型误差，非物理真值</div>
+      <p class="dim2" style="font-size:.8em;margin-top:6px">
+      这个两档区分很重要：<b>B 类 oracle 的「金标准」其实是另一个模型的预测</b>，引用时应当声明。</p>
+    </div>
+  </div>
+  <div class="gap-box">
+    <b>范式⑦的共同局限</b>：oracle 只能对<b>最终产物</b>打分。智能体中间怎么推理的、试了哪些错路，oracle 一无所知 ——
+    因此 TOMG-Bench 虽然判分完全硬（RDKit 反查 validity 与 accuracy），却是<b>单轮对话式</b>：给指令→出分子→事后反查，智能体全程不调工具。
+  </div>
+  <div class="deck-footer"><span class="dim2">Tartarus arXiv:2209.12487 · TOMG-Bench arXiv:2412.14642 · GuacaMol arXiv:1811.09621</span><span class="slide-number"></span></div>
+  <div class="notes">这个范式是化学材料域的主流，优点是完全硬、不靠人也不靠 LLM。但局限很清楚：oracle 只能看最终产物。TDC 那个两档区分请大家注意——B 类 oracle 的金标准其实是另一个模型的预测，不是物理真值。</div>
+</section>
+
+<!-- ══════════════════ 21 范式⑧ MADE ══════════════════ -->
+<section class="slide" data-title="范式⑧·MADE">
+  <div class="deck-header"><span class="eyebrow">§5.4 范式⑧ 闭环环境 + 效率指标</span><span class="eyebrow tag-hard">硬 · 评效率</span></div>
+  <h2 class="h2">MADE：最接近真实科学发现的任务形态</h2>
+  <p class="cite">arXiv:2601.20996 · 2026 · Oxford 团队 · 闭环材料发现环境</p>
+  <div class="grid g2 mt-m">
+    <div>
+      <h3 class="h3" style="font-size:.95em">任务形式化</h3>
+      <p class="dim2" style="font-size:.84em">
+      智能体在<b>受限 oracle 预算</b>下迭代：提议结构 → 拿到能量反馈 → 改进下一轮。
+      目标被形式化为「<b>在相图凸包上找热力学稳定化合物</b>」。</p>
+      <div class="arch">架构组件：
+ConvexHullEnvironment（环境）
+   ↓
+oracle：ORB / MACE 形成能预测
+   ↓
+组件化 agent：
+   generator  提议候选结构
+   filter     筛除不可行项
+   planner    安排下一轮策略
+   scorer     排序与取舍
+   （含 56KB LLM ReAct 编排器）</div>
+    </div>
+    <div>
+      <h3 class="h3" style="font-size:.95em">判分：发现效率而非正确性</h3>
+      <table class="dense">
+        <tbody>
+          <tr><td style="width:22%"><b>AF</b></td><td>Acceleration Factor — 相对基线快多少</td></tr>
+          <tr><td><b>EF</b></td><td>Enrichment Factor — 命中富集程度</td></tr>
+          <tr><td><b>AUDC</b></td><td>发现曲线下面积 — 整体效率</td></tr>
+          <tr><td><b>mSUN</b></td><td>找到的稳定新化合物数量</td></tr>
+        </tbody>
+      </table>
+      <div class="gap-box">
+        <b>与过程级判定的关键差异</b>：MADE <b>记录完整 episode 轨迹</b>，
+        但<b>不在中间 checkpoint 判过程对错</b> —— 它问的是「多快多省找到」，
+        不是「第 17 步该不该这么想」。
+      </div>
+      <p class="dim2" style="font-size:.82em;margin-top:8px">
+      这是很典型的一例：<b>同领域、同闭环、同硬 oracle，但评的东西不同</b>。
+      效率与过程正确性是两个正交的问题。</p>
+    </div>
+  </div>
+  <div class="deck-footer"><span class="dim2">范式⑧ · 2026 · 本领域最新进展</span><span class="slide-number"></span></div>
+  <div class="notes">MADE 是最新也最接近真实发现场景的——预算受限、闭环迭代。但注意它评的是发现效率，不是过程对错。它记了完整轨迹，但不在中间卡点判对错——效率和过程正确性是两个正交的问题。</div>
+</section>
+
+<!-- ══════════════════ 22 范式①⑤ 软判定两例 ══════════════════ -->
+<section class="slide" data-title="范式①⑤·软判定两例">
+  <div class="deck-header"><span class="eyebrow">§5.5 范式①与⑤</span><span class="eyebrow tag-soft">软判定</span></div>
+  <h2 class="h2">主流与过程级的两个代表：为何停在软判定</h2>
+  <div class="grid g2 mt-m">
+    <div class="paper-card">
+      <h4>范式① · DiscoveryBench（数量上最主流）</h4>
+      <p class="meta">arXiv:2407.01725 · AI2 · 264 任务 · 社会学/生物/经济等 6 域</p>
+      <div class="arch">构建：从已发表论文反向抽取真实科研工作流
+   ↓
+整理为三元组：
+   （数据集 + 任务描述 + 金标准假设）
+   ↓
+金标准假设 = 变量 + 变量间关系 + 上下文</div>
+      <p class="dim2" style="font-size:.82em;margin-top:8px">
+      <b>判分：</b>把智能体产出的假设按 facet（context / variables / relationship）拆开，
+      与金标准逐面比对 —— <b>包含 LLM 辅助的假设匹配</b>。</p>
+      <p class="dim2" style="font-size:.82em">
+      <b>为何硬不了：</b>「两个自然语言表述的假设是否等价」本质上是语义判断，
+      无法写成断言。</p>
+    </div>
+    <div class="paper-card">
+      <h4>范式⑤ · BiomniBench（思路最接近）</h4>
+      <p class="meta">biorxiv 2026 · Stanford Biomni 团队 · 明确定位为<b>过程级</b>评测</p>
+      <div class="arch">不只看终答，评「分析过程」：
+   ① data handling        数据处理
+   ② method selection     方法选择
+   ③ statistical rigor    统计严谨性
+   ④ biological interp.   生物学解释
+   ⑤ scientific reasoning 科学推理
+   ⑥ （第六维）
+判定：6 维 rubric + LLM 打分</div>
+      <p class="dim2" style="font-size:.82em;margin-top:8px">
+      <b>与本领域目标高度同源</b>：它确实在「给过程打分」，
+      但判定手段是 rubric 加 LLM，<b>不是可执行断言</b>。</p>
+      <div class="gap-box" style="margin-top:8px">
+        这两篇摆在一起看很有意思：<b>数量最多的范式（①）和思路最对的范式（⑤），都停在软判定。</b>
+      </div>
+    </div>
+  </div>
+  <div class="deck-footer"><span class="dim2">DiscoveryBench arXiv:2407.01725 · BiomniBench (biorxiv 2026)</span><span class="slide-number"></span></div>
+ <div class="notes">这两篇很关键。DiscoveryBench 是数量上最主流的范式，BiomniBench 是思路上最接近我们目标的——但两个都停在软判定。这就是空白的位置。</div>
+</section>
+
+<!-- ══════════════════ 23 章节分隔：结论 ══════════════════ -->
+<section class="slide" data-title="六·结论">
+  <p class="kicker">Section Six</p>
+  <h1 class="h1">结论与空白</h1>
+  <p class="lede">三条可复用的工程路线、四条正交指标、一处结构性缺口</p>
+  <div class="deck-footer"><span class="dim2">§6</span><span class="slide-number"></span></div>
+  <div class="notes">收尾三张。</div>
+</section>
+
+<!-- ══════════════════ 24 三条工程路线 ══════════════════ -->
+<section class="slide" data-title="硬卡点的三条路线">
+  <div class="deck-header"><span class="eyebrow">§6.1 可复用结论</span></div>
+  <h2 class="h2">做硬中间卡点，已验证的只有三条路线</h2>
+  <div class="grid g3 mt-l">
+    <div class="paper-card">
+      <h4>一 · 单元测试即卡点</h4>
+      <p class="dim2" style="font-size:.82em">
+      出题或建库时就带测试，卡点直接取测试项。</p>
+      <p class="dim2" style="font-size:.8em"><b>代表</b>：SciCode（338 断言）·
+      Commit0（分层单元测试，通过数随实现单调上升）· USACO（测试点比例部分给分）</p>
+      <p class="dim2" style="font-size:.8em"><b>适用</b>：产物是代码或可执行对象的任务</p>
+    </div>
+    <div class="paper-card">
+      <h4>二 · 执行痕迹谓词</h4>
+      <p class="dim2" style="font-size:.82em">
+      从执行日志或环境反馈里用正则捕获「必经的确定性输出」。</p>
+      <p class="dim2" style="font-size:.8em"><b>代表</b>：SUPER（landmark 正则）·
+      AgentBoard（subgoal 匹配环境观测）</p>
+      <p class="dim2" style="font-size:.8em"><b>适用</b>：有确定执行输出的任务；可按任务族模板复用</p>
+    </div>
+    <div class="paper-card">
+      <h4>三 · 约束与规则库</h4>
+      <p class="dim2" style="font-size:.82em">
+      把过程正确性写成一组可独立判定的约束函数，度量命中比例。</p>
+      <p class="dim2" style="font-size:.8em"><b>代表</b>：TravelPlanner（hard 与 commonsense 两类约束谓词）·
+      LongProc（逐步确定性校验）· AgentQuest（driver 算 progress）</p>
+      <p class="dim2" style="font-size:.8em"><b>适用</b>：<b>规模化最友好</b>，约束可批量生成</p>
+    </div>
+  </div>
+  <div class="gap-box">
+    <b>三条路线共同遵守的正确性双检验</b>（无需 LLM 或人当裁判）：<br>
+    ① <b>必要性</b> —— 金标准轨迹回放必须全部通过；
+    ② <b>区分度</b> —— 非解与空转轨迹不应全部通过。
+  </div>
+  <div class="deck-footer"><span class="dim2">§6.1 · SUPER arXiv:2409.07440 · TravelPlanner arXiv:2402.01622 · Commit0 arXiv:2412.01769</span><span class="slide-number"></span></div>
+  <div class="notes">这三条是可以直接拿去用的。第三条规模化最好。最下面那个双检验很重要——金标准轨迹必须全过、空转轨迹不应全过，两条加起来就能自动验证卡点设计得对不对，不需要人工复核。</div>
+</section>
+
+<!-- ══════════════════ 25 四条正交指标 ══════════════════ -->
+<section class="slide" data-title="四条正交指标">
+  <div class="deck-header"><span class="eyebrow">§6.2 指标组合</span></div>
+  <h2 class="h2">四条正交指标，可组合成完整的过程量度量</h2>
+  <table class="dense mt-m">
+    <thead><tr><th style="width:20%">指标</th><th style="width:34%">测什么</th><th style="width:22%">出处</th><th style="width:24%">形式</th></tr></thead>
+    <tbody>
+      <tr><td><b>Progress Rate</b></td><td>过程健康度 — 已达成子目标的比例</td><td>AgentBoard · AgentQuest</td><td>0–1 连续值</td></tr>
+      <tr><td><b>checkpoint 部分给分</b></td><td>里程碑达成度 — 通过的卡点数</td><td>SciCode · USACO · Commit0</td><td>离散计数</td></tr>
+      <tr><td><b>pass^k</b></td><td>长程稳定性 — 连跑 k 次全对的比例</td><td>τ-bench（pass^8 &lt; 25%）</td><td>概率</td></tr>
+      <tr><td><b>连续 scoring</b></td><td>离目标还有多远</td><td>RE-Bench</td><td>归一化得分曲线</td></tr>
+    </tbody>
+  </table>
+  <div class="grid g2 mt-l">
+    <div>
+      <h3 class="h3" style="font-size:.95em">为什么说正交</h3>
+      <p class="dim2" style="font-size:.84em">
+      四者回答四个不同问题：<b>走了多少</b>（Progress）·
+      <b>做对多少</b>（checkpoint）· <b>稳不稳</b>（pass^k）·
+      <b>还差多少</b>（scoring）。单押任何一个都会丢信息。</p>
+    </div>
+    <div>
+      <h3 class="h3" style="font-size:.95em">工程形态上最成熟的参考</h3>
+      <p class="dim2" style="font-size:.84em">
+      <b>TheAgentCompany</b>（arXiv:2412.14161）的「landmark + 可执行验证器 + 部分给分」最成熟。
+      其核心设计值得借鉴：<b>验证信号取自环境状态与产物，而非轨迹文本</b>；
+      checkpoint 本质是「与路径无关的可判定中间状态谓词」。</p>
+    </div>
+  </div>
+  <div class="deck-footer"><span class="dim2">§6.2 · τ-bench arXiv:2406.12045 · TheAgentCompany arXiv:2412.14161</span><span class="slide-number"></span></div>
+  <div class="notes">四条指标回答四个不同问题，所以要组合用。右下那句是整份调研里我觉得最有用的一句：验证信号要取自环境状态而不是轨迹文本——因为文本可以被说漂亮，状态不能。</div>
+</section>
+
+<!-- ══════════════════ 26 结论：空白 ══════════════════ -->
+<section class="slide" data-title="结论·结构性空白">
+  <div class="deck-header"><span class="eyebrow">§6.3 收束</span></div>
+  <h2 class="h2">一处结构性空白</h2>
+  <table class="dense mt-m">
+    <thead><tr><th style="width:22%">维度组合</th><th style="width:40%">现有基准</th><th style="width:38%">评估</th></tr></thead>
+    <tbody>
+      <tr><td>硬判定 + 终态</td><td>数量最多，机制成熟（oracle 系·harvest 系）</td><td>已饱和</td></tr>
+      <tr><td>软判定 + 过程</td><td>PaperBench · BiomniBench · ProcessBench · TRAIL</td><td>思路对，判定不硬</td></tr>
+      <tr><td>软判定 + 终态</td><td>AI Scientist 系（同行评审模拟）</td><td>主观性强</td></tr>
+      <tr style="background:var(--grad-soft)">
+        <td><b>硬判定 + 过程</b></td>
+        <td><b>仅 10 个</b>，且科学域只有 SciCode · SUPER · RE-Bench <b>三个</b></td>
+        <td><b>稀缺 —— 尤其是化学与材料域一个都没有</b></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="grid g2 mt-l">
+    <div>
+      <h3 class="h3" style="font-size:.95em">三个关键观察</h3>
+      <ol class="dim2" style="font-size:.84em">
+        <li>科学智能体基准的金标准，<b>最主流来源是从已发表论文反向抽取</b>（范式①）——
+        因为科学任务的答案往往就藏在论文的方法与结果里，抗污染靠新论文或隐藏测试集。</li>
+        <li><b>真正做过程级硬判分的极少</b> —— SciCode（子问题断言）、ScienceAgentBench 的 VER、
+        MLAgentBench 与 RE-Bench（可执行 scoring）是少数；<b>BiomniBench 明确做过程级但用 rubric 加 LLM</b>。</li>
+        <li>化学、材料、QA 类多为终态选项或数值（知识测试），不涉长程过程；
+        长程过程集中在<b>数据驱动发现、ML 研究工程、端到端研究</b>三类。</li>
+      </ol>
+    </div>
+    <div>
+      <h3 class="h3" style="font-size:.95em">缺口的具体形状</h3>
+      <div class="gap-box">
+        <b>化学与材料域已经有了硬 oracle（范式⑦）和闭环环境（范式⑧），
+        但两者都只看终态或效率；而能判过程的三个基准（SciCode / SUPER / RE-Bench）
+        全部在编程与 ML 工程域。</b>
+      </div>
+      <p class="dim2" style="font-size:.84em;margin-top:10px">
+      换句话说：<b>把范式②的硬卡点机制，接到范式⑦的 oracle 上去</b>，
+      这个组合目前没有现成工作。MADE 最接近（同领域同闭环），
+      但它选了评效率而不是评过程正确性。</p>
+    </div>
+  </div>
+  <div class="deck-footer"><span class="dim2">§6.3 · 分类依据见 §2.2 与 §4.1</span><span class="slide-number"></span></div>
+  <div class="notes">收尾就这一句：化学材料域有硬 oracle、有闭环环境，但都只看终态；能判过程的三个基准全在编程和 ML 域。把前者的 oracle 和后者的硬卡点接起来，这个组合现在是空的。</div>
+</section>
+
+<!-- ══════════════════ 27 文献附录 ══════════════════ -->
+<section class="slide" data-title="文献附录">
+  <div class="deck-header"><span class="eyebrow">Appendix · 主要文献</span></div>
+  <h2 class="h2">文献清单（均经检索核验）</h2>
+  <div class="grid g2 mt-m" style="font-size:.7em;line-height:1.55">
+    <div>
+      <p><b>过程级硬判定</b><br>
+      SciCode arXiv:2407.13168（NeurIPS 2024）<br>
+      SUPER arXiv:2409.07440<br>
+      LongProc arXiv:2501.05414（COLM 2025）<br>
+      TravelPlanner arXiv:2402.01622（ICML 2024 Spotlight）<br>
+      Commit0 arXiv:2412.01769<br>
+      AgentBoard arXiv:2401.13178（NeurIPS 2024 Oral）<br>
+      AgentQuest arXiv:2404.06411<br>
+      DevBench arXiv:2403.08604<br>
+      RE-Bench arXiv:2411.15114（METR）</p>
+      <p><b>工程范式参考</b><br>
+      TheAgentCompany arXiv:2412.14161<br>
+      τ-bench arXiv:2406.12045<br>
+      OSWorld arXiv:2404.07972<br>
+      SWE-bench arXiv:2310.06770（ICLR 2024）/ Pro arXiv:2509.16941</p>
+      <p><b>过程监督与错误归因</b><br>
+      Let's Verify Step by Step / PRM800K arXiv:2305.20050<br>
+      ProcessBench arXiv:2412.06559（ACL 2025）<br>
+      TRAIL arXiv:2505.08638<br>
+      Who&amp;When arXiv:2505.00212</p>
+    </div>
+    <div>
+      <p><b>科学发现与数据分析</b><br>
+      DiscoveryBench arXiv:2407.01725（AI2）<br>
+      ScienceAgentBench arXiv:2410.05080（ICLR 2025）<br>
+      DSBench arXiv:2409.07703<br>
+      CORE-Bench arXiv:2409.11363<br>
+      CURIE arXiv:2503.13517（ICLR 2025）<br>
+      AstaBench arXiv:2510.21652（ICLR 2026）</p>
+      <p><b>化学·分子·结构</b><br>
+      ChemBench arXiv:2404.01475<br>
+      ChemCrow（Nat. Mach. Intell. 2024）<br>
+      ChemToolAgent arXiv:2411.07228（NAACL 2025 Findings）<br>
+      S²-Bench（前 TOMG-Bench）arXiv:2412.14642（KDD 2026）<br>
+      GuacaMol arXiv:1811.09621 / MOSES<br>
+      PoseBusters arXiv:2308.05777（Chem. Sci. 2024）<br>
+      PoseBench（Nat. Mach. Intell.）</p>
+      <p><b>材料·生物·ML 工程</b><br>
+      Tartarus arXiv:2209.12487（NeurIPS 2023）<br>
+      MADE arXiv:2601.20996（2026）<br>
+      SciAgentArena arXiv:2606.12736<br>
+      BiomniBench（biorxiv 2026）<br>
+      BioPlanner arXiv:2310.10632<br>
+      MLAgentBench arXiv:2310.03302<br>
+      PaperBench arXiv:2504.01848（OpenAI）</p>
+    </div>
+  </div>
+  <div class="deck-footer"><span class="dim2">调研期 2026-07 · 多渠道并行检索交叉核验 · 不确定数量已标「约」</span><span class="slide-number"></span></div>
+  <div class="notes">文献全部附 arXiv 编号，可以直接核。需要哪一篇的细节我都能展开讲。</div>
+</section>
+
+<!-- ══════════════════ 28 致谢 ══════════════════ -->
+<section class="slide" data-title="谢谢">
+  <div class="anim-stagger-list" style="text-align:center">
+    <p class="kicker">Thank You</p>
+    <h1 class="h1">请指教</h1>
+    <p class="lede">欢迎讨论：硬卡点在化学与材料域的可行形态</p>
+    <div class="row wrap mt-l" style="justify-content:center">
+      <span class="pill pill-accent">四十余个基准</span>
+      <span class="pill">八种构建范式</span>
+      <span class="pill">三条工程路线</span>
+      <span class="pill">一处结构性空白</span>
+    </div>
+  </div>
+  <div class="deck-footer"><span class="dim2">按 S 进入演讲者模式 · 方向键翻页 · T 切主题</span><span class="slide-number"></span></div>
+  <div class="notes">以上。最想听意见的是最后那个缺口——化学材料域要做硬卡点，究竟卡在哪里。</div>
+</section>
+
+</div>
+<script src="assets/runtime.js"></script>
+</body></html>

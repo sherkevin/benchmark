@@ -1,0 +1,4 @@
+{
+  "mcp_mock_server/tests/test_mock_server_contract_tools.py::test_ast_decorator_count_is_31": true,
+  "mcp_mock_server/tests/test_mock_server_contract_tools.py::test_registration_superset_of_nine_contract_names": true
+}

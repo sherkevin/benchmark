@@ -1,0 +1,3 @@
+# 出处：/Users/jingwu/work/benchmark/src/probe_headless/model_workers/b3clf_worker.py
+line 500:         "positive_class_meaning": "BBB permeability present (Y=1)",
+line 561:             "positive_column_index": 1,

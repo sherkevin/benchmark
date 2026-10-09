@@ -1,0 +1,18 @@
+event: tree_start
+data: {"thread_id": "tree-8afef2de-b1d0b1", "goal": "MgB2超导"}
+
+event: tree_hypotheses
+data: {"hypotheses": [{"node_id": "d1_n0", "hypothesis": "碳掺杂MgB2可以引入晶格畸变和化学压力，从而提高上临界场和不可逆场，同时基本保持超导转变温度Tc不明显下降。", "objective": "通过溶胶-凝胶法合成不同碳含量的Mg(B1-xCx)2样品，系统测量其晶格参数、Tc、上临界场Hc2和不可逆场Hirr，确定最优碳掺杂量及其对临界电流密度的影响。"}, {"node_id": "d1_n1", "hypothesis": "二维有序柱状缺陷（如经重离子辐照引入的柱状缺陷）能够有效钉扎磁通涡旋，在MgB2中产生各向异性钉扎增强，从而显著提高高场下的临界电流密度。", "objective": "对MgB2单晶或多晶薄膜进行不同剂量和角度的重离子辐照，测量辐照前后的磁滞回线和磁通蠕动速率，分析钉扎力标度行为，评估柱状缺陷对磁通钉扎的贡献。"}, {"node_id": "d1_n2", "hypothesis": "通过引入纳米尺度的非超导第二相（如MgO、YB6等）作为人工钉扎中心，可以在不严重损害晶粒连通性的前提下，提升MgB2在中等磁场下的临界电流密度。", "objective": "采用原位反应法在MgB2基体中引入不同含量的纳米MgO颗粒，利用XRD、SEM、TEM表征微观结构，测量输运临界电流密度随磁场和温度的变化，明确最佳添加量和钉扎机制。"}, {"node_id": "d1_n3", "hypothesis": "MgB2的晶粒边界弱连接是限制其传输临界电流的主要因素之一，通过优化烧结温度和添加低熔点金属（如Ga、In）可以改善晶界连接性，提高整体载流能力。", "objective": "在不同烧结温度下制备纯MgB2和添加少量Ga/In的样品，比较其体密度、电阻率、晶粒形貌和输运临界电流密度，寻找改善晶界弱连接的最佳工艺条件。"}, {"node_id": "d1_n4", "hypothesis": "MgB2多能隙超导电性导致其表面阻抗和射频损耗特性强烈依赖于频率和温度，通过调控能隙结构（如掺杂或辐照）可以优化其在GHz频段下的射频性能，适用于超导射频腔应用。", "objective": "测量不同掺杂（Al、C）和辐照处理的MgB2样品在1–10 GHz范围内的表面阻抗和穿透深度随温度的变化，结合能隙模型拟合，评估其作为超导射频腔材料的潜力。"}]}
+
+event: tree_branch_done
+data: {"node_id": "d1_n0", "hypothesis": "碳掺杂MgB2可以引入晶格畸变和化学压力，从而提高上临界场和不可逆场，同时基本保持超导转变温度Tc不明显下降。", "status": "succeeded", "score": 0.0}
+
+event: tree_branch_done
+data: {"node_id": "d1_n1", "hypothesis": "二维有序柱状缺陷（如经重离子辐照引入的柱状缺陷）能够有效钉扎磁通涡旋，在MgB2中产生各向异性钉扎增强，从而显著提高高场下的临界电流密度。", "status": "succeeded", "score": 0.0}
+
+event: tree_branch_done
+data: {"node_id": "d1_n2", "hypothesis": "通过引入纳米尺度的非超导第二相（如MgO、YB6等）作为人工钉扎中心，可以在不严重损害晶粒连通性的前提下，提升MgB2在中等磁场下的临界电流密度。", "status": "succeeded", "score": 0.0}
+
+event: tree_interrupt
+data: {"type": "research_tree_evaluate", "depth": 1, "goal": "MgB2超导", "branches": [{"node_id": "d1_n0", "hypothesis": "碳掺杂MgB2可以引入晶格畸变和化学压力，从而提高上临界场和不可逆场，同时基本保持超导转变温度Tc不明显下降。", "status": "succeeded", "score": 0.0, "recommended": "unknown", "summary": "Now I have enough data to compile the comprehensive report. Let me synthesize everything.\n\n---\n\n# 分支调查报告：碳掺杂MgB2超导——溶胶-凝胶法合成Mg(B₁₋ₓCₓ)₂\n\n## Branch Summary\n\n本分支假设碳掺杂MgB₂通过晶格畸变和化学压力提升上临界场Hc₂和不可逆场Hirr，同时", "failure_reason": ""}, {"node_id": "d1_n1", "hypothesis": "二维有序柱状缺陷（如经重离子辐照引入的柱状缺陷）能够有效钉扎磁通涡旋，在MgB2中产生各向异性钉扎增强，从而显著提高高场下的临界电流密度。", "status": "succeeded", "score": 0.0, "recommended": "unknown", "summary": "## Branch Summary\n\n本分支假设重离子辐照可在MgB2中引入二维有序柱状缺陷，从而产生各向异性磁通钉扎增强。经过广泛文献调研，**该假设面临根本性物理障碍**：MgB2作为金属性超导体，在swift heavy ion (SHI) 辐照下几乎不可能形成连续非晶柱状缺陷（latent tracks）。在已发表的MgB2辐照研究中，所有Jc增强均来自质子、中子、α粒子或低能离子产生的点", "failure_reason": ""}, {"node_id": "d1_n2", "hypothesis": "通过引入纳米尺度的非超导第二相（如MgO、YB6等）作为人工钉扎中心，可以在不严重损害晶粒连通性的前提下，提升MgB2在中等磁场下的临界电流密度。", "status": "succeeded", "score": 0.0, "recommended": "unknown", "summary": "Now I have a comprehensive picture. Let me compile the final report.\n\n---\n\n## Branch Summary\n\n**Hypothesis**: Introducing nano-MgO as artificial pinning centers in MgB₂ via in-situ reaction can enhanc", "failure_reason": ""}], "thread_id": "tree-8afef2de-b1d0b1"}
+

@@ -1,0 +1,8 @@
+HTTP/1.1 302 Moved Temporarily
+Server: AkamaiGHost
+Content-Length: 0
+Location: https://ssd.mathworks.cn/supportfiles/downloads/R2024b/Release/0/deployment_files/installer/complete/glnxa64/MATLAB_Runtime_R2024b_glnxa64.zip
+Date: Tue, 08 Sep 2026 11:31:35 GMT
+Connection: keep-alive
+Access-Control-Allow-Origin: *
+

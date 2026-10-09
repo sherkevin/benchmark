@@ -1,0 +1,14 @@
+Use case: infographic-diagram
+Asset type: Figure 1 method architecture for a top-conference machine-learning paper.
+
+Input images:
+- Image 1: Figure 1 v31, edit target. Preserve its exact typography, palette, three-region layout, central hub, execution branch, equations, and bottom queue/release/update loop.
+- Image 2: Figure 2 v26, style reference only.
+
+Make only two semantic corrections:
+1. Completely remove the thin blue curved line labelled “next selection” that rises from the released-evidence register toward the selector. Remove the label too. The released-evidence register must reach the selector only through the visible path released evidence → residual → plus → score → select one. Do not replace it with a shortcut or another state-to-selector arrow.
+2. Add one short, direct blue arrow from the eligible-tools tray in the left input region to the lower side of the “select one” selector card. The tray must feed only the selector, not the released-evidence register, residual, plus, score, call, terminal record, or feedback. Keep the arrow local and docked to both cards.
+
+Preserve everything else from v31 unchanged: central method hub; fixed score and residual meet at the circular plus; equation “q=q^0+Δ” once; selected tool → call → terminal record → frozen judge → chemical feedback; runtime error only to runtime ledger; chemical feedback → selected-only queue → purple dashed release with “τ_t=t+1+D” → blue update → interior write port in the highlighted released-evidence row; equation “τ_t=t+1+D” once.
+
+This is Figure 1 method architecture, not Figure 2’s temporal timeline. Do not add “decision t”, “selected action”, “later decision”, a time axis, provider letters A/B/C, explanatory prose, extra state stores, duplicated arrows, gradients, 3-D, grid background, or watermark. Keep the shared top-conference flat-vector style: white paper canvas, dark navy outlines, deep blue #2E5DA1, gray #DCE3EC, amber #E9A11A, muted purple #7650B8, compact icons, no giant headings. All labels must remain readable at seven-inch paper width.

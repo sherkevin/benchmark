@@ -1,0 +1,201 @@
+commit 6c14fddd088be6a2b305998a8e922fd5621a2298
+Author: Jing Wu <jingwu.wu@alibaba-inc.com>
+Date:   Fri Aug 7 21:25:33 2026 +0800
+
+    E1 §6 验收通过 + 裁定其上报疑义 + PR-36 追加第六例。§6实测: atom_count 74941条(药物全覆盖)+element_count 17252条(材料全覆盖), 性质总数73530→165723增量精确对上, 两个properties清单各增键, **红线守住**(92193条新性质全量扫描真实元素符号0条), element_count全int值域1~6合口径, **全量测试199 passed/0 failed**(5771魔法数断言已修)。裁定疑义: 批准药物侧加element_count但优先级低——它严格按口径不自行扩、并说明材料侧无原子总数口径(晶体atom_count为null、非整计量无法定义), 做法与说明都站得住; 判别力实测药物侧元素种类数分布最大档4种占42%未挤一档故可用作切格维度。**PR-36第六例**: 核§6时假设'formula朴素求和==atom_count'得7条不一致准备报bug, 实测标签9→P且三例差值恒21说明本非同口径, 该等式假设是我自造无依据; 新增第五条约束: 核两字段一致性前先确认按定义本就该相等(第三五六例皆属自造等式假设)
+
+diff --git a/dag_poc/gateway.py b/dag_poc/gateway.py
+index a1dec69..c648ec1 100644
+--- a/dag_poc/gateway.py
++++ b/dag_poc/gateway.py
+@@ -678,10 +678,90 @@ def _load_anon_mapping(path=None):
+         return None
+ 
+ 
++# ── per-case 可见集视图（task-05 §10 / PR-40 / 任务 #58：E1-05 视图机制接运行期）──
++# 背景：E1-05 交付 per-case 视图（src/data_build/per_case_view.py，schema
++# per_case_view_v1），但网关此前 0 处消费 ⇒ open 题实跑时 agent 拿到全库、
++# 隔离在运行期失效（监工定性 PR-40）。本段接线：会话构造期按 case_id 装载
++# 视图，四个 A 侧查询工具（literature_search/search_candidates/get_entity/
++# get_property）返回集一律经白名单过滤；compare 只消费 observed（唯一写入
++# 口 get_property 已被闸住），无需独立过滤。
++# 口径（Leader 裁定 F1）：open 类未注册视图必须报错 fail-closed（错误码
++# CASE_VIEW_MISSING，不得静默回落全库）；fixed 类可不加载视图、缺视图合法
++# 走全库，但代码路径统一（view=None 即全库口径，不写两套）。
++# 与 #54 evaluate.py _load_per_case_view 的关系：同路径同 schema；差异仅在
++# 本侧缺位报错（运行期 fail-closed）、evaluate 侧缺位回落（造题期合法
++# 回落），各自现状不互相改。
++# case_id 传输通道（Leader 裁定 F2）：本次仅实现 env 通道 DAGPOC_CASE_ID
++# （E4 现行一 case 一 server 运行通道）+ 构造参数直传；HTTP 头
++# X-Dagpoc-Case-Id 留二期不实现（需 FastMCP 中间件读头，预留）。
++ENV_CASE_ID = 'DAGPOC_CASE_ID'
++_VIEW_IMPORT_WARNED = False
++
++
++def _load_case_view_fns():
++    """E1-05 视图机制懒加载接缝（仿 material_identity 先例）：返
++    (load_view, validate_view)；import 失败返 (None, None)（调用侧按
++    fail-closed 处置：open 构造即 raise，不静默降级）。"""
++    global _VIEW_IMPORT_WARNED
++    try:
++        import sys
++        root = os.path.dirname(HERE)
++        if root not in sys.path:
++            sys.path.insert(0, root)
++        from src.data_build.per_case_view import load_view, validate_view
++        return load_view, validate_view
++    except Exception as e:  # noqa: BLE001 接缝容错：处置由调用侧按 kind 裁定
++        if not _VIEW_IMPORT_WARNED:
++            _VIEW_IMPORT_WARNED = True
++            logging.warning(
++                'per-case 视图机制（src.data_build.per_case_view）装载失败：%r', e)
++        return None, None
++
++
++def _resolve_case_view(case_id, case_kind):
++    """会话构造期统一视图装载（F1：一条代码路径，不写两套）。
++
++    返 (view_dict | None, visible_ids: set | None, visible_docs: set | None)：
++      view=None 即全库口径（无过滤）。case_id 缺省（构造参数与 env
++    DAGPOC_CASE_ID 均无）→ 直接全库（既有调用方零改动）。
++      case_kind=='open'：视图不在场/校验失败/装载机制不可用 → raise
++    ValueError（错误码 CASE_VIEW_MISSING，fail-closed）；构造期 fail fast，
++    与 b_set/G_B 构造断言同款风格。文案不含库规模/白名单内容（防源探测）。
++      case_kind 为 'fixed'/None：缺视图容忍返 None（全库口径）；视图在场
++    且校验通过则同样生效过滤（统一路径：fixed 类将来配视图自动生效）。"""
++    if not case_id:
++        return None, None, None
++    load_view, _validate = _load_case_view_fns()
++    err = None
++    view = None
++    if load_view is None:
++        err = '视图装载机制不可用（src.data_build.per_case_view import 失败）'
++    else:
++        try:
++            view = load_view(case_id)   # 自带 validate_view 载入期校验
++        except OSError:
++            err = f'视图文件不在场（per_case_views/{case_id}.json）'
++        except ValueError as e:
++            err = f'视图校验失败：{e}'
++    if view is None:
++        if case_kind == 'open':
++            raise ValueError(
++                f'CASE_VIEW_MISSING：open 类 case {case_id!r} 未注册可用 '
++                f'per-case 视图（{err}），fail-closed 拒绝构造——不得静默'
++                '回落全库（task-05 §10 / PR-40）')
++        logging.info('case %r 无可用视图（kind=%r），走全库口径',
++                     case_id, case_kind)
++        return None, None, None
++    visible_ids = set(view['visible_entity_ids'])
++    visible_docs = set(view.get('literature_doc_ids') or [])
++    return view, visible_ids, visible_docs
++
++
+ class Gateway:
+     """取数网关：9 工具调用入口 + 逐调用录像 + 预算 + grounded/evidence_time。"""
+ 
+     def __init__(self, db_path=None, b_partition_path=None, case_id=None,
++                 case_kind=None,
+                  b_partition_reader=None, a_identity_reader='__default__',
+                  verify_budget=None, search_budget=None,
+                  max_attempts=10, tol=None, evidence_map=None,
+@@ -702,7 +782,22 @@ class Gateway:
+         # 任务 #13：case_id 非空时按 case 装载该 case 的 members/g_b（per-case 结构）；
+         # 缺省回落顶层 members/g_b，既有调用方零改动。读取经 BPartitionReader
+         # 接缝，E1 落盘后换 JSONL 读取器不改 Gateway 接口签名。
++        # task-05 §10 / PR-40（任务 #58，裁定 F2）：case_id 传输本次仅实现
++        # env 通道 DAGPOC_CASE_ID（E4 现行一 case 一 server 运行通道），构造
++        # 参数优先、env 兜底；HTTP 头 X-Dagpoc-Case-Id 留二期不实现（预留）。
++        # case_kind（裁定 F1）：'open'/'fixed'/None；open 缺视图构造即 raise
++        # （CASE_VIEW_MISSING，fail-closed），fixed/None 缺视图走全库口径。
++        if case_id is None:
++            case_id = os.environ.get(ENV_CASE_ID) or None
++        if case_kind is not None and case_kind not in ('open', 'fixed'):
++            raise ValueError(
++                f"case_kind 须为 'open'/'fixed'/None，收到 {case_kind!r}")
++        self.case_kind = case_kind
+         self.case_id = case_id
++        # per-case 视图装载（统一路径：view=None 即全库口径，不写两套）。
++        # open 类未注册视图在此 raise，不得静默回落全库（PR-40 硬要求）。
++        (self._case_view, self._case_view_ids,
++         self._case_view_docs) = _resolve_case_view(case_id, case_kind)
+         reader = b_partition_reader or default_b_partition_reader(
+             case_id, b_partition_path=b_partition_path)
+         self.b_partition_reader = reader
+@@ -896,14 +991,25 @@ class Gateway:
+         self.search_used += 1
+         ql = query.lower()
+         papers = []
++        # task-05 §10 / PR-40：视图在场时不得预设扫描上限（承 Task #34
++        # 重要 3 教训：先取全命中集，白名单过滤后再按 max_results 截断，
++        # 否则白名单内排序靠后的文献会被截掉）；无视图保持既有行为。
++        scan_cap = None if self._case_view_docs is not None else max_results
+         for p in self.db.get('literature', []):
+             if any(kw in ql for kw in p.get('keywords', [])):
+                 papers.append({'doc_id': p.get('doi') or p.get('title'),
+                                'title': p.get('title', ''),
+                                'year': p.get('year'),
+                                'citation_count': p.get('citation_count', 0)})
+-            if len(papers) >= max_results:
++            if scan_cap is not None and len(papers) >= scan_cap:
+                 break
++        if self._case_view_docs is not None:
++            # PR-40 过滤：papers 限文献白名单（空则与“无文献”同码
++            # EMPTY_RESULT，不区分来源——防源探测，与 ViewedBackendReader
++            # 同口径）；截断在过滤后施加。
++            papers = [p for p in papers
++                      if p['doc_id'] in self._case_view_docs]
++            papers = papers[:max_results]
+         if not papers:
+             return _err('EMPTY_RESULT', '无命中文献，不得编造论文')
+         return {'query': query, 'total_found': len(papers),
+@@ -946,6 +1052,13 @@ class Gateway:
+         self.search_used += 1
+ 
+         universe = self._a_universe()  # {id: (entity_type, 可查性质投影, hint)}
++        if self._case_view_ids is not None:
++            # task-05 §10 / PR-40：universe 裁剪至视图可见集——其下
++            # hit_ids/total_found/offset 全链自然受限（白名单外无命中
++            # 走既有 EMPTY_RESULT，不区分来源，防源探测）。_a_universe
++            # 本体不改（调研 §1.6 不动区：只在调用点裁剪）。
++            universe = {i: v for i, v in universe.items()
++                        if i in self._case_view_ids}
+         hit_ids = set()
+         if keywords:
+             kw = str(keywords).lower()
+@@ -972,6 +1085,10 @@ class Gateway:
+         eid = args.get('id')
+         if not isinstance(eid, str) or not eid:
+             return _err('INVALID_ARGUMENT', 'id 必填')
++        if self._case_view_ids is not None and eid not in self._case_view_ids:
++            # task-05 §10 / PR-40：视图外实体与“不存在”同码 UNKNOWN_ENTITY
++            #（不泄漏在库性，防源探测；与 ViewedBackendReader.get_entity 同口径）。
++            return _err('UNKNOWN_ENTITY', f'实体 {eid} 不存在于本源')
+         if eid in self.db.get('admet', {}):
+             entry = self.db['admet'][eid]
+             # 任务 #36（task-03 §1，ADR-0017）：结构字段切 E1 backend 匿名域——
+@@ -1035,6 +1152,12 @@ class Gateway:
+         if self.verify_budget is not None and self.verify_used >= self.verify_budget:
+             return _err('BUDGET_EXCEEDED', f'查证预算耗尽（verify_budget={self.verify_budget}）')
+         self.verify_used += 1
++        # task-05 §10 / PR-40：保“先计费后校验”顺序（Minor 3 口径：实体
++        # 错误也消耗预算，防免费枚举）——计费后按视图校验，视图外实体与
++        # “不存在”同码 UNKNOWN_ENTITY；白名单外实体进不了 observed，compare
++        # 自然拿不到值（单一写入口不变式）。
++        if self._case_view_ids is not None and eid not in self._case_view_ids:
++            return _err('UNKNOWN_ENTITY', f'实体 {eid} 不存在于本源')
+         entry, entity_props = self._entity_props(eid)
+         if entry is None:
+             return _err('UNKNOWN_ENTITY', f'实体 {eid} 不存在于本源')  # 库外分子同此码（承 predict_admet NOT_IN_DATABASE 语义）
+@@ -1050,6 +1173,11 @@ class Gateway:
+     # ── 纯计算 / 收卷工具 ───────────────────────────────────────────────────
+ 
+     def _tool_compare(self, args):
++        # task-05 §10 / PR-40（调研 §1.3 结论验证）：compare 无需独立视图过滤——
++        # 它只消费 self.observed，而 observed 的唯一写入口是 get_property
++        # （L：get_property 的 values 写入前已经视图白名单闸住），视图外实体的值结构性进不
++        # 来，compare 自然拿不到（防绕路不变式，本注释即登记）。既有
++        # PROPERTY_NOT_VERIFIED/UNKNOWN_ENTITY 错误码口径不动。
+         if set(args) - {'ids', 'key', 'ascending'}:
+             return _err('INVALID_ARGUMENT', f'未知入参 {sorted(set(args) - {"ids", "key", "ascending"})}')
+         ids, key = args.get('ids'), args.get('key')

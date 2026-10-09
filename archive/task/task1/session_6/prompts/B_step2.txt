@@ -1,0 +1,1 @@
+预测 data/demo_pipeline/Nb3Sn.cif，并记录三个数值：B = Nb3Sn 的 Tc，D = Nb3Sn 的对数平均声子频率 ω_log，F = Nb3Sn 的形成能。请明确写出 B、D、F 的数值（保留 4 位以上小数）。

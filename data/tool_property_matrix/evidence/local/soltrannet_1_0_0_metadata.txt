@@ -1,0 +1,27 @@
+# 出处：/Users/jingwu/.local/share/benchmark-runtimes/soltrannet_1_0_0/lib/python3.10/site-packages/soltrannet-1.0.0.dist-info/METADATA
+Metadata-Version: 2.1
+Name: soltrannet
+Version: 1.0.0
+Summary: Molecule attention transformer for predicting aqueous solubility (log S)
+Home-page: https://github.com/gnina/SolTranNet
+Author: Paul Francoeur
+License: UNKNOWN
+Project-URL: Bug Reports, https://github.com/gnina/SolTranNet/issues
+Project-URL: Source, https://github.com/gnina/SolTranNet
+Keywords: ML,solubility,tool
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Science/Research
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Topic :: Scientific/Engineering :: Chemistry
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3 :: Only
+Requires-Python: >=3.6, <4
+
+# 引用行：
+

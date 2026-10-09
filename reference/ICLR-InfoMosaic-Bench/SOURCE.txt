@@ -1,0 +1,6 @@
+conference: ICLR 2026
+title: InfoMosaic-Bench: Evaluating Multi-Source Information Seeking in Tool-Augmented Agents
+arxiv_id: 2510.02271v2
+arxiv_abs: http://arxiv.org/abs/2510.02271v2
+pdf_url: https://arxiv.org/pdf/2510.02271v2
+matched_arxiv_title: InfoMosaic-Bench: Evaluating Multi-Source Information Seeking in Tool-Augmented Agents

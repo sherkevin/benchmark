@@ -1,0 +1,36 @@
+% Preserved original main table: all point estimates and fixed-trajectory ranges.
+% Separate archival/appendix fragment; NOT included by the compact main table.
+% Unique label prevents collision if root later includes this in an actual appendix.
+\begin{table*}[t]
+\caption{Pre-call selection in the original manifest order: natural outcomes
+and controlled correctness drift. Full original point estimates and
+fixed-trajectory scaffold-resampling ranges.}
+\label{tab:original-main-detail}
+\begingroup\centering\MiraTableFont
+\setlength{\tabcolsep}{11pt}\renewcommand{\arraystretch}{1.08}
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+& Natural & \multicolumn{3}{c}{Controlled drift} \\
+\cmidrule(l){3-5}
+Method & Success (\%) & Success (\%) & Gain (pp) & 95\% range \\
+\midrule
+Random & 83.76 & \notrun & \notrun & \notrun \\
+Best Fixed & 88.15 & \notrun & \notrun & \notrun \\
+Frozen & \textbf{89.81} & 73.38 & reference & \notrun \\
+MIRA-Relative & \textbf{89.81} & \notrun & \notrun & \notrun \\
+\midrule
+Online SGD & 89.21 & 84.03 & $+10.66$ & $[+6.05,+15.45]$ \\
+Greedy LinUCB & 89.72 & 81.15 & $+7.77$ & $[+5.08,+10.72]$ \\
+BayesianRouter & 89.53 & 80.28 & $+6.90$ & $[+3.50,+10.41]$ \\
+\midrule
+\textbf{MIRA-Relay} & \textbf{89.81} & \textbf{87.56} & $+14.18$ & $[+9.61,+19.03]$ \\
+\midrule
+Retrospective Best Fixed$^{\dagger}$ & 90.45 & \notrun & \notrun & \notrun \\
+\bottomrule
+\end{tabular}\par
+\tnote{Gain is paired against Frozen. Ranges are central 95\% scaffold-resampling
+ranges of fixed recorded trajectories. $\dagger$ Evaluator-only fixed provider.
+Bold marks the best deployable original-order point estimate, including ties.
+\notrun: not in the recorded original main roster.}
+\endgroup
+\end{table*}

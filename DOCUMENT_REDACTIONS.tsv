@@ -1,0 +1,10 @@
+path	reason
+archive/task/task1/credentials.md	local credential values redacted
+archive/task/task7/poc1_do_challenge/do-events-challenge2025/server/usage/secrets.txt	local/default secret values redacted
+archive/task/task7/poc1_do_challenge/do-events-challenge2025/README.md	default credentials/secret-key lines redacted
+task/task38-p01-provider-pool/evidence/admet_v1_readme.txt	guestAccessKey query value redacted; DOI/link retained
+task/task38-p01-provider-pool/evidence/admet_v2_readme.txt	guestAccessKey query value redacted; DOI/link retained
+data/tool_property_matrix/evidence/admet_ai/citation_admet_ai_1_4_0.txt	guestAccessKey query value redacted; DOI/link retained
+data/tool_property_matrix/evidence/admet_ai/citation_admet_ai_2_0_1.txt	guestAccessKey query value redacted; DOI/link retained
+.srcprobe/software-agent-sdk/tests/sdk/context/prompts/snapshots/dynamic_context__with_secret_registry.txt	secret registry/config values redacted
+.srcprobe/mcp-bench/mcp_servers/medcalc/fastagent.secrets.yaml	secret registry/config values redacted

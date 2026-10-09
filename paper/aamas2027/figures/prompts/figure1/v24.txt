@@ -1,0 +1,25 @@
+Use case: infographic-diagram. Create a new Figure 1 method architecture for the MIRA-Relay paper, using the attached Figure 1 v07 only as a visual composition reference: compact three-region layout, pale-blue central method panel, pale-cream execution panel, concrete grids/cards, crisp arrows, restrained text, and a visible lower feedback loop. Redraw the graph to match the current method below; do not copy v07's outdated labels or old residual semantics.
+
+ROLE OF THIS FIGURE
+This is the architecture figure. It explains how a frozen base score and released selected-only state produce the next tool decision, then how a valid selected result returns through a delayed queue to update only the selected state row. It may show internal computation. It must not become a prose-heavy process chart.
+
+ABSOLUTE TEXT RESTRICTION
+Do not write standalone provider letters “A”, “B”, or “C” anywhere. Do not label cards, vector rows, modules, menu entries, or feedback tokens with provider letters. Do not use cryptic repeated one-character labels. Use natural short labels: “Molecule + Endpoint”, “Features”, “Frozen scorer”, “base score”, “released state”, “residual”, “score”, “eligible tools”, “selected tool”, “call”, “return”, “judge”, “chemical feedback”, “runtime ledger”, “selected-only queue”, “release”, “update”. The only equations are q=q⁰+Δ and τ_t=t+1+D. A single highlighted row or one selected-tool icon may show which row is updated; do not put a letter on it.
+
+COMPOSITION
+Use a compact 2.7:1 white landscape canvas with three soft regions:
+1. left narrow Inputs region: molecule icon, document icon, and a small neutral eligible-tools icon group. These are inputs only.
+2. center largest MIRA-Relay region: a feature grid feeds a locked Frozen scorer, producing a slim three-cell base-score vector q⁰; a small released-state register with three unlabeled rows and two small statistic columns produces a slim residual vector Δ; q⁰ and Δ meet at one circular plus operator to form a slim score vector q=q⁰+Δ; score enters one selector and emits one blue selected-tool token. Do not use row letters.
+3. right execution region: selected tool → call → return record. A valid return enters a small frozen endpoint judge, then amber chemical feedback r∈{0,1}. A runtime error from return enters a gray runtime ledger and ends; it must not enter chemical feedback or update.
+
+FEEDBACK LOOP
+Below the central and execution regions, draw one compact lower loop. Chemical feedback enters a purple selected-only queue. The queue connects by one purple dashed waiting edge to a purple release clock labelled once τ_t=t+1+D. Release connects by one short blue edge to a blue Update module. Update connects by one short blue edge directly into the single highlighted row of the released-state register. There is exactly one write path: queue → release → update → highlighted released-state row. No Release→register bypass, no Update→register bottom-edge arrow, no U-shaped detour, and no second blue route. The released-state register then feeds residual → plus → score for later choices.
+
+VISUAL GRAMMAR
+Use the visual quality of v07: large central method panel, pale grouping, concrete feature/weight grids, vector cells, one plus operator, document/lock/gear/clock icons, thin uniform navy arrows, blue for our selection/update, gray for frozen/external, amber for terminal judge/feedback, muted purple only for pending/release. Keep modules compact and visually distinct. No giant stage ribbons, no full-canvas grid, no crossed-out cards, no duplicate outcome chain, no robots, no glossy 3-D, no gradients, no watermark, no numbers or performance claims.
+
+PAPER READABILITY
+Fewer than 65 English words total; each module has at most two short lines. The central computation and lower feedback loop should dominate. Keep secondary labels readable at seven-inch paper width. Use geometry and icons to carry meaning instead of adding sentences. Make every arrowhead visibly dock to a node or the highlighted row.
+
+FINAL NEGATIVE CHECK
+The final image must have zero literal standalone provider letters A, B, C and zero duplicated provider identity labels. It must contain no family residual, provider bias, trainable backbone, extra call, fallback, verifier/refusal, current output, or unselected output. It must not duplicate Figure 2's event timeline; this figure is the method architecture.

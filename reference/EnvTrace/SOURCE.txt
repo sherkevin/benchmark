@@ -1,0 +1,6 @@
+arXiv:2511.09964
+abs: https://arxiv.org/abs/2511.09964
+pdf: https://arxiv.org/pdf/2511.09964
+topic: 【反例】execution trace alignment评LLM代码语义等价, 数字孪生+同步辐射光束线
+pulled: 2026-08-09 反向证伪搜索(主动找反例)
+see: research/差异点证伪复核-20260809.md

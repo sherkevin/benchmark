@@ -1,0 +1,4 @@
+# 出处：/Users/jingwu/work/benchmark/src/probe_headless/model_workers/lgbm_bbb_worker.py（含 'prob_bbb_positive' 或 'BBB+' 的行）
+line 167:     # 就说明上游改了取值口径，此时不能继续按 P(BBB+) 解读输出。
+line 170:         "prob_bbb_positive = float(probabilities[1])  # Class 1 (BBB+)",
+line 171:         "prediction_binary = 1 if prob_bbb_positive >= threshold else 0",

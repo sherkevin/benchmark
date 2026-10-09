@@ -1,0 +1,16 @@
+config_multilineage_server.yaml
+environment.yml
+src
+scripts
+04_multilineage_server_analysis.ipynb
+SERVER_MULTILINEAGE_GUIDE.md
+results_multilineage/tables
+results_multilineage/figures
+results_multilineage/enrichment
+results_multilineage/reproducibility
+results_multilineage/audit
+results_multilineage/validation_output.log
+results_multilineage/DELIVERY_MANIFEST.md
+logs
+results_multilineage/SERVER_RUN_REPORT.md
+results_multilineage/sensitivity

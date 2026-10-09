@@ -1,0 +1,290 @@
+/tmp/admet-ai-runtime/lib/python3.10/site-packages/torch/cuda/__init__.py:61: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+/tmp/admet-ai-runtime/lib/python3.10/site-packages/chemprop/utils.py:473: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  vars(torch.load(path, map_location=lambda storage, loc: storage)["args"]),
+/tmp/admet-ai-runtime/lib/python3.10/site-packages/chemprop/utils.py:112: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state = torch.load(path, map_location=lambda storage, loc: storage)
+Loading pretrained parameter "encoder.encoder.0.cached_zero_vector".
+Loading pretrained parameter "encoder.encoder.0.W_i.weight".
+Loading pretrained parameter "encoder.encoder.0.W_h.weight".
+Loading pretrained parameter "encoder.encoder.0.W_o.weight".
+Loading pretrained parameter "encoder.encoder.0.W_o.bias".
+Loading pretrained parameter "readout.1.weight".
+Loading pretrained parameter "readout.1.bias".
+Loading pretrained parameter "readout.4.weight".
+Loading pretrained parameter "readout.4.bias".
+Loading pretrained parameter "encoder.encoder.0.cached_zero_vector".
+Loading pretrained parameter "encoder.encoder.0.W_i.weight".
+Loading pretrained parameter "encoder.encoder.0.W_h.weight".
+Loading pretrained parameter "encoder.encoder.0.W_o.weight".
+Loading pretrained parameter "encoder.encoder.0.W_o.bias".
+Loading pretrained parameter "readout.1.weight".
+Loading pretrained parameter "readout.1.bias".
+Loading pretrained parameter "readout.4.weight".
+Loading pretrained parameter "readout.4.bias".
+Loading pretrained parameter "encoder.encoder.0.cached_zero_vector".
+Loading pretrained parameter "encoder.encoder.0.W_i.weight".
+Loading pretrained parameter "encoder.encoder.0.W_h.weight".
+Loading pretrained parameter "encoder.encoder.0.W_o.weight".
+Loading pretrained parameter "encoder.encoder.0.W_o.bias".
+Loading pretrained parameter "readout.1.weight".
+Loading pretrained parameter "readout.1.bias".
+Loading pretrained parameter "readout.4.weight".
+Loading pretrained parameter "readout.4.bias".
+Loading pretrained parameter "encoder.encoder.0.cached_zero_vector".
+Loading pretrained parameter "encoder.encoder.0.W_i.weight".
+Loading pretrained parameter "encoder.encoder.0.W_h.weight".
+Loading pretrained parameter "encoder.encoder.0.W_o.weight".
+Loading pretrained parameter "encoder.encoder.0.W_o.bias".
+Loading pretrained parameter "readout.1.weight".
+Loading pretrained parameter "readout.1.bias".
+Loading pretrained parameter "readout.4.weight".
+Loading pretrained parameter "readout.4.bias".
+Loading pretrained parameter "encoder.encoder.0.cached_zero_vector".
+Loading pretrained parameter "encoder.encoder.0.W_i.weight".
+Loading pretrained parameter "encoder.encoder.0.W_h.weight".
+Loading pretrained parameter "encoder.encoder.0.W_o.weight".
+Loading pretrained parameter "encoder.encoder.0.W_o.bias".
+Loading pretrained parameter "readout.1.weight".
+Loading pretrained parameter "readout.1.bias".
+Loading pretrained parameter "readout.4.weight".
+Loading pretrained parameter "readout.4.bias".
+/tmp/admet-ai-runtime/lib/python3.10/site-packages/chemprop/utils.py:418: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state = torch.load(path, map_location=lambda storage, loc: storage)
+Loading pretrained parameter "encoder.encoder.0.cached_zero_vector".
+Loading pretrained parameter "encoder.encoder.0.W_i.weight".
+Loading pretrained parameter "encoder.encoder.0.W_h.weight".
+Loading pretrained parameter "encoder.encoder.0.W_o.weight".
+Loading pretrained parameter "encoder.encoder.0.W_o.bias".
+Loading pretrained parameter "readout.1.weight".
+Loading pretrained parameter "readout.1.bias".
+Loading pretrained parameter "readout.4.weight".
+Loading pretrained parameter "readout.4.bias".
+Loading pretrained parameter "encoder.encoder.0.cached_zero_vector".
+Loading pretrained parameter "encoder.encoder.0.W_i.weight".
+Loading pretrained parameter "encoder.encoder.0.W_h.weight".
+Loading pretrained parameter "encoder.encoder.0.W_o.weight".
+Loading pretrained parameter "encoder.encoder.0.W_o.bias".
+Loading pretrained parameter "readout.1.weight".
+Loading pretrained parameter "readout.1.bias".
+Loading pretrained parameter "readout.4.weight".
+Loading pretrained parameter "readout.4.bias".
+Loading pretrained parameter "encoder.encoder.0.cached_zero_vector".
+Loading pretrained parameter "encoder.encoder.0.W_i.weight".
+Loading pretrained parameter "encoder.encoder.0.W_h.weight".
+Loading pretrained parameter "encoder.encoder.0.W_o.weight".
+Loading pretrained parameter "encoder.encoder.0.W_o.bias".
+Loading pretrained parameter "readout.1.weight".
+Loading pretrained parameter "readout.1.bias".
+Loading pretrained parameter "readout.4.weight".
+Loading pretrained parameter "readout.4.bias".
+Loading pretrained parameter "encoder.encoder.0.cached_zero_vector".
+Loading pretrained parameter "encoder.encoder.0.W_i.weight".
+Loading pretrained parameter "encoder.encoder.0.W_h.weight".
+Loading pretrained parameter "encoder.encoder.0.W_o.weight".
+Loading pretrained parameter "encoder.encoder.0.W_o.bias".
+Loading pretrained parameter "readout.1.weight".
+Loading pretrained parameter "readout.1.bias".
+Loading pretrained parameter "readout.4.weight".
+Loading pretrained parameter "readout.4.bias".
+Loading pretrained parameter "encoder.encoder.0.cached_zero_vector".
+Loading pretrained parameter "encoder.encoder.0.W_i.weight".
+Loading pretrained parameter "encoder.encoder.0.W_h.weight".
+Loading pretrained parameter "encoder.encoder.0.W_o.weight".
+Loading pretrained parameter "encoder.encoder.0.W_o.bias".
+Loading pretrained parameter "readout.1.weight".
+Loading pretrained parameter "readout.1.bias".
+Loading pretrained parameter "readout.4.weight".
+Loading pretrained parameter "readout.4.bias".
+SMILES to Mol:   0%|          | 0/730 [00:00<?, ?it/s]SMILES to Mol:  86%|████████▋ | 630/730 [00:00<00:00, 6294.75it/s]SMILES to Mol: 100%|██████████| 730/730 [00:00<00:00, 6202.46it/s]
+Computing physchem properties:   0%|          | 0/730 [00:00<?, ?it/s]Computing physchem properties:  12%|█▏        | 85/730 [00:00<00:00, 843.15it/s]Computing physchem properties:  23%|██▎       | 170/730 [00:00<00:00, 740.45it/s]Computing physchem properties:  34%|███▍      | 247/730 [00:00<00:00, 751.89it/s]Computing physchem properties:  45%|████▍     | 325/730 [00:00<00:00, 760.05it/s]Computing physchem properties:  55%|█████▌    | 405/730 [00:00<00:00, 772.77it/s]Computing physchem properties:  66%|██████▌   | 483/730 [00:00<00:00, 723.28it/s]Computing physchem properties:  76%|███████▌  | 556/730 [00:00<00:00, 699.05it/s]Computing physchem properties:  86%|████████▌ | 627/730 [00:00<00:00, 683.90it/s]Computing physchem properties:  95%|█████████▌| 696/730 [00:00<00:00, 654.10it/s]Computing physchem properties: 100%|██████████| 730/730 [00:01<00:00, 702.45it/s]
+RDKit fingerprints:   0%|          | 0/730 [00:00<?, ?it/s]RDKit fingerprints:   1%|          | 4/730 [00:00<00:22, 32.55it/s]RDKit fingerprints:   1%|          | 8/730 [00:00<00:20, 35.56it/s]RDKit fingerprints:   2%|▏         | 12/730 [00:00<00:21, 34.03it/s]RDKit fingerprints:   2%|▏         | 17/730 [00:00<00:18, 37.59it/s]RDKit fingerprints:   3%|▎         | 21/730 [00:00<00:20, 34.88it/s]RDKit fingerprints:   3%|▎         | 25/730 [00:00<00:21, 33.44it/s]RDKit fingerprints:   4%|▍         | 29/730 [00:00<00:21, 32.60it/s]RDKit fingerprints:   5%|▍         | 33/730 [00:00<00:21, 32.88it/s]RDKit fingerprints:   5%|▌         | 37/730 [00:01<00:20, 34.20it/s]RDKit fingerprints:   6%|▌         | 41/730 [00:01<00:19, 34.56it/s]RDKit fingerprints:   6%|▌         | 45/730 [00:01<00:19, 34.70it/s]RDKit fingerprints:   7%|▋         | 49/730 [00:01<00:19, 35.23it/s]RDKit fingerprints:   7%|▋         | 53/730 [00:01<00:19, 35.43it/s]RDKit fingerprints:   8%|▊         | 57/730 [00:01<00:19, 35.38it/s]RDKit fingerprints:   8%|▊         | 61/730 [00:01<00:19, 34.96it/s]RDKit fingerprints:   9%|▉         | 65/730 [00:01<00:19, 34.35it/s]RDKit fingerprints:   9%|▉         | 69/730 [00:01<00:18, 35.54it/s]RDKit fingerprints:  10%|█         | 73/730 [00:02<00:18, 35.53it/s]RDKit fingerprints:  11%|█         | 77/730 [00:02<00:18, 36.22it/s]RDKit fingerprints:  11%|█         | 81/730 [00:02<00:17, 37.09it/s]RDKit fingerprints:  12%|█▏        | 85/730 [00:02<00:17, 37.15it/s]RDKit fingerprints:  12%|█▏        | 89/730 [00:02<00:17, 37.06it/s]RDKit fingerprints:  13%|█▎        | 93/730 [00:02<00:16, 37.59it/s]RDKit fingerprints:  13%|█▎        | 97/730 [00:02<00:16, 37.73it/s]RDKit fingerprints:  14%|█▍        | 101/730 [00:02<00:16, 37.82it/s]RDKit fingerprints:  14%|█▍        | 105/730 [00:02<00:17, 36.64it/s]RDKit fingerprints:  15%|█▍        | 109/730 [00:03<00:18, 33.89it/s]RDKit fingerprints:  15%|█▌        | 113/730 [00:03<00:18, 34.15it/s]RDKit fingerprints:  16%|█▌        | 117/730 [00:03<00:17, 34.10it/s]RDKit fingerprints:  17%|█▋        | 121/730 [00:03<00:17, 34.04it/s]RDKit fingerprints:  17%|█▋        | 125/730 [00:03<00:17, 35.29it/s]RDKit fingerprints:  18%|█▊        | 129/730 [00:03<00:17, 33.72it/s]RDKit fingerprints:  18%|█▊        | 133/730 [00:03<00:17, 33.18it/s]RDKit fingerprints:  19%|█▉        | 137/730 [00:03<00:17, 34.53it/s]RDKit fingerprints:  19%|█▉        | 141/730 [00:04<00:17, 34.57it/s]RDKit fingerprints:  20%|██        | 146/730 [00:04<00:15, 36.66it/s]RDKit fingerprints:  21%|██        | 150/730 [00:04<00:15, 37.28it/s]RDKit fingerprints:  21%|██        | 154/730 [00:04<00:16, 35.17it/s]RDKit fingerprints:  22%|██▏       | 158/730 [00:04<00:17, 33.57it/s]RDKit fingerprints:  22%|██▏       | 162/730 [00:04<00:16, 33.63it/s]RDKit fingerprints:  23%|██▎       | 166/730 [00:04<00:16, 34.36it/s]RDKit fingerprints:  23%|██▎       | 170/730 [00:04<00:16, 34.63it/s]RDKit fingerprints:  24%|██▍       | 174/730 [00:04<00:15, 35.60it/s]RDKit fingerprints:  24%|██▍       | 178/730 [00:05<00:16, 33.98it/s]RDKit fingerprints:  25%|██▍       | 182/730 [00:05<00:16, 34.15it/s]RDKit fingerprints:  25%|██▌       | 186/730 [00:05<00:15, 34.95it/s]RDKit fingerprints:  26%|██▌       | 191/730 [00:05<00:14, 36.73it/s]RDKit fingerprints:  27%|██▋       | 196/730 [00:05<00:13, 38.64it/s]RDKit fingerprints:  27%|██▋       | 200/730 [00:05<00:13, 38.48it/s]RDKit fingerprints:  28%|██▊       | 204/730 [00:05<00:14, 37.31it/s]RDKit fingerprints:  28%|██▊       | 208/730 [00:05<00:14, 36.20it/s]RDKit fingerprints:  29%|██▉       | 212/730 [00:06<00:15, 33.49it/s]RDKit fingerprints:  30%|██▉       | 216/730 [00:06<00:15, 33.45it/s]RDKit fingerprints:  30%|███       | 220/730 [00:06<00:15, 33.54it/s]RDKit fingerprints:  31%|███       | 224/730 [00:06<00:14, 34.50it/s]RDKit fingerprints:  31%|███       | 228/730 [00:06<00:14, 34.72it/s]RDKit fingerprints:  32%|███▏      | 232/730 [00:06<00:15, 31.61it/s]RDKit fingerprints:  32%|███▏      | 236/730 [00:06<00:15, 30.98it/s]RDKit fingerprints:  33%|███▎      | 240/730 [00:06<00:15, 31.52it/s]RDKit fingerprints:  33%|███▎      | 244/730 [00:07<00:16, 29.94it/s]RDKit fingerprints:  34%|███▍      | 248/730 [00:07<00:16, 29.61it/s]RDKit fingerprints:  34%|███▍      | 251/730 [00:07<00:16, 29.55it/s]RDKit fingerprints:  35%|███▍      | 255/730 [00:07<00:16, 29.59it/s]RDKit fingerprints:  35%|███▌      | 258/730 [00:07<00:15, 29.64it/s]RDKit fingerprints:  36%|███▌      | 261/730 [00:07<00:16, 28.82it/s]RDKit fingerprints:  36%|███▌      | 264/730 [00:07<00:16, 29.01it/s]RDKit fingerprints:  37%|███▋      | 267/730 [00:07<00:16, 28.56it/s]RDKit fingerprints:  37%|███▋      | 271/730 [00:07<00:14, 30.65it/s]RDKit fingerprints:  38%|███▊      | 275/730 [00:08<00:14, 30.87it/s]RDKit fingerprints:  38%|███▊      | 279/730 [00:08<00:15, 30.04it/s]RDKit fingerprints:  39%|███▉      | 283/730 [00:08<00:14, 30.57it/s]RDKit fingerprints:  39%|███▉      | 287/730 [00:08<00:13, 31.84it/s]RDKit fingerprints:  40%|███▉      | 291/730 [00:08<00:13, 33.19it/s]RDKit fingerprints:  41%|████      | 296/730 [00:08<00:11, 36.30it/s]RDKit fingerprints:  41%|████      | 300/730 [00:08<00:11, 36.06it/s]RDKit fingerprints:  42%|████▏     | 304/730 [00:08<00:12, 35.08it/s]RDKit fingerprints:  42%|████▏     | 308/730 [00:09<00:12, 33.48it/s]RDKit fingerprints:  43%|████▎     | 312/730 [00:09<00:12, 32.50it/s]RDKit fingerprints:  43%|████▎     | 316/730 [00:09<00:12, 32.98it/s]RDKit fingerprints:  44%|████▍     | 320/730 [00:09<00:12, 32.38it/s]RDKit fingerprints:  44%|████▍     | 324/730 [00:09<00:12, 31.25it/s]RDKit fingerprints:  45%|████▍     | 328/730 [00:09<00:13, 30.64it/s]RDKit fingerprints:  45%|████▌     | 332/730 [00:09<00:13, 29.07it/s]RDKit fingerprints:  46%|████▌     | 336/730 [00:09<00:13, 29.92it/s]RDKit fingerprints:  47%|████▋     | 340/730 [00:10<00:12, 31.66it/s]RDKit fingerprints:  47%|████▋     | 344/730 [00:10<00:11, 32.40it/s]RDKit fingerprints:  48%|████▊     | 348/730 [00:10<00:11, 33.49it/s]RDKit fingerprints:  48%|████▊     | 352/730 [00:10<00:11, 34.24it/s]RDKit fingerprints:  49%|████▉     | 356/730 [00:10<00:11, 33.45it/s]RDKit fingerprints:  49%|████▉     | 360/730 [00:10<00:11, 33.46it/s]RDKit fingerprints:  50%|████▉     | 364/730 [00:10<00:11, 32.62it/s]RDKit fingerprints:  50%|█████     | 368/730 [00:10<00:10, 33.12it/s]RDKit fingerprints:  51%|█████     | 372/730 [00:11<00:10, 34.51it/s]RDKit fingerprints:  52%|█████▏    | 376/730 [00:11<00:10, 34.97it/s]RDKit fingerprints:  52%|█████▏    | 380/730 [00:11<00:09, 36.18it/s]RDKit fingerprints:  53%|█████▎    | 384/730 [00:11<00:09, 36.71it/s]RDKit fingerprints:  53%|█████▎    | 388/730 [00:11<00:09, 36.54it/s]RDKit fingerprints:  54%|█████▎    | 392/730 [00:11<00:09, 35.26it/s]RDKit fingerprints:  54%|█████▍    | 396/730 [00:11<00:09, 36.04it/s]RDKit fingerprints:  55%|█████▍    | 400/730 [00:11<00:08, 36.81it/s]RDKit fingerprints:  55%|█████▌    | 404/730 [00:11<00:08, 37.22it/s]RDKit fingerprints:  56%|█████▌    | 409/730 [00:12<00:08, 38.89it/s]RDKit fingerprints:  57%|█████▋    | 413/730 [00:12<00:08, 37.86it/s]RDKit fingerprints:  57%|█████▋    | 417/730 [00:12<00:08, 35.70it/s]RDKit fingerprints:  58%|█████▊    | 421/730 [00:12<00:08, 36.15it/s]RDKit fingerprints:  58%|█████▊    | 425/730 [00:12<00:08, 35.93it/s]RDKit fingerprints:  59%|█████▉    | 429/730 [00:12<00:08, 36.54it/s]RDKit fingerprints:  59%|█████▉    | 433/730 [00:12<00:08, 34.77it/s]RDKit fingerprints:  60%|█████▉    | 437/730 [00:12<00:08, 35.27it/s]RDKit fingerprints:  60%|██████    | 441/730 [00:12<00:08, 35.40it/s]RDKit fingerprints:  61%|██████    | 445/730 [00:13<00:07, 35.72it/s]RDKit fingerprints:  62%|██████▏   | 449/730 [00:13<00:07, 36.31it/s]RDKit fingerprints:  62%|██████▏   | 454/730 [00:13<00:07, 37.68it/s]RDKit fingerprints:  63%|██████▎   | 458/730 [00:13<00:07, 36.28it/s]RDKit fingerprints:  63%|██████▎   | 462/730 [00:13<00:07, 34.74it/s]RDKit fingerprints:  64%|██████▍   | 467/730 [00:13<00:07, 36.34it/s]RDKit fingerprints:  65%|██████▍   | 471/730 [00:13<00:07, 34.00it/s]RDKit fingerprints:  65%|██████▌   | 475/730 [00:13<00:07, 33.22it/s]RDKit fingerprints:  66%|██████▌   | 479/730 [00:14<00:07, 31.96it/s]RDKit fingerprints:  66%|██████▌   | 483/730 [00:14<00:07, 31.80it/s]RDKit fingerprints:  67%|██████▋   | 487/730 [00:14<00:07, 31.52it/s]RDKit fingerprints:  67%|██████▋   | 491/730 [00:14<00:07, 31.54it/s]RDKit fingerprints:  68%|██████▊   | 495/730 [00:14<00:07, 31.54it/s]RDKit fingerprints:  68%|██████▊   | 499/730 [00:14<00:07, 31.46it/s]RDKit fingerprints:  69%|██████▉   | 503/730 [00:14<00:07, 31.63it/s]RDKit fingerprints:  69%|██████▉   | 507/730 [00:14<00:07, 31.28it/s]RDKit fingerprints:  70%|███████   | 511/730 [00:15<00:06, 31.77it/s]RDKit fingerprints:  71%|███████   | 515/730 [00:15<00:06, 33.66it/s]RDKit fingerprints:  71%|███████   | 519/730 [00:15<00:06, 33.99it/s]RDKit fingerprints:  72%|███████▏  | 523/730 [00:15<00:05, 35.10it/s]RDKit fingerprints:  72%|███████▏  | 527/730 [00:15<00:05, 36.03it/s]RDKit fingerprints:  73%|███████▎  | 532/730 [00:15<00:05, 38.31it/s]RDKit fingerprints:  73%|███████▎  | 536/730 [00:15<00:05, 37.82it/s]RDKit fingerprints:  74%|███████▍  | 540/730 [00:15<00:04, 38.04it/s]RDKit fingerprints:  75%|███████▍  | 545/730 [00:15<00:04, 39.22it/s]RDKit fingerprints:  75%|███████▌  | 549/730 [00:16<00:04, 39.26it/s]RDKit fingerprints:  76%|███████▌  | 553/730 [00:16<00:04, 38.09it/s]RDKit fingerprints:  76%|███████▋  | 557/730 [00:16<00:04, 37.83it/s]RDKit fingerprints:  77%|███████▋  | 561/730 [00:16<00:04, 37.20it/s]RDKit fingerprints:  77%|███████▋  | 565/730 [00:16<00:04, 36.88it/s]RDKit fingerprints:  78%|███████▊  | 569/730 [00:16<00:04, 36.38it/s]RDKit fingerprints:  78%|███████▊  | 573/730 [00:16<00:04, 37.00it/s]RDKit fingerprints:  79%|███████▉  | 577/730 [00:16<00:04, 36.05it/s]RDKit fingerprints:  80%|███████▉  | 581/730 [00:16<00:04, 33.49it/s]RDKit fingerprints:  80%|████████  | 585/730 [00:17<00:04, 29.11it/s]RDKit fingerprints:  81%|████████  | 589/730 [00:17<00:04, 30.73it/s]RDKit fingerprints:  81%|████████  | 593/730 [00:17<00:04, 30.38it/s]RDKit fingerprints:  82%|████████▏ | 597/730 [00:17<00:04, 27.71it/s]RDKit fingerprints:  82%|████████▏ | 601/730 [00:17<00:04, 30.34it/s]RDKit fingerprints:  83%|████████▎ | 605/730 [00:17<00:04, 30.96it/s]RDKit fingerprints:  83%|████████▎ | 609/730 [00:17<00:04, 29.23it/s]RDKit fingerprints:  84%|████████▍ | 613/730 [00:18<00:03, 29.96it/s]RDKit fingerprints:  85%|████████▍ | 617/730 [00:18<00:03, 32.04it/s]RDKit fingerprints:  85%|████████▌ | 622/730 [00:18<00:03, 33.86it/s]RDKit fingerprints:  86%|████████▌ | 626/730 [00:18<00:02, 35.05it/s]RDKit fingerprints:  86%|████████▋ | 630/730 [00:18<00:02, 34.69it/s]RDKit fingerprints:  87%|████████▋ | 634/730 [00:18<00:02, 33.53it/s]RDKit fingerprints:  87%|████████▋ | 638/730 [00:18<00:02, 34.26it/s]RDKit fingerprints:  88%|████████▊ | 642/730 [00:18<00:02, 35.42it/s]RDKit fingerprints:  88%|████████▊ | 646/730 [00:18<00:02, 35.70it/s]RDKit fingerprints:  89%|████████▉ | 650/730 [00:19<00:02, 35.71it/s]RDKit fingerprints:  90%|████████▉ | 654/730 [00:19<00:02, 34.19it/s]RDKit fingerprints:  90%|█████████ | 658/730 [00:19<00:02, 32.53it/s]RDKit fingerprints:  91%|█████████ | 662/730 [00:19<00:02, 32.35it/s]RDKit fingerprints:  91%|█████████ | 666/730 [00:19<00:01, 33.41it/s]RDKit fingerprints:  92%|█████████▏| 670/730 [00:19<00:01, 33.29it/s]RDKit fingerprints:  92%|█████████▏| 674/730 [00:19<00:01, 32.96it/s]RDKit fingerprints:  93%|█████████▎| 678/730 [00:19<00:01, 33.26it/s]RDKit fingerprints:  93%|█████████▎| 682/730 [00:20<00:01, 31.35it/s]RDKit fingerprints:  94%|█████████▍| 686/730 [00:20<00:01, 30.50it/s]RDKit fingerprints:  95%|█████████▍| 690/730 [00:20<00:01, 31.55it/s]RDKit fingerprints:  95%|█████████▌| 694/730 [00:20<00:01, 32.55it/s]RDKit fingerprints:  96%|█████████▌| 698/730 [00:20<00:00, 34.34it/s]RDKit fingerprints:  96%|█████████▌| 702/730 [00:20<00:00, 34.63it/s]RDKit fingerprints:  97%|█████████▋| 706/730 [00:20<00:00, 34.01it/s]RDKit fingerprints:  97%|█████████▋| 710/730 [00:20<00:00, 35.28it/s]RDKit fingerprints:  98%|█████████▊| 714/730 [00:21<00:00, 34.55it/s]RDKit fingerprints:  98%|█████████▊| 718/730 [00:21<00:00, 33.73it/s]RDKit fingerprints:  99%|█████████▉| 722/730 [00:21<00:00, 34.00it/s]RDKit fingerprints:  99%|█████████▉| 726/730 [00:21<00:00, 34.22it/s]RDKit fingerprints: 100%|██████████| 730/730 [00:21<00:00, 33.99it/s]
+model ensembles:   0%|          | 0/2 [00:00<?, ?it/s]
+individual models:   0%|          | 0/5 [00:00<?, ?it/s][A
+
+  0%|          | 0/15 [00:00<?, ?it/s][A[A
+
+  7%|▋         | 1/15 [00:00<00:01,  8.45it/s][A[A
+
+ 20%|██        | 3/15 [00:00<00:01, 11.14it/s][A[A
+
+ 33%|███▎      | 5/15 [00:00<00:00, 11.68it/s][A[A
+
+ 47%|████▋     | 7/15 [00:00<00:00, 10.63it/s][A[A
+
+ 60%|██████    | 9/15 [00:00<00:00, 11.27it/s][A[A
+
+ 73%|███████▎  | 11/15 [00:01<00:00, 10.80it/s][A[A
+
+ 87%|████████▋ | 13/15 [00:01<00:00, 10.38it/s][A[A
+
+100%|██████████| 15/15 [00:01<00:00,  7.84it/s][A[A
+
+                                               [A[A
+individual models:  20%|██        | 1/5 [00:01<00:06,  1.61s/it][A
+
+  0%|          | 0/15 [00:00<?, ?it/s][A[A
+
+ 13%|█▎        | 2/15 [00:00<00:00, 19.65it/s][A[A
+
+ 27%|██▋       | 4/15 [00:00<00:00, 18.86it/s][A[A
+
+ 40%|████      | 6/15 [00:00<00:00, 18.45it/s][A[A
+
+ 60%|██████    | 9/15 [00:00<00:00, 19.11it/s][A[A
+
+ 73%|███████▎  | 11/15 [00:00<00:00, 18.43it/s][A[A
+
+ 87%|████████▋ | 13/15 [00:00<00:00, 17.65it/s][A[A
+
+                                               [A[A
+individual models:  40%|████      | 2/5 [00:02<00:03,  1.13s/it][A
+
+  0%|          | 0/15 [00:00<?, ?it/s][A[A
+
+ 20%|██        | 3/15 [00:00<00:00, 21.13it/s][A[A
+
+ 40%|████      | 6/15 [00:00<00:00, 18.97it/s][A[A
+
+ 53%|█████▎    | 8/15 [00:00<00:00, 18.51it/s][A[A
+
+ 67%|██████▋   | 10/15 [00:00<00:00, 17.54it/s][A[A
+
+ 80%|████████  | 12/15 [00:00<00:00, 17.30it/s][A[A
+
+ 93%|█████████▎| 14/15 [00:00<00:00, 16.59it/s][A[A
+
+                                               [A[A
+individual models:  60%|██████    | 3/5 [00:03<00:01,  1.00it/s][A
+
+  0%|          | 0/15 [00:00<?, ?it/s][A[A
+
+ 13%|█▎        | 2/15 [00:00<00:00, 19.34it/s][A[A
+
+ 27%|██▋       | 4/15 [00:00<00:00, 18.53it/s][A[A
+
+ 40%|████      | 6/15 [00:00<00:00, 17.49it/s][A[A
+
+ 53%|█████▎    | 8/15 [00:00<00:00, 17.18it/s][A[A
+
+ 67%|██████▋   | 10/15 [00:00<00:00, 16.73it/s][A[A
+
+ 80%|████████  | 12/15 [00:00<00:00, 16.84it/s][A[A
+
+ 93%|█████████▎| 14/15 [00:00<00:00, 16.43it/s][A[A
+
+                                               [A[A
+individual models:  80%|████████  | 4/5 [00:04<00:00,  1.06it/s][A
+
+  0%|          | 0/15 [00:00<?, ?it/s][A[A
+
+ 13%|█▎        | 2/15 [00:00<00:00, 19.46it/s][A[A
+
+ 27%|██▋       | 4/15 [00:00<00:00, 18.32it/s][A[A
+
+ 40%|████      | 6/15 [00:00<00:00, 18.41it/s][A[A
+
+ 53%|█████▎    | 8/15 [00:00<00:00, 17.87it/s][A[A
+
+ 67%|██████▋   | 10/15 [00:00<00:00, 17.29it/s][A[A
+
+ 80%|████████  | 12/15 [00:00<00:00, 17.30it/s][A[A
+
+ 93%|█████████▎| 14/15 [00:00<00:00, 16.78it/s][A[A
+
+                                               [A[A
+individual models: 100%|██████████| 5/5 [00:04<00:00,  1.10it/s][Aindividual models: 100%|██████████| 5/5 [00:04<00:00,  1.01it/s]
+model ensembles:  50%|█████     | 1/2 [00:04<00:04,  4.95s/it]
+individual models:   0%|          | 0/5 [00:00<?, ?it/s][A
+
+  0%|          | 0/15 [00:00<?, ?it/s][A[A
+
+ 20%|██        | 3/15 [00:00<00:00, 21.37it/s][A[A
+
+ 40%|████      | 6/15 [00:00<00:00, 19.98it/s][A[A
+
+ 60%|██████    | 9/15 [00:00<00:00, 18.70it/s][A[A
+
+ 73%|███████▎  | 11/15 [00:00<00:00, 17.71it/s][A[A
+
+ 87%|████████▋ | 13/15 [00:00<00:00, 17.40it/s][A[A
+
+100%|██████████| 15/15 [00:00<00:00, 18.06it/s][A[A
+
+                                               [A[A
+individual models:  20%|██        | 1/5 [00:00<00:03,  1.22it/s][A
+
+  0%|          | 0/15 [00:00<?, ?it/s][A[A
+
+ 13%|█▎        | 2/15 [00:00<00:00, 19.91it/s][A[A
+
+ 27%|██▋       | 4/15 [00:00<00:00, 17.60it/s][A[A
+
+ 40%|████      | 6/15 [00:00<00:00, 17.39it/s][A[A
+
+ 53%|█████▎    | 8/15 [00:00<00:00, 18.11it/s][A[A
+
+ 67%|██████▋   | 10/15 [00:00<00:00, 17.88it/s][A[A
+
+ 80%|████████  | 12/15 [00:00<00:00, 17.18it/s][A[A
+
+ 93%|█████████▎| 14/15 [00:00<00:00, 15.75it/s][A[A
+
+                                               [A[A
+individual models:  40%|████      | 2/5 [00:01<00:02,  1.18it/s][A
+
+  0%|          | 0/15 [00:00<?, ?it/s][A[A
+
+ 13%|█▎        | 2/15 [00:00<00:00, 19.45it/s][A[A
+
+ 27%|██▋       | 4/15 [00:00<00:00, 16.75it/s][A[A
+
+ 40%|████      | 6/15 [00:00<00:00, 17.07it/s][A[A
+
+ 53%|█████▎    | 8/15 [00:00<00:00, 17.30it/s][A[A
+
+ 67%|██████▋   | 10/15 [00:00<00:00, 17.37it/s][A[A
+
+ 80%|████████  | 12/15 [00:00<00:00, 17.99it/s][A[A
+
+ 93%|█████████▎| 14/15 [00:00<00:00, 16.90it/s][A[A
+
+                                               [A[A
+individual models:  60%|██████    | 3/5 [00:02<00:01,  1.18it/s][A
+
+  0%|          | 0/15 [00:00<?, ?it/s][A[A
+
+ 13%|█▎        | 2/15 [00:00<00:00, 19.09it/s][A[A
+
+ 27%|██▋       | 4/15 [00:00<00:00, 17.61it/s][A[A
+
+ 40%|████      | 6/15 [00:00<00:00, 16.96it/s][A[A
+
+ 53%|█████▎    | 8/15 [00:00<00:00, 16.27it/s][A[A
+
+ 67%|██████▋   | 10/15 [00:00<00:00, 16.11it/s][A[A
+
+ 80%|████████  | 12/15 [00:00<00:00, 16.05it/s][A[A
+
+ 93%|█████████▎| 14/15 [00:00<00:00, 15.16it/s][A[A
+
+                                               [A[A
+individual models:  80%|████████  | 4/5 [00:03<00:00,  1.14it/s][A
+
+  0%|          | 0/15 [00:00<?, ?it/s][A[A
+
+ 13%|█▎        | 2/15 [00:00<00:00, 17.56it/s][A[A
+
+ 27%|██▋       | 4/15 [00:00<00:00, 17.34it/s][A[A
+
+ 40%|████      | 6/15 [00:00<00:00, 17.74it/s][A[A
+
+ 60%|██████    | 9/15 [00:00<00:00, 18.72it/s][A[A
+
+ 73%|███████▎  | 11/15 [00:00<00:00, 17.94it/s][A[A
+
+ 87%|████████▋ | 13/15 [00:00<00:00, 16.76it/s][A[A
+
+                                               [A[A
+individual models: 100%|██████████| 5/5 [00:04<00:00,  1.16it/s][Aindividual models: 100%|██████████| 5/5 [00:04<00:00,  1.16it/s]
+model ensembles: 100%|██████████| 2/2 [00:09<00:00,  4.57s/it]model ensembles: 100%|██████████| 2/2 [00:09<00:00,  4.63s/it]

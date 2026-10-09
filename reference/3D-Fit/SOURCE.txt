@@ -1,0 +1,5 @@
+arXiv:2607.18144
+abs: https://arxiv.org/abs/2607.18144
+pdf: https://arxiv.org/pdf/2607.18144
+topic: 空间约束分子生成
+pulled: 2026-08-09 via arxiv MCP (arxiv_get_metadata / arxiv_read_paper)

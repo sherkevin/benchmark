@@ -1,0 +1,6 @@
+conference: AAMAS 2025 (Research Paper Track, Detroit, May 19-23 2025)
+title: MOSMAC: A Multi-agent Reinforcement Learning Benchmark on Sequential Multi-objective Tasks
+dblp_stream: conf/ifaamas
+acm_dl: https://dl.acm.org/doi/10.5555/3709347.3743605
+pdf_url: https://ifaamas.csc.liv.ac.uk/Proceedings/aamas2025/pdfs/p867.pdf
+note: IFAAMAS 官方 proceedings 版（非 arXiv 预印本）

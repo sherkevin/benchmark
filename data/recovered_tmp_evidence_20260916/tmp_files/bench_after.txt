@@ -1,0 +1,172 @@
+/usr/local/conda/lib/python3.10/site-packages/pytest_asyncio/plugin.py:247: PytestDeprecationWarning: The configuration option "asyncio_default_fixture_loop_scope" is unset.
+The event loop scope for asynchronous fixtures will default to the fixture caching scope. Future versions of pytest-asyncio will default the loop scope for asynchronous fixtures to function scope. Set the default fixture loop scope explicitly in order to avoid unexpected behavior in the future. Valid fixture loop scopes are: "function", "class", "module", "package", "session"
+
+  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))
+........................................................................ [ 24%]
+.....................................F.................................. [ 48%]
+........................................................................ [ 73%]
+......................s................................................. [ 97%]
+......                                                                   [100%]
+=================================== FAILURES ===================================
+___________________ test_main_end_to_end_with_discovery_case ___________________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-13/test_main_end_to_end_with_disc0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f52c87e7a00>
+capsys = <_pytest.capture.CaptureFixture object at 0x7f52c87e6530>
+
+    def test_main_end_to_end_with_discovery_case(tmp_path, monkeypatch, capsys):
+        """__main__ 全流程：15 fixed 基线 + 1 合成 discovery case（无 gt）端到端
+        跑通不 KeyError；legacy 9 点逐字段零差异、新契约 6 点与修复前快照必然
+        不同且重跑自洽；discovery 行三门指标落账。
+    
+        基线登记（任务 #45 / task-04 §1，监工裁定 A：断言口径改造）：
+        _all_results.json 是修复前断裂态快照——extract_tool_data 只认旧 6 工具名
+        时，新契约 6 点（cardiac_sotalol / cns_metoprolol × 3 model）证据集恒空、
+        cp1-cp5 恒 0；task-04 §1 双轨抽取修复后该 6 点不再以此为基线（任务书 §6
+        风险预判"历史结论翻转为预期"）。故断言拆两段：① legacy 9 点逐字段零差异
+        ——判分公式/权重/阈值零改动的实证意图原样保留；② 新契约 6 点必须与旧快照
+        不同（翻转方向断言，不许只删断言放行）且重跑自洽。_all_results.json 本体
+        属 dag_poc/traces/** 红线，只读不改。
+    
+        断言灵敏度面登记（任务 #50 Major4 / Kim-3）：原 dict(o) != dict(n) 全字段
+        != 存在双向窄盲区——tools 工具计数漂移即恒真误绿、退化 trace 可能误红；
+        故翻转比对收窄到判分字段子集（cp1-cp6/process/task_score/gold_pass_set，
+        排除 tools/best 等噪声字段），并叠加 cp1-cp5 至少一项非 0 的显式方向断言，
+        灵敏度只钉在抽取链生效面上。"""
+        baseline = json.load(open(os.path.join(DAG_POC, 'traces', '_all_results.json')))
+        traces = tmp_path / 'traces'
+        shutil.copytree(os.path.join(DAG_POC, 'traces'), traces)
+        # task-07 阶段1：case 源改指归档区 _deprecated/fixed_discovery；tmp 目录
+        # 结构用 constraint_satisfaction 对齐 evaluate.__main__ 新 cases_dir。
+        cases = tmp_path / 'templates' / 'constraint_satisfaction'
+        shutil.copytree(os.path.join(DAG_POC, 'templates', '_deprecated',
+                                     'fixed_discovery'), cases)
+        # 合成 discovery case（无 gt）+ 网关录像 trace + 金标准答卷
+        # PR-62 同步（task-08 §2 B3）：template_id 改 discovery_haystack_v1——
+        # 路由改显式字段判据后，'open_discovery' 不再进 _score_open_discovery。
+        with open(cases / f'{FIXTURE_CASE}.json', 'w') as f:
+            json.dump({'case_id': FIXTURE_CASE,
+                       'template_id': E.DISCOVERY_TEMPLATE_ID,
+                       'query': 'fixture discovery case'}, f)
+        with open(traces / f'{FIXTURE_CASE}__qwen3.7-max.jsonl', 'w') as f:
+            for row in _golden_events():
+                f.write(json.dumps(row) + '\n')
+        with open(traces / f'{FIXTURE_CASE}__qwen3.7-max_response.json', 'w') as f:
+            json.dump({'response': _golden_payload()}, f)
+    
+        eval_path = os.path.join(SRC_BENCH, 'evaluate.py')
+        code = compile(open(eval_path).read(), eval_path, 'exec')
+        real_listdir = os.listdir
+    
+        def fake_listdir(p='.'):
+            key = os.path.abspath(str(p))
+            if key == os.path.abspath('traces'):
+                return real_listdir(str(traces))
+            if key == os.path.abspath('templates/constraint_satisfaction'):
+                return real_listdir(str(cases))
+            return real_listdir(p)
+    
+        monkeypatch.chdir(tmp_path)
+        monkeypatch.setattr(os, 'listdir', fake_listdir)
+        ns = {'__name__': '__main__', '__file__': eval_path}  # load_mock_db 靠 __file__ 锚定快照
+        exec(code, ns)   # 旧写法在此处对无 gt case 必 KeyError；修法后端到端跑通
+    
+        rows = json.load(open(traces / '_all_results.json'))
+        disc = [r for r in rows if r['case'] == 'fixture_isolation_v2']
+        assert len(disc) == 1
+        d = disc[0]
+        assert d['gt'] is None and d['open_gate'] is True
+        assert d['open_score'] == 1.0 and d['grounding_mode'] == 'placeholder'
+        # 两段断言（task-04 §1 监工裁定 A；任务 #50 Major4 收窄灵敏度面）：
+        # ① legacy 9 点逐字段零差异——"fixed 判分公式零改动"实证意图保留；
+        # ② 新契约 6 点在判分字段子集上必须与修复前快照不同且 cp1-cp5 至少一项
+        # 非 0（§6 历史结论翻转为预期；不许只删断言放行）。
+        _SCORING_FIELDS = ('cp1', 'cp2', 'cp3', 'cp4', 'cp5', 'cp6',
+                           'process', 'task_score', 'gold_pass_set')
+        # Minor（任务 #50 Nora-2）：本名单与下方 n_legacy==9 的 15 点账本构成绑定
+        # （legacy 9 = antibiotic/anxiolytic/bronchodilator × 3 model，新契约 6 =
+        # cardiac_sotalol/cns_metoprolol × 3 model）；账本解冻/增案时需同步本名单。
+        _NEW_CONTRACT_CASES = {'cardiac_sotalol', 'cns_metoprolol'}
+        fixed_new = {r['case'] + '|' + r['model']: r for r in rows
+                     if r['case'] != 'fixture_isolation_v2'}
+        assert len(fixed_new) == len(baseline) == 15
+        n_legacy = 0
+        for o in baseline:
+            key = o['case'] + '|' + o['model']
+            n = fixed_new[key]
+            if o['case'] in _NEW_CONTRACT_CASES:
+                # ② 翻转方向断言（收窄到判分字段子集，排除 tools/best 噪声）：
+                # 快照该 6 点 cp1-cp5/process/task_score 恒 0，若判分面仍全等
+                # → 新契约抽取链回归/未生效
+                o_sc = {k: o.get(k) for k in _SCORING_FIELDS}
+                n_sc = {k: n.get(k) for k in _SCORING_FIELDS}
+                assert o_sc != n_sc, (
+                    f'新契约点 {key} 未翻转：判分字段子集与修复前断裂态快照相同，'
+                    f'task-04 §1 抽取修复未生效')
+                assert any(n.get(k, 0) > 0 for k in ('cp1', 'cp2', 'cp3', 'cp4', 'cp5')), \
+                    f'新契约点 {key} 翻转方向丢失：cp1-cp5 全 0'
+                # 重跑自洽：结构完整、关键字段类型与取值域合法
+                assert set(o) == set(n), f'新契约点 {key} 字段集漂移'
+                assert n['case'] == o['case'] and n['model'] == o['model']
+                assert isinstance(n['task_score'], (int, float)) and n['task_score'] >= 0
+                assert isinstance(n['gold_pass_set'], list)
+            else:
+                # ① legacy 9 点逐字段零差异（fixed 判分公式零改动实证）
+                n_legacy += 1
+                for f in set(o) | set(n):
+>                   assert o.get(f) == n.get(f), f'legacy 字段漂移 {o["case"]} {f}'
+E                   AssertionError: legacy 字段漂移 antibiotic_sulfamethoxazole process
+E                   assert 0.2467 == 0.2889
+E                    +  where 0.2467 = <built-in method get of dict object at 0x7f52cf07edc0>('process')
+E                    +    where <built-in method get of dict object at 0x7f52cf07edc0> = {'best': 'aa', 'case': 'antibiotic_sulfamethoxazole', 'cp1': 1.0, 'cp2': 0.0, ...}.get
+E                    +  and   0.2889 = <built-in method get of dict object at 0x7f52d2ea3e00>('process')
+E                    +    where <built-in method get of dict object at 0x7f52d2ea3e00> = {'best': 'aa', 'case': 'antibiotic_sulfamethoxazole', 'cp1': 1.0, 'cp2': 0.0, ...}.get
+
+/mnt/ai4sci_develop_fast/jingwu/benchmark/dag_poc/mcp_mock_server/tests/test_evaluate_open_discovery.py:334: AssertionError
+----------------------------- Captured stdout call -----------------------------
+
+case                          model               gt  best  hit tools   cp1   cp2   cp3   cp4   cp5   cp6   proc  gate   task
+-----------------------------------------------------------------------------------------------------------------------------
+antibiotic_sulfamethoxazole   qwen3.7-max         bc    aa    n    15  1.00  0.00  0.73  0.00  0.00  0.00  0.289     n  0.144
+antibiotic_sulfamethoxazole   moonshot_kimi-k3    bc    ab    n    22  1.00  0.00  0.73  0.00  0.00  0.00  0.289     n  0.144
+antibiotic_sulfamethoxazole   bailian_glm-5.2     bc     -    n    39  1.00  0.00  0.00  0.00  0.00  0.00  0.167     n  0.083
+anxiolytic_diazepam           qwen3.7-max         bb    ad    n    24  1.00  0.00  0.83  0.00  0.00  0.00  0.306     n  0.153
+anxiolytic_diazepam           moonshot_kimi-k3    bb    ad    n    21  1.00  0.00  0.80  0.00  0.00  0.00  0.300     n  0.150
+anxiolytic_diazepam           bailian_glm-5.2     bb     -    n    26  1.00  0.00  0.00  0.00  0.00  0.00  0.167     n  0.083
+bronchodilator_theophylline   qwen3.7-max         ab    ab    Y    18  1.00  1.00  1.00  0.33  1.00  1.00  0.889     n  0.300
+bronchodilator_theophylline   moonshot_kimi-k3    abfexofenadine    n    13  1.00  0.00  0.00  0.00  0.00  0.00  0.167     n  0.083
+bronchodilator_theophylline   bailian_glm-5.2     ab     -    n    54  1.00  0.00  0.00  0.00  0.00  0.00  0.167     n  0.083
+cardiac_sotalol               qwen3.7-max         baNO_SOLUTION    n    27  1.00  0.00  0.00  0.00  0.00  0.00  0.167     n  0.083
+cardiac_sotalol               moonshot_kimi-k3    baNO_SOLUTION    n    35  1.00  1.00  0.01  0.00  0.00  0.00  0.336     n  0.168
+cardiac_sotalol               bailian_glm-5.2     baNO_SOLUTION    n    35  1.00  0.00  0.00  0.00  0.00  0.00  0.167     n  0.083
+cns_metoprolol                qwen3.7-max         aa     -    n    36  1.00  0.00  0.00  0.00  0.00  0.00  0.167     n  0.083
+cns_metoprolol                moonshot_kimi-k3    aa    ec    n    30  1.00  1.00  0.91  1.00  1.00  0.50  0.901     n  0.300
+cns_metoprolol                bailian_glm-5.2     aa    ec    n    33  1.00  1.00  0.36  0.40  1.00  0.50  0.711     n  0.300
+fixture_isolation_v2          qwen3.7-max          -O=C1NC(=O)C(N2C(=O)c3ccccc3C2=O)CC1F    n     4  0.00  0.00  0.00  0.00  0.00  0.00  0.000     n  0.000
+-----------------------------------------------------------------------------------------------------------------------------
+共 16 个实验点 | 命中 1/16 | 门控通过 0/16 | 未交卷 4/16 | task_score 均值 0.140
+已写入 traces/_all_results.json
+----------------------------- Captured stderr call -----------------------------
+WARNING: legacy trace 无法区分相邻 checkpoint 的证据时刻（旧工具集缺 compare/submit 事件），no_path_violation 降级，gate 保持既有行为；涉及边：[['cp4', 'cp5'], ['cp5', 'cp6']]
+WARNING: legacy trace 无法区分相邻 checkpoint 的证据时刻（旧工具集缺 compare/submit 事件），no_path_violation 降级，gate 保持既有行为；涉及边：[['cp4', 'cp5'], ['cp5', 'cp6']]
+WARNING: legacy trace 无法区分相邻 checkpoint 的证据时刻（旧工具集缺 compare/submit 事件），no_path_violation 降级，gate 保持既有行为；涉及边：[['cp4', 'cp5'], ['cp5', 'cp6']]
+WARNING: legacy trace 无法区分相邻 checkpoint 的证据时刻（旧工具集缺 compare/submit 事件），no_path_violation 降级，gate 保持既有行为；涉及边：[['cp4', 'cp5'], ['cp5', 'cp6']]
+WARNING: legacy trace 无法区分相邻 checkpoint 的证据时刻（旧工具集缺 compare/submit 事件），no_path_violation 降级，gate 保持既有行为；涉及边：[['cp4', 'cp5'], ['cp5', 'cp6']]
+WARNING: legacy trace 无法区分相邻 checkpoint 的证据时刻（旧工具集缺 compare/submit 事件），no_path_violation 降级，gate 保持既有行为；涉及边：[['cp4', 'cp5'], ['cp5', 'cp6']]
+WARNING: legacy trace 无法区分相邻 checkpoint 的证据时刻（旧工具集缺 compare/submit 事件），no_path_violation 降级，gate 保持既有行为；涉及边：[['cp4', 'cp5'], ['cp5', 'cp6']]
+WARNING: legacy trace 无法区分相邻 checkpoint 的证据时刻（旧工具集缺 compare/submit 事件），no_path_violation 降级，gate 保持既有行为；涉及边：[['cp1', 'cp2'], ['cp2', 'cp3'], ['cp3', 'cp4'], ['cp4', 'cp5']]
+WARNING: legacy trace 无法区分相邻 checkpoint 的证据时刻（旧工具集缺 compare/submit 事件），no_path_violation 降级，gate 保持既有行为；涉及边：[['cp4', 'cp5'], ['cp5', 'cp6']]
+WARNING: legacy trace 无法区分相邻 checkpoint 的证据时刻（旧工具集缺 compare/submit 事件），no_path_violation 降级，gate 保持既有行为；涉及边：[['cp1', 'cp2'], ['cp2', 'cp3'], ['cp3', 'cp4'], ['cp4', 'cp5'], ['cp5', 'cp6']]
+WARNING: legacy trace 无法区分相邻 checkpoint 的证据时刻（旧工具集缺 compare/submit 事件），no_path_violation 降级，gate 保持既有行为；涉及边：[['cp5', 'cp6']]
+============================= slowest 8 durations ==============================
+1121.80s call     tests/test_ab_isolation_gateway.py::test_isolation_rehearsal_evidence_chain
+54.43s call     tests/test_canonical_selfcheck_task72.py::test_anon_smiles_self_canonical_full_library
+14.59s call     tests/test_ab_isolation_gateway.py::test_isolation_edit_neighborhood_guesses_zero_hit
+9.99s call     tests/test_review_merge_fixes.py::test_real_40k_smiles_no_segfault
+9.40s call     tests/test_backend_jsonl_reader.py::test_sandbox_b_overlap_a_caught
+8.53s call     tests/test_resolve_composition_task05.py::test_resolve_one_to_many_isomers_all_collected
+6.94s call     tests/test_ab_isolation_gateway.py::test_isolation_poisoned_solver_must_fail
+6.93s call     tests/test_ab_isolation_gateway.py::test_isolation_solver_submission_disjoint_gb
+=========================== short test summary info ============================
+FAILED tests/test_evaluate_open_discovery.py::test_main_end_to_end_with_discovery_case
+1 failed, 292 passed, 3 skipped in 1299.77s (0:21:39)

@@ -1,0 +1,6 @@
+conference: ICLR 2024
+title: LoTa-Bench: Benchmarking Language-oriented Task Planners for Embodied Agents
+arxiv_id: 2402.08178v1
+arxiv_abs: http://arxiv.org/abs/2402.08178v1
+pdf_url: https://arxiv.org/pdf/2402.08178v1
+matched_arxiv_title: LoTa-Bench: Benchmarking Language-oriented Task Planners for Embodied Agents

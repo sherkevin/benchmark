@@ -1,0 +1,79 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\@writefile{toc}{\contentsline {section}{Abstract}{1}{section*.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2}Problem and Task Contract}{2}{section.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Episode, menu, and feedback}{2}{subsection.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Selection and verification interfaces}{2}{subsection.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Estimands and costs}{2}{subsection.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3}MIRA-Relay: Proposed Method Specification}{2}{section.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Cold-start scores and the immutable reference}{2}{subsection.3.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces MIRA-Relay makes selected-only feedback part of the next decision loop. The selector starts from a fit-only immutable fallback and an online family/provider relay. A runtime ledger records the selected output and status; an independent frozen endpoint judge supplies the correctness label only after termination. The selected event waits until $\tau _t=t+1+D$; released challenger feedback updates the shared family residual and provider bias, while fallback feedback updates diagnostic ledgers only. The released state is visible at the first decision tick at or after $\tau _t$.}}{3}{figure.caption.5}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{fig:overview}{{1}{3}{MIRA-Relay makes selected-only feedback part of the next decision loop. The selector starts from a fit-only immutable fallback and an online family/provider relay. A runtime ledger records the selected output and status; an independent frozen endpoint judge supplies the correctness label only after termination. The selected event waits until $\tau _t=t+1+D$; released challenger feedback updates the shared family residual and provider bias, while fallback feedback updates diagnostic ledgers only. The released state is visible at the first decision tick at or after $\tau _t$}{figure.caption.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Reliability surface and bounded evidence choice}{3}{subsection.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Family-shared residual state}{3}{subsection.3.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Selected-only diagonal update}{3}{subsection.3.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.5}Result-independent probes and hazard gate}{4}{subsection.3.5}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces The selected-only lifecycle. At tick $t$, the call returns a runtime status and an independent frozen endpoint judge produces the correctness label after termination. The selected event waits $D$ ticks and cannot update state before $\tau _t=t+1+D$. Released challenger feedback updates the shared relay; fallback feedback updates ledgers only, and unselected outputs are never observed.}}{4}{figure.caption.6}\protected@file@percent }
+\newlabel{fig:lifecycle}{{2}{4}{The selected-only lifecycle. At tick $t$, the call returns a runtime status and an independent frozen endpoint judge produces the correctness label after termination. The selected event waits $D$ ticks and cannot update state before $\tau _t=t+1+D$. Released challenger feedback updates the shared relay; fallback feedback updates ledgers only, and unselected outputs are never observed}{figure.caption.6}{}}
+\citation{huang2021tdc}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.6}Invariants and falsification}{5}{subsection.3.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4}Benchmark and Baselines}{5}{section.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Two-layer benchmark contract}{5}{subsection.4.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Baseline roles under the common routing contract. A row marked ``adapted'' is reported separately from strict matched comparisons until its likelihood and prior semantics are identical.}}{5}{table.caption.7}\protected@file@percent }
+\newlabel{tab:baselines}{{1}{5}{Baseline roles under the common routing contract. A row marked ``adapted'' is reported separately from strict matched comparisons until its likelihood and prior semantics are identical}{table.caption.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Baselines and fairness}{5}{subsection.4.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5}Experimental Protocol and Matrix}{5}{section.5}\protected@file@percent }
+\citation{schick2023toolformer,yao2023react}
+\citation{li2010contextual}
+\citation{agrawal2013thompson}
+\citation{oetomo2023warmstart}
+\citation{joulani2013online}
+\citation{panda2025pilot}
+\citation{feng2025graphrouter}
+\citation{chen2024routerdc}
+\citation{hu2024routerbench}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Research questions}{6}{subsection.5.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Pre-registered matrix}{6}{subsection.5.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6}Results: Pre-results Tables}{6}{section.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Main comparison template.}{6}{section*.10}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7}Error and Cost Analysis}{6}{section.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {8}Limitations and Discussion}{6}{section.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {9}Related Work}{6}{section.9}\protected@file@percent }
+\citation{huang2021tdc,wu2018moleculenet}
+\bibstyle{ACM-Reference-Format}
+\bibdata{references}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Pre-registered experiment matrix. ``TBD'' is an intentional placeholder in this internal draft, not a missing value silently filled from a development diagnostic.}}{7}{table.caption.8}\protected@file@percent }
+\newlabel{tab:matrix}{{2}{7}{Pre-registered experiment matrix. ``TBD'' is an intentional placeholder in this internal draft, not a missing value silently filled from a development diagnostic}{table.caption.8}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Development comparisons by eligibility stratum. $N$ counts scored decisions; calls counts all invocations. Fail/U/R denote execution failures, unknown truth, and refusals. Strict $\Delta $ uses the same-receipt Frozen control; other strata must name their own control. Intervals use paired scaffold-cluster resampling. Cells await recovery.}}{7}{table.caption.9}\protected@file@percent }
+\newlabel{tab:main-results}{{3}{7}{Development comparisons by eligibility stratum. $N$ counts scored decisions; calls counts all invocations. Fail/U/R denote execution failures, unknown truth, and refusals. Strict $\Delta $ uses the same-receipt Frozen control; other strata must name their own control. Intervals use paired scaffold-cluster resampling. Cells await recovery}{table.caption.9}{}}
+\bibcite{agrawal2013thompson}{{1}{2013}{{Agrawal and Goyal}}{{}}}
+\bibcite{chen2024routerdc}{{2}{2024}{{Chen et~al\mbox  {.}}}{{}}}
+\bibcite{feng2025graphrouter}{{3}{2025}{{Feng et~al\mbox  {.}}}{{}}}
+\bibcite{hu2024routerbench}{{4}{2024}{{Hu et~al\mbox  {.}}}{{}}}
+\bibcite{huang2021tdc}{{5}{2021}{{Huang et~al\mbox  {.}}}{{}}}
+\bibcite{joulani2013online}{{6}{2013}{{Joulani et~al\mbox  {.}}}{{}}}
+\bibcite{li2010contextual}{{7}{2010}{{Li et~al\mbox  {.}}}{{}}}
+\bibcite{oetomo2023warmstart}{{8}{2023}{{Oetomo et~al\mbox  {.}}}{{}}}
+\bibcite{panda2025pilot}{{9}{2025}{{Panda et~al\mbox  {.}}}{{}}}
+\bibcite{schick2023toolformer}{{10}{2023}{{Schick et~al\mbox  {.}}}{{}}}
+\bibcite{wu2018moleculenet}{{11}{2018}{{Wu et~al\mbox  {.}}}{{}}}
+\bibcite{yao2023react}{{12}{2023}{{Yao et~al\mbox  {.}}}{{}}}
+\newlabel{tocindent-1}{0pt}
+\newlabel{tocindent0}{0pt}
+\newlabel{tocindent1}{4.185pt}
+\newlabel{tocindent2}{10.34999pt}
+\newlabel{tocindent3}{0pt}
+\newlabel{tocindent4}{0pt}
+\newlabel{tocindent5}{0pt}
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Mechanism analysis within each scope and delay. Changes count post-release exploitation changes, excluding direct probes. Rescued/harmed counts use the fit-only incumbent. Paired effects use ProbeNoUpdate as the mechanism control and scaffold-cluster intervals. $N$ counts scored decisions.}}{8}{table.caption.11}\protected@file@percent }
+\newlabel{tab:mechanism-results}{{4}{8}{Mechanism analysis within each scope and delay. Changes count post-release exploitation changes, excluding direct probes. Rescued/harmed counts use the fit-only incumbent. Paired effects use ProbeNoUpdate as the mechanism control and scaffold-cluster intervals. $N$ counts scored decisions}{table.caption.11}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces One-step evidence decisions. The planner may accept the current posterior, refuse, or call one additional provider. All methods use the same first-call output, call cost, refusal cost, and evidence budget.}}{8}{table.caption.12}\protected@file@percent }
+\newlabel{tab:voi-results}{{5}{8}{One-step evidence decisions. The planner may accept the current posterior, refuse, or call one additional provider. All methods use the same first-call output, call cost, refusal cost, and evidence budget}{table.caption.12}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {10}Conclusion}{8}{section.10}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{References}{8}{section*.14}\protected@file@percent }
+\newlabel{TotPages}{{8}{8}{}{page.8}{}}
+\gdef \@abspage@last{8}

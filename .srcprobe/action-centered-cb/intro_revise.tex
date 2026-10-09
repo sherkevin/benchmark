@@ -1,0 +1,43 @@
+\section{Introduction}
+%what we are seeing when we try to implement
+
+%why bandit is sub-par, why not enough data for reinforcement learning
+
+%clipping
+
+%action centering
+In the theory of sequential decision-making, contextual bandit problems \citep{tewari2017ads} occupy a middle ground between multi-armed bandit problems \citep{bubeck2012regret} and full-blown reinforcement learning (usually modeled using Markov decision processes along with discounted or average reward optimality criteria \citep{sutton1998reinforcement,puterman2005markov}). Unlike bandit algorithms, which cannot use any side-information or context, contextual bandit algorithms can learn to map the context into appropriate actions. However, contextual bandits do not consider the impact of actions on the evolution of future contexts. Nevertheless, in many practical domains where the impact of the learner's action on future contexts is limited, contextual bandit algorithms have shown great promise. Examples include web advertising \citep{abe1999learning} and news article selection on web portals \citep{li2010contextual}.
+
+An influential thread within the contextual bandit literature models the expected reward for any action in a given context using a linear mapping from a $d$-dimensional context vector to a real-valued \emph{reward}.
+Algorithms using this assumption include LinUCB and Thompson Sampling, for both of which regret bounds have been derived. These analyses often allow the context sequence to be chosen adversarially, but require the linear model, which links rewards to contexts, to be time-invariant. There has been little effort to extend these algorithms and analyses when the data follow an unknown nonlinear or time-varying model. 
+
+In this paper, we consider a particular type of non-stationarity and non-linearity that is motivated by problems arising in mobile health (mHealth). Mobile health is a fast developing field that uses mobile and wearable devices for health care delivery. These devices provide us with a real-time stream of dynamically evolving contextual information about the user (location, calendar, weather, physical activity, internet activity, etc.). Contextual bandit algorithms can learn to map this contextual information to a set of available intervention options (e.g., whether or not to send a medication reminder). However, human behavior is hard to model using stationary, linear models. We make a fundamental assumption in this paper that is quite plausible in the mHealth setting. In these settings, there is almost always a ``do nothing'' action usually called action $0$. The expected reward for this action is the \emph{baseline reward} and it can change in a very non-stationary, non-linear fashion. However, the \emph{treatment effect} of a non-zero action, i.e., the incremental change over the baseline reward due to the action, can often be plausibly modeled using standard stationary, linear models.
+
+We show, both theoretically and empirically, that the performance of an appropriately designed action-centered contextual bandit algorithm is agnostic to the high model complexity of the baseline reward. Instead, we get the same level of performance as expected in a stationary, linear model setting. Note that it might be tempting to make the entire model non-linear and non-stationary. However, the sample complexity of learning very general non-stationary, non-linear models is likely to be so high that they will not be useful in mHealth where data is often noisy, missing, or collected only over a few hundred decision points.
+
+We connect our algorithm design and theoretical analysis to the real world of mHealth by using data from a pilot study of HeartSteps, an Android-based walking intervention. HeartSteps encourages walking by sending individuals contextually-tailored suggestions to be active. Such suggestions can be sent up to five times a day--in the morning, at lunchtime, mid-afternoon, at the end of the workday, and in the evening--and each suggestion is tailored to the user's current context: location, time of day, day of the week, and weather. HeartSteps contains two types of suggestions: suggestions to go for a walk, and suggestions to simply move around in order to disrupt prolonged sitting. 
+While the initial pilot study of HeartSteps micro-randomized the delivery of activity suggestions \citep{klasnja2015microrandomized,liao2015sample}, delivery of activity suggestions is an excellent candidate for the use of contextual bandits, as the effect of delivering (vs. not) a suggestion at any given time is likely to be strongly influenced by the user's current context, including location, time of day, and weather. 
+
+This paper's main contributions can be summarized as follows.
+%\begin{itemize}
+%\item
+We introduce a variant of the standard linear contextual bandit model that allows the baseline reward model to be quite complex while keeping the treatment effect model simple.
+%\item
+We then introduce the idea of using action centering in contextual bandits as a way to decouple the estimation of the above two parts of the model.
+%We make appropriate modifications of the definition of regret and provide novel regret analysis to deal with our hybrid linear-nonlinear/time-varying model. 
+We show that action centering is effective in dealing with time-varying and non-linear behavior in our model, leading to regret bounds that scale as nicely as previous bounds for linear contextual bandits.
+Finally, we use data gathered in the recently conducted HeartSteps study to validate our model and theory. %We hope that this encourages other researchers to apply contextual bandit algorithms in human-facing applications of sequential decision-making including personalized health and personalized education.
+%\end{itemize}
+
+
+
+\subsection{Related Work}
+%Thompson sampling, other extensions, lin-UCB, etc. Why we pick Thompson. Nonlinear contextual bandits. 
+
+
+Contextual bandits have been the focus of considerable interest in recent years. \cite{chu2011contextual} and \cite{agrawal2013thompson} have examined UCB and Thompson sampling methods respectively for linear contextual bandits. Works such as \cite{seldin2011pac}, \cite{dudik2011efficient} considered contextual bandits with fixed policy classes. Methods for reducing the regret under complex reward functions include the nonparametric approach of \cite{may2012optimistic}, the ``contextual zooming" approach of \cite{slivkins2014contextual}, the kernel-based method of \cite{valko2013finite}, and the sparse method of \cite{bastani2015online}. 
+Each of these approaches has regret that scales with the complexity of the overall reward model including the baseline, and requires the reward function to remain constant over time. 
+%LOOK AT COAUTHORED AMBUJ CHAPTER ON WEBSITE FOR REFERENCES
+
+
+%\subsection{Notation and Outline}

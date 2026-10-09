@@ -1,0 +1,5 @@
+CC(=C)CCO[P@@](=O)([O-])OP(=O)([O-])[O-] IPP001DAS
+CC(=CCO[P@@](=O)([O-])OP(=O)([O-])[O-])C DMAPP001DAS
+CC(=CCC/C(=C/CO[P@](=O)([O-])OP(=O)([O-])[O-])/C)C GPP002DAS
+CC(=CCC/C(=C/CC/C(=C/CO[P@@](=O)([O-])OP(=O)([O-])[O-])/C)/C)C FPP003DAS
+CC(=CCC/C(=C/CC/C(=C/CC/C(=C/CO[P@@](=O)([O-])OP(=O)([O-])[O-])/C)/C)/C)C GGPP004DAS

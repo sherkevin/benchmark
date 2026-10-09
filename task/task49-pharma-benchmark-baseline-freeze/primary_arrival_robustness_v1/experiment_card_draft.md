@@ -1,0 +1,87 @@
+# Primary arrival robustness v1 — experiment card draft
+
+Date: 2026-10-08. **DRAFT: pending root and methods review; no execution authorization.** Stage E, uncertainty design. No models, experiments, or paper text were changed while preparing this card. The cohort has already been viewed; this is a retrospective robustness study, not fresh confirmation.
+
+## Question and bounded claim
+
+Do the recorded controlled-drift recovery and source-credit contrast persist when the **same 157 molecules** arrive in independently sampled uniform orders, with the five fitted priors, providers, policy settings, and release rules held fixed? The candidate performance claim is that MIRA-Relay improves on the strongest current strict control, Online SGD, on average and on a majority of orders under this declared finite-cohort arrival law. This experiment evaluates an existing method; it introduces no new model or novelty claim.
+
+The [uncertainty audit](/Users/jingwu/work/benchmark/research/experiment_section_style_20261006/primary_uncertainty_scope_audit_20261008.md) found that the current paper bootstraps recorded outcomes. This proposed experiment instead recomputes every adaptive action and feedback update on each sampled stream. Its uncertainty concerns the order law only: it does not estimate new-scaffold, model-training, checkpoint, or deployment uncertainty, and cannot retroactively grant those interpretations to the old intervals.
+
+## Frozen inputs and feasible interfaces
+
+| Input | Existing local file and SHA-256 |
+|---|---|
+| Four providers' cached probabilities for 157 IDs | [provider_predictions.json](/Users/jingwu/work/benchmark/experiments/logs/task49_provider_fresh_context_natural_20261006/v2_statehash_run3/provider_predictions.json), `14c05b6485f48abdcf5c922685a12c7526d5a31c8cf668313cb7d9a51776d06e` |
+| Five frozen priors and fit rates | [prior_cache.json](/Users/jingwu/work/benchmark/experiments/logs/task49_fit_score_reference_20261007/v1/prior_cache.json), `7e76743f5258df4714b23528acce55bdcb926ad429bb40b36bfc9c281a475206` |
+| Original molecule identity, scaffold and evaluator truth | [manifest.csv](/Users/jingwu/work/benchmark/experiments/logs/task49_gate_a_20260929/bbb_confirmation_candidate_manifest_v1/manifest.csv), `c0af602bbc4ec49df448b916fb1e54dfce183926965d61c184cb736e68402805` |
+
+The existing [cache loader](/Users/jingwu/work/benchmark/src/probe_headless/run_fresh_mechanism_ablation_v2.py:72) checks 157 IDs and five priors of shape $4\times65$, with four fit rates per fold. It returns rows, evaluator truth, Morgan features, cached probabilities, and priors. Task instantiation: `confirm_000` retains its same feature vector and four cached probabilities in every order; only its arrival tick changes. Compute the existing features once, bind their hashes, and reuse them. Do not invoke the old CLI that loads checkpoints and refits priors ([old entry point](/Users/jingwu/work/benchmark/src/probe_headless/run_provider_fresh_confirmation_v1.py:365)).
+
+The fixed provider order is `ecfp_logreg, ecfp_mlp, ecfp_random_forest, graph_message_passing`; retain all existing ties, thresholds, priors, update formulas and floating-point precision. All calls are cached evaluations: **zero API, zero provider forward passes, zero training, zero GPU**.
+
+## Arrival, policy randomness, and intervention
+
+- Generate exactly **128 independent uniform permutations** of the 157 molecule IDs, using an order-only `numpy.random.Generator(PCG64(20261010))`. Save all permutations and the NumPy version before any outcome analysis. Do not stratify, group scaffolds, reject duplicates, or select orders based on outcomes. Duplicates, if any, remain valid independent draws.
+- One sampled permutation is shared across every fold, delay, method, and both conditions in that replicate. Pair comparisons within it. Reset every policy and pending queue at each stream. Retain the five frozen priors, policy seeds 0/1, and delays 0/1/4. Policy RNGs are reinitialized with those fixed seeds for every stream; they do not generate arrival orders. The target averages those two fixed RNG realizations, not all policy randomness. Deterministic methods' two copies do not add independent information.
+- Keep the original manifest order as `order_id=0` for reproduction/resource smoke; exclude it from the 128-order estimates. Sampled orders use IDs 1–128. RNG generation must not depend on execution order or worker scheduling.
+- Before each decision, release every selected result due at that tick. Exactly one provider is selected per molecule. Feedback is released at $t+1+D$, including an explicit tail drain. Task instantiation: with $D=4$, the selected output at tick 0 first updates the policy before the decision at tick 5. No current truth, unselected output, or future feedback enters the scorer.
+- Natural condition uses the cached provider label at threshold 0.5. Controlled condition fixes each fold's drift provider as the first maximum of its frozen fit rates and flips its selected returned label **at ticks 78–156 inclusive**; ticks 0–77 are unchanged. A due feedback event carries that actual returned label's correctness, even if released across the boundary. This retains the [existing drift code](/Users/jingwu/work/benchmark/src/probe_headless/run_provider_fresh_confirmation_v1.py:327). Each new order changes which molecules fall after the boundary: the estimand includes this interaction with the fixed time-based shift, not just update-order variation for an unchanged corrupted set.
+
+## Complete fixed roster and nearest controls
+
+| Condition | Required rows |
+|---|---|
+| Natural | All nine current main-table rows: Random, fit-only Best Fixed, Frozen, MIRA-Relative, Online SGD, Greedy LinUCB, BayesianRouter, MIRA-Relay, evaluator-only Retrospective Best Fixed; plus Fixed-permutation credit. |
+| Controlled shift | All five current main-table rows: Frozen, Online SGD, Greedy LinUCB, BayesianRouter, MIRA-Relay; plus Fixed-permutation credit. |
+
+Use [current policy construction](/Users/jingwu/work/benchmark/src/probe_headless/run_provider_fresh_confirmation_v1.py:263): SGD learning rate .05; Greedy LinUCB precision 50 and alpha .5; BayesianRouter prior variance .02, observation variance 1, seeds 0/1; MIRA-Relay prior count 20; MIRA-Relative's current delta/min-count/failure settings unchanged. Permutation credit retains the existing `cycle-v1` mapping and source-counter update ([credit policy](/Users/jingwu/work/benchmark/src/probe_headless/run_fresh_mechanism_ablation_v2.py:108)). The evaluator-only retrospective provider remains the original natural full-cohort best fixed provider; it is never a deployable control or chosen anew per permutation.
+
+Online SGD is the nearest strict logistic update control and the strongest recorded controlled-drift comparator (84.03% versus MIRA-Relay 87.56%). It is selected **before** these new orders. Retain Greedy LinUCB and BayesianRouter as the eligible modern adapted controls, with their actual Gaussian/update and prior adaptation labels; no claim of full native-paper reproduction. The [existing source/adapter contract](/Users/jingwu/work/benchmark/task/task49-pharma-benchmark-baseline-freeze/online_adapter_v1/contract.md) and [baseline matrix](/Users/jingwu/work/benchmark/research/experiment_section_style_20261006/nearest_work_matrix.md:30) supply the nearest-work boundary. Do not replace these controls with weaker methods, choose a comparator after seeing results, or introduce PILOT/GraphRouter without a separate frozen adapter study.
+
+## Statistics: the independent unit is one complete order
+
+For each order, first average over the same 30 fixed fold/seed/delay configurations. Keep the current main statistic: pooled selected correctness over all 157 molecules, with paired differences versus Frozen. Keep the source-credit statistic: mean paired correctness within each of 124 scaffolds, then an equal-weight mean across scaffolds. Both are recalculated from the **new trajectories**, not carried over from the old terminal records. Task instantiation: the historical +14.18 pp pooled Local−Frozen and +14.40 pp equal-scaffold Local−Frozen are distinct weighting targets; preserve both definitions.
+
+The **single primary contrast** is controlled-shift MIRA-Relay minus Online SGD on the pooled statistic. Let $Z_r$ be this contrast in percentage points after averaging the 30 configurations for sampled order $r$. The order-law mean and its Monte Carlo estimates are:
+
+$$
+\mu=\mathbb E_{\Pi\sim\mathrm{Uniform}(S_{157})}[Z(\Pi)],\qquad
+\bar Z=\frac{1}{128}\sum_{r=1}^{128}Z_r,\qquad
+\mathrm{MCSE}=\frac{s_Z}{\sqrt{128}},\qquad
+I_{\mathrm{MC}}=\bar Z\pm t_{127,0.975}\frac{s_Z}{\sqrt{128}}.
+$$
+
+Here $s_Z$ is the sample standard deviation across the 128 complete-order contrasts. **Constructed planning case:** if their standard deviation is 5 pp, MCSE is about 0.442 pp and the approximate mean interval has half-width about 0.875 pp. This motivates a modest fixed 128-order budget; it does not promise observed precision. Report the realized MCSE. An unmet precision target does not trigger more draws or a smaller reported roster.
+
+The mean interval is an **approximate Student-t/CLT Monte Carlo interval**, conditional on all frozen inputs and the fixed seed mixture. It relies on independent order draws and a sufficiently regular replicate-mean distribution; it is not an exact finite-sample bound, a 95% range for individual orders, or a population-scaffold CI. Report replicate SD, median, 2.5/97.5% empirical order quantiles, minimum, maximum, and a histogram so skew/outliers remain visible. Order quantiles are descriptive distribution summaries, not mean CIs. Never treat molecules, folds, delays, or duplicated deterministic seeds as extra independent Monte Carlo observations.
+
+Also preregister the primary positive-effect frequency: count orders with $Z_r>0$ (ties are non-wins) and report its two-sided 95% exact Clopper–Pearson binomial interval. **Constructed case:** 90 positive contrasts among 128 yields the observed fraction $90/128$; the interval concerns the probability of a positive contrast for one fresh uniform order, not the probability that the mean is positive. No random-order bootstrap or scaffold bootstrap is required.
+
+Report all methods' per-order accuracy and paired differences versus Frozen; MIRA-Relay versus each of the three modern controls; and equal-scaffold Local−Permutation/Local−Frozen/Permutation−Frozen, in both conditions. Report per-delay summaries as well as the fixed equal-delay average. These secondary intervals are pointwise exploratory summaries with no simultaneous-coverage claim or winner selection. Retain action changes, rescued/harmed decisions, selected-provider counts, feedback counts, and before/after-tick-78 accuracy; no new composite utility metric is introduced.
+
+## Falsification and interpretation before outcomes
+
+- Any original-order action/output mismatch, forbidden field read, incorrect release, duplicate/lost feedback, or input-hash mismatch is an implementation failure. Preserve the failing run and stop. The original-order main/credit point statistics and trajectories must match the authoritative current receipts; do not compare old/new tail timestamps as if the old arbitrary final drain were a decision difference.
+- Primary order-robust incremental benefit is supported only if the approximate mean interval is wholly positive **and** the exact positive-frequency interval is wholly above 0.5. This is an intersection claim with two required properties, not a search over alternative tests. A nonpositive estimated mean or positive fraction at most 0.5 contradicts the proposed direction on the sampled orders; intervals crossing the thresholds leave the corresponding property unresolved. No equivalence conclusion follows from overlap with zero.
+- If MIRA-Relay beats Frozen but fails the fixed SGD comparison, retain the narrower recovery result and withhold superiority over the strongest current strict control. If equal-scaffold Local−Permutation is nonpositive on average, the source-credit robustness direction is unsupported. Natural results are reported regardless of sign; this design does not assume natural gain or test equivalence with zero.
+- New order evidence remains a retrospective result on a viewed cohort. It can repair the missing **declared-arrival-law** uncertainty contract, not establish new-scaffold or deployment generalization, nor independently close the broad scientific gate. No tuning of prior count, learning rate, exploration, threshold, drift time, order seed, or roster follows within this card.
+
+## Two-phase resource bound and implementation review
+
+**This is not a small pilot.** The full roster gives 480 stream-equivalents per order, 61,440 over 128 random orders, and **9,646,080 decision records** (up to 28,938,240 decision/terminal/feedback events), plus the excluded original-order reproduction. Existing cached three-method credit runs took about 6.49 s natural and 6.51 s controlled for 90 streams each, from their saved UTC start/end fields. Those timings do not bound the full modern roster. The legacy main runs took about 320/310 s, but include checkpoint inference and fitting, so neither timing is a reliable full-run forecast.
+
+1. After separate run authorization, execute **one complete original-order smoke** across the frozen roster solely to verify exact reproduction, timing, peak memory, and compressed output size. Keep effect summaries sealed from selection decisions. A projected full replay/analysis time above **one hour**, projected compressed artifacts above **10 GiB**, peak memory above **4 GiB**, or any correctness failure returns the design to review. Projection uses measured smoke cost ×128 with a 25% safety factor; it is a resource estimate, not a guarantee. No automatic reduction of 128, dropping controls, or choosing cheaper results is allowed.
+2. Only after the resource and methods review accepts that projection, run the fixed 128 orders. Hard replay/analysis bound: **one hour wall time, 10 GiB artifacts, 4 GiB memory, zero paid calls**. Stop and preserve partial artifacts on exceeding a bound; label the planned study incomplete and do not substitute a partial-order success claim. Independent verification has a separately disclosed maximum 30-minute CPU allowance and must not rerun providers or fit models. This draft authorizes neither phase.
+
+Static rows may be evaluated vectorially only when algebraically identical to their per-tick behavior and the original-order audit matches actions/outcomes. Example: natural Frozen selects the same provider for a given feature regardless of order; under controlled drift its cached returned label must still be flipped according to the **new tick**. Adaptive SGD, UCB, Thompson, and residual updates must be run in true release order, never replaced with fixed recorded outcomes. Efficient binary state serialization/compressed receipts is allowed with a declared encoding and exact audit; changing the policy mathematics to meet runtime is not.
+
+## Required receipts and independent checks
+
+Before execution, create an immutable run directory under `experiments/logs/task49_primary_arrival_robustness_20261008/`, recording this final reviewed card, argv, UTC start, git revision and dirty diff, code/input hashes, Python/NumPy/RDKit versions, CPU/thread settings, limits, method parameters, and `orders.npy` plus its hash. Separate policy-seed and order-seed fields. No resume may change these inputs or resample a failed order.
+
+Stream structured progress and failures to JSONL. Preserve every order/fold/seed/delay/condition/method/molecule decision with tick, selected provider, scores, cached output identity, raw/shifted returned label, correctness in the evaluator ledger, due/release ticks, state versions/hashes, and pending conservation. Chunked compressed arrays are acceptable if a documented decoder reconstructs every record exactly; summaries alone are not. Retain per-stream and per-order metrics, completed/incomplete flags, timing, memory/storage observations, exceptions and tracebacks, source snapshots, manifest, raw outputs, processed results, and a separate human-readable report.
+
+An independent checker must not import the runner: verify all 128 permutations and shared pairing; original-order numerical inheritance; recompute all terminal/scoring/drift/count/aggregate/MCSE/binomial quantities; replay every stream's selected-feedback state with the frozen formulas; and test a malformed release plus a terminal-label mutation. Missing verification means evidence is not closed. Log the verifier's own source/hash/config/results and execution cost.
+
+**Pending review:** the resource projection is unresolved until the authorized original-order smoke; the generic cached runner must adapt the main and credit policy interfaces without changing their mathematics. An independent read-only methods review agreed on the order-level unit, intervention assignment, conditional scope, and interval distinction; it flagged that this draft's zero improvement threshold tests direction only. No nonzero practical-benefit margin is presently justified or claimed. Root and methods review must accept the statistical target, complete roster, exact inheritance checks, and resource bounds before this draft becomes a frozen executable card. No paper promotion is part of this task.

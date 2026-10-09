@@ -1,0 +1,7 @@
+=== sources/ 完整性自检 ===
+库目录总数：11
+六要素齐全且 complete=true：11
+[PASS] 所有 MANIFEST 六要素齐全，落盘字节/md5 与记录一致
+
+complete=false 清单（共 0 个，不得声称为完整）：
+  （无）

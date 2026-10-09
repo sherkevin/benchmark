@@ -1,0 +1,6 @@
+conference: ICRA 2025
+title: CaStL: Constraints as Specifications through LLM Translation for Long-Horizon Task and Motion Planning
+arxiv_id: 2410.22225v1
+arxiv_abs: http://arxiv.org/abs/2410.22225v1
+pdf_url: https://arxiv.org/pdf/2410.22225v1
+matched_arxiv_title: CaStL: Constraints as Specifications through LLM Translation for Long-Horizon Task and Motion Planning

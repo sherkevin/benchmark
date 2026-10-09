@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>我们在做什么：给 AI 出科研考题的五周（2026-07-24 ~ 08-31）</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:-apple-system,"PingFang SC","Helvetica Neue",Arial,sans-serif;
+  background:#f5f6f8; color:#1f2328; line-height:1.85; font-size:15.5px; }
+.wrap { max-width:940px; margin:0 auto; padding:44px 28px 90px; }
+header { border-bottom:2px solid #1f2328; padding-bottom:24px; margin-bottom:34px; }
+h1 { font-size:27px; font-weight:600; letter-spacing:-.3px; line-height:1.4; }
+.sub { color:#57606a; margin-top:10px; font-size:14px; }
+h2 { font-size:20px; font-weight:600; margin:52px 0 6px; padding-bottom:10px; border-bottom:1px solid #d8dee4; }
+.h2sub { color:#57606a; font-size:14px; margin:-2px 0 20px; }
+h3 { font-size:16.5px; font-weight:600; margin:26px 0 10px; }
+p { margin-bottom:14px; }
+.card { background:#fff; border:1px solid #d8dee4; padding:20px 22px; margin-bottom:18px; }
+.q { background:#fff; border:1px solid #d8dee4; border-left:4px solid #0969da; padding:18px 22px; margin-bottom:18px; }
+.q .qt { font-size:17px; font-weight:600; margin-bottom:10px; }
+.eg { background:#f6f8fa; border-left:3px solid #8c959f; padding:14px 16px; margin:14px 0; font-size:15px; }
+.eg .egt { font-size:12.5px; color:#57606a; font-weight:600; letter-spacing:.5px; margin-bottom:6px; }
+.key { background:#fffbe6; border:1px solid #d4a72c; padding:18px 20px; margin:18px 0; }
+.key .kt { font-size:12.5px; font-weight:600; color:#9a6700; letter-spacing:.5px; margin-bottom:8px; }
+.key .kb { font-size:17px; font-weight:600; margin:8px 0 12px; line-height:1.6; }
+.phase { background:#fff; border:1px solid #d8dee4; margin-bottom:20px; }
+.ph-head { padding:16px 22px; border-bottom:1px solid #eaeef2; }
+.ph-tag { display:inline-block; font-size:12px; font-weight:600; color:#fff; background:#57606a; padding:2px 9px; margin-right:10px; }
+.ph-date { font-size:12.5px; color:#57606a; margin-right:10px; }
+.ph-t { font-size:17px; font-weight:600; }
+.ph-body { padding:18px 22px; }
+.good,.bad { padding:14px 16px; margin-top:14px; font-size:15px; }
+.good { background:#f6fdf8; border-left:3px solid #1a7f37; }
+.bad { background:#fff8f6; border-left:3px solid #cf222e; }
+.good .t,.bad .t { font-size:12.5px; font-weight:600; letter-spacing:.5px; margin-bottom:8px; }
+.good .t { color:#1a7f37; } .bad .t { color:#cf222e; }
+ul { list-style:none; margin-left:2px; }
+li { padding-left:16px; position:relative; margin-bottom:8px; }
+li:before { content:"·"; position:absolute; left:3px; font-weight:600; }
+.turn { background:#fff; border:1px solid #d8dee4; border-left:4px solid #bf3989; padding:18px 22px; margin-bottom:18px; }
+.turn .tt { font-size:16.5px; font-weight:600; margin-bottom:4px; }
+.turn .td { font-size:12.5px; color:#bf3989; font-weight:600; margin-bottom:10px; }
+.chg { background:#f6f8fa; padding:10px 14px; margin:12px 0; font-size:14.5px; }
+.chg .from { color:#57606a; } .chg .to { font-weight:600; }
+table { width:100%; border-collapse:collapse; background:#fff; font-size:14.5px; margin:14px 0; }
+th,td { padding:11px 14px; text-align:left; border:1px solid #d8dee4; vertical-align:top; }
+th { background:#f6f8fa; font-weight:600; font-size:13.5px; }
+tr:nth-child(even) td { background:#fbfcfd; }
+.hi td { background:#fff4f4 !important; }
+.note { font-size:14px; color:#57606a; margin-top:12px; }
+strong { font-weight:600; }
+footer { margin-top:56px; padding-top:20px; border-top:1px solid #d8dee4; font-size:13.5px; color:#57606a; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>我们在做什么：给 AI 出科研考题的五周</h1>
+  <div class="sub">2026 年 7 月 24 日 ~ 8 月 31 日 ｜ 这份材料不用任何行话，没接触过这个项目的人也能读完</div>
+</header>
+
+<h2>一、这个项目要解决什么问题</h2>
+<div class="h2sub">先说清我们到底在做什么，以及为什么要做</div>
+
+<div class="card">
+  <p>现在有很多号称能做科研的 AI 助手。你给它一个任务，比如"帮我找一个能治某种病的分子"，它会自己去查资料、做计算、试各种方案，最后给你一个答案。</p>
+
+  <p>问题是：<strong>怎么知道它到底行不行？</strong></p>
+
+  <p>我们之前在改进一个这样的 AI 助手。改完之后想知道有没有变好，结果发现说不清。三个不同的 AI 拿来对比，最后只能给出一句很虚的话——"它们在遇到工具出错时的应对能力有差别"。到底差多少？改进之后好了几成？答不上来。</p>
+
+  <p>没有秤，就没法称。<strong>所以我们决定自己造一把秤：出一套考题，让不同的 AI 来做，看谁做得好。</strong>这就是这五周在干的事。</p>
+
+  <p>听起来像出试卷，但难度完全不是一回事。下面这节讲为什么。</p>
+</div>
+
+<h2>二、为什么"出一道好题"这么难</h2>
+<div class="h2sub">这是整个项目最核心的矛盾，理解了它，后面所有反复和推翻都好懂了</div>
+
+<p>一道题要能当秤用，得同时满足几个条件，而这几个条件互相打架。</p>
+
+<div class="q">
+  <div class="qt">难点一：题太简单，所有 AI 都满分，等于没测</div>
+  <p>我们最早出的题是"从一堆材料里挑出临界温度最高的那个"。结果三个主流 AI 全部满分。换了四种不同的设计，还是全部满分。</p>
+  <p>本能反应是"那就加难度"。试过两条路，都不行：</p>
+  <div class="eg">
+    <div class="egt">试过但不行的两条路</div>
+    <p style="margin-bottom:8px"><strong>把题目变长</strong>——从三步变五步、七步。没用。因为每一步都是"查一个数、取最大值"这种确定操作，强一点的 AI 走七步也不出错。</p>
+    <p style="margin-bottom:0"><strong>减少它能做的实验次数</strong>——分数确实降了，但名次乱了。原来强的变弱、弱的变强，因为次数一少就变成看运气。<strong>秤的刻度变粗了，但称出来的东西不对了。</strong></p>
+  </div>
+</div>
+
+
+
+<div class="q">
+  <div class="qt">难点二：AI 可能不是"做出来"的，而是"背出来"的</div>
+  <p>这是最阴的一个坑，我们真真切切栽进去过。</p>
+  <p>8 月 14 号那天，我们报了一次"第一道好题做成了"。当时看四个指标全部达标：平均分落在预期区间、最强和最弱拉开了差距、换一批重跑名次没变、最强的 AI 也没拿满分。看着无懈可击。</p>
+  <p>后来做了一次复查，不看分数了，把 15 次答题的完整操作记录一条条读下来。发现最强那个 AI 之所以稳定拿高分，是因为<strong>"含汞的那类材料临界温度最高"这件事，教科书上就写着，它背过</strong>。它压根没做我们以为它在做的探索。</p>
+  <div class="eg">
+    <div class="egt">怎么验证的</div>
+    <p style="margin-bottom:0">把材料的名字换成代号（比如"汞"换成"元素 A"），但所有数值一个都不改——也就是说这道题的数学结构完全没变，只是 AI 认不出这是什么材料了。重跑之后：两个 AI 直接掉到零分，最强那个从 0.9 掉到 0.66。<strong>分数原来是靠记忆挣的。</strong></p>
+  </div>
+  <p>这件事的教训是：<strong>分数本身不会告诉你它是怎么来的。</strong>要知道 AI 是真做还是背的，只能一条条去读它的操作记录。</p>
+</div>
+
+<div class="q">
+  <div class="qt">难点三：防背的办法，会把题本身毁掉</div>
+  <p>既然 AI 会背，那就把名字全换成代号，让它认不出来——我们真这么做过，后来整套作废。</p>
+  <p>两个原因。第一个是<strong>假匿名</strong>：只把名字换掉，分子的结构式还留着，而结构式本身就是身份证。拿去公开数据库一查就还原了。我们当时确实在做这种自欺欺人的匿名。</p>
+  <p>第二个原因更根本：<strong>真的彻底匿名，题目就变味了。</strong>材料题要考的是"能不能从化学结构推出性质"，你把化学信息全抹掉，它就变成一道纯数字排序题，跟材料学没关系了。</p>
+  <p>所以防背不能靠遮住信息，只能靠<strong>把题设计成"背不出来"</strong>——比如问的那个东西根本还没被人做出来过，书上不可能有。</p>
+</div>
+
+<div class="q">
+  <div class="qt">难点四：秤的刻度不够细，而把刻度做细本身就是个难题</div>
+  <p>这是最近一周才想明白的，第五节会详细讲。</p>
+  
+  <p>先说现象。有一道题的判分方式是“四条要求里满足了几条”。听着挺合理，但因为出题时那几条要求的设定，AI 交上来的答案实际上只可能满足 2 条或 3 条——<strong>于是这把秤只有三个刻度：0 分、0.5 分、1 分。</strong>用三个刻度的秤去比两组 AI 的差别，就算真有差别也称不出来。我们算过：要得出可靠结论，得让每组各答 400 次，这不现实。</p>
+  
+  <p><strong>出路是把“数满足了几条”改成“看每一项离目标差多远”。</strong>举个例子就明白为什么非得这么改：</p>
+  <div class="eg">
+    <div class="egt">数条数丢掉了什么信息</div>
+    <p style="margin-bottom:0">油性这项要求不超过 3.0。两份答卷，一份做到 3.05，一份做到 3.85。
+    按“数满足几条”算，这两份<strong>得分一模一样</strong>——都是“这条不合格”。
+    但 3.05 已经快碰到线了，3.85 还差很远。<strong>两份答卷的真实差距被“合格 / 不合格”这个二选一碾没了。</strong></p>
+  </div>
+  
+  <p>那直接改成读实际数值就行了？<strong>这一改立刻冒出两个更难的问题，而这才是难点四真正难的地方。</strong></p>
+  
+  <h3 style="margin-top:18px">难处一：不同指标的差距，怎么换算成可以相加的分数</h3>
+  <p>四条要求的单位和尺度完全不一样。油性是一个没有单位的数、常见范围就在 0 到 5 之间；极性是一个面积值、常见范围几十到一百多；分子量是几百。</p>
+  <p style="margin-bottom:0"><strong>油性超了 0.5，和极性超了 5，哪个更严重？</strong>这两个数字本身没有可比性。要把它们变成能相加的分数，就得先回答“各自超多少算同等严重”。而这个换算比例一旦定得不对，就会把本来不相干的东西掉进分数里，称出来的不是能力而是我们自己设的换算比例。</p>
+  
+  <h3 style="margin-top:18px">难处二：四条要求要不要一样重，而这个问题带着个陷阱</h3>
+  <p>最简单的做法是四条平分。但实测发现（第五节），四条里有三条是白送的——AI 自己算算就能过，<strong>全题实际只卡在油性这一条上</strong>。那四条平分就很不合理：三条没区分度的占了四分之三的分数，真正区分能力的那一条只占四分之一。</p>
+  <p style="margin-bottom:0"><strong>但“给油性加权重”这个想法本身就是个陷阱。</strong>因为我们是<strong>先看到了结果</strong>（知道油性难），<strong>再回去调权重</strong>的。按这个路子走，永远能把权重调到“看起来能区分”为止，但那个区分是我们自己调出来的，不是量出来的。公正的权重必须在看到结果之前、从题目本身的科学含义里定好。</p>
+  
+  <div class="eg" style="border-left-color:#cf222e">
+    <div class="egt">这不是纸上担心，我们真试过一次并且失败了</div>
+    <p style="margin-bottom:0">后来真的换上了一种论文里用的连续打分方式（它把四项指标各自先折成 0 到 1 之间的一个值、再合起来）。结果<strong>比原来更差</strong>：两组差距从正变负（不给工具那组反超），需要的答题次数从每组 462 次涨到 1070 次。<strong>刻度确实变细了（从 3 个变成 19 个），但细错了方向。</strong></p>
+  </div>
+  
+  <p style="margin-bottom:0">所以难点四完整的说法是：<strong>秤得从“数合格几项”改成“量差多远”，但这一改就必须先把两件事定公正：不同单位的差距怎么换算、哪几项更重要。而这两件都必须在看到结果之前定，否则就变成了把秤调到自己想要的读数。</strong>这一条目前还没解决。</p>
+</div>
+
+<div class="key">
+  <div class="kt">四个难点合起来是一个死结</div>
+  <div class="kb">题不能太简单，也不能靠背；防背不能靠遮信息；<br>秤还得够细，而把秤做细又得先把“怎么换算、哪项更重”定公正。</div>
+  前三条现在基本摸清了，<strong>第四条还没解决</strong>。下面按时间顺序讲这五周怎么跑过来的。
+</div>
+
+
+<h2>三、五周分五个阶段</h2>
+<div class="h2sub">每个阶段：做了什么、拿到了什么、卡在哪</div>
+
+<div class="phase">
+  <div class="ph-head">
+    <span class="ph-tag">第一周</span><span class="ph-date">7 月 24 日 ~ 30 日</span>
+    <span class="ph-t">先把整条流水线接通</span>
+  </div>
+  <div class="ph-body">
+    <p>要给 AI 出考题，光有题不够，还得有一整套东西配合：给它准备一个能干活的环境（能查数据、能做计算）、让它在里面答题、把它每一步操作都录下来、最后自动判分。这一周就是把这条流水线从头到尾接通。</p>
+    <div class="good"><div class="t">做成了什么</div><ul>
+      <li>流水线跑通了，从出题到判分不用人工插手</li>
+      <li>判分方式定了个重要原则：<strong>不看 AI 自己说做了什么，只看操作记录里它实际做了什么</strong>。因为 AI 会说自己做了但其实没做</li>
+    </ul></div>
+    <div class="bad"><div class="t">发现的问题</div><ul>
+      <li>题目有多个正确答案，判分没法判，得回去给题加限制条件</li>
+      <li>整条流水线建在编造的假数据上，用真数据能不能跑还不知道</li>
+    </ul></div>
+  </div>
+</div>
+
+<div class="phase">
+  <div class="ph-head">
+    <span class="ph-tag">第二周</span><span class="ph-date">7 月 31 日 ~ 8 月 6 日</span>
+    <span class="ph-t">定规格，换成真数据</span>
+  </div>
+  <div class="ph-body">
+    <p>把别人已经发表的 62 套类似考题逐个翻了一遍，看人家是怎么出题的、出多少道、要不要请领域专家把关。然后定下自己的规格，并把编造的假数据换成真实的化学数据库。</p>
+    <div class="good"><div class="t">做成了什么</div><ul>
+      <li>查清 62 套里有 8 套明确请了领域专家审题。据此定下方案：我们的题<strong>全部请专家过一遍</strong>，其中三成做深度审查</li>
+      <li>定题量 150 道。这个数不是拍的——判分方式跟我们最像的两套，一套 102 道、一套 108 道，我们在同一量级</li>
+      <li>真数据到位：7 万多个分子、5 千多个晶体、2 万多条实测性质、300 多篇文献</li>
+      <li>写了个自动查错的程序，把已有的 37 道题扫一遍，挑出 318 个问题，<strong>一道都没合格</strong></li>
+    </ul></div>
+    <div class="bad"><div class="t">发现的问题</div><ul>
+      <li><strong>数据库变大了，能出的题反而变少。</strong>原以为数据多了出题更宽松，结果一道题要"三个条件同时筛出唯一答案"，而库里大部分分子只测过一个性质——三个性质都有数据的分子只剩 14 个，再筛完只剩 7 个。7 个答案出 60 道题，AI 记住一道后面全能蒙</li>
+      <li>防背措施一直是失效的：分子名字改成代号了，但身份码和分子式还是真的，拿去公开数据库一查就还原</li>
+    </ul></div>
+  </div>
+</div>
+
+<div class="phase">
+  <div class="ph-head">
+    <span class="ph-tag">第三周</span><span class="ph-date">8 月 7 日 ~ 13 日</span>
+    <span class="ph-t">出题顺序反过来，AI 的运行方式也换掉</span>
+  </div>
+  <div class="ph-body">
+    <p>原来的做法是先写一个题目模板，再往模板里填内容造出很多道题。这周反过来：先老老实实做出几道真题，再回头总结模板长什么样。</p>
+    <p>同时把 AI 的运行方式整个换掉。原来是问它一个问题、它回一段话就算答完；改成给它一个独立的工作目录，让它在里面自己记笔记、反复试、最后把答案写成文件。</p>
+    <div class="good"><div class="t">做成了什么</div><ul>
+      <li><strong>做出第一道真正能拉开差距的题</strong>：四步连环题，前一步的结果是后一步的输入，中间还嵌了一步"必须自己推出来、查不到"的环节。6 个 AI 全部拿不到满分</li>
+      <li>把答题失败分成三类记账：没作答、格式写错、答错。以前全算零分，会把接口故障当成能力差</li>
+      <li>查出 AI 老是卡死的真正原因：请求方式不对，撞上了网络层 310 秒的超时限制</li>
+    </ul></div>
+    <div class="bad"><div class="t">发现的问题</div><ul>
+      <li>把题里的"操作步骤清单"删掉之后（因为那等于把解法告诉它了），强的 AI 分数果然掉了，但几个 AI 又挤到一起分不出来</li>
+      <li>能用的 AI 太少，只有 4 个，而且水平接近，题稍微简单点就全满分</li>
+    </ul></div>
+  </div>
+</div>
+
+<div class="phase">
+  <div class="ph-head">
+    <span class="ph-tag">第四周</span><span class="ph-date">8 月 14 日 ~ 23 日</span>
+    <span class="ph-t">第一次报"做成了"，然后自己推翻</span>
+  </div>
+  <div class="ph-body">
+    <p>这周先报了一次成功，复查之后自己撤回（就是第二节讲的"背答案"那件事）。换了一道新题重做，这次跑了六种不同的配置。</p>
+    <p>六种配置是这么来的：<strong>同一道题，两个变量各变一下。</strong>一个变量是"要不要把候选清单直接给它"（给了它就不用自己找），另一个变量是"给它多少方便工具"（分最少、中等、给全三档）。2 乘 3 就是六种。这么设计是为了看出<strong>工具到底帮了多少</strong>——因为题目、答案、判分方式全都一样，只有配置不同，那分数差就只能是工具造成的。</p>
+    <div class="good"><div class="t">做成了什么</div><ul>
+      <li>六种配置全部跑完，而且<strong>换一批重新跑一遍，结果一致</strong>（这一步很重要，只跑一次的结果不算数）</li>
+      <li>量出一个明确结论：<strong>不给候选清单的那三种配置，才能分出 AI 的高低</strong>。给了清单的三种，几个 AI 分数挤在一起，谁强谁弱看不出来</li>
+      <li>把参数全部锁死封存：给每个关键文件算一个"指纹"存档，以后只要有人改动一个字，程序就拒绝开跑。防的是自己不知不觉改了东西还以为在比同一件事</li>
+      <li>判分程序统一：以前一道题散着好几个判分程序，跑完都不知道该用哪个判。统一后能正常判分的比例从 34% 升到 71.7%</li>
+      <li><strong>一个反直觉的发现</strong>：给了方便工具之后，AI 反而<strong>少</strong>去翻资料了。把资料翻完整的比例从 86% 掉到 44%、再到 33%，但它做实验的次数从 3 次涨到 6 次。原因是工具帮它省掉了翻资料的必要，省下的力气转去做实验了</li>
+    </ul></div>
+    <div class="bad"><div class="t">发现的问题</div><ul>
+      <li>那次"做成了"是假的，分数是靠背的（详见第二节）</li>
+      <li><strong>更严重的一个漏洞</strong>：AI 的读文件权限没限制好，它能直接打开存标准答案的那个文件。实测确实读到了。这意味着修补之前跑的 637 次答题<strong>全部作废</strong></li>
+      <li>有一条我们想验证的规律（"资料查得越全，分数应该越高"）至今没验证成立，样本不够而且被工具干扰了</li>
+      <li>本机的运行环境被公司内网的安全程序杀掉了，整个跑题工作只能移到远程机器上</li>
+    </ul></div>
+  </div>
+</div>
+
+<div class="phase">
+  <div class="ph-head">
+    <span class="ph-tag">第五周</span><span class="ph-date">8 月 24 日 ~ 31 日</span>
+    <span class="ph-t">范围收窄到制药，然后追查一道题为什么量不出东西</span>
+  </div>
+  <div class="ph-body">
+    <p>原来摊子铺得很开：药物、材料、基因三个方向同时做。这周决定只做制药一个方向，另外两个先冻结（不删，以后可能捡回来）。同时加了一层要求：光做一套考题不够，要想办法<strong>用考题的结果反过来帮 AI 变强</strong>。</p>
+    <p>新出了一道制药题，跑完之后发现量不出东西，接下来三次追问把根因挖出来了——这是这周最有价值的部分，第五节详细讲。</p>
+    <div class="good"><div class="t">做成了什么</div><ul>
+      <li>把家底数清了：现役题 150 道、手工精做的题 26 道、判分程序 15 份。（此前交接时听到的数字是错的，把归档的旧题也算进去了）</li>
+      <li>追出一条<strong>可以用到所有题上</strong>的判断标准（第五节）</li>
+      <li>照这条标准回头找，发现<strong>已有一道题的秤好得多</strong>：同样的对比，那道题两组差距 0.5 分、每组只要 10 次答题就能出结论</li>
+      <li>清掉了存放在磁盘上、别人也能读到的 1583 份明文密钥</li>
+      <li>可用的外部工具从一个都不能用修到 25 个能用；文献库从 309 篇扩到 2655 篇</li>
+    </ul></div>
+    <div class="bad"><div class="t">发现的问题</div><ul>
+      <li>收窄方向的代价：现役题从 150 道减到 75 道，这个损失得认</li>
+      <li>新出的这道题，秤只有三个刻度，要出结论得每组答 400 次，跑不动</li>
+      <li>曾经报出"给了工具反而分数更低"，后来查出<strong>是假结论</strong>——两组用了不同的判分方式算出来的</li>
+      <li><strong>数据本身有天花板</strong>：库里有名有姓的真药只有 40 个，其中只有 3 个符合出题要求，而且都差在同样两个指标上。也就是说这类题最多只能出 3 道，还高度相似</li>
+    </ul></div>
+  </div>
+</div>
+
+<h2>四、七次改主意</h2>
+<div class="h2sub">每次都写清：从什么改成什么，以及为什么非改不可</div>
+
+<div class="turn">
+  <div class="td">8 月 8 日</div>
+  <div class="tt">出题顺序反过来</div>
+  <div class="chg"><span class="from">先写题目模板、再往里填内容造题</span> → <span class="to">先做出几道真题、再回头总结模板</span></div>
+  <p style="margin-bottom:0"><strong>模板想不到实际跑起来会出的岔子。</strong>按模板造出来的题，要么结构不合适，要么 AI 答完的格式判分程序读不了，最后还得反过来改模板。不如先做出真题，再从真题里抽出骨架。</p>
+</div>
+
+<div class="turn">
+  <div class="td">8 月 12 日</div>
+  <div class="tt">AI 的运行方式换掉</div>
+  <div class="chg"><span class="from">问一个问题、它回一段话</span> → <span class="to">给它一个独立工作目录，让它自己记笔记、反复试、写答案文件</span></div>
+  <p style="margin-bottom:0">一问一答这种形式下，<strong>它的思考过程和最终答案挤在同一段回复里，篇幅必然超限</strong>，而且没法让它中途记笔记、改主意。我们要考的恰恰是"长时间、多步骤地推进一件事"，那就必须给它一个能反复读写文件的地方。</p>
+</div>
+
+<div class="turn">
+  <div class="td">8 月 14 日</div>
+  <div class="tt">防背方案整套作废</div>
+  <div class="chg"><span class="from">把分子和材料的名字换成代号，防止 AI 认出来</span> → <span class="to">不做代号，改成把题设计成背不出来的</span></div>
+  <p style="margin-bottom:0">两个理由。一是<strong>那根本不算匿名</strong>：名字换了但结构式还在，结构式就是身份证，一查就还原。二是<strong>真匿名会毁题</strong>：材料题考的是从化学结构推性质，把化学信息抹掉就变成纯数字排序，跟专业没关系了。</p>
+</div>
+
+<div class="turn">
+  <div class="td">8 月 19 日</div>
+  <div class="tt">推翻自己五天前刚报的成功</div>
+  <div class="chg"><span class="from">四个指标全达标，判定这道题做成了</span> → <span class="to">撤回，这道题的问法整类判死</span></div>
+  <p style="margin-bottom:0">读了 15 次答题的完整操作记录才发现，高分是靠背教科书拿的。换成代号重跑后两个 AI 归零、最强的从 0.9 掉到 0.66。<strong>判分只能告诉你分数长什么样，告诉不了你这分是靠什么挣的。</strong>而"从一堆真材料里挑最好的"这种问法天生就能背，所以整类淘汰。</p>
+</div>
+
+<div class="turn">
+  <div class="td">8 月 23 日</div>
+  <div class="tt">不考"做一次实验"，改考"完成一个目标"</div>
+  <div class="chg"><span class="from">答案是一个数值（这个分子的某项性质是多少）</span> → <span class="to">答案是一个产物（找出/选出那个符合要求的分子）</span></div>
+  <p style="margin-bottom:0"><strong>让 AI 预测一个分子的某项性质，本质上就是让它做一次实验、调一次工具拿一个结果。</strong>考这个只是在考它会不会用工具。我们真正想考的是：给它一个高层目标，它自己能不能想清楚该做哪些实验、按什么顺序做、结果怎么解读、怎么一步步逼近目标。按这条标准一查，之前折腾的好几个版本全错在同一处。</p>
+</div>
+
+<div class="turn">
+  <div class="td">8 月 28 日</div>
+  <div class="tt">范围从"科学"收窄到"制药"</div>
+  <div class="chg"><span class="from">药物、材料、基因三个方向同时做</span> → <span class="to">只做制药，另两个冻结不删</span></div>
+  <p style="margin-bottom:0">摊子铺太开，每个方向都做不深。同时加了一层要求：<strong>光做一套考题不够，要往"用考题结果反过来帮 AI 变强"这个方向多走一步。</strong>代价是现役题从 150 道减到 75 道。</p>
+</div>
+
+<div class="turn">
+  <div class="td">8 月 30 日</div>
+  <div class="tt">不给秤定合格线</div>
+  <div class="chg"><span class="from">这把秤要能分出多大差距才算合格？低于多少就废题？</span> → <span class="to">不设任何合格线，如实报出分数就行</span></div>
+  <p style="margin-bottom:0">之前为"秤要有合格线"这件事派生出一整套框架，还准备了三条备选方案。这次被直接推翻：<strong>如实报分就行；AI 没做到就是没做到，不必再派生后续动作。</strong>省掉了一大堆自己给自己加的活。</p>
+</div>
+
+
+<h2>五、最近一周：三次追问，挖出一条能用到所有题上的标准</h2>
+<div class="h2sub">这是五周里最值钱的部分。过程是：报了个结论 → 被追问 → 承认错了 → 重新查 → 又发现自己新的解释也错了 → 再修正</div>
+
+<h3>先说这道题是什么</h3>
+<div class="card">
+  <p>给 AI 一个 1950 年代的老抗抑郁药，让它<strong>改造这个分子的结构</strong>，改完之后要同时满足四条要求。这四条都是真实论文里用来判断"一个分子适不适合做脑部用药"的标准：</p>
+  <table>
+    <tr><th style="width:22%">要求</th><th style="width:30%">通俗说法</th><th>AI 能自己算出来吗</th></tr>
+    <tr><td>分子量 ≤ 360</td><td>分子别太大</td><td>能，把原子量加起来就行，纯算术</td></tr>
+    <tr><td>氢键给体 = 0</td><td>某类化学基团不能有</td><td>能，数个数就行</td></tr>
+    <tr><td>极性 在 40–90 之间</td><td>亲水程度要适中</td><td>能，查表加起来，纸上算得出</td></tr>
+    <tr class="hi"><td>油性 ≤ 3</td><td>脂溶性别太高</td><td><strong>不能</strong>，要跑一个专门的计算模型，脑子里算不出来</td></tr>
+  </table>
+  <p>然后我们做了个对照实验：<strong>一组 AI 给它化验工具</strong>（可以测出自己造的分子这四项是多少），<strong>另一组不给</strong>，只能靠自己的化学知识。如果这道题是好题，给了工具那组应该明显更强。</p>
+  <p style="margin-bottom:0">结果两组几乎打平。给工具那组 0.267 分，不给工具那组 0.208 分，差 0.06 分。</p>
+</div>
+
+<div class="q">
+  <div class="qt">追问一："秤不好用为什么要废题？换把秤再量一遍不就行了"</div>
+  <p>这个追问一针见血。我们上一轮的说法是"这把秤废了，这道题作废"，<strong>但那是错的</strong>——只要不改题目、只改判分方式，AI 交上来的答案还是同一道题的答案，<strong>27 次答题记录全都能重新判分，不用重跑，一分钱不花。</strong></p>
+  <p>照着做，换了三种判分方式重新量：</p>
+  <table>
+    <tr><th style="width:34%">判分方式</th><th>两组差距</th><th>要多少次答题才能得出可靠结论</th></tr>
+    <tr><td>原来那种（满足条数换算成分数）</td><td>+0.056</td><td>每组 462 次</td></tr>
+    <tr><td>直接数满足了几条</td><td>+0.028</td><td>每组 462 次（<strong>跟上面完全一样</strong>）</td></tr>
+    <tr class="hi"><td>换成论文里那种更细的连续打分</td><td>−0.034（<strong>不给工具那组反超</strong>）</td><td>每组 1070 次（更糟）</td></tr>
+  </table>
+  <div class="key">
+    <div class="kt">为什么"把秤刻度做细"注定没用，这是数学，不是运气不好</div>
+    前两种判分方式，本质上都是"满足了几条"这个数的<strong>简单换算</strong>（比如从"3 条"换算成"0.5 分"）。
+    换算不改变任何一份答卷的<strong>相对高低</strong>，所以两组的差距、检验结果一模一样。
+    <div class="kb">推论：凡是从"满足几条"换算出来的判分方式，区分能力完全相同。<br>想提高区分能力，只能去读一个<strong>别的量</strong>。</div>
+  </div>
+</div>
+
+<div class="q">
+  <div class="qt">追问二："你说的工具到底指什么？说 AI 吹牛，证据是什么？"</div>
+  <p>去翻证据的时候，发现自己上一轮给的解释<strong>又是错的</strong>。上一轮说"AI 闭着眼也能造出一样好的分子"，听着像那么回事，但把四条要求<strong>拆开单独看</strong>，真相完全不同：</p>
+  <table>
+    <tr><th style="width:26%">要求</th><th>给工具那组通过率</th><th>不给工具那组通过率</th></tr>
+    <tr><td>分子量（纯算术）</td><td>100%</td><td>100%</td></tr>
+    <tr><td>氢键给体（数个数）</td><td>77%</td><td>89%（<strong>反而更高</strong>）</td></tr>
+    <tr><td>极性（纸上能算）</td><td>77%</td><td>67%</td></tr>
+    <tr class="hi"><td><strong>油性（算不出来的那条）</strong></td><td><strong>15%</strong></td><td><strong>0%</strong></td></tr>
+  </table>
+  <p><strong>四条要求里三条是白送的</strong>——算术、数个数、查表加和，AI 自己都能做。<strong>全题实际只卡在"油性"这一条上，而连给了工具的那组也只有 15% 能过。</strong></p>
+  <p style="margin-bottom:0">所以两组差距小，<strong>不是因为工具没用，是因为两组都倒在同一道坎上</strong>。工具能告诉它"你现在油性 3.62、超标了"，但从"知道超标"到"改好"，还得再做一轮化学搜索，而它手里 8 次化验的额度买不到那个答案。</p>
+</div>
+
+<div class="q">
+  <div class="qt">顺带查出的另一件事：AI 在算不出来的那条上系统性地骗自己</div>
+  <p>不给工具那组答了 12 次，<strong>其中 11 次都在答案里自己填"四条全部满足"，而实际算下来一次都没到四条。</strong>还有 2 次交上来的分子，化学软件根本读不出来（化学键根本不成立），照样自己填了满分。</p>
+  <p>更值得注意的是它错的方式。翻它的笔记，有一次这么写：</p>
+  <div class="eg">
+    <div class="egt">某次答题的原始笔记</div>
+    <p style="margin-bottom:8px">"油性 = 3.88 + 2 × (−0.57) ≈ 2.74（小于 3，余量舒适）"</p>
+    <p style="margin-bottom:8px">"四条标准全部满足"</p>
+    <p style="margin-bottom:0">—— 实测油性是 <strong>3.62，超标</strong>。而同一份笔记里它手算的"极性"值，跟软件算的<strong>一位不差</strong>。</p>
+  </div>
+  <p style="margin-bottom:0">这说明<strong>它不是整体在乱猜，而是偏偏在那条自己算不出来的指标上，系统性地朝对自己有利的方向估，而且从不怀疑自己</strong>。12 次答题里 9 个合法分子的油性实测值全部落在 3.26 到 3.85 之间（限值是 3.0）——方向都对、都只差一点、都以为自己过了。</p>
+</div>
+
+<div class="key" style="background:#fff;border:2px solid #9a6700">
+  <div class="kt">被这三次追问逼出来的判断标准</div>
+  <div class="kb">出一道题之前先问一句：AI 测完之后，还要不要再想一步？</div>
+  <p><strong>不要再想</strong>——测出来的结果本身就是答案。这种题工具的价值直接体现在分数上，秤量得出来。</p>
+  <p><strong>还要再想</strong>——测量只是告诉它"现在不合格"，怎么改好还得另想办法。这种题工具就量不出来。</p>
+  <p style="margin-bottom:0">改造老药那道题属于后者，所以量不出东西。而<strong>我们库里已经有一道属于前者</strong>：让 AI 交一组"我断定这些都合格"的分子，交错一个就零分。<strong>它的"断定"本身就是产物，而断定必须靠测量才成立。</strong>那道题给工具组 0.5 分、不给工具组 0 分，差距是前一道的十倍，<strong>每组只要 10 次答题就能出结论</strong>（前一道要 400 次）。</p>
+  <div class="note">这条标准现在拿去逐个检查另外 6 道待改造的题。</div>
+</div>
+
+<div class="q">
+  <div class="qt">还有一个反思：为什么没在花钱跑之前就发现</div>
+  <p>我们有一道开跑前的自检，查的是几条"参照答卷"之间分不分得开：完全不改动的答卷 0 分、瞎撒网的 0.5 分、不给工具的 0.5 分、内行答的 1 分。<strong>0、0.5、1 三级台阶，看着极其漂亮。</strong></p>
+  <p style="margin-bottom:0">而它漂亮恰恰因为<strong>只有三级，每条参照答卷正好各站一级</strong>。参照答卷是单个固定的点，没有波动；真实答题是有波动的。<strong>这道自检查的是秤的量程（能称多重到多轻），从来没查秤的分辨率（能分辨多小的差别）。</strong></p>
+</div>
+
+<h2>六、这五周作废过 14 条已经定好的方案</h2>
+<div class="h2sub">写下来是为了不让后来的人把它们当新想法捡回去</div>
+
+<table>
+<tr><th style="width:40%">曾经定好的做法</th><th>为什么废掉</th></tr>
+<tr><td>把分子和材料改成代号防止 AI 认出来</td><td>只改名字留着结构等于没改；真彻底改又会让题目失去专业含义</td></tr>
+<tr><td>用一种特殊记号当代号的载体</td><td>随上面那条一起废</td></tr>
+<tr><td>专门做一个"从结构反查身份"的接口</td><td>工具的标识方式改了之后，这个接口不需要了</td></tr>
+<tr><td>把"第一组题"定义成三道小题</td><td>执行的人自己造的定义，跟原本定的不是一回事，被纠正</td></tr>
+<tr><td>不给候选清单那版单独改成另一种问法</td><td>那就不是同一道题了，两版没法对比，白做</td></tr>
+<tr><td>让 AI 靠猜结构片段去搜候选</td><td>把"会不会猜片段"混进了"给不给清单"这个变量里，两件事搅在一起</td></tr>
+<tr><td>专家审题只抽三成</td><td>改成全部都审，分两级</td></tr>
+<tr><td>用"平均分必须落在某个区间"当硬性门槛</td><td>降级成参考，改用"两组的相对高低"当主要判据</td></tr>
+<tr><td>答题失败的记录整条丢掉不算</td><td>会造成幸存者偏差。曾经靠丢掉 3 个零分，把平均分从 0.598 做成 0.640</td></tr>
+<tr><td>"答案必须是一个分子""必须有一个背不出来的数值"</td><td>执行的人凭空加的前提，答案交什么形式本来是可以自由设计的</td></tr>
+<tr><td>说"同一系列的分子有 303 个"</td><td>用了个偷懒的判断办法，把不相干的分子归成一类；老老实实算只有 30 个</td></tr>
+<tr><td>用某个溶解度指标出题</td><td>不给工具的 AI 也能拿 0.68 分，说明这道题的答案是能背的</td></tr>
+<tr><td>"药物这边九种能力一个都做不出来"，并派生三条备选路</td><td>过度悲观，而且建立在上面那条凭空加的前提上，前提一去就不成立</td></tr>
+<tr><td>整套万级分子池的设计方案</td><td>它考的是"报一个性质数值"，跟"考完成目标"这个大方向冲突</td></tr>
+</table>
+
+<h2>七、一个反复犯了六次的毛病</h2>
+
+<div class="turn" style="border-left-color:#9a6700">
+  <div class="tt">在没有依据的地方自己补一个判断，然后把这个判断当成事实继续往下做</div>
+  <p style="margin:12px 0 10px">表面上是六件不同的事，根子是同一个：</p>
+  <ul>
+    <li>看到四个指标都达标就报"做成了"，没去查这分是怎么挣的</li>
+    <li>自己修好了读答案的漏洞，却还拿修补之前的 637 次答题数据出报表</li>
+    <li>文档里早写着"这个搜索方式会让某一步白送"，看配置时没核这条，还照着跑了 30 次</li>
+    <li>自己造了一个"第一组题"的定义，跟原本定好的不是一回事</li>
+    <li>把方便工具放进了"最少工具"那一档，等于把要考的东西替 AI 做了</li>
+    <li>秤分不开就说"这题废了"，其实换个判分方式重新算根本不用重跑</li>
+  </ul>
+  <p style="margin-bottom:0"><strong>现在定成了硬规矩：</strong>凡是"必须这样""只能这样""一定得这样"这种前提，都必须能指到某份正式文档的原话；指不到就说明是自己想出来的，删掉重想。报"做成了"之前必须去读操作记录、核实分数是怎么来的。下令开跑之前必须逐条核对这道题的设计要求。</p>
+</div>
+
+<h2>八、现在到哪了，卡在哪</h2>
+
+<h3>手上有什么</h3>
+<table>
+<tr><th style="width:30%">项目</th><th>状态</th></tr>
+<tr><td>方向</td><td>只做制药；材料和基因先冻结，不删</td></tr>
+<tr><td>题目数量</td><td>原有 150 道，收窄方向后现役 75 道；另有 26 道手工精做的题</td></tr>
+<tr><td>已经完整验证并封存的</td><td>1 组（一道题 × 六种配置，跑了两批结果一致，参数已锁死）</td></tr>
+<tr><td>秤最好的一道题</td><td>让 AI 交"我断定这些合格"的那道：两组差 0.5 分，每组 10 次答题就够</td></tr>
+<tr><td>数据库</td><td>9 万多条：7 万多个候选分子、1 万多条超导数据、5 千多个晶体、40 个有名有姓的真药</td></tr>
+<tr><td>累计答题次数</td><td>7371 次（其中 637 次因为读答案漏洞作废）</td></tr>
+</table>
+
+<h3>四个卡点</h3>
+<table>
+<tr><th style="width:26%">卡点</th><th>说明</th></tr>
+<tr><td>请专家审题</td><td><strong>唯一只能干等的环节。</strong>材料早就准备齐了，4 位专家并行审两轮大约需要 8 到 10 天。而论文投稿的两个截止日期是 9 月 18 日和 9 月 25 日，这是排期上真正的瓶颈</td></tr>
+<tr><td>改造老药那道题的去留</td><td>待定：是按"负面结果"留档，还是重新造？它要每组 400 次答题才可能出结论</td></tr>
+<tr><td>数据本身的天花板</td><td>库里有名有姓的真药只有 40 个，其中只 3 个符合出题要求，而且都差在同样两个指标上 ⇒ 这类题最多出 3 道且高度相似。另外全库<strong>一条药效活性数据都没有</strong>，所以"既要改好性质又要保住药效"这种更真实的题，目前诚实地做不出来</td></tr>
+<tr><td>八道题要重跑</td><td>读答案那个漏洞修好之前的数据都不能用，得在现在的配置下重新跑一遍打基线</td></tr>
+</table>
+
+<footer>
+这份材料的数据来自：代码仓库 602 次提交记录（7 月 30 日起）、四期周报、决议台账与作废记录、以及三份根因追查记录。<br>
+所有数字都是实际跑出来或实际测出来的，没有估算值。第五节的全部结论出自对已有答题记录的重新判分，没有新花一分钱、一次运行。
+</footer>
+
+</div>
+</body>
+</html>

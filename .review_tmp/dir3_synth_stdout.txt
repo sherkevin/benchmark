@@ -1,0 +1,181 @@
+=== A 容差标定 ===
+{"tol_roundtrip_single": 1.1102230246251565e-16, "tol_roundtrip_cross_scale": 2.220446049250313e-16, "n_roundtrip_probes": 8753, "n_skipped_logit_undefined": 7, "tol_pct_r_formula": "0.5*10^-d/100  (d=声明的显示小数位)", "tol_used_cross_scale": 2.220446049250313e-16, "tol_pct_r2_value": 5e-05}
+=== A 生成（网格敏感性）===
+  grid1_[0.5]: items=0 pass=0 rate=None entities=0 skip_logit=7 fails={}
+  grid5_[0.3..0.7]: items=2056 pass=2056 rate=1.0 entities=309 skip_logit=7 fails={}
+  grid7_[0.2..0.8]: items=6502 pass=6502 rate=1.0 entities=470 skip_logit=7 fails={}
+  grid9_[0.1..0.9]: items=17134 pass=17134 rate=1.0 entities=654 skip_logit=7 fails={}
+=== A 特异性负控 ===
+{"cross_entity_pairs": {"n_tested": 1457, "n_wrongly_passed": 0, "specificity": 1.0}, "perturbation_detection": {"delta_p_0": {"n_tested": 2056, "n_rejected": 0, "reject_rate": 0.0}, "delta_p_1e-16": {"n_tested": 2056, "n_rejected": 0, "reject_rate": 0.0}, "delta_p_1e-14": {"n_tested": 2056, "n_rejected": 0, "reject_rate": 0.0}, "delta_p_1e-12": {"n_tested": 2056, "n_rejected": 0, "reject_rate": 0.0}, "delta_p_1e-10": {"n_tested": 2056, "n_rejected": 0, "reject_rate": 0.0}, "delta_p_1e-08": {"n_tested": 2056, "n_rejected": 0, "reject_rate": 0.0}, "delta_p_1e-06": {"n_tested": 2056, "n_rejected": 16, "reject_rate": 0.0078}, "delta_p_1e-05": {"n_tested": 2056, "n_rejected": 206, "reject_rate": 0.1002}, "delta_p_5e-05": {"n_tested": 2056, "n_rejected": 934, "reject_rate": 0.4543}, "delta_p_0.0001": {"n_tested": 2056, "n_rejected": 2056, "reject_rate": 1.0}, "delta_p_0.001": {"n_tested": 2056, "n_rejected": 2056, "reject_rate": 1.0}, "delta_p_0.01": {"n_tested": 2056, "n_rejected": 2056, "reject_rate": 1.0}}, "tol_used_cross_scale": 2.220446049250313e-16}
+=== B 生成 ===
+  n_variant_species_generated = 887
+  n_pass_verifier = 887
+  pass_rate = 1.0
+  distinct_parent_entities_with_ionizable_site = 507
+  pass_by_site_kind = {'basic_aromatic_N': 246, 'basic_aliphatic_N': 395, 'acid_carboxyl_OH': 115, 'acid_phenol_OH': 98, 'guanidine_amidine_N': 24, 'acid_sulfonamide_NH': 9}
+  max_abs_mass_delta_error_u_on_pass = 1.4722259189525744e-08
+  n_variants_with_tool_predictions = 0
+  fail_reasons = {}
+  make_species_failures = {}
+  B 实例（前3条）:
+    z000553 basic_aromatic_N CCc1cc2c(s1)-n1c(C)nnc1CN=C2c1ccccc1Cl -> CCc1cc2c(s1)-n1c(n[nH+]c1C)CN=C2c1ccccc1
+      IK VMZUTJCNQWMAGF-UHFFFAOYSA-N -> VMZUTJCNQWMAGF-UHFFFAOYSA-O | 段长 [14, 10, 1]->[14, 10, 1] | 任务书判据(骨架同+第2段不同)=False | dQ=1 dH=1 dM=+1.007276
+    z000553 basic_aromatic_N CCc1cc2c(s1)-n1c(C)nnc1CN=C2c1ccccc1Cl -> CCc1cc2c(s1)-n1c(C)n[nH+]c1CN=C2c1ccccc1
+      IK VMZUTJCNQWMAGF-UHFFFAOYSA-N -> VMZUTJCNQWMAGF-UHFFFAOYSA-O | 段长 [14, 10, 1]->[14, 10, 1] | 任务书判据(骨架同+第2段不同)=False | dQ=1 dH=1 dM=+1.007276
+    z000555 basic_aliphatic_N CN1CCN(C(=O)OC2c3nccnc3C(=O)N2c2ccc(Cl -> C[NH+]1CCN(C(=O)OC2c3nccnc3C(=O)N2c2ccc(
+      IK GBBSUAFBMRNDJC-UHFFFAOYSA-N -> GBBSUAFBMRNDJC-UHFFFAOYSA-O | 段长 [14, 10, 1]->[14, 10, 1] | 任务书判据(骨架同+第2段不同)=False | dQ=1 dH=1 dM=+1.007276
+  B负控: {'cross_skeleton_pairs': 722, 'wrongly_passed': 0}
+=== C 生成 ===
+  total=4531 pass=4059 rate=0.895829 with_preds=0
+  C1_stereo_flattened: n=730 pass=260 rate=0.3562 fails={'second_block_identical_stereo_not_encoded': 470, 'canonical_smiles_identical_not_a_distinct_isomer': 470}
+  C2_stereo_inverted: n=260 pass=258 rate=0.9923 fails={'second_block_identical_stereo_not_encoded': 2, 'canonical_smiles_identical_not_a_distinct_isomer': 2}
+  C3_hydrochloride_salt: n=730 pass=730 rate=1.0 fails={}
+  C4_same_substance_rewrite: n=2811 pass=2811 rate=1.0 fails={}
+  C4输入哈希: {'n_c4_variants': 2811, 'n_variant_input_sha256_differs_from_parent': 2811, 'n_distinct_variant_smiles_strings': 2811}
+=== 池内天然 B/C 素材 ===
+  骨架重复组=7 行=14 类型={'C_stereo_or_tautomer_pair': 6, 'C_exact_duplicate_same_full_inchikey': 1}
+  预测有差异的组=0  真值矛盾的组=1
+   GSDSWSVVBLHKDQ C_stereo_or_tautomer_pair ids=['z015738', 'z034775'] truth=[1, 1] preds=[[0, 0, 1, 1], [0, 0, 1, 1]] cf_pairs=[2, 2]
+   HXHWSAZORRCQMX C_exact_duplicate_same_full_inchikey ids=['z002909', 'z015780'] truth=[1, 1] preds=[[1, 0, 1, 1], [1, 0, 1, 1]] cf_pairs=[1, 1]
+   IAKHMKGGTNLKSZ C_stereo_or_tautomer_pair ids=['z000364', 'z021608'] truth=[0, 1] preds=[[1, 0, 1, 1], [1, 0, 1, 1]] cf_pairs=[1, 1]
+   JAQUASYNZVUNQP C_stereo_or_tautomer_pair ids=['z020806', 'z034662'] truth=[1, 1] preds=[[1, 0, 1, 1], [1, 0, 1, 1]] cf_pairs=[1, 1]
+   KWTSXDURSIMDCE C_stereo_or_tautomer_pair ids=['z002162', 'z020714'] truth=[1, 1] preds=[[1, 1, 1, 1], [1, 1, 1, 1]] cf_pairs=[0, 0]
+   ODQWQRRAPPTVAG C_stereo_or_tautomer_pair ids=['z034777', 'z070883'] truth=[1, 1] preds=[[1, 1, 1, 1], [1, 1, 1, 1]] cf_pairs=[0, 0]
+   UCTWMZQNUQWSLP C_stereo_or_tautomer_pair ids=['z002936', 'z063416'] truth=[0, 0] preds=[[0, 0, 0, 0], [0, 0, 0, 0]] cf_pairs=[0, 0]
+=== 同物质/立体抖动的实测噪声界 ===
+{
+ "measured_dp_by_kind": {
+  "exact_duplicate_same_substance": {
+   "n_measurements": 4,
+   "max_abs_dp": 0.003178346157073908,
+   "mean_abs_dp": 0.001241,
+   "eps_used": 0.003178346157073908
+  },
+  "stereo_or_tautomer": {
+   "n_measurements": 24,
+   "max_abs_dp": 0.3410934805870056,
+   "mean_abs_dp": 0.035814,
+   "eps_used": 0.3410934805870056
+  }
+ },
+ "label_flip_observed_per_group": {
+  "GSDSWSVVBLHKDQ": {
+   "kind": "C_stereo_or_tautomer_pair",
+   "n_models_with_label_flip": 0,
+   "max_abs_dp": 0.03462344408035278
+  },
+  "HXHWSAZORRCQMX": {
+   "kind": "C_exact_duplicate_same_full_inchikey",
+   "n_models_with_label_flip": 0,
+   "max_abs_dp": 0.003178346157073908
+  },
+  "IAKHMKGGTNLKSZ": {
+   "kind": "C_stereo_or_tautomer_pair",
+   "n_models_with_label_flip": 0,
+   "max_abs_dp": 0.03589526563882828
+  },
+  "JAQUASYNZVUNQP": {
+   "kind": "C_stereo_or_tautomer_pair",
+   "n_models_with_label_flip": 0,
+   "max_abs_dp": 0.038094229996204376
+  },
+  "KWTSXDURSIMDCE": {
+   "kind": "C_stereo_or_tautomer_pair",
+   "n_models_with_label_flip": 0,
+   "max_abs_dp": 0.11108148097991943
+  },
+  "ODQWQRRAPPTVAG": {
+   "kind": "C_stereo_or_tautomer_pair",
+   "n_models_with_label_flip": 0,
+   "max_abs_dp": 0.3410934805870056
+  },
+  "UCTWMZQNUQWSLP": {
+   "kind": "C_stereo_or_tautomer_pair",
+   "n_models_with_label_flip": 0,
+   "max_abs_dp": 0.1243281364440918
+  }
+ },
+ "total_label_flips_observed_in_7_groups": 0,
+ "slots_flippable_at_cutoff_0.5": {
+  "exact_duplicate_same_substance": {
+   "eps": 0.003178346157073908,
+   "n_slots_total": 2920,
+   "n_slots_within_eps_of_cutoff_0.5": 6,
+   "rate": 0.002055
+  },
+  "stereo_or_tautomer": {
+   "eps": 0.3410934805870056,
+   "n_slots_total": 2920,
+   "n_slots_within_eps_of_cutoff_0.5": 908,
+   "rate": 0.310959
+  }
+ },
+ "NOTE": "样本极小：同物质组 n=1（4 个测量），立体/互变组 n=6（24 个测量）。这是池内全部可得素材，无法扩大，除非跑推理（=机时）。"
+}
+=== eps 带表 / 变体挂载到400冲突子集 ===
+{
+ "eps_band": {
+  "eps_0.00317835": {
+   "n_slots_of_2920_within_eps_of_cutoff_0.5": 6,
+   "rate": 0.002055
+  },
+  "eps_0.01": {
+   "n_slots_of_2920_within_eps_of_cutoff_0.5": 16,
+   "rate": 0.005479
+  },
+  "eps_0.035814": {
+   "n_slots_of_2920_within_eps_of_cutoff_0.5": 57,
+   "rate": 0.019521
+  },
+  "eps_0.1": {
+   "n_slots_of_2920_within_eps_of_cutoff_0.5": 188,
+   "rate": 0.064384
+  },
+  "eps_0.341093": {
+   "n_slots_of_2920_within_eps_of_cutoff_0.5": 908,
+   "rate": 0.310959
+  }
+ },
+ "mount": {
+  "B_variants_total": 887,
+  "B_variants_whose_parent_in_400": 468,
+  "C_variants_total": 4531,
+  "C_variants_whose_parent_in_400": 2542,
+  "C_variants_pass_whose_parent_in_400": 2322
+ }
+}
+=== 效度检验：400 真冲突行假阳性 ===
+  400行 / 跨家族冲突对=502
+  A_strict_FP_rows_at_tol3.5e-2_stereo_noise = 1 (0.25%)
+  A_min_dp分布: {"n_rows_with_conflict_pair": 400, "min": 0.03327136039733891, "median": 0.664289029315114, "max": 0.9936596242245287, "n_rows_with_min_dp_le_1e-3": 0, "n_rows_with_min_dp_le_1e-2": 0}
+  A_strict_false_positive_rows = 0 (0.00%)
+  D_strict_false_positive_rows = 0 (0.00%)
+  D_loose_false_positive_rows = 400 (100.00%)
+  B_strict_false_positive_rows = 0 (0.00%)
+  B_loose_false_positive_rows = 268 (67.00%)
+  C_strict_false_positive_rows = 8 (2.00%)
+   所有 730 行四工具共用同一 input_sha256（单物种单输入），严格 B 判据结构上不可能触发，0 假阳性是空洞真而非判据强
+  C假阳性明细: [{"entity_id": "z000364", "skeleton": "IAKHMKGGTNLKSZ", "partner": ["z021608"], "own_cross_family_conflicts": 1, "truth": 0, "partner_truth": [1]}, {"entity_id": "z002909", "skeleton": "HXHWSAZORRCQMX", "partner": ["z015780"], "own_cross_family_conflicts": 1, "truth": 1, "partner_truth": [1]}, {"entity_id": "z015738", "skeleton": "GSDSWSVVBLHKDQ", "partner": ["z034775"], "own_cross_family_conflicts": 2, "truth": 1, "partner_truth": [1]}, {"entity_id": "z015780", "skeleton": "HXHWSAZORRCQMX", "partner": ["z002909"], "own_cross_family_conflicts": 1, "truth": 1, "partner_truth": [1]}, {"entity_id": "z020806", "skeleton": "JAQUASYNZVUNQP", "partner": ["z034662"], "own_cross_family_conflicts": 1, "truth": 1, "partner_truth": [1]}, {"entity_id": "z021608", "skeleton": "IAKHMKGGTNLKSZ", "partner": ["z000364"], "own_cross_family_conflicts": 1, "truth": 1, "partner_truth": [0]}, {"entity_id": "z034662", "skeleton": "JAQUASYNZVUNQP", "partner": ["z020806"], "own_cross_family_conflicts": 1, "truth": 1, "partner_truth": [1]}, {"entity_id": "z034775", "skeleton": "GSDSWSVVBLHKDQ", "partner": ["z015738"], "own_cross_family_conflicts": 2, "truth": 1, "partner_truth": [1]}]
+  D宽松示例: [{"entity_id": "z000282", "pairs": [["admet_ai_1_4_0", "deeppurpose_bbb_molnet_cnn", 0.37528898622840645, 0.9352496862411499, 0, 1], ["admet_ai_1_4_0", "deeppurpose_bbb_molnet_morgan", 0.37528898622840645, 0.9628670811653137, 0, 1], ["admet_ai_1_4_0", "deeppurpose_bbb_molnet_mpnn", 0.37528898622840645, 0.5703874826431274, 0, 1]]}, {"entity_id": "z000364", "pairs": [["admet_ai_1_4_0", "deeppurpose_bbb_molnet_cnn", 0.7714877486228943, 0.0841103047132492, 1, 0]]}, {"entity_id": "z000565", "pairs": [["admet_ai_1_4_0", "deeppurpose_bbb_molnet_mpnn", 0.3363808512687683, 0.5859021544456482, 0, 1]]}]
+=== 扩量上限 ===
+{
+ "baseline_rows": 730,
+ "A_items_grid5": 2056,
+ "A_items_pass": 2056,
+ "A_items_grid9": 17134,
+ "A_items_grid1": 0,
+ "A_grid_dependence_note": "A 类产量完全由自选的阈值网格决定，网格是自由参数：grid1=0、grid5=2056、grid9=17134，可无限加密 -> 不是数据属性，没有真实上限",
+ "B_complete_rows_zero_machine_time": 0,
+ "C_complete_rows_zero_machine_time": 0,
+ "B_variants_needing_inference": 887,
+ "B_variants_in_400_conflict_subset": 468,
+ "C_variants_pass_in_400_conflict_subset": 2322,
+ "C_variants_needing_inference": 4059,
+ "pool_natural_BC_usable_conflict_pairs": 0,
+ "total_rows_reachable_zero_machine_time": 2786,
+ "total_rows_reachable_if_inference_allowed": 22810,
+ "distinct_molecules_zero_machine_time": 730,
+ "mechanically_judgeable_rows_zero_machine_time": 2786,
+ "mechanically_judgeable_note": "A 类答案键=『两侧可无损换算回同一 p 且只差在声明的 cutoff』，纯代码可判，不需人工/大模型；但判据与生成器同源，属自证式循环"
+}
+OUT -> /Users/jingwu/work/benchmark/.review_tmp/dir3_synth_results.json

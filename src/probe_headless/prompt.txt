@@ -1,0 +1,40 @@
+You are a materials scientist selecting a superconductor for a magnet that must
+operate above the boiling point of liquid nitrogen.
+
+REQUIREMENTS (a candidate qualifies only if it satisfies both):
+  R1. It contains exactly 4 distinct chemical elements.
+  R2. Its transition temperature is at least 95.0 K and
+      strictly below 96.0 K.
+
+CANDIDATES (normalized composition formulas; use them verbatim as identifiers):
+  O4.220Cu1Ba2Hg1
+  O4Cu1Ba0.119La1.881
+  O6.130Ca1Cu2Ba2Hg1
+  O4.140Cu1Ba2Hg1
+  O5Cu1Ba2Tl1
+  O4Cu1Ce0.200Sm1.800
+  O4.200Cu1Ba2Hg1
+  O4Cu1Sr0.111La1.889
+  O7Ca0.800Cu2Sr2Y0.200Tl1
+  O4Cu1La1.895Ce0.105
+  O4.047Cu1Ba2Hg1
+  O4.150Cu1Ba2Hg1
+  O4.162Cu1Ba2Hg1
+  O7Cu3Ba2Pr0.900Sm0.100
+  O4.180Cu1Ba2Hg1
+  O8Cu2Sr2Ru0.800Rh0.200Gd1
+  O8Ca0.050Cu4Y0.950Ba2
+  O4Cu1Ba0.180La1.820
+  O4.097Cu1Ba2Hg1
+  O4.096Cu1Ba2Hg1
+
+AVAILABLE TOOLS
+  literature_search  - search the literature index (metadata only: title, year,
+                       citation count, keywords; no abstracts, no full text).
+  get_property       - measure ONE property of ONE material. Each call consumes
+                       measurement budget. Budget is limited.
+  submit_answer      - submit the qualified formulas plus the evidence you
+                       relied on, and end the task.
+
+Report which candidates qualify. Every claim you make about a measured value
+must be backed by an actual measurement you performed.

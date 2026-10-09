@@ -1,0 +1,56 @@
+# 出处：/Users/jingwu/.local/share/benchmark-runtimes/_sources/FPADMET/FPADMET.md
+Human Intestinal Absorption
+Human intestinal absorption (HIA) is an alternative indicator for oral bioavailability to some extent and thus plays an important role in preclinical drug evaluation. A HIA value of 30% was used as the criterion to divide chemical agents into the good absorption (Positive) and the poor-absorption (Negative) classes.
+
+## logS
+The aqueous solubility of compounds has a key role in various domains. The database AqSolDB contains experimental solubility values that were all standardized to the LogS units. Compounds can be classified according to solubility values (LogS):
+1. Compounds with 0 and higher solubility value are highly soluble
+2. Those in the range of 0 to −2 are soluble
+3. Those in the range of −2 to −4 are slightly soluble
+4. Insoluble if less than −4
+
+## human plasma protein binding
+Plasma protein binding (PPB) is a key player of drug ADME. Drugs with high PPB, especially those with a narrow therapeutic window, tend to be associated with safety issues and adverse effects. In order to determine the extent of PPB of new drug candidates, the data was divided into three sets of:
+1. high binding level (PPB$$$>$$$0.8),
+2. moderate binding level (PPB = 0.4-0.8)
+3. low binding level (PPB$$$<$$$0.4).
+
+## Rate of skin penetration
+Predicting the rate of transdermal delivery is  required as part of toxicological risk assessments and is important for both pharmaceuticals and the cosmetic industry. The model predicts the permeation rate ($$$\log\ K_p$$$) of chemical compounds through human skin.
+
+## $$$LD_{50}$$$ rat acute oral toxicity
+The median lethal dose for rodent oral acute toxicity ($$$LD_{50}$$$) is required to categorize chemicals in terms of the potential hazard posed to human health after acute exposure. Here we use the EPA hazard classification
+EPA’s 4-category hazard classification:
+1. Category I ($$$LD_{50} \leq $$$ 50 mg/kg) is the highest toxicity category.
+2. Category II (moderately toxic) includes chemicals with 50 < $$$LD_{50} \leq 500$$$ mg/kg.
+3. Category III (slightly toxic) includes chemicals with 500 < $$$LD_{50}$$$ ≤ 5000 mg/kg. Safe chemicals
+4. $$$LD_{50}$$$ > 5000 mg/kg are included in Category IV.
+
+## AMES mutagenecity
+Mutagenecity is a prime indicator of toxicity that can cause mutations in the DNA of the test organism. The model predicts whether the compound is mutagenic or not.
+
+## Drug induced Liver injury (DILI)
+Early stage discovery of DILI is much desired. The classification model focuses on distinguishing between DILI-positive and DILI-negative compounds. DILI has several manifestations:
+1. Drug-induced Choleostasis: Cholestatic liver injury i.e. cholestasis, is the disruption of the bile flow
+2. Drug-induced toxic myopathy (rare adverse drug reaction) can cause skeletal muscle damage and pain. Another related muscle related issue is that of frug-induced rhabdomyolysis which causes death of muscle fibers and release of their contents into the bloodstream.
+3. Hemolytic Toxicity: This form of toxicity can cause lysis of the erythrocyte membrane and subsequent release of hemoglobin into blood plasma, leading to multiple acute and chronic adverse effects. Two models have been proposed
+	1. Prediction of hemolytic toxicity of small molecules with experimental values of $$$HD_{50}$$$
+	2. hemolytic toxicity of saponins
+4. Drug-induced myelotoxicity usually leads to decrease the production of platelets, red cells, and white cells.
+5. Mitochondrial Toxicity: Mitochondria play a central role in maintaining cellular homeostasis. A side effect of certain antiretroviral drugs causes the mitochondria of a body's cells to become damaged or decline significantly in number. The model predicts whether a drug is a mitochondrial toxic compounds or negatives (i. e. Non-mitochondrial toxic compounds).
+6. Drug-induced ototoxicity: Some drugs currently in clinical use can cause cellular degeneration of cochlear and/or vestibular system, leading to temporary or permanent hearing loss or other ear problems. The model distinguishes between ototoxicants and non-toxicants.
+7. Respiratory Toxicity: Drug-induced respiratory toxicity can cause significant toxicological issues. Cclinical symptoms mainly include wheezing, bronchoconstriction, asthmatic attacks and pulmonary eosinophilia.
+8. Drug Phototoxicity: Photosensitization is a significant safety concern for drug development in certain chronic disease indications where patients are exposed to sunlight. Drug photosensitization (photoirritation/photoallergy) can result in side effects such as rashes or dermatitis.  Here we focus on two models:
+	1. *in vitro* phototoxicity (3T3 NRU phototoxicity reports)
+	2. human photosensitization (clinical photosensitization alerts)
+9. Urinary tract toxicity, especially nephrotoxicity is the poisonous effect of some substances, both toxic chemicals and medications, on kidney function.  According to the regulation of U.S. Environmental Protection Agency, compounds
+were categorized into two classes: 
+	1. Compounds with LD50 500 mg/kg were defined as urinary tract toxicants
+	2. Compounds with LD50 > 500 mg/kg were set as urinary tract non-toxicants
+10. Phospholipidosis: The drug-induced accumulation of phospholipids in lysosomes of various tissues is predominantly observed after prolonged exposure. 
+11. Hepatic Steatosis: Fatty liver also known as hepatic steatosis, occurs when fat builds up in the liver. It is a rare form of DILI.
+
+
+## hERG liability
+Blockade of the human ether-à-go-go-related gene (hERG) channel by small molecules leads to fatal cardiotoxicity. The binary classification model is used for cardiotoxic risk assessment.
+A second model is used to discriminate potential hERG blockers from non-blockers.

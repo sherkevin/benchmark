@@ -1,0 +1,1026 @@
+                       Adaptive LLM Routing Under Budget Constraints
+
+                       Pranoy Panda* Raghav Magazine* † Chaitanya Devaguptapu
+                                    Sho Takemori Vishal Sharma‡
+                                          Fujitsu Research
+        pranoy.panda@fujitsu.com, email@chaitanya.one, takemori.sho@fujitsu.com
+
+
+
+                           Abstract                                ployment impractical. This challenge is particu-
+                                                                   larly acute given the varying pricing structures of
+        Large Language Models (LLMs) have revolu-                  proprietary models and the resource requirements
+        tionized natural language processing, but their            of deploying the open-source alternatives.
+        varying capabilities and costs pose challenges
+                                                                   To understand the need for varying resource re-
+        in practical applications. LLM routing ad-
+        dresses this by dynamically selecting the most             quirements, consider a customer service chatbot
+        suitable LLM for each query/task. Previous                 handling diverse queries. For simple queries like
+        approaches treat this as a supervised learn-               “What are your business hours?", a smaller, cost-
+        ing problem, assuming complete knowledge                   effective model might suffice. However, for com-
+        of optimal query-LLM pairings. However, real-              plex inquiries, such as “I’m torn between two of
+        world scenarios lack such comprehensive map-               your smartphone models: the X200 and the Z300.
+        pings and face evolving user queries. We thus
+                                                                   I need a phone with excellent battery life, a high-
+        propose to study LLM routing as a contextual
+        bandit problem, enabling adaptive decision-                quality camera, and robust performance for mul-
+        making using bandit feedback without requir-               titasking. Can you provide a detailed comparison,
+        ing exhaustive inference across all LLMs for               including any potential drawbacks of each model?",
+        all queries (in contrast to supervised routing).           a more powerful (and costly) model may be nec-
+        To address this problem, we develop a shared               essary to ensure better planning and reasoning ca-
+        embedding space for queries and LLMs, where                pabilities, which a smaller model might lack. This
+        query and LLM embeddings are aligned to re-                scenario illustrated the need for dynamic query
+        flect their affinity. This space is initially learned
+                                                                   routing – The ability to dynamically route queries
+        from offline human preference data and refined
+        through online bandit feedback. We instantiate             to the most appropriate model based on complex-
+        this idea through Preference-prior Informed                ity and cost considerations, known as the model-
+        LinUCB fOr Adaptive RouTing (PILOT), a                     routing problem (Ding et al., 2024).
+        novel extension of LinUCB. To handle diverse               Existing approaches model the routing problem as
+        user budgets for model routing, we introduce               a supervised learning task, requiring large-scale
+        an online cost policy modeled as a multi-choice            labeled datasets mapping queries to their optimal
+        knapsack problem, ensuring resource-efficient
+                                                                   LLM pairings (Ding et al., 2024; Hu et al., 2024).
+        routing.
+                                                                   This problem formulation faces two limitations: (1)
+1       Introduction                                               Gathering such labeled datasets is very expensive,
+                                                                   as it requires responses from each model in the
+Deploying Large Language Models (LLMs) in real-                    model pool for every query to discover the optimal
+world systems faces a critical challenge: balanc-                  query-LLM pairing. (2) Lack of adaptability to
+ing performance with cost-effectiveness (Li et al.,                change in query distribution.
+2024). While larger models offer superior perfor-                  Thus, to find a more practical problem setting, we
+mance, their high costs makes their universal de-                  draw parallels with news recommendation systems,
+    * Equal contribution
+                                                                   where models can only learn from user feedback,
+    †
+      Current affiliation: Microsoft Research; The author con-     such as clicks on a single article (Li et al., 2010;
+tributed while working at Fujitsu Research of India; email:        Bouneffouf and Rish, 2019). These systems must
+raghavmagazine@gmail.com                                           predict the best article for a user without showing
+    ‡
+      Current affiliation: Microsoft; The author contributed
+while working at Fujitsu Research of India; email:                 all possible articles , receiving feedback solely on
+i.vishal1990@gmail.com                                             the selected article. Similarly, LLM routing in-
+                                                                23934
+                   Findings of the Association for Computational Linguistics: EMNLP 2025, pages 23934–23949
+                               November 4-9, 2025 ©2025 Association for Computational Linguistics
+volves choosing the best model for a query, where        2     Methodology
+obtaining user feedback on all models is labor-
+                                                         2.1    Problem Formulation
+intensive and costly.
+                                                         As discussed earlier, this work tackles the prob-
+Building on this insight, we reformulate LLM rout-       lem of routing queries to Large Language Models
+ing as a contextual bandit learning problem - a          (LLMs) in an online setting, learning solely from
+formulation commonly used in news and ad recom-          evaluative (bandit) feedback from users. Leverag-
+mendation scenarios (Bouneffouf and Rish, 2019).         ing these user interactions, our goal is to maximize
+Thus, instead of requiring outputs from every LLM        overall performance under budget constraints, ef-
+to identify the best match, our problem setting re-      fectively personalizing LLM selection over time.
+lies only on a binary bandit feedback, i.e., whether     We now present the formal problem statement.
+the chosen LLM’s response is good or not. This           Let L = {l1 , l2 , . . . , lk } be a set of k LLMs, Q
+approach is practical, as simple feedback mecha-         be the space of all natural language queries, and
+nisms, like thumbs up/down ratings (i.e. like/dis-       Y be the space of all natural language responses.
+like feedback), are now common in chat inter-            A query qt ∈ Q at time t is represented by its
+faces (Appcues, 2024; Delighted, 2024), allowing         embedding xt ∈ Rde in a de -dimensional space,
+effective learning from user interactions without        generated by a pre-trained embedding model ϕ :
+need for extensive annotation across LLMs.               Q → Rde . We assume black-box access to each
+                                                         LLM li ∈ L, where the response of LLM li to
+To address this newly formulated problem of LLM
+                                                         query qt is denoted as ytli ∈ Y. The quality of
+routing with bandit feedback, we propose to de-
+                                                         a response is quantified by a scoring function s :
+velop an evolving shared embedding space for
+                                                         Q × Y → [0, 1], derived from human feedback or
+queries and LLMs, where distances represent rout-
+                                                         heuristic-based metrics.
+ing affinity. Initially pretrained on human prefer-
+ence data (Chiang et al., 2024), it is refined through   At each time step t = 1, . . . , Q, for a given query
+online user feedback. Furthermore, to enforce cost       qt ∈ Q, an LLM router M : Q → L selects an
+constraints in an online setting, we introduce a         LLM l ∈ L. After receiving the response from
+novel policy modeled as an online multi-choice           the selected LLM l, the router observes a reward
+knapsack problem (Chakrabarty et al., 2008), dy-         rt = s(qt , ytl ) ∈ [0, 1] representing the quality of
+namically allocating resources to balance budget         the response. Each LLM li ∈ L also incurs a
+adherence and performance. While authors in              token cost Ctli ≥ 0 for processing query qt . The
+(Nguyen et al., 2024) have approached the rout-          objective of the LLM router   PQ is to maximize the
+ing problem from a bandit perspective, their work        total reward, defined as t=1 rt , while satisfying
+                                                                                   P        M (qt )
+was focused on the limited setting of classification     the budget constraint Q       t=1 Ct       ≤ B, i.e for Q
+tasks and did not incorporate explicit online cost       consecutive queries, it ensures that the total token
+constraints.                                             cost across these queries is less than B.
+                                                         2.2    Proposed Method
+Our key contributions are as follows,
+(i) We formulate LLM routing as a budget con-            We will now describe our solution approach to
+strained contextual bandit problem for adaptive          LLM routing that hinges on learning an effective
+decision-making with limited supervision                 mapping from queries to the LLMs. For this, we
+(ii) We propose a Preference-Prior Informed Lin-         will learn (i) an embedding of a given query and (ii)
+UCB algorithm (PILOT) that combines offline hu-          an embedding for each LLM in a shared embedding
+man preference data with online bandit feedback          space such that the cosine distance between a query
+to route queries (Sec 2.2.2). We also show our           and an LLM represents their mutual affinity. The
+preference prior helps achieve a lower regret bound      query-LLM shared embedding space is not static;
+than standard algorithm. This algorithm is further       rather, it evolves through online training.
+coupled with an online cost policy to dynamically        While the online bandit feedback may be sufficient
+allocate cost budget to queries (Sec 2.2.3).             to train such an embedding space, it may still take
+(iii) In Sec 4 we show that our method outperforms       a considerable amount of time to train in a com-
+existing bandit baselines across datasets, achiev-       pletely online fashion. Further, a vast amount of
+ing lowest regrets and highest performance across        public data is available in the form of human pref-
+different cost budgets.                                  erences where given a query and responses from
+                                                    23935
+two LLMs, humans provide their preferred LLM                                                          shared embedding space. In phase two, using same
+response. We hypothesize that independent of the                                                      human preferences, we learn an embedding for
+end task (model routing in our case), this human                                                      each LLM that lies in the shared embedding space.
+preference data can be leveraged to pretrain the                                                      Phase one: Learning the Query Projections
+shared embedding space. The online bandit feed-                                                       Given an existing query embedding model ϕ :
+back can then be used at run time to continuously                                                     Q → Rde , we project these embeddings to our
+improve the pretrained embedding space, thus en-                                                      dm -dimensional shared space via a learned linear
+hancing the accuracy of our routing decisions over                                                    transformation ψ(q) = W ϕ(q) + b. The param-
+time. Hence, we leverage two primary sources of                                                       eters W ∈ Rdm ×de and b ∈ Rdm are learned
+information, (i) offline human preference data (Sec-                                                  using a cosine distance-based triplet loss on hu-
+tion 2.2.1) to pretrain the shared embedding space                                                    man preference data Dpref (Figure 1 ⃝              1 ). For
+and (ii) online bandit feedback (Section 2.2.2) to                                                    each anchor query (qa , li , lj , lwin ) ∈ Dpref (where
+continuously tune the embedding space at runtime.                                                     lwin is the preferred LLM), we construct posi-
+Finally, to address the critical aspect of user-level                                                 tive and negative query pools. The positive pool
+budget constraints, we implement an online cost                                                       P = {(q, li , lj , w) ∈ Dpref | lw = lwin } contains
+policy (Section 2.2.3). However, its worth noting                                                     queries where lwin was also preferred. The nega-
+that in the online bandit learning phase (Section                                                     tive pool N = {(q, li , lj , w) ∈ Dpref | lw ̸= lwin ∧
+2.2.2), there is no budget constraint. - we elaborate                                                 size(lw ) < size(lwin )} consists of queries where
+on this in Section 3. This multi-faceted approach al-                                                 lwin was not preferred against a smaller LLM (hard
+lows us to balance performance optimization with                                                      negatives, based on token cost - size(l)).
+budget adherence in a dynamic, user-centric man-                                                      Phase two: Learning LLM Embeddings In
+ner. We now describe these steps in detail. For a                                                     phase two, we focus on learning the LLM em-
+birds eye view of the method, see Algorithm 1 & 2.                                                    beddings θi for each LLM li ∈ L. For this, we
+Initially, queries with same preferred LLM              Queries aligned to reflect human preference
+                                                                                                      first freeze the query projection parameters (W
+              have high distance
+                                              Contrastive
+                                                                                                      and b) learned in phase one and then learn the
+                                               Learning
+                                                                                                      LLM embeddings with the goal that given a query
+                                                  1                                                   (q, li , lj , lw ) ∈ Dpref , the embedding of the pre-
+                                                                                                      ferred LLM (lw ) is close to ψ(q). We start by
+ Queries for which       Queries for which              Human Preference                              defining a probability distribution of li winning
+                                                           Learning for
+                                                                              2
+LLM 𝒍𝒊 is preferred     LLM 𝒍𝒋 is preferred
+                                                         optimizing LLM                               over lj as pi = P exp(cos(θ       i ,ψ(q)))
+                                                                                                                                                       . Then, we
+                                                           embeddings                                                       k∈{i,j} exp(cos(θk ,ψ(q)))
+
+                Shared Embedding space for                                                            train the LLM embeddings by treating preference
+                queries, LLMs
+                Query Embeddings
+                                                                                                      learning as a binary classification task using binary
+                                                                                                      cross-entropy loss. The final learned embeddings
+                LLM Embeddings
+                                                                                                                                                               pref
+                                                                                                      after this phase for an LLM li is denoted as θi
+                                                                                                      (See ⃝
+                                                               LLM Embeddings learnt for LLMs
+                                                            𝒍𝒊 and 𝒍𝒋 in the shared embedding space             2 in Figure 1).
+                                                                                                      This two-phase learning process establishes an ini-
+Figure 1: Pretraining with Human Preference Data
+⃝1 We leverage human preference dataset to learn                                                      tial shared embedding space that captures the re-
+query embeddings which are aligned w.r.t. human pref-                                                 lationship between queries and LLMs based on
+erences on query-LLM mapping. Then, in 2 ⃝ we learn                                                   human preferences, providing a strong foundation
+LLM embeddings aligned with projected queries                                                         for subsequent online learning.
+
+2.2.1 Pretraining with Human Preferences                                                              2.2.2    Evolving with Online Bandit Feedback
+Human preference data provides rich insights into                                                     Having learned query and LLM embeddings, we
+query-LLM fit. We use it to establish a meaningful                                                    will now discuss how to incorporate the online ban-
+shared embedding space before incorporating on-                                                       dit feedback for the end task of routing queries to
+line bandit feedback on the target task. Pretraining                                                  appropriate LLMs. For this, we model routing as a
+occurs in two phases for stability, mitigating the                                                    contextual multi-armed bandit (CMAB) problem:
+moving target problem that can arise from jointly                                                     projected query embeddings ψ(qt ) serve as con-
+optimizing query projections and LLM embeddings                                                       texts, and LLMs are arms. Reward rt = s(qt , ytl ) ∈
+via cosine similarity. In phase one, we learn a pro-                                                  [0, 1] is the response quality from the selected LLM
+jection from (initial) query embeddings onto our                                                      l. Objective is to maximize cumulative reward
+                                                                                                  23936
+                                                                   Inference Flow
+
+                                                                                               data (see Section 2.2.1), and λa > 0 is a regu-
+                             Query
+                                                                   Feedback for improving
+                                                                   the router
+                            Constraints
+  Write a python
+    function to
+   identify non-
+                             Budget B,
+                            # queries to
+                                                                Write a python
+                                                                  function to                  larization parameter. This initialization can be in-
+                            spend it on                          identify non-
+  prime numbers
+
+                                             Selects an LLM
+                                                                prime numbers
+                                                                                               terpreted as imposing a human preference prior
+                                                                                                            pref
+     AI is thinking …
+                        Preference Prior-
+                        initialised Online
+                                             from the pool of
+                                             available LLMs
+                                                                     Here is your code
+                                                                          s                    θ̂a0 ∼ N (θa , (λa I)−1 ) on the (initial) arm param-
+                         learnable router                                                      eters. λa controls prior strength: larger λa implies
+                                                                              Correct!
+                                                                                               less exploration (lower variance), while smaller λa
+                                                                        User
+                                                                                               allows faster adaptation. To balance exploration,
+                                                                      Feedback
+                                                                                               particularly if online queries differ from pretraining
+Figure 2: Bandit Router Framework: Our router takes                                            data, we set λa as the inverse of arm a’s accuracy
+three inputs: (i) User query (ii) cost constraints and, (iii)                                  during the pretraining phase.
+a model pool. It learns and adapts automatically based                                         With this formulation, the posterior distribution
+on user feedback, optimizing LLM selection over time.                                          of arm (LLM) embeddings at time t becomes:
+          hP        i                                                                          p(θ̂at |Dt ) = N (θ̃at , (Ata )−1 ) , where Dt repre-
+              T
+maxπ E        t=1 rt via policy π : R
+                                      dm → A.
+                                                                                               sents the observed online data up to time t. The
+The bandit’s feedback is used to further align query                                           preference-prior informed LinUCB thus allows us
+and LLM embeddings with the goal of routing the                                                to start with an informed estimate of LLM perfor-
+query to appropriate LLM. For this, we choose to                                               mance based on offline preference data, while still
+update arm/LLM embeddings at each round (fol-                                                  adapting to task dependent bandit feedback and
+lowing existing literature).                                                                   query characteristics through online learning.
+Let θat denote embedding of arm (LLM) a at time                                                    The algorithm balances exploration and exploita-
+step t where the initial arm embedding at time t =                                             tion by selecting the arm that maximizes the upper
+0 is initialized with LLM embeddings learned in                                                confidence bound, i.e. at is defined as:
+                                                 pref                                                         
+pretraining phase from preferences, i.e., θa0 = θa .
+                                                                                                    arg max cos(ψ̂(qt ), θ̃at )
+As discussed in Section 2.2.1, we model the mutual                                                        a
+                                                                                                                         q                        
+affinity between user queries and LLMs as the co-
+                                                                                                                    + α ψ̂(qt )⊤ (Ata )−1 ψ̂(qt )
+sine distance between their representations in the
+shared embedding space. In line with this idea, we                                                where α is the exploration parameter.
+model the expected reward at time t in the CMAB                                                To validate PILOT, we theoretically show that a
+problem as follows:                                                                            preference-prior informed bandit algorithm can
+                                                                                               achieve a smaller regret bound than the standard
+     E[rt |a, qt ] = cos(ψ̂(qt ), θ̂a ) = ψ̂(qt ) · θ̂a                                  (1)   algorithm. Here, we focus on Optimism in the
+where ψ̂(qt ) =          ψ(qt )
+                          and θ̂a = ∥θθaa∥2 . Thus,                                            face of uncertainty linear bandit algorithm (OFUL)
+                        ∥ψ(qt )∥2
+owing to this linear reward formulation (cosine                                                (Abbasi-Yadkori et al., 2011a) since both OFUL &
+distance between unit normalized vectors), we pro-                                             LinUCB are based on the same principle, i.e., prin-
+pose a preference-prior informed linear upper con-                                             ciple of optimism in the face of uncertainty (Latti-
+fidence algorithm (PILOT) which builds upon the                                                more and Szepesvári, 2020, Chp 7.1) & OFUL is
+standard LinUCB (Li et al., 2010) algorithm while                                              theoretically well-studied.
+incorporating the knowledge gained from our pref-                                              Proposition 2.1 (Validity of a preference-prior in-
+                                                                                                                                            ′
+erence learning phase.                                                                         formed bandit (informal)). Let θpref ∈ Rd and
+                                                                                                        ′
+PILOT, similar to LinUCB, performs online ridge                                                θ∗ ∈ Rd be a pretrained vector and an unknown
+regression. From a Bayesian perspective, this corre-                                           reward vector respectively. Let PI-OFUL be the
+sponds to maintaining a posterior distribution over                                            OFUL (Abbasi-Yadkori et al., 2011a) with the
+the arm parameters. At each time step t, for each                                              Preference-prior-Informed initialization with θpref .
+arm a, the point estimate of embedding of the arm                                              Then, if ∥θpref − θ∗ ∥ ≤ ∥θ∗ ∥, PI-OFUL achieves
+(representing LLM a) is given by:                                                              a smaller cumulative regret bound than OFUL.
+                        θ̃at = (Ata )−1 bta                                              (2)   See Sec C.1 for a more formal statement & proof.
+where, Ata = At−1
+                a    + ψ̂(qt )ψ̂(qt )⊤ , and, bta =                                            2.2.3   Enforcing Budget Constraint with
+ba + rt ψ̂(qt ). At t = 0, we initialize the
+ t−1                                                                                                   Online Cost Policy
+parameters Ata and bta as, A0a = λa I, b0a =                                                   To manage user-specified cost budgets (B over Q
+    pref        pref
+λa θa , where θa is the embedding for LLM                                                      queries), we introduce an online cost policy. This
+corresponding to arm a learned from preference                                                 policy aims to optimally allocate the budget across
+                                                                                            23937
+unseen queries to maximize expected reward. We              Algorithm 1 PILOT (Preference-prior Informed
+frame this as an online multi-choice knapsack prob-         LinUCB fOr Adaptive RouTing)
+lem (ON-MCKP) (Chakrabarty et al., 2008).                   Input: Human preference data Dpref , LLMs L
+This ON-MCKP formulation allows leveraging the               Preference-Based Pretraining
+ZCL algorithm (Zhou et al., 2008) to enforce bud-            1: Learn query projection ϕ by minimizing triplet
+get constraints while maximizing expected reward                loss using (qa , li , lj , lwin ) tuples from Dpref and
+(Equation 1). In ON-MCKP, a knapsack of ca-                     constructing negative and positive samples as
+pacity B receives item sets Nt over time; at most               mentioned in Section 2.2.
+one item (with value vj and weight wj ) is selected          2: Fix ϕ and learn LLM embeddings θLLM using
+                                                                                                             pref
+from each Nt to maximize total value within B. In               binary cross-entropy loss.
+our context, at timestep t, available LLMs L form           Online Bandit Learning
+the item set; their reward estimates (cos(ψ̂(qt ), θ̂lt )    3: Initialize bandit learning parameters Aa = λa I
+∀l ∈ L) are values, and estimated token costs are               and ba = λa θapref for all a ∈ L.
+weights. We assume known upper/lower bounds                  4: for t = 1, . . . , T do
+(U B, LB) on the reward-to-cost ratio and query              5:      Define at as arm/LLM with largest UCB.
+costs small relative to B, standard for online prob-         6:      Observe feedback rt w.r.t. response of se-
+lems (Zhou et al., 2008). The policy maintains                  lected LLM at & update parameters Aa & ba .
+budget utilization zt ∈ [0, 1]. Following (Zhou              7: end for
+et al., 2008), eligible LLMs Et ⊂ L must satisfy
+        cos(ψ̂(q ),θ̂t )
+Ctl ≤ ( U B·e )ztt( LBl ) . We select the LLM with the      Algorithm 2 Online Cost Policy
+         LB          e
+highest expected reward from Et and update zt .             Input: budget B, query set length Q, LLMs L
+Since the ZCL policy assumes an infinite horizon,            1: for t = 1, . . . , Q do
+potentially leading to underutilized budget over Q           2:     Estimate token cost Ctl ∀ l ∈ L for qt .
+queries, we implement a binning strategy. The Q              3:     Compute the cost eligibility threshold for
+queries are partitioned into N bins of size S, where            each LLM l: thlt =
+                                                                                         cos(ψ̂(qt ),θ̂lt )
+                                                                                                     , where zt ∈
+                                                                                         U B·e zt LB
+N = ⌈Q                       B
+         S ⌉ bin budget = N . The cost policy is
+                                                                                      (    ) ( )
+                                                                                          LB
+                                                                                                  · e
+
+applied per bin, with unused budget spilling over               [0, 1] is the current budget utilization.
+to the next, allowing flexible allocation within over-       4:      yield              l∗                      =
+                                                                                                        t
+                                                                arg max(l∈L & C l ≤thl ) cos(ψ̂(qt ), θ̂l )
+all constraints. Algorithm 3 (Appendix) details                                    t    t
+
+this policy, and Algorithm 2 provides an overview.           5: end for
+Zhou et al. (2008, Theorem 5.1) establishes a per-
+formance guarantee, showing our online policy’s
+                                                            buckets - (i) “learning bucket”: a fraction of traf-
+performance is provably close to an optimal offline
+                                                            fic on which various bandit algorithms are run to
+policy with full query knowledge.
+                                                            learn. (ii) The other, called “deployment bucket”, is
+3   Experimental Setup                                      where we greedily serve users using bandit router
+                                                            obtained from learning bucket.
+3.1 Evaluation Details
+To the best of our knowledge, we are the first to           3.1.1   Dataset
+study LLM routing in an online bandit learning              We evaluate our proposed method using Router-
+setting. Given the absence of an established ex-            bench (Hu et al., 2024), a comprehensive LLM rout-
+perimental framework, we design the evaluation              ing dataset spanning a wide range of tasks includ-
+process by taking inspiration from (Li et al., 2010).       ing commonsense reasoning, knowledge-based lan-
+Our objective is to simulate an online learning set-        guage understanding, conversation, math, and cod-
+ting using an existing LLM routing dataset (Router-         ing. Routerbench is constructed by leveraging ex-
+bench (Hu et al., 2024)). We first split the routing        isting datasets (MMLU, Hellaswag, GSM8k, Wino-
+dataset into tuning data (for hyperparameter se-            grande, ARC Challenge, MTBench, MBPP) com-
+lection) and evaluation data. The objective of              monly used to evaluate leading LLMs. The dataset
+evaluation data is to simulate online user query            comprises 36, 497 samples covering 64 tasks, with
+traffic. Similar to news recommendation (Li et al.,         responses from 11 different LLMs, including both
+2010), when deploying the bandit routers to users,          open-source (Llama-70B-chat, Mixtral-8x7B-chat,
+one reasonable way is to split all traffic into two         Yi-34Bchat , Code Llama-34B, Mistral-7B-chat,
+                                                       23938
+WizardLM13B) and proprietary models (GPT-               over {1, 1.5, 2, 5, 10}, selecting the value that
+4, GPT-3.5-turbo, Claude-instant-v1, Claude-v1,         maximizes reward. For Epoch Greedy, we do a
+Claude-v2). The dataset also includes the incurred      grid search over window sizes {10, 50, 100, 500}
+cost and evaluation score (GPT-4 evaluation or ex-      to find the optimal window size.
+act match score, based on the task) of each LLM on      Online Cost Policy. During the deployment phase,
+each query. We request reader to see the original pa-   our cost policy requires estimating the total cost of
+per for details (Hu et al., 2024). We use ChatArena     each query, including both input and output token
+(Chiang et al., 2024) for preference data, sampling     costs. Input tokens are determined from the query
+a subset of queries where both associated LLMs          itself, while output tokens are estimated using the
+belonged to RouterBench’s set of 11 LLMs.               mean output token count from responses in the tun-
+3.1.2 Dataset Partitions                                ing data for each LLM. This mean is then applied
+                                                        to all queries in the deployment set to calculate
+We partition the dataset as follows: we use 1000
+                                                        total query costs. Furthermore, It is worth noting
+samples as tuning data for hyperparameter selec-
+                                                        that the proposed online cost policy operates inde-
+tion, with the remaining data split into “learning"
+                                                        pendently of the PILOT algorithm. Its objective
+and “deployment" buckets with a 10:1 ratio. This
+                                                        is to select the most suitable LLM for each query
+setup allows us to observe the router’s performance
+                                                        based on a query-wise LLM ranking, aiming to
+improvement as more data becomes available in
+                                                        maximize the cumulative reward across Q queries
+the learning bucket over time.
+                                                        while adhering to the total budget B.
+3.1.3 Baselines
+                                                        4   Results and Analysis
+We want to primarily understand two questions, 1)
+how well our approach performs against existing         We evaluate PILOT’s performance across various
+routers, and 2) in context of using a bandit setting,   facets of LLM routing, considering diverse, multi-
+how well the use of PILOT justifies against other       task applications and specific use cases. Our exper-
+choices of bandit algorithms.                           iments utilize two data types:
+For the first, we compare with all-to-one routers       (i) Single-task data source: The MMLU benchmark
+(all queries to a single LLM). Appendix D.1 also        from Routerbench, focusing on multi-choice ques-
+includes a reference comparison with HybridLLM          tion answering. (ii) Multi-task data source: Full
+(Ding et al., 2024), a supervised binary router, not-   Routerbench dataset, encompassing tasks like code
+ing its different supervision requirement (optimal      generation, math problems, & multi-turn conversa-
+LLM index vs. our evaluative feedback). For the         tions, simulating a broad range of user queries.
+second, we use several contextual bandit baselines:     Using these datasets, we investigate several aspects
+LinUCB (Li et al., 2010) (UCB with a linear re-         of our bandit-based LLM routing algorithm, de-
+ward model), Epoch-Greedy (Langford and Zhang,          tailed under Main Experiments in Table 3. Below,
+2007) (alternating exploration/exploitation), Ex-       we summarize PILOT’s performance for both sin-
+plore Only (continuous exploration), and a Random       gle and multi-task scenarios, covering multi-LLM
+Policy (random LLM selection). Crucially, for fair      and binary-LLM routing settings. For binary-LLM
+comparison of allocated budget against deployment       routing, Figure 3 presents results for two LLM
+performance (Figures 3, 5), our proposed cost pol-      pairs, with more comparisons in Appendix D.4.
+icy is uniformly applied across all baselines. The      Multi-Task Data Source Setting Results in Fig-
+policy’s effectiveness is further assessed in Fig 4.    ure 3 column b, indicate our method’s superior-
+3.2 Implementation Details                              ity: We achieve a performance equal to 93% of
+Embedding Model.               We use OpenAI’s          GPT-4’s at just 25% of its cost in multi-LLM set-
+text-embedding-3-small to embed queries                 ting while maintaining higher performance than
+for all results shown in Figure 3. To analyze the       any other baselines. Also, our method consistently
+sensitivity of our router, we conduct an experiment     shows the highest deployment set performance &
+using Instructor-XL (Su et al.) in Section 5.4.         lower regret across various learning conditions.
+Hyperparameter selection. We use the tuning             Single-Task Data Source Setting As shown in
+data to fine-tune hyperparameters of our method         column a of Figure 3, our method (PILOT) consis-
+and baselines. To optimize the exploration              tently outperforms all baseline bandit algorithms.
+parameter α (for PILOT and LinUCB), we search           In particular, in the multi-LLM routing case, we at-
+                                                   23939
+        (i)                   (ii)                   (iii)                  (i)                    (ii)                      (iii)
+                (a) Single Task Data Source (MMLU)                                (b) Multi Task Data Source (Routerbench)
+
+
+
+
+Figure 3: Bandit Feedback based LLM Routing Evaluation: In column (a) we report results for single task data
+source setting (MMLU), and in column (b) we report results for multi-task data source setting (Routerbench). The
+sub-column (i) in each column represents performance vs cost curves on the held-out deployment set; sub-column
+(ii) represents performance across different learning bucket sizes; sub-column (iii) represents cumulative regret.
+Our method is shown in orange.
+
+
+tain a performance of 86% of GPT-4 at only 27% of               5.2   Analysis of the Online Cost Policy
+its cost and surpass all other all-to-one LLM base-
+                                                                Comparison with other Online Cost Policies:
+lines. PILOT also exhibits highest performance
+                                                                Here we compare it to simple online baselines:
+on deployment set across various learning bucket
+                                                                (i) allocating B
+                                                                               Q budget per query, and (ii) allo-
+sizes, showing its efficacy with limited data.                          B
+                                                                cating Q per query with spillovers from previous
+5   Discussion and Ablations                                    queries. We use these query-wise budgets to select
+This section provides qualitative and quantitative              the highest-ranked arm/LLM within the budget. We
+analyses of PILOT’s routing behavior, computa-                  evaluate using mean reciprocal rank of the chosen
+tional efficiency, cost policy, and sensitivity, offer-         arm (where rank 1 is the best arm w.r.t. learned
+ing a holistic view. These analyses, summarized                 bandit router) and performance on Routerbench’s
+under ‘Analysis’ in Table 3, delve deeper into PI-              deployment set (multi-LLM case).
+LOT’s operational characteristics.
+5.1 Qualitative Analysis of PILOT’s Routing
+Qualitative examination of PILOT’s routing reveals
+intelligent decision-making. For demanding tasks
+like MMLU and ARC Challenge, PILOT routes
+90% and 89.4% of queries to GPT-4, respectively,
+leveraging GPT-4’s strength in complex reasoning.               Figure 4: Cost Policy Comparison: (Left) Mean Re-
+For coding tasks (MBPP), while GPT-4 is utilized,               ciprocal Rank of the chosen arms for various budgets
+Claude models handle a significant 28% of queries,              (Right) Performance of cost policies with diff budget
+indicating PILOT’s recognition of Claude’s cod-
+ing abilities. In GSM8K, Claude (v1) is the pre-                Comparison with Offline Cost Policy: Here, we
+dominant choice (94% of queries). This isn’t ar-                try to maximize P − λC (following Chen et al.,
+bitrary; Claude-v1’s strong performance on math                 2022), where P is estimated performance, C is
+tasks, coupled with its lower cost, makes it an ef-             cost, & hyperparameter λ is tuned retrospectively
+fective option, echoing findings in Zhang et al.                for each budget constraint by optimizing its value
+                                                             23940
+   Cost ($)   P − λC     PILOT (Ours)   Difference       6   Related Works
+     0.25     0.6079         0.6557       +0.0478        Research on efficient LLM deployment spans static
+     0.50     0.6602         0.6840       +0.0238
+     1.00     0.7265         0.7240       -0.0025        model optimizations, hybrid strategies, and dy-
+     1.50     0.7740         0.7814       +0.0073        namic routing. (1) Static efficiency methods, such
+                                                         as pruning (LeCun et al., 1989), quantization (Ja-
+Table 1: Comparison of performance between P − λC        cob et al., 2018), LoRA (Hu et al., 2021), and
+offline policy and PILOT’s online cost policy            distillation (Hinton et al., 2015), compress mod-
+                                                         els for fixed cost constraints, but cannot adapt to
+                                                         varying task demands. (2) Hybrid approaches like
+over entire deployment set to achieve best possible
+                                                         LLM-Blender (Lu et al., 2024) synthesize outputs
+outcome for that budget-a significant informational
+                                                         from multiple LLMs to improve quality, while oth-
+advantage. As shown in Table 1, our adaptive on-
+                                                         ers such as TensorOpera Router (Stripelis et al.,
+line policy generally outperforms this offline policy
+                                                         2024b) and FORC (Šakota et al., 2024) train of-
+across multiple cost thresholds. This shows value
+                                                         fline meta-models to predict the best model. These
+of our online approach which performs comparably
+                                                         require full supervision and may not generalize
+/ better than even a policy with perfect hindsight.
+                                                         to new query distributions. (3) Routing strategies
+5.3 Computational Overhead of Routing                    select a single model per query. Non-predictive
+                                                         methods like FrugalGPT (Chen et al., 2023) use se-
+Embedding Model        Routing Time     GPT-4 Infer-     quential evaluation, while predictive ones like Hy-
+                                        ence Time        bridLLM (Ding et al., 2024), GraphRouter (Feng
+Instructor-XL     0.065 s               2.5 s            et al., 2024), and Confidence Tokens (Chuang et al.,
+OpenAI     text- 0.239 s                2.5 s            2025) train supervised routers with full feedback or
+embedding-3-small
+                                                         LLM modifications. While MetaLLM (Nguyen
+Table 2: Analysis of Routing Time: Routing Time
+                                                         et al., 2024) models LLM routing as a contex-
+refers to average time taken by PILOT to select a LLM    tual bandit problem with a fixed cost-performance
+from the pool and GPT-4 Inference Time is average time   trade-off, it doesn’t offer strict budget guarantees.
+taken by GPT-4 to answer a query on MMLU dataset         OptLLM (Liu et al., 2024b) treats routing as a multi
+                                                         objective optimization problem with the goal to op-
+To assess PILOT’s efficiency, we compare its aver-       timize cost and performance, but it relies on full su-
+age LLM selection time against GPT-4’s average           pervision i.e. a training set generated by answering
+inference time on MMLU (Table 2). PILOT’s rout-          every query using all LLMs, which is infeasible in
+ing time is 10x and 38x faster than GPT-4 inference      practical settings due to the cost of generation. The
+when using Instructor-XL & OpenAI embeddings,            same drawback is also applicable to TensorOpera
+respectively. This shows that PILOTadds negligible       Router (Stripelis et al., 2024a) which proposes a
+overhead to the response generation pipeline.            multi-phase pipeline for data generation, training
+5.4 Embedding Model Sensitivity                          and deployment of routers.
+                                                         In contrast, our work formulates routing as a con-
+Here, we assess PILOT’s sensitivity to the embed-        textual bandit problem with budget constraints. We
+der by evaluating its performance using another          learn an embedding-based router that adapts online
+model - Instructor-XL (Su et al., 2023). As              using bandit feedback—observing reward only for
+shown in Figure 5, PILOT continues to maintain           the selected model—without requiring exhaustive
+superior performance over baselines.                     supervision or query-specific full inference. This
+                                                         enables efficient and adaptive LLM deployment in
+                                                         dynamic, cost-sensitive environments.
+
+                                                         7   Conclusion
+
+                                                         We address LLM routing with budget constraints
+                                                         using bandit feedback in this work. We propose
+Figure 5: Embedding Sensitivity Analysis Figure com-     PILOT, a human-preference prior based contex-
+pares PILOT’s performance with bandit baselines using    tual bandit algorithm, coupled with a novel online
+Instructor-XL embedding.                                 cost policy that optimizes budget allocation across
+                                                     23941
+queries. Our approach achieves 93% of GPT-4’s            Lingjiao Chen, Matei Zaharia, and James Zou. 2022. Ef-
+performance at 25% of its cost on Routerbench.             ficient online ml api selection for multi-label classifi-
+                                                           cation tasks. In International conference on machine
+                                                           learning, pages 3716–3746. PMLR.
+Limitations
+                                                         Lingjiao Chen, Matei Zaharia, and James Zou. 2023.
+During the online bandit learning (Algorithm 1)            Frugalgpt: How to use large language models while
+we do not consider budget constraint, rather only          reducing cost and improving performance. arXiv
+during deployment we consider budget constraint.           preprint arXiv:2305.05176.
+Underlying rational for decoupling the bandit al-
+                                                         Wei-Lin Chiang, Lianmin Zheng, Ying Sheng, Anasta-
+gorithm and the cost policy was to ensure deploy-          sios Nikolas Angelopoulos, Tianle Li, Dacheng Li,
+ment stability and provide direct, user-controllable       Hao Zhang, Banghua Zhu, Michael Jordan, Joseph E.
+budget management. This separation facilitates de-         Gonzalez, and Ion Stoica. 2024. Chatbot arena: An
+ploying a robust bandit model while dynamically            open platform for evaluating llms by human prefer-
+                                                           ence. Preprint, arXiv:2403.04132.
+adjusting cost policy in real-time based on budget.
+However, one maybe be interested in learning un-         Yu-Neng Chuang, Helen Zhou, Prathusha Sarma, Parik-
+der budget constraints, which we leave for future          shit Gopalan, John Boccio, Sara Bolouki, and Xia
+work.                                                      Hu. 2025. Learning to route llms with confidence
+                                                           tokens. arXiv preprint arXiv:2410.13284, 3.
+In this work we focused on single-turn conversa-
+tions as input for routing, however real-world sce-      Delighted. 2024. 7 types of customer experience sur-
+narios could multi-turn interaction based routing.         veys you should know about. Delighted Blog.
+We leave this for future work.                           Dujian Ding, Ankur Mallick, Chi Wang, Robert Sim,
+                                                           Subhabrata Mukherjee, Victor Ruhle, Laks VS Laksh-
+                                                           manan, and Ahmed Hassan Awadallah. 2024. Hybrid
+References                                                 llm: Cost-efficient and quality-aware query routing.
+                                                           arXiv preprint arXiv:2404.14618.
+Yasin Abbasi-Yadkori, Dávid Pál, and Csaba Szepesvári.
+  2011a. Improved algorithms for linear stochastic       Tao Feng, Yanzhen Shen, and Jiaxuan You. 2024.
+  bandits. Advances in neural information processing       Graphrouter: A graph-based router for llm selections.
+  systems, 24.                                             arXiv preprint arXiv:2410.03834.
+Yasin Abbasi-Yadkori, Dávid Pál, and Csaba Szepesvári.   Geoffrey Hinton, Oriol Vinyals, and Jeff Dean. 2015.
+  2011b. Online least squares estimation with self-        Distilling the knowledge in a neural network. arXiv
+  normalized processes: An application to bandit prob-     preprint arXiv:1503.02531.
+  lems. arXiv preprint arXiv:1102.2670.
+                                                         Edward J Hu, Yelong Shen, Phillip Wallis, Zeyuan
+Appcues. 2024. Rating systems in ux: Star vs. thumbs       Allen-Zhu, Yuanzhi Li, Shean Wang, Lu Wang, and
+  up. Appcues Blog.                                        Weizhu Chen. 2021. Lora: Low-rank adaptation of
+                                                           large language models. arXiv e-prints, pages arXiv–
+Simran Arora, Sabri Eyuboglu, Michael Zhang, Aman          2106.
+  Timalsina, Silas Alberti, James Zou, Atri Rudra, and
+  Christopher Re. 2024. Simple linear attention lan-     Qitian Jason Hu, Jacob Bieker, Xiuyu Li, Nan Jiang,
+  guage models balance the recall-throughput tradeoff.     Benjamin Keigwin, Gaurav Ranganath, Kurt Keutzer,
+  In Forty-first International Conference on Machine       and Shriyash Kaustubh Upadhyay. 2024. Router-
+  Learning.                                                bench: A benchmark for multi-llm routing system.
+                                                           arXiv preprint arXiv:2403.12031.
+Djallel Bouneffouf and Irina Rish. 2019. A survey on
+  practical applications of multi-armed and contextual   Benoit Jacob, Skirmantas Kligys, Bo Chen, Meng-
+  bandits. arXiv preprint arXiv:1904.10040.                long Zhu, Matthew Tang, Andrew Howard, Hartwig
+                                                           Adam, and Dmitry Kalenichenko. 2018. Quanti-
+Deeparnab Chakrabarty, Yunhong Zhou, and Rajan             zation and training of neural networks for efficient
+  Lukose. 2008. Online knapsack problems. In Work-         integer-arithmetic-only inference. In Proceedings of
+  shop on internet and network economics (WINE),           the IEEE conference on computer vision and pattern
+  pages 1–9.                                               recognition, pages 2704–2713.
+
+Lichang Chen, Shiyang Li, Jun Yan, Hai Wang, Kalpa       Dongfu Jiang, Xiang Ren, and Bill Yuchen Lin. 2023.
+  Gunaratna, Vikas Yadav, Zheng Tang, Vijay Srini-         Llm-blender: Ensembling large language models
+  vasan, Tianyi Zhou, Heng Huang, and 1 others. 2024.      with pairwise ranking and generative fusion. In Pro-
+  Alpagasus: Training a better alpaca with fewer data.     ceedings of the 61st Annual Meeting of the Associa-
+  In The Twelfth International Conference on Learning      tion for Computational Linguistics (Volume 1: Long
+  Representations.                                         Papers), pages 14165–14178.
+                                                     23942
+John Langford and Tong Zhang. 2007. The epoch-                2024b. Tensoropera router: A multi-model router for
+  greedy algorithm for contextual multi-armed bandits.        efficient llm inference. In EMNLP (Industry Track).
+  Advances in neural information processing systems,
+  20(1):96–1.                                              Hongjin Su, Weijia Shi, Jungo Kasai, Yizhong Wang,
+                                                             Yushi Hu, Mari Ostendorf, Wen-tau Yih, Noah A
+Tor Lattimore and Csaba Szepesvári. 2020. Bandit             Smith, Luke Zettlemoyer, and Tao Yu. 2023. One
+  algorithms. Cambridge University Press.                    embedder, any task: Instruction-finetuned text em-
+                                                             beddings. In Findings of the Association for Compu-
+Yann LeCun, John Denker, and Sara Solla. 1989. Opti-         tational Linguistics: ACL 2023, pages 1102–1121.
+  mal brain damage. Advances in neural information
+  processing systems, 2.                                   Hugh Zhang, Jeff Da, Dean Lee, Vaughn Robinson,
+                                                             Catherine Wu, William Song, Tiffany Zhao, Pranav
+Baolin Li, Yankai Jiang, Vijay Gadepally, and Devesh         Raja, Charlotte Zhuang, Dylan Slack, and 1 others.
+  Tiwari. 2024. Llm inference serving: Survey of             2024. A careful examination of large language model
+  recent advances and opportunities. arXiv preprint          performance on grade school arithmetic. Advances
+  arXiv:2407.12391.                                          in Neural Information Processing Systems, 37:46819–
+                                                             46836.
+Lihong Li, Wei Chu, John Langford, and Robert E
+  Schapire. 2010. A contextual-bandit approach to per-     Yunhong Zhou, Deeparnab Chakrabarty, and Rajan
+  sonalized news article recommendation. In Proceed-         Lukose. 2008. Budget constrained bidding in key-
+  ings of the 19th international conference on World         word auctions and online knapsack problems. In
+  wide web, pages 661–670.                                   Proceedings of the 17th international conference on
+                                                             world wide web, pages 1243–1244.
+Wei Liu, Weihao Zeng, Keqing He, Yong Jiang, and
+ Junxian He. 2024a. What makes good data for align-
+ ment? a comprehensive study of automatic data se-
+ lection in instruction tuning. In The Twelfth Interna-
+ tional Conference on Learning Representations.
+
+Yueyue Liu, Hongyu Zhang, Yuantian Miao, Van-Hoang
+  Le, and Zhiqiang Li. 2024b. Optllm: Optimal assign-
+  ment of queries to large language models. Preprint,
+  arXiv:2405.15130.
+
+Xiaoding Lu, Adian Liusie, Vyas Raina, Yuwen Zhang,
+  and William Beauchamp. 2024. Blending is all
+  you need: Cheaper, better alternative to trillion-
+  parameters llm. arXiv preprint arXiv:2401.02994.
+
+Quang H Nguyen, Thinh Dao, Duy C Hoang, Juliette
+  Decugis, Saurav Manchanda, Nitesh V Chawla, and
+  Khoa D Doan. 2024. Metallm: A high-performant
+  and cost-efficient dynamic framework for wrapping
+  llms. arXiv preprint arXiv:2407.10834.
+
+Isaac Ong, Amjad Almahairi, Vincent Wu, Wei-Lin Chi-
+   ang, Tianhao Wu, Joseph E. Gonzalez, M Waleed
+   Kadous, and Ion Stoica. 2024. Routellm: Learn-
+   ing to route llms with preference data. Preprint,
+   arXiv:2406.18665.
+
+Marija Šakota, Maxime Peyrard, and Robert West. 2024.
+  Fly-swat or cannon? cost-effective language model
+  choice via meta-modeling. In Proceedings of the
+ 17th ACM International Conference on Web Search
+  and Data Mining, pages 606–615.
+
+Dimitris Stripelis, Zijian Hu, Jipeng Zhang, Zhaozhuo
+  Xu, Alay Dilipbhai Shah, Han Jin, Yuhang Yao,
+  Salman Avestimehr, and Chaoyang He. 2024a. Ten-
+  soropera router: A multi-model router for efficient
+  llm inference. Preprint, arXiv:2408.12320.
+
+Dimitris Stripelis, Zhaozhuo Xu, Zijian Hu, Alay Dilipb-
+  hai Shah, Han Jin, Yuhang Yao, Jipeng Zhang,
+  Tong Zhang, Salman Avestimehr, and Chaoyang He.
+                                                      23943
+A     Appendix                                            are cost-intensive and unsuitable for latency-
+                                                          sensitive applications.
+In this section, we provide additional results and
+                                                          (ii) Meta-routing via reward estimation: Tensor-
+details that we could not include in the main pa-
+                                                          Opera Router (Stripelis et al., 2024b) builds a sepa-
+per due to space constraints. In particular, this
+                                                          rate reward model to guide routing decisions over
+appendix contains the following:
+                                                          multiple LLMs. However, it relies on offline data
+ Extended Related Works                                   and full supervision to train the reward predictor.
+    – Efficient LLM Inference                             Unlike these works, we focus on selecting a single
+    – Hybrid LLM Approaches                               model per query and improve performance through
+    – Routing Strategies for LLMs                         online learning from partial feedback.
+                                                          B.3   Routing Strategies for LLMs
+ Theoretical Analysis and Algorithms
+    – Theoretical Analysis of a Preference-Prior-         Existing routing strategies can be categorized as:
+      Informed Bandit Algorithm                           (i) Non-predictive routing: FrugalGPT (Chen et al.,
+    – Algorithm for the Online Cost Policy                2023) executes models sequentially until a qual-
+                                                          ity threshold is met. While simple, this leads to
+ Additional Results and Analysis                          multiple model calls and doesn’t generalize across
+    – Comparison with Supervised Binary Router            queries.
+       * Performance vs Cost Analysis                     (ii) Predictive routing (supervised): These meth-
+       * Adaptability to Shift in Query Distribution      ods train a router to choose among LLMs based
+    – Query Complexity Analysis                           on full supervision. HybridLLM (Ding et al.,
+    – Analysis of Human Preference Learning               2024) trains a classifier to select between a small
+    – Additional Binary LLM Routing Results               and large model. FORC (Šakota et al., 2024)
+    – Ablation and Sensitivity Analysis                   uses a meta-model to balance accuracy and cost.
+                                                          GraphRouter (Feng et al., 2024) encodes queries
+B     Extended Related Works                              and models into a bipartite graph to guide routing.
+In Section 6 of the main paper we briefly described       Chuang et al. (Chuang et al., 2025) introduce confi-
+works in the areas of routing strategies for language     dence tokens emitted by LLMs to help with model
+models and neighbouring research topics such as ef-       selection, requiring LLM modification.
+ficient LLM inference and hybrid LLM approaches.          While these methods show strong performance,
+Here we elaborate on it.                                  they rely on full model evaluation during train-
+B.1    Efficient LLM Inference                            ing, limiting scalability and adaptability. Our work
+                                                          differs by treating routing as a contextual bandit
+Traditional approaches to efficient ML inference          problem: we learn only from the selected model’s
+can be categorized into: model pruning (LeCun             feedback, adapting online to shifting distributions
+et al., 1989), quantization (Jacob et al., 2018), lin-    without exhaustive supervision.
+ear attention (Arora et al., 2024), low-rank adap-
+                                                          Below we summarize our unique aspects to contex-
+tation (Hu et al., 2021) and knowledge distillation
+                                                          tualize our work within LLM routing literature:
+(Hinton et al., 2015). These methods typically pro-
+                                                              • Online Adaptation: We train the router on-
+duce static optimizations, which may not suffice
+                                                                line, enabling it to adjust to evolving query
+for LLMs serving a range of tasks with varying
+                                                                types and workloads.
+accuracy/cost constraints. Our work, in contrast,
+                                                              • Bandit Feedback: We operate under par-
+focuses on dynamic optimizations to meet diverse
+                                                                tial supervision, learning from the reward of
+user demands.
+                                                                only the selected model, unlike prior work re-
+B.2    Hybrid LLM Approaches                                    quiring all-model inference for each training
+Hybrid inference methods attempt to balance cost                query.
+and quality by combining outputs or using meta-               • Budget-Aware Routing: Our formulation in-
+models. These include:                                          cludes a cost policy via a multi-choice knap-
+(i) Multi-LLM Synthesis: LLM-Blender (Lu et al.,                sack, explicitly managing user budgets.
+2024) and related methods (Jiang et al., 2023)            This makes our method suitable for practical LLM
+invoke several models and fuse their responses.           deployment settings that demand efficiency, adapt-
+While improving output quality, these approaches          ability, and minimal supervision.
+                                                       23944
+             Experiment                                      Details                                           Reference
+                                                    M AIN E XPERIMENTS
+    Performance vs Budget Curves         Evaluates performance-cost trade-offs across budget constraints.   Fig. 3 (a), (b)(i)
+    Performance with Varying             Measures performance with different learning data quantities in    Fig. 3 (a), (b)(ii)
+    Learning Data Sizes                  deployment.
+    Cumulative Regret Curves             Tracks learning efficiency over time compared to baselines.        Fig. 3 (a), (b)(ii)
+                                                            A NALYSIS
+    Qualitative Analysis of Routing      Examines routing decisions across diverse tasks (MMLU,                Section 5.1
+                                         MBPP, GSM8K).
+    Compute Overhead of Routing          Measures routing latency overhead against GPT-4 inference             Section 5.3
+                                         time.
+    Online Cost Policy Analysis          Compares adaptive online policy with fixed-budget and offline         Section 5.2
+                                         policies.
+    Embedding Model Sensitivity          Tests robustness across different query embedding models.            Section 5.4
+    Comparison with Static Binary        Contrasts with static supervised routers, especially under          Appendix D.1
+    Supervised LLM Router                distribution shifts.
+    Human Preference Learning            Evaluates the human preference learning stage detailed in           Appendix D.3
+                                         Section 2.2.1.
+    Ablation & Sensitivity Analysis      Analyzes impact of individual components and robustness             Appendix D.6
+                                         factors.
+
+Table 3: Overview of Experiments: Summary of empirical evaluations conducted to assess PILOT’s performance.
+
+C     Theoretical Analysis and Algorithms                          S > 0, we define a confidence set Ct (δ, θ̂t ; S) by
+                                                                                    n      ′
+                                                                   Ct (δ, θ̂t ; S) = θ ∈ Rd : (θ − θ̂t )⊤ At (θ − θ̂t ) ≤
+C.1 Theoretical Analysis of a                                                       s                               
+    Preference-Prior-Informed Bandit                                   √
+                                                                                                  ′
+                                                                                                                  T o
+                                                                          λS + R 2 log(1/δ) + d log 1 + ′                .
+    Algorithm                                                                                                    λd
+                                                                    Then for each round t, OFUL selects lt ∈
+To show the validity of PILOT, we theoretically
+                                                                   L such that maxθ∈Ct (δ,θ̂t ;S) θ · x(lt , qt ) =
+show that a preference-prior-informed bandit algo-
+                                                                   max(θ,l)∈Ct (δ,θ̂t ;S)×L θ · x(l, qt ).
+rithm can achieve a smaller regret bound than the
+standard algorithm. Here, we focus on preference-                    Then, if ∥θ∗ ∥ ≤ S, OFUL has the following
+prior informed OFUL (Abbasi-Yadkori et al.,                        regret bound with probability at least 1 − δ,
+2011b) since OFUL is a theoretically well-studied                                       R(T ) ≤ UT (S)
+method, and both the algorithms (LinUCB and                        where
+OFUL) share the same principle, i.e., the princi-                                     p                               √
+ple of optimism in the face of uncertainty (Latti-                      UT (S) = 4     T d′ log(λ + T /d′ ) ·             λS
+more and Szepesvári, 2020, Chp 7.1) and (Li et al.,                             s
+2010) have not provided a theoretical analysis of                                                                !
+                                                                                                                T
+LinUCB. We briefly introduce a problem setting                             +R     2 log(1/δ) + d′ log        1+ ′
+                                                                                                               λd
+for theoretical analysis. For t = 1, . . . , T , a query
+qt and selected LLM lt , we assume the following                   If we know the optimal choice of S (i.e., S =
+reward model:                                                      ∥θ∗ ∥), then regret bound UT (OFUL) of OFUL is
+                                                                   given as
+            rt (lt , qt ) = θ∗ · x(lt , qt ) + εt ,
+                              ′                                                  UT (OFUL) := UT (∥θ∗ ∥).
+where x(lt , qt ) ∈ Rd is a context vector and
+        ′                                                                                                         ′
+θ∗ ∈ Rd is an unknown reward vector. We de-                        Proposition C.1. Let θpref ∈ Rd be a pre-
+fine cumulative regret                                             trained vector. We define an estimation θ̃t of θ∗
+             X T                                                 with an initialization   θpref as θ̃t := (At )−1 bt ,
+                                                                                      Pt−1
+    R(T ) =        max rt (l, qt ) − rt (lt , qt ) .               where At P= λI + s=1 x(ls , qs )x(ls , qs )⊤ , bt =
+                        l∈L
+                t=1                                                λθpref + t−1s=1 x(ls , qs ). We define PI-OFUL as
+For λ > P0, we define an estimation θ̂t of                         OFUL with the confidence set Ct (δ, θ̃t ; S ′ ) with
+ ∗ as A−1       t−1
+θP     t        s=1 rs x(ls , qs ), where At = λI +                a parameter S ′ > 0, that is, PI-OFUL selects
+  t−1                       ⊤
+  s=1 x(ls , qs )x(ls , qs ) . For δ ∈ (0, 1) and                  lt ∈ L such that maxθ∈Ct (δ,θ̃t ;S ′ ) θ · x(lt , qt ) =
+                                                             23945
+max(θ,l)∈Ct (δ,θ̃t ;S ′ ))×L θ ·x(l, qt ). If ∥θ∗ −θpref ∥ ≤                         cos(ψ̂(q ),θ̂t )
+                                                               z, and is given by ( U B.e )zt( LBl ) . If no LLMs fit the
+S ′ , then regret bound of PI-OFUL is given as                                         LB        e
+                                                               allotted budget thresholds, the algorithm adjusts
+UT (S ′ ). In particular, if we know the optimal               the budget per query to Q  Bleft
+                                                                                                 (Qleft is the number
+choice of S ′ (i.e., S ′ = ∥θ∗ − θpref ∥), then then                                        left
+                                                               of queries remaining in the bin) and re-evaluates
+regret bound UT (PI-OFUL) of PI-OFUL is given                  eligible LLMs. If still no LLMs are available, the
+as                                                             algorithm terminates with an “Insufficient budget"
+       UT (PI-OFUL) := UT (∥θ∗ − θpref ∥).                     message. Otherwise, it selects the LLM with the
+Thus, if ∥θ∗ − θpref ∥ ≤ ∥θ∗ ∥, we have                        highest expected reward (defined in Equation 1) in
+              UT (PI-OFUL) ≤ UT (OFUL).                        the set of eligible LLMs E, updates the remaining
+                                                               budget, and yields the selected LLM for the current
+                                                               query. This process repeats for each query in the
+Proof. For 1 ≤ t ≤ T , let X ∈
+           ′                                                   bin, ensuring the budget is optimally utilized across
+R(t−1)×d be the matrix whose rows are given as
+                                                               the entire query set.
+x(a1 , q1 )⊤ , . . . , x(at−1 , qt−1 )⊤ . By definition of
+θ̃t and the proof of (Abbasi-Yadkori et al., 2011b,
+                                                               Algorithm 3 Online Cost Policy
+Theorem 8) and, θ̃t is given as
+                                                               Require: Budget B, # queries Q, Bin size S, LLM
+          θ̃t = (X ⊤ X + λI)−1 X ⊤ ε + θ∗ −
+                                                                 set L
+                 λ(X ⊤ X + λI)(θ∗ − θpref ),                   Ensure: LLM selections for each query
+where ε ∈ Rt−1 is defined as ε⊤ = (ε1 , . . . , εt−1 ).          N ← ⌈Q  S⌉      % Number of bins
+                                                                           B
+Thus, by the proof of (Abbasi-Yadkori et al., 2011b,             Bbin ← N        % Budget per bin
+Theorem 8), we have the following with probability               Bleft ← 0
+1−δ                                                              for each bin i in 1 to N do
+|θ̃t · x − θ∗ · x| ≤                                                 z←0             % Initialize budget utilization
+                 s                                                 Bleft ← Bleft + Bbin            % Budget Left
+                               det(At )1/2 det(λI)−1/2               for each query qt in bin i do
+  ∥x∥A−1 R         2 log
+          t                                δ                             Qleft ← number of remaining queries in
+                                !                                bin
+          √                                                                                     cos(ψ̂(q ),θ̂t )
+      +       λ θ∗ − θpref        .                                      E ← {l ∈ L : C l ≤ ( U B.e )zt( LBl ) }
+                                                                                                        LB   e
+                                                                          if E is empty then
+Using this confidence bound, by the standard ar-                              B′ ← Q  Bleft
+                                                                                            % Adjusted budget
+                                                                                       left
+gument (the same proof as (Abbasi-Yadkori et al.,
+                                                                              E ← {l ∈ L : C l ≤ B ′ }
+2011b, Theorem 13)), we have our assertion.
+                                                                              if E is empty then
+                                                                                  return “Insufficient budget"
+C.2 Algorithm for the Online Cost Policy
+                                                                              end if
+In Section 2.2.3 of the main paper, we introduced                         end if
+our online cost policy, enabling users to set a cost                      l∗ ← arg maxl∈E cos(ψ̂(qt ), θ̂lt )  %
+budget B and distribute it across a defined num-                   pick best LLM
+ber of queries Q. Building on that discussion, we                         Blef t ← Blef t − C l % Update budget
+present the corresponding algorithm in Algorithm                                       l
+                                                                          z ← z + BCbin % Update budget use
+2 and provide a concise summary of its key steps                          yield l∗ % Return selected LLM
+below. The algorithm operates by dividing the to-                      end for
+tal query budget Q into N bins of size S, where                    end for
+N = ⌈Q S ⌉. Each bin is allocated a portion of the to-
+                                   B
+tal budget B, denoted as Bbin = N    . At the start of
+each bin, the algorithm adds Bbin to the remain-               D     Additional Experimental Results and
+ing budget Bleft (budget leftover from previous                      Analysis
+bins/timesteps). For each query within a bin, the
+algorithm selects eligible large language models               D.1    Comparison with Supervised Binary
+(LLMs), E, from the set L whose costs C l (l ∈ L)                     LLM Router
+are below a threshold. This threshold is sensitive to          As stated in Section 3.1.3, here (in Figure 6) we
+both the LLM l and the current budget utilization              compare our bandit router PILOT with the state-of-
+                                                          23946
+the-art supervised router HybridLLM, while keep-           We use the Routerbench dataset for this compar-
+ing in mind that HybridLLM (Ding et al., 2024)             ison and pick two LLM combinations (GPT4 &
+relies on full supervision, whereas our approach           Mistral-7b, and, GPT4 & Mixtral-7x8b) for binary
+operates with only bandit feedback arriving on-            routing task. We pick these LLM combinations to
+line. Furthermore, we quantitatively evaluate PI-          compare routers in the presence of large (GPT-4),
+LOT and HybridLLM, w.r.t. adaptability to shift            medium (Mixtral-8x7b) and small (Mistral-7b) size
+in user queries to understand whether PILOT we             language models. Furthermore, as per the protocol
+improve upon existing routers in this aspect.              in Section 3.1 of the main paper, we use 1000 sam-
+                                                           ples for hyperparamter tuning and the remaining
+                                                           samples is split into “learning" and “deployment"
+                                                           buckets with 10 : 1 ratio.
+                                                           As can be seen from Figure 6, PILOT performs on
+                                                           par with, and occasionally surpasses, HybridLLM.
+                                                           This underscores the effectiveness of bandit routers,
+                                                           achieving strong results without requiring full su-
+Figure 6: Performance vs Cost comparison with Su-          pervision.
+pervised HybridLLM (Ding et al. 2024) The left
+figure shows binary LLM routing comparisons for GPT-       D.1.2    Adaptability to Shift in Query
+4 and Mistral-7b in the LLM pool. The right figure                  Distribution
+presents similar comparisons, this time for GPT-4 and      Here in Figure 7, we simulate a task shift (from
+Mixtral-8x7b. This study uses the Routerbench dataset
+                                                           MMLU to GSM8k) to create a streaming dataset,
+                                                           tracking average reward & exploration (standard
+                                                           deviation of chosen arm’s estimate). We then com-
+                                                           pare rewards before (“Before"), at (“During") and
+                                                           5000 steps after the transition (“After"). As can be
+                                                           seen in Figure 7 (left), PILOT adapts significantly
+                                                           post-drift, unlike the static supervised baseline. We
+                                                           also observe in Figure 7 (right) that the exploration
+                                                           of PILOT increases during drift and subdues after
+                                                           it, as expected.
+
+Figure 7: Adaptability to Shift in Query Distribution
+                                                           D.2     Query Complexity Analysis
+The left figure shows average reward comparison across     In the context of binary LLM routing, an effective
+different time instants - “Before", “During" and “After"   routing algorithm should allocate more complex
+shift in query distribution from MMLU to GSM8k. The        queries to the more capable model (GPT-4) while
+right figure shows that during the drift the exploration
+                                                           routing simpler queries to the less expensive model
+increases as new distribution is encountered and then
+the exploration settles down.                              (Mistral-7B/Mixtral-8x7B) (Ding et al., 2024), to
+                                                           optimize performance within the given budget con-
+                                                           straints. We thus investigate how our algorithm
+D.1.1 Performance vs Cost Analysis                         routes queries of varying complexity when faced
+We compare PILOT with the deterministic variant            with such a binary choice. For this analysis, we
+of HybridLLM (Ding et al., 2024), which assumes            fix the overall budget for routing to $4 and ex-
+that LLMs are deterministic functions mapping in-          amine the average complexity of queries directed
+put features to a single point in the output space.        to each LLM. To quantify query complexity, we
+We do not experiment with the probabilistic vari-          use Evol Complexity (Liu et al., 2024a) measure,
+ants due to the high cost involved—they require 20         which is useful for selecting hard samples for LLM
+times more LLM calls to train the router, making           alignment in comparison to scores such as LLM
+them expensive to implement. These probabilis-             response perplexity and Direct Scoring (Chen et al.,
+tic variants utilize soft labels for training rather       2024).
+than hard labels, which necessitates sampling 10           The average query complexity of GPT-4 routed
+responses from each LLM (thus 20 calls for two             queries (QC) in Table 4 indicates that on average
+LLMs) per query and calculating a sample average.          PILOT routes more complex queries to GPT-4, than
+                                                      23947
+     LLM Pool           LinUCB         PILOT
+                      QC p-value     QC p-value
+  GPT4 - Mistral7B    2.61   0.06    2.64   0.004
+ GPT4 - Mixtral8x7B   2.62   0.05    2.75   5e-37
+
+Table 4: Query Complexity Analysis for Routed
+Queries: QC refers to average complexity of GPT-4
+routed queries, &, p-value is from a Mann-Whitney U
+Test on average query complexity scores obtained from
+LLMs in the pool.
+
+                                                                  (i)              (ii)              (iii)
+LinUCB. Furthermore, the difference between the
+average query complexity of GPT-4 routed queries        Figure 8: Bandit Feedback based Binary LLM Rout-
+and Mistral-7B/Mixtral-8x7B routed queries is sta-      ing Evaluation: Figure reports results for multi task
+                                                        data source setting (Routerbench). In the top row we
+tistically significant for PILOT (Mann-Whitney U
+                                                        have Claude-v1 and Mixtral-7x8b LLMs in the LLM
+test’s p-value < 0.05), unlike LinUCB. This in-         pool, and in the botton row we have GPT-4 and Llama2-
+dicates that PILOT not only considers the budget        70b LLMs in the LLM pool. Column (i) represents
+constraints but also assesses query complexity to       performance vs cost curves on the held-out deployment
+make informed routing decisions.                        set; Column (ii) represents performance across different
+                                                        learning bucket sizes; Column (iii) represents cumu-
+D.3 Analysis of Human Preference Learning               lative regret. Our method PILOT , shown in orange,
+                                                        performs the best across the metrics.
+Next, we analyze our offline human preference
+learning algorithm’s (Section 2.2.1) accuracy of
+                                                        reward (0 or 1) is replaced by a uniformly random
+predicting the human preferred LLM for a given
+                                                        binary value, that is, either 0 or 1 with equal proba-
+query. For this analysis, we use a subset of 500
+                                                        bility. The results in Table 5 show that for PILOT,
+samples from the ChatArena (Chiang et al., 2024)
+                                                        even at 5% noise, the reward drops by less than 4%,
+dataset (related to the 11 LLMs in Routerbench)
+                                                        demonstrating strong resilience.
+that was not seen during training. We compare our
+accuracy with RouteLLM (Ong et al., 2024) which
+                                                         Noise Percentage (%)    Avg. Deployment Set Reward
+also uses human preference data for learning how
+to route. We find our algorithm achieves a higher                       0                    0.761
+                                                                        1                    0.750
+accuracy of 65.0, in comparison to RouteLLM’s                           3                    0.740
+(uses Matrix factorization) accuracy of 63.6.                           5                    0.730
+
+D.4 Binary LLM Routing Results                          Table 5: Effect of Noise: Average deployment set re-
+In Figure 3 of the main paper, we reported results      ward on MMLU datsaset across different noise levels.
+for binary routing with two LLM combinations -
+GPT4 & Mistral-7b, and GPT4 & Mixtral-7x8b.
+                                                        D.6 Ablation and Sensitivity Analysis
+Here, in Figure 8, we report results with two more      In Figure 3 of the main paper, we analyzed the
+LLM combinations (GPT4 & Llama2-70b, Claude             PILOT’s performance of across cost budgets, and
+v1 & Mixtral – 7x8B) to further evaluate our meth-      reward & regret across rounds of online learning.
+ods performance.                                        Here we study the goodness of our pre-trained
+Similar to our observation in the main paper, we        router (preference data based router) on the Router-
+find that across metrics, PILOT performs better         bench deployment set. Please note, the preference
+than baselines.                                         data, Chatarena (Chiang et al., 2024), is different
+                                                        from the Routerbench dataset (Hu et al., 2024).
+D.5 Sensitivity to Noise
+                                                        Next, we also study the effect of exploration pa-
+We assess robustness of PILOT to noisy bandit           rameter (used in UCB computation in PILOT and
+feedback by conducting a synthetic noise experi-        LinUCB) on reward on the tuning dataset.
+ment on MMLU, where the deployment set budget
+is fixed at $1. Since the reward in MMLU is bi-         D.6.1 Ablation Analysis
+nary, we employ the following noise model: with         Here, in Table 6 the initial pre-trained router shows
+some fixed probability ϵ ∈ [0, 1], the true binary      strong foundational performance, and incorporat-
+                                                    23948
+        Pre-trained Pre-trained +
+Bud.                                  PILOT     LinUCB
+          Router    10% Online
+  $1       0.34          0.61           0.63      0.60
+ $1.5      0.34          0.61           0.66      0.63
+  $2       0.35          0.63           0.69      0.64
+  $3       0.38          0.65           0.73      0.68
+
+Table 6: Ablation Study: Performance vs. Cost Com-
+parison for pretrained router and effect of online training
+                  α    PILOT     LinUCB
+                  10   0.600        0.601
+                   5   0.610        0.623
+                   2   0.645        0.649
+                   1   0.641        0.640
+
+           Table 7: Sensitivity Analysis of α
+
+
+ing just 10% online data enables it to adapt quickly
+and approach the performance of LinUCB, espe-
+cially under constrained budgets. Notably, PI-
+LOTconsistently outperforms the other approaches,
+even in low-cost scenarios.
+D.6.2 Sensitivity Analysis
+Table 7 presents the effect of the exploration param-
+eter α on average reward, evaluated on the tuning
+dataset described in Section 3.1. Consistent with
+findings by (Li et al., 2010), the results exhibit an in-
+verted U-shape. Small values of α result in insuffi-
+cient exploration, limiting the algorithm’s ability to
+discover optimal LLM-query matches. In contrast,
+excessively high α values lead to over-exploration,
+missing opportunities to maximize reward.
+
+
+
+
+                                                         23949
+

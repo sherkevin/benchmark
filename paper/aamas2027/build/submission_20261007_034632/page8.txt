@@ -1,0 +1,114 @@
+Research Paper Track
+
+AAMAS 2027, 3–7 May 2027, Hanoi, Vietnam
+
+Table 5: Audit contract used before aggregation. Each receipt is checked at its own boundary; a stream with a failed check
+contributes no score.
+Receipt
+
+Recorded evidence
+
+Check before aggregation
+
+Decision
+
+no truth or unselected output
+
+Terminal
+
+visible features, endpoint, eligible menu, released-state hash, selected
+provider
+selected output, runtime status, provider binding
+
+Feedback
+Stream summary
+
+selected label, due tick, release order, state version
+calls, selected correctness, scaffold id, timing
+
+limits rather than treating every cached model as an independent
+truth source.
+
+12
+
+Artifact Scope
+
+The released artifact is organized around the routing contract rather
+than around a single aggregate table. The public truth manifest
+records canonical molecule identifiers, endpoint labels, split membership, and the hash of the input file. The provider manifest records
+each fresh checkpoint, its source commit, native feature code, and
+the validation receipt used to bind the model to a provider identifier.
+The routing runner then consumes only the molecule features and
+the current released state; evaluator truth and provider outputs are
+written to terminal records after the action.
+A reproduction has three separate checks. A schema checker
+verifies that every decision has a legal visible read set and that no
+decision record contains truth or an unselected output. A transition replayer reconstructs the release queue and next action from
+the fit prior and the selected event prefix. An aggregation script
+joins terminal records to the frozen confirmation manifest and computes the paired scaffold-cluster estimates, confidence intervals,
+rescued/harmed counts, and timing summaries. Reproduction requires these checks before accepting an aggregate; a valid summary
+alone cannot establish that its event stream followed the protocol.
+The artifact also preserves negative and stopped variants. MIRARelative is retained because its natural fresh result is exactly Frozen;
+this prevents a global reliability factor from being presented as
+evidence for dynamic adaptation. The natural MIRA-Relay run
+is retained separately from the controlled correctness-drift run,
+even though they use the same fresh menu. This separation makes
+the scope of the positive result inspectable: the adapter responds
+to a declared released-outcome change, while a stationary panel
+supplies no measurable aggregate gain.
+A rerun starts from the sealed input and provider manifest, computes native provider predictions once, and then runs each policy
+on a copy of the same candidate order. The policy decision interface receives the features, event identity, and released state; the
+evaluator binds the selected prediction to the truth when it writes
+the terminal record. Delays are applied by the same queue implementation for every policy, including Frozen and the retrospective
+best-fixed control, so a method cannot gain by receiving a more
+favorable clock. The raw event stream is flushed after each stream,
+which leaves a usable failure boundary if a process stops between
+streams.
+
+one terminal per decision; failure stays
+separate
+one selected-only release at the legal tick
+recomputed only after contract/replay
+validation
+
+Table 5 separates the recorded decision, terminal, feedback, and
+summary fields. Summaries are convenience aggregates, not the
+source of truth for accuracy. Event checks validate identities and
+cardinalities; the recorded replay recomputes selected labels from
+sealed predictions and evaluator truth. The same checks apply to
+the natural and stress runs.
+The computational budget is also explicit. Every reported stream
+has one provider call per molecule, 157 decisions, and the same
+three release delays. The adapter stores two counters per provider,
+while the frozen surface and checkpoint weights are read-only.
+Selection cost scales with the number of eligible providers and the
+fixed feature dimension; release cost is constant in the number of
+providers. Timing fields are measured around the policy operation
+and exclude file I/O, provider inference, and evaluator scoring. This
+decomposition prevents a fast but incomplete update from being
+compared with a slower method that performs hidden work outside
+the measured interval.
+Finally, the artifact preserves the distinctions needed for later
+extensions. A runtime error has a status but no chemical-correctness
+label; an unknown truth ends the scored stream; and a refusal is a
+policy action with no selected-provider reward. These cases belong
+to the extension contract: the sealed fresh receipt accepts scored
+outcomes only and contains no such events. Verification or lifecycle
+experiments will require a new schema and separate validation for
+accept, call, refuse, or menu-change actions, while preserving the
+historical one-call receipts.
+
+13
+
+Conclusion
+
+Adapting scientific tool use requires connecting a released outcome
+to a better subsequent decision. MIRA-Relay makes that connection
+testable through a frozen provider surface, a selected-only provider
+residual, and an explicit release clock. On a natural fresh menu it
+matches the frozen selector; under the declared correctness drift it
+recovers more accurately than the matched controls. The remaining
+evidence-extension and lifecycle claims are intentionally outside
+this paper.
+
+

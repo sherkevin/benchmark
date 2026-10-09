@@ -1,0 +1,67 @@
+% INTERNAL PRE-RESULTS INTEGRATION TEMPLATE -- 2026-10-08.
+% No arrival-robustness result has been read or inserted in this file.
+% Requires main.tex's booktabs, MiraTableFont, tnote, and notrun definitions.
+% Root owns evidence reconciliation, merging, and the final eight-page build.
+% Define MiraArrivalEvidenceVerified only after full-run independent verification
+% AND replacement of every TBD and the verdict comment below.
+\ifdefined\MiraArrivalEvidenceVerified\else
+  \PackageError{arrival-pre-results}{Arrival evidence is not cleared for integration}
+    {Keep this template out of the submission source until evidence reconciliation.}
+\fi
+
+% Paragraph 1: replace redundant protocol/validity prose; do not append a new section.
+\paragraph{Arrival-order robustness.}
+We freeze a retrospective study on the same 157 previously inspected molecules,
+sampling 128 independent uniform permutations. Each permutation is shared across
+methods and conditions; policies and release queues are reset and rerun for all
+five fixed priors, policy seeds 0/1, and $D\in\{0,1,4\}$. One order is one
+statistical unit, averaging these 30 configurations. The controlled flip remains
+at ticks 78--156, so its affected molecules change with order. Uncertainty concerns
+this finite-cohort arrival law, conditional on the priors and two fixed policy-seed
+realizations; it does not quantify new-scaffold generalization.
+
+\begin{table*}[t]
+\caption{Arrival-order robustness on the previously inspected cohort.
+Entries average 128 complete replays, each averaging 30 fixed configurations.
+All methods in the frozen roster are retained; gains are paired against Frozen.}
+\label{tab:arrival-robustness}
+\begingroup\centering\MiraTableFont
+\setlength{\tabcolsep}{9pt}\renewcommand{\arraystretch}{1.08}
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+& \multicolumn{2}{c}{Natural} & \multicolumn{2}{c}{Controlled drift} \\
+\cmidrule(lr){2-3}\cmidrule(l){4-5}
+Method & Success (\%) & Gain (pp) & Success (\%) & Gain (pp) \\
+\midrule
+Random & \text{TBD} & \text{TBD} & \notrun & \notrun \\
+Best Fixed & \text{TBD} & \text{TBD} & \notrun & \notrun \\
+Frozen & \text{TBD} & reference & \text{TBD} & reference \\
+MIRA-Relative & \text{TBD} & \text{TBD} & \notrun & \notrun \\
+\midrule
+Online SGD & \text{TBD} & \text{TBD} & \text{TBD} & \text{TBD} \\
+Greedy LinUCB & \text{TBD} & \text{TBD} & \text{TBD} & \text{TBD} \\
+BayesianRouter & \text{TBD} & \text{TBD} & \text{TBD} & \text{TBD} \\
+MIRA-Relay & \text{TBD} & \text{TBD} & \text{TBD} & \text{TBD} \\
+\midrule
+Fixed-permutation credit & \text{TBD} & \text{TBD} & \text{TBD} & \text{TBD} \\
+Retrospective Best Fixed$^{\dagger}$ & \text{TBD} & \text{TBD} & \notrun & \notrun \\
+\bottomrule
+\end{tabular}\par
+\tnote{\notrun: outside the frozen condition-specific roster.
+$\dagger$ Evaluator-only provider, fixed from the original natural cohort.
+The original manifest order is excluded. Policy seeds are fixed realizations,
+not additional independent order draws.}
+\endgroup
+\end{table*}
+
+% Paragraph 2: reconcile every placeholder against verified results.
+% Add ONE observed verdict sentence, following MERGE_NOTES.md; no prewritten win.
+The prespecified primary contrast, MIRA-Relay minus Online SGD under controlled
+drift, averages $\text{TBD}$ pp (MCSE $\text{TBD}$; approximate 95\% Monte Carlo
+mean interval $[\text{TBD},\text{TBD}]$); $\text{TBD}/128$ orders have positive
+contrasts (exact 95\% binomial interval $[\text{TBD},\text{TBD}]$).
+% INSERT EVIDENCE-DEPENDENT JOINT-GATE VERDICT HERE.
+Table~\ref{tab:arrival-robustness} retains every comparator.
+The equal-scaffold Local$-$Permutation contrasts average $\text{TBD}$ pp naturally
+and $\text{TBD}$ pp under drift. Complete secondary contrasts, per-delay results,
+and order distributions are reported in the supplementary analysis.

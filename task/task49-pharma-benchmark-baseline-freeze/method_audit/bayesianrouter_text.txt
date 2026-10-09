@@ -1,0 +1,1080 @@
+Published as a conference paper at ICLR 2026
+
+
+
+
+R EWARD M ODEL ROUTING IN A LIGNMENT
+ Xinle Wu, Yao Lu
+ National University of Singapore
+ {wuxl,luyao}@comp.nus.edu.sg
+
+
+
+                                                 A BSTRACT
+
+             Reinforcement learning from human or AI feedback (RLHF/RLAIF) has become
+             the standard paradigm for aligning large language models (LLMs). However,
+             most pipelines rely on a single reward model (RM), limiting alignment quality
+             and risking overfitting. Recent work explores RM routing—dynamically select-
+             ing an RM from a candidate pool to exploit complementary strengths while main-
+             taining O(1) RM calls—but existing methods suffer from cold-start and insuf-
+             ficient exploration. We propose BayesianRouter, a hybrid routing framework
+             that combines offline RM strengths learning with online Bayesian selection. In
+             the offline stage, a multi-task router is trained on preference data to estimate per-
+             RM reliability. In the online stage, a Bayesian Thompson sampling router per-
+             forms per-query RM selection, initializing RM-specific weight vectors with of-
+             fline embeddings as Gaussian priors and adaptively updating their posteriors with
+             online rewards to adapt to the evolving policy distribution. Extensive experiments
+             on instruction-following (AlpacaEval-2, Arena-Hard, MT-Bench) and reasoning
+             (GSM8K, MMLU) benchmarks show that BayesianRouter consistently outper-
+             forms individual RMs, RM ensembling, and existing routing methods. 1
+
+
+1       I NTRODUCTION
+
+Large language models (LLMs) have revolutionized artificial intelligence, demonstrating substantial
+capabilities in language understanding, reasoning, and open-ended text generation across diverse
+domains (Guo et al., 2025; Achiam et al., 2023). To safely and effectively deploy LLMs, recent
+post-training techniques, particularly reinforcement learning from human feedback (RLHF) and its
+AI-augmented variant (RLAIF) (Wang et al., 2024b), aimed at aligning LLMs with human values
+and preferences. These methods fine-tune LLMs to internalize nuanced human preferences, bridging
+the gap between raw pretrained performance and user-aligned behavior. In standard RLHF, a reward
+model (RM) provides the feedback signal for optimizing the policy LLM; for example, in PPO, the
+RM provides a scalar reward to directly increase the probability of preferred responses (Ziegler et al.,
+2019), while in direct preference optimization (DPO), the RM compares two candidate responses to
+determine which is better (Dong et al., 2024).
+Recent RLHF/RLAIF pipelines often rely on a single RM throughout training (Kaufmann et al.,
+2024). This design choice, however, can be suboptimal due to (1) limited generalizability: no single
+RM consistently excels across all tasks, as evidenced by benchmarks like RewardBench 2 (Malik
+et al., 2025). An RM tuned for one type of content (e.g. conversational helpfulness) may perform
+poorly on a different genre (e.g. mathematical reasoning), leading to suboptimal alignment when
+one fixed RM is used universally; (2) high costs: using a powerful general-purpose LLM (e.g. GPT-
+5) as the RM can provide high-quality feedback, but the cost of querying such a model at scale is
+prohibitive (Zheng et al., 2023). In practice, this makes large RMs impractical for extensive RLHF
+training, and (3) risk of overoptimization: relying on a single RM amplifies the risk of overfitting
+to that RM’s idiosyncratic biases or noise, which can lead the policy to exploit the RM’s flaws (i.e.,
+reward hacking) rather than truly align with human intent (Coste et al., 2023; Zhang et al., 2024).
+Collectively, these issues undermine the robustness and scalability of single-RM alignment.
+To overcome these challenges, recent studies have started to leverage an ensemble of reward mod-
+els, combining the strengths of multiple RMs. Prior work in (Coste et al., 2023; Zhang et al., 2024)
+    1
+        Code is available at https://github.com/XinleWu/BayesianRouter.
+
+
+                                                        1
+Published as a conference paper at ICLR 2026
+
+
+
+
+explored multi-RM approaches, but naively using multiple RMs in parallel for every query is ex-
+tremely costly and can introduce conflicting or noisy signals when the models disagree. Among
+ensemble strategies, routing methods are particularly interesting: instead of aggregating all models’
+outputs, a router dynamically selects the most suitable RM for each input, preserving the benefits of
+model diversity while minimizing overhead. In this spirit, LAS E R (Nguyen et al., 2024) is, to our
+knowledge, the first method to apply instance-level RM routing in RLHF. LAS E R frames reward
+model selection as a contextual multi-armed bandit problem. During DPO-based RLHF training,
+for each batch of prompts, a bandit (LinUCB) chooses a single RM from a candidate pool to label
+the policy’s responses; the policy is then updated on this preference-labeled data, and the router
+is updated based on the policy’s resulting reward signal. By selecting one RM at a time, LAS E R
+avoids the overhead of running all RMs and adapts the choice of RM as training progresses.
+While LAS E R showed the promise of adaptive RM selection, important limitations remain: (1)
+coarse-grained routing: LAS E R selects one RM per batch of prompts, whereas prompts within the
+same batch may favor different RMs. This batch-level routing often makes suboptimal choices for
+many individual queries; (2) limited exploration: using LinUCB (which relies on point estimates and
+optimism), the router can prematurely lock onto a suboptimal RM and insufficiently explore others.
+In other words, LAS E R’s bandit may over-exploit one arm without adequately probing alternatives
+that could be better for certain query types, and (3) inefficient cold-start: at the start of training,
+LAS E R assumes all RMs are equally good and must gather many interactions to identify each RM’s
+unique strengths. This slow start results in suboptimal RMs being used in early training, which
+reduces sample efficiency and makes the outcome sensitive to initial conditions.
+To address these issues, we propose BayesianRouter, a hybrid RM routing framework that inte-
+grates a learned model of RM strengths, paired with an online Bayesian selection strategy to accel-
+erate routing at a small compute overhead. Specifically, BayesianRouter consists of (1) an offline
+router with a language model-based encoder that is trained on existing preference datasets to predict
+which RMs will perform better for a given query. We use a multi-task objective: a Bradley–Terry
+ranking head scores each candidate RM, and a classification head predicts whether each RM would
+choose the better answer in a given pair. This offline router captures each RM’s specialization in
+a shared embedding space, providing a rich prior for selection; (2) online Bayesian router: during
+RLHF fine-tuning, BayesianRouter employs a Bayesian Thompson sampling for instance-level
+RM selection. The router treats the query embedding as context and maintains a Gaussian posterior
+for each RM’s reward model. For each query, it samples a reward estimate for each RM from its
+posterior and selects the RM with the highest sample, then uses that RM’s feedback to train the
+policy and update the posterior. By sampling from an uncertainty-aware model, instead of relying
+on a single deterministic estimate, the router naturally balances exploration and exploitation and can
+more robustly discover which RM is optimal for each query type. We initialize the online router
+using the prior knowledge from the offline router to inherit the knowledge on each RM’s strengths,
+as well as to bootstrap the cold-start. As training proceeds, the router updates this knowledge and
+adapts to the evolving policy distribution while retaining the offline insights.
+We evaluate BayesianRouter on both instruction-following benchmarks (including AlpacaEval-2
+and MT-Bench) and academic benchmarks (including GSM8K and MMLU). The results demon-
+strate that BayesianRouter significantly outperforms strong baselines, such as the single best RM,
+RM ensemble methods, and LAS E R.
+
+
+2   R ELATED W ORK
+
+LM-based Reward Model. Language model-based reward models (RMs) act as proxies for hu-
+man preferences and play a central role in RLHF and RLAIF (Kaufmann et al., 2024; Wang et al.,
+2024b). They are commonly categorized into three families: classifier RMs (Liu et al., 2025), gen-
+erative RMs (Yu et al., 2025a), and LLM-as-a-judge (LAJ) (Hurst et al., 2024). In early RLHF
+pipelines, RMs typically provided a scalar reward for each (prompt, response), which was then op-
+timized with policy-gradient methods such as PPO (Kaufmann et al., 2024). More recent RLAIF
+approaches often use RMs to conduct pairwise comparisons between responses and apply objectives
+such as DPO to encourage the policy to prefer the better response (Guo et al., 2024). Research on
+RMs primarily focuses on improving the reliability of reward signals. For example, (Wang et al.,
+2024a) filter unreliable preference data by comparing rankings across different training iterations;
+
+
+                                                  2
+Published as a conference paper at ICLR 2026
+
+
+
+
+(Yu et al., 2024) adopt a divide-and-conquer strategy that decomposes response evaluation into sim-
+pler claim-level judgments; and (Liu et al., 2025) build a large-scale dataset of 40M preference pairs
+via human–AI collaboration, enabling smaller RMs to outperform much larger models. Orthogo-
+nally, RM ensembling (e.g., averaging, lower-confidence bound, or uncertainty-weighted schemes)
+has been shown to improve robustness and mitigate overoptimization risks (Coste et al., 2023; Zhang
+et al., 2024). In addition, benchmarks such as RewardBench, RM-Bench, and RewardBench 2 pro-
+vide systematic evaluations of different RMs across domains, offering practical guidance for model
+selection (Lambert et al., 2024; Malik et al., 2025; Liu et al., 2024b).
+
+Routing LLM Queries. Research on routing LLM queries has so far mainly focused on LLM
+inference, where the aim is to assign each query to the most suitable model before decoding in order
+to balance accuracy and efficiency. For instance, Lu et al. (2023) train a router using reward-model-
+based scores of candidate responses as supervision; Ding et al. (2024) adaptively switch between
+cloud and edge models depending on query difficulty; Ong et al. (2024) propose ROUTE LLM,
+which employs classifiers (e.g., matrix factorization, causal LLM classifier) to decide whether a
+query should be routed to a strong or weak model; Shadid et al. (2025) analyzes LLM performance
+on benchmark tasks, clusters user queries by similarity, and dynamically routes each query to the
+best-performing LLM for its cluster, achieving higher accuracy at lower cost compared to trained
+routers; and Frick et al. (2025) introduce P2L, which uses Bradley–Terry modeling and sparse
+pairwise preference data to train routers that scale to hundreds of candidate LLMs. While these
+methods are designed for inference scenarios, to the best of our knowledge, there has not been work
+on leveraging offline preference data to pretrain a router specifically for reward models, which differ
+from inference routers in terms of input features and label construction. Moreover, a purely offline
+router is prone to out-of-distribution (OOD) issues, and may generalize poorly when deployed on
+unseen data distributions.
+
+Multi-Armed Bandits (MABs). MABs offer a classical framework for sequential decision-
+making under uncertainty, balancing exploration and exploitation by pulling one arm per round and
+observing stochastic feedback (Zhou, 2015; Bouneffouf & Rish, 2019). This formulation naturally
+fits routing, where each query is assigned to one model with only partial feedback available. Among
+contextual bandit algorithms, LinUCB (Li et al., 2010) and Bayesian linear Thompson sampling
+(Agrawal & Goyal, 2013) are two widely used approaches: the former uses optimism via confidence
+bounds, while the latter samples from a posterior to enable uncertainty-aware exploration. Beyond
+these, variants like KL-UCB (Garivier & Cappé, 2011), OFUL (Abbasi-Yadkori et al., 2011), or
+logistic/GLM bandits (Filippi et al., 2010) can also be applied depending on feedback type and
+distributional assumptions.
+MAB algorithms have recently been applied to LLM inference routing. For example, (Li, 2025) for-
+mulates model selection as a contextual bandit problem, training preference-conditioned dynamic
+routing policies on offline data and leveraging model identity embeddings to generalize across ar-
+chitectures, thereby enabling adaptive selection of high-performance, low-cost LLMs at inference
+time. In the reward modeling setting, the only existing MAB-based router is LAS E R (Nguyen et al.,
+2024), which leverages LinUCB to select one reward model per input batch during RLAIF train-
+ing. In contrast, our BayesianRouter replaces point-estimate exploration with Bayesian posterior
+sampling, and further integrates offline-learned priors to address both exploration inefficiency and
+cold-start limitations.
+
+
+3   M ETHODS
+
+In this section, we introduce BayesianRouter, a reward model (RM) routing framework designed
+for adaptive RM selection within preference-based alignment pipelines. BayesianRouter is de-
+signed for the DPO family, while it could in principle also benefit reinforcement learning–based
+methods such as PPO that rely on scalar reward signals, although evaluating its performance in that
+setting is beyond the scope of this work. Concretely, for each input preference pair—consisting of a
+prompt and two candidate responses from the policy model—BayesianRouter selects the most ap-
+propriate RM from a candidate pool to evaluate the pair. The resulting preference signal is then used
+to train the policy model via online DPO. An overview of BayesianRouter is shown in Figure 1.
+
+
+                                                  3
+Published as a conference paper at ICLR 2026
+
+
+
+
+                              Figure 1: Overview of BayesianRouter.
+
+
+We structure this section as follows. Section 3.1 briefly reviews the standard online DPO algo-
+rithm, formally defines the RM selection problem, and provides an overview of BayesianRouter.
+Section 3.2 introduces the offline RM router, which leverages preference datasets and a multi-task
+objective to model RM strengths, i.e., identifying which candidate RM is most reliable for a given
+preference pair. Section 3.3 presents the Bayesian Thompson sampling–based online router, which
+adaptively selects RMs during online DPO training and updates its posterior distribution with policy
+feedback. Finally, Section 3.4 describes how we integrate the offline-learned RM strengths with the
+online router to alleviate the cold-start problem.
+
+3.1   P ROBLEM F ORMULATION AND M ETHOD OVERVIEW
+
+Online DPO Training Pipeline. We follow the standard online Direct Preference Optimization
+(DPO) (Guo et al., 2024; Dong et al., 2024) setup to iteratively align the policy model π. Let
+πt denote the model at training step t, initialized from a pretrained policy π0 . At each step, the
+model receives a mini-batch of prompts {xi }B     i=1 , and for each xi we sample k candidate responses
+yi = {yi1 , . . . , yik } ∼ πm (·|xi ). A reward model R evaluates these candidates to construct prefer-
+ence pairs: for classifier RMs, R(xi , yij ) outputs a scalar score and we form a pair (xi , yiw , yil ) if
+                                                                                                         ′
+R(xi , yiw ) > R(xi , yil ); for generative RMs, the model directly compares two responses (yij , yij )
+and indicates which is preferred, yielding a preference pair of the same form. Collecting over the
+batch gives a preference dataset Dpref = {(xi , yiw , yil )}Bi=1 .
+
+The policy πt is then updated on Dpref using the DPO loss (Rafailov et al., 2023), which encourages
+the policy to increase the likelihood ratio between the preferred and dispreferred responses relative
+to a frozen reference model πref :
+                                                         πt (y w | x)           πt (y l | x)
+                                                                                             
+                        1          X
+         LDPO = −                           log σ β log                − β log                  , (1)
+                    |Dpref |     w l
+                                                        πref (y w | x)         πref (y l | x)
+                             (x,y ,y )∈Dpref
+
+
+where πref is typically set to π0 , σ(·) is the logistic function and β is a scalar hyperparameter.
+Without loss of generality, we use the standard DPO objective, though other variants such as IPO
+(Azar et al., 2024) and SLiC (Zhao et al., 2023) are also compatible with our framework.
+
+Problem Formulation. In the online DPO pipeline, the choice of the reward model (RM) di-
+rectly shapes the mini-batch preference dataset Dpref constructed at each step, thereby deter-
+mining the quality of the alignment signal. Empirically, no single RM uniformly dominates
+across preference types or domains. For example, RewardBench 2 (Malik et al., 2025) re-
+ports that Skywork-Reward-V2-Llama-3.1-8B ranks first overall but, while outperform-
+ing the second-place LMUnit-qwen2.5-72b on Math and Safety preferences, it underperforms
+LMUnit-qwen2.5-72b on Factuality. To exploit complementary strengths across N RMs, one
+option is to ensemble them (e.g., majority voting over multiple RMs). However, this increases the
+per-step inference cost from O(1) to O(N ) RM calls, resulting in a significant increase in training
+
+
+                                                    4
+Published as a conference paper at ICLR 2026
+
+
+
+                                                                                                    ′
+cost. In contrast, we adopt per-query routing: for each unlabeled preference pair (xi , yij , yij ), we
+select a single most suitable RM to annotate it. This preserves O(1) RM calls per step while still
+leveraging complementary strengths of N RMs.
+Formally, let M = {Rn }N n=1 be the candidate RM pool. We aim to learn a router Router(· ; W )
+                                                                            ′
+(parameterized by W ) that maps an unlabeled preference pair (xi , yij , yij ) to an RM:
+                                                         ′
+                               Rn = Router xi , yij , yij ; W .
+                                                               
+
+The selected RM yields more reliable preference annotations for the current batch, thereby providing
+higher-quality supervision for policy updates.
+Routers can be offline (trained on a static preference corpus and kept fixed during online DPO) or
+online (updated during training using feedback from the current policy). Offline routers can leverage
+existing labeled offline preference datasets but may fail under distribution shift between the offline
+training data and the online data; online routers can adapt to the target distribution but suffer from
+cold-start and exploration challenges early in training.
+
+Our Approach: BayesianRouter (Overview). We propose BayesianRouter, a hybrid RM rout-
+ing framework that couples an offline, RM strengths learning stage with an online, distribution adap-
+tation stage (see Fig. 1). The offline-learned RM strengths provide a high-quality initialization that
+mitigates the cold-start issue and improves early batch-level routing accuracy; the Bayesian online
+updates adapt the router to the evolving data distribution and policy. The following subsections
+detail the offline router, the online RM router, and the integration strategy.
+
+3.2   O FFLINE RM ROUTER
+
+Given a candidate set of reward models M = {Rn }N          n=1 and an offline preference dataset D̂pref =
+{(xi , yi , yi′ , ℓi )}m                                                ′
+                       i=1 where ℓi ∈ {0, 1} indicates which of yi and yi is the preferred response to the
+prompt xi , the goal of the offline router is to predict, for a new unlabeled preference pair (x, y, y ′ ),
+which RM is most likely to correctly identify the preferred response. Figure 1 (left) illustrates the
+architecture of our offline RM router.
+
+Collecting RM Behavior Data. To construct the training signals for the offline router, we first
+collect the behavior of each candidate RM on D̂pref . Concretely, we run each RM Rn on each pref-
+                                                                          (n)
+erence pair qi = (xi , yi , yi′ ) ∈ D̂pref and record a binary indicator δi ∈ {0, 1} that equals 1 if Rn
+                                                                              (n)
+agrees with the ground truth ℓi and 0 otherwise, yielding Dbeh = {(qi , δi ) | i = 1, . . . , m; n =
+1, . . . , N }.
+
+Preference-pair feature construction. Unlike LAS E R in (Nguyen et al., 2024) that uses only the
+prompt as router input, we encode the whole preference pair (xi , yi , yi′ ) because an RM’s decision
+depends not only on the prompt but also on the semantic content of the two responses and their
+contrast. Concretely, we first concatenate the prompt with each response and encode them with a
+shared pretrained encoder Enc(·; We ):
+                         ei = Enc(xi ∥ yi ; We ),       e′i = Enc(xi ∥ yi′ ; We ).
+We then aggregate these encodings into a single preference-pair representation by
+                          hi = MLP [ei + e′i ; |ei − e′i |] ; Wl ∈ Rd ,
+                                                                
+
+where [·; ·] denotes vector concatenation, |·| is the element-wise absolute difference, and MLP(·; Wl )
+is a single-layer MLP used to fuse features.
+Based on the preference feature hi , we adopt a multi-task objective with two prediction heads. The
+primary head is a Bradley–Terry (BT) head, which assigns an ability score to each RM such that,
+given a preference pair, the RM with the highest score is selected as the most reliable one. The
+auxiliary head is a classification (CLS) head, which independently predicts for each RM whether it
+can correctly identify the preferred response in the given pair.
+BT head (primary). We define a disagreement sample as a preference pair on which two RMs
+produce different behavior labels. Such samples capture the relative competence of the two RMs
+
+
+                                                    5
+Published as a conference paper at ICLR 2026
+
+
+
+
+and are therefore suitable for training a Bradley–Terry (BT) head to predict per-RM ability scores.
+                                                                                    (n)         (n′ )
+Formally, from Dbeh we extract the disagreement set Dbt = {(qi , n, n′ ) | δi = 1, δi                 = 0}.
+We learn an embedding matrix Ebt ∈ RN ×d whose n-th row represents RM Rn . We compute BT
+                                                            ′
+scores as inner products, i.e., sni = ⟨hi , Ebt [n]⟩ and sni = ⟨hi , Ebt [n′ ]⟩, and optimize the pairwise
+logistic (Bradley–Terry) loss
+                                          1        X                        ′
+                             Lbt = −                         log σ sni − sni .                          (2)
+                                       |Dbt |        ′
+                                              (qi ,n,n )∈Dbt
+
+This objective encourages the BT head to assign higher ability scores to RMs that win paired com-
+parisons.
+CLS head (auxiliary). Since the BT head relies only on disagreement samples, it ignores the
+information contained in the remaining portion of Dbeh . To better exploit the full dataset, we in-
+troduce an auxiliary per-RM binary classification head. Given a preference pair qi , the CLS head
+                                                (n)
+predicts each candidate RM’s behavior label δi from the preference embedding hi . Concretely, we
+learn an embedding matrix Ecls ∈ RN ×d whose n-th row corresponds to RM Rn , compute logits
+zin = ⟨hi , Ecls [n]⟩ for every RM, and optimize the binary cross-entropy over Dbeh :
+                           1      X      h
+                                            (n)                   (n)                 i
+            Lcls = −                      δi log σ(zin ) + (1 − δi ) log 1 − σ(zin ) .          (3)
+                        |Dbeh |
+                               (qi ,n)∈Dbeh
+
+By independently predicting each RM’s behavior, the CLS head provides complementary supervi-
+sion to the pairwise BT objective, benefiting the BT ranking through shared representation learning.
+
+Training objective and offline output. The router is trained by minimizing the combined loss
+Ltotal = Lbt + λ Lcls , where λ controls the contribution of the auxiliary classification loss. We
+optimize the encoder parameters We , the MLP parameters Wl , and the head parameters Ebt and
+Ecls . After training, we retain the BT embedding matrix Ebt as the prior for online routing, since it
+captures relative RM strengths conditioned on preference pairs.
+
+3.3   BAYESIAN O NLINE RM ROUTER
+
+Unlike the offline router, which is trained on static preference data and remains fixed during online
+training, the online router is continuously updated after each routing decision using observed re-
+wards. By adapting to the evolving policy-induced distribution of preference pairs Dpref , the online
+router mitigates distributional mismatch that would otherwise limit the effectiveness of the offline
+router.
+In online routing, only the supervision from the selected RM is observed for each preference pair,
+making the problem a natural instance of contextual partial-feedback learning (i.e., a contextual
+bandit). Here, candidate RMs correspond to arms, the preference pair serves as the context, and the
+problem can be addressed with contextual multi-armed bandit (MAB) algorithms. (Nguyen et al.,
+2024) used LinUCB for online routing. However, we empirically find LinUCB often collapses to
+a single fixed arm after a few batches, likely because per-arm observations are scarce and contexts
+are similar, which leads to premature exploitation. To encourage continued exploration and to more
+reliably discover which contexts each RM specializes in, we adopt Bayesian Thompson sampling.
+
+Bayesian Thompson Sampling We model the expected utility of selecting RM Rn on a
+preference-pair embedding hi with Bayesian linear regression:
+                                r = wn⊤ hi + ε,            ε ∼ N (0, σ 2 ),                            (4)
+                d                                          2
+where wn ∈ R is a latent weight vector for Rn and σ denotes observation noise. Each RM main-
+tains a Gaussian posterior wn ∼ N (µn , Σn ) that is updated only when Rn is selected. At training
+step t, given a batch of preference-pair embeddings {hi }i∈Bt , we perform Thompson sampling by
+drawing a sample from each RM’s posterior for each preference pair:
+
+                        wn(t) ∼ N (µ(t)  (t)
+                                    n , Σn ),            n∗i = arg max h⊤  (t)
+                                                                        i wn ,
+                                                                     n
+
+
+                                                     6
+Published as a conference paper at ICLR 2026
+
+
+
+
+                                                 (t)
+and the router selects Rn∗i for that pair. Let In = {i ∈ Bt | n∗i = n} denote the indices in the
+batch assigned to RM Rn ; after observing scalar rewards {r̂ni }i∈I (t) for these pairs, we update Rn ’s
+                                                                     n
+posterior using the accumulated sufficient statistics of its assigned pairs:
+                                                 1 X             −1
+                        Σ(t+1)
+                           n     = Σ(t) n
+                                           −1
+                                              + 2           hi h⊤
+                                                                i     ,                             (5)
+                                                 σ      (t)
+                                                       i∈In
+                                            
+                                               −1 (t)         1 X i 
+                          µ(t+1)
+                           n     = Σ(t+1)
+                                    n     Σ(t)
+                                           n     µn +                r̂n hi .                        (6)
+                                                              σ2 (t)
+                                                                 i∈In
+                                                   (0)             (0)    2             2
+When no offline prior is injected we initialize µn = 0 and Σn = σw          Id , where σw is the prior
+                i
+variance. Let LDPO be the DPO loss on preference pair i labeled by Rn . We follow LAS E R to take
+the raw reward to be r̃ni = − LiDPO . We use quantile normalization to normalize the raw reward
+and obtain the final variance-reduced and numerically stable reward r̂ni (details in Appendix B).
+While r̃ni = −LiDPO might implicitly favor ”easy” RMs that align with the current (potentially
+flawed) policy, this choice is justified by two factors:(i) Robustness to Overfitting: A ”flattering” but
+low-quality RM (e.g., favoring short sequences) can only maintain low loss within a narrow distri-
+bution. As Thompson Sampling (TS) explores diverse RMs, the resulting policy updates quickly
+shift the distribution away from such biased regions, causing the flawed RM’s loss to spike.(ii)
+Consistency as a Proxy for Quality: High-quality RMs typically exhibit self-consistent preference
+gradients, leading to training trajectories with lower variance and lower overall loss magnitude com-
+pared to inconsistent, low-quality RMs Shen et al. (2023); Liu et al. (2024a). By treating rewards as
+a time-series input to the Bayesian posterior, the router learns to favor RMs that provide long-term
+stable guidance rather than short-term agreement. Our empirical results further validate that this
+signal effectively identifies specialized RMs without collapsing to sub-optimal ”yes-man” models.
+
+3.4   O FFLINE –O NLINE I NTEGRATION
+
+While the offline and online routers can each perform RM routing as defined in Section 3.1, both
+have intrinsic limitations. The offline router leverages abundant supervised preference data but may
+degrade under distribution shift, whereas the online router adapts to the policy-induced distribution
+but suffers from cold start and exploration challenges. Thus, neither component alone is sufficient
+in practice.
+To address this, our key idea is to combine their complementary advantages. A naı̈ve approach is
+to directly combine their outputs (e.g., by weighted averaging of their predicted scores), but such
+schemes require a manually tuned global weight whose optimal value is unclear and may vary across
+training stages. Instead, we propose a more principled strategy based on prior injection. The insight
+is that both the offline BT head and the online Bayesian router can be viewed as linear models
+over the preference-pair embedding: the offline BT head computes ⟨h, Ebt [n]⟩ where Ebt [n] is
+the learned RM embedding, while the online router computes ⟨h, wn ⟩ where wn is the latent RM
+weight vector. The semantic roles of Ebt [n] and wn are thus closely aligned, differing mainly in the
+source of supervision (offline labels versus online rewards). This motivates initializing the online
+Bayesian router with the offline BT embeddings.
+Concretely, we set the prior mean of each RM’s weight vector in Eq. 4 to the corresponding offline
+                    (0)
+embedding, i.e., µn = Ebt [n]. This initialization provides the online router with prior knowledge
+about which types of preference pairs each RM is likely to handle well. As a result, it mitigates the
+cold-start problem and improves early routing accuracy. During training, the posterior distributions
+are iteratively refined using online rewards, allowing the router to adapt to the evolving policy-
+induced distribution while retaining the offline prior as a regularizer. In this way, BayesianRouter
+combines the robustness of offline training with the adaptivity of online learning.
+
+4     E XPERIMENTS AND R ESULTS
+We evaluate BayesianRouter on instruction-following and reasoning benchmarks with the goal
+of demonstrating that it enables more effective reward model selection and consequently leads to
+superior alignment performance.
+
+
+                                                   7
+Published as a conference paper at ICLR 2026
+
+
+
+
+4.1   E XPERIMENTAL S ETUP
+
+Models. We initialize the policy model with LLaMA3-SFT-v2 released by (Dong et al., 2024).
+The reward model (RM) pool consists of N = 4 small yet high-performing models from the Re-
+wardBench 2 leaderboard (Malik et al., 2025): Mistral-RM-for-RAFT-GSHF-v0 (RM 0),
+GRM-Llama3.2-3B-rewardmodel-ft (RM 1), GRM-gemma2-2B-rewardmodel-ft
+(RM 2), and Skywork-Reward-V2-Qwen3-0.6B (RM 3). For the offline router encoder, we
+use SmolLM2-135M-Instruct (see Appendix A.1).
+
+Datasets and Metrics.
+• Offline preference datasets. To train the offline router, we combine two human-annotated pref-
+  erence datasets: HelpSteer3 (Wang et al., 2025) and RM-Bench (Liu et al., 2024b), resulting in
+  50,402 preference pairs.
+• Instruction-following benchmarks.           Following (Dong et al., 2024), we evaluate the
+  instruction-following ability on AlpacaEval-2 (Dubois et al., 2023), MT-Bench (Zheng
+  et al., 2023), and Chat-Arena-Hard (Li et al., 2024). Policy models are trained on the
+  iterative-prompt-v1-iter3-20K prompt set released by (Dong et al., 2024), and eval-
+  uated with length controlled AlpacaEval (Dubois et al., 2024), where model responses are com-
+  pared against the SFT baseline using GPT-4 as the judge.
+• Reasoning benchmarks. Following (Nguyen et al., 2024), we evaluate performance under differ-
+  ent training distributions by training and testing on two reasoning benchmarks: GSM8K (Cobbe
+  et al., 2021) and MMLU (Hendrycks et al., 2020). We report accuracy for both datasets, with
+  detailed statistics provided in Appendix A.1.
+
+Baselines.   We compare BayesianRouter against the following methods:
+• Single RM: Use a fixed RM from the pool for preference annotations.
+• Majority vote: Annotate each preference pair with all RMs and select the final label via majority
+  voting.
+• Random router: Randomly select an RM to annotate a preference pair.
+• Uncertainty-Weighted Optimization (UWO): This ensemble method (Coste et al., 2023) down-
+  weights preference pairs that exhibit high disagreement among the RMs. We implement this by
+  setting the weight for each pair to its consensus rate (i.e., the fraction of RMs that agree with the
+  majority preference).
+• LASER: The first RM routing method that employs LinUCB to select a single RM per batch
+  (Nguyen et al., 2024).
+• w/o offline: Variant of BayesianRouter without offline priors.
+• w/o online: Variant of BayesianRouter that uses only the offline router for RM selection.
+
+4.2   M AIN R ESULTS
+
+Table 1 summarizes the performance of BayesianRouter against baseline methods. We have the
+following key observations: (1) BayesianRouter consistently outperforms all baselines on both
+instruction-following and reasoning benchmarks. Given that these results are achieved after train-
+ing on datasets with distinct distributions, it demonstrates the adaptability of BayesianRouter to
+diverse types of training data. (2) BayesianRouter surpasses the performance of single RM base-
+lines, showing that dynamically routing among multiple candidate RMs effectively aggregates their
+complementary strengths. In practice, users often choose a single RM based on leaderboard per-
+formance, which may not accurately reflect true RM performance across tasks or domains. Our
+results show that BayesianRouter eliminates this reliance and even surpasses the best-performing
+RM identified in hindsight. (3) BayesianRouter significantly outperforms the Majority Voting and
+UWO ensemble methods. While ensemble methods can also leverage complementary RMs, they
+require O(N ) RM calls per query, making them impractical for scaling to large RM pools. In con-
+trast, BayesianRouter achieves higher performance with only O(1) RM calls. BayesianRouter
+also substantially outperforms the routing baselines Random Routing and LAS E R, further validat-
+ing the effectiveness of our routing strategy. (4) BayesianRouter outperforms its two ablations,
+w/o offline and w/o online, highlighting the complementary contributions of the offline-learned prior
+and the online Bayesian feedback loop. Removing either component leads to a notable degradation.
+
+
+                                                  8
+Published as a conference paper at ICLR 2026
+
+
+
+
+Notably, the w/o offline variant exceeds LAS E R, showing that our per-query Bayesian Thompson
+sampling router is superior to LAS E R’s per-batch LinUCB approach.
+
+
+               Table 1: Main results on instruction-following and reasoning benchmarks.
+                                       Instruction-Following                     Reasoning
+      Method              AlpacaEval-2     MT-Bench      Chat-Arena-Hard       GSM8K       MMLU
+      SFT                     50.00          50.00             50.00            67.63       54.29
+      RM0                     56.02          52.50             59.60            72.78       56.00
+      RM1                     61.86          56.25             64.80            74.22       57.03
+      RM2                     59.50          53.75             63.20            73.92       56.57
+      RM3                     60.37          52.50             62.00            74.53       56.28
+      Majority vote           60.75          53.75             63.40            74.22       56.71
+      Random router           58.39          52.50             61.20            73.46       56.07
+      UWO                     61.74          56.25             63.60            74.30       56.43
+      LASER                   60.50          51.25             62.40            74.00       56.35
+      w/o offline             60.99          53.75             63.20            74.37       56.64
+      w/o online              61.61          57.50             64.40            74.68       56.85
+      BayesianRouter          63.23          58.75             66.20            75.66       57.39
+
+
+4.3    A DDITIONAL ANALYSIS OF BayesianRouter
+
+Effectiveness of Offline Router We evaluate the offline router’s ability to route preference pairs
+to the most suitable RM and analyze the factors affecting its performance. For in-distribution (ID)
+evaluation, we use the official test split of the HelpSteer3 dataset; for out-of-distribution (OOD)
+evaluation, we adopt RewardBench 2. Each prompt in RewardBench 2 is paired with one preferred
+response and three rejected responses, which we flatten into chosen–rejected pairs, discarding all
+ties. We further filter both test sets to retain only those samples where at least one candidate RM cor-
+rectly identifies the preferred response, yielding 1,723 ID and 2,939 OOD preference pairs. Under
+this setup, an oracle router achieves 100% accuracy. To better understand the router’s behavior, we
+introduce two additional baselines: w/o CLS, which removes the classification head from the offline
+router, and 0.5B encoder, which replaces the SmolLM2-135M-Instruct encoder with Qwen2.5-0.5B-
+Instruct. Table 2 reports the results. Overall, our offline router substantially outperforms single-RM,
+majority voting, and random routing baselines in the ID setting, and also delivers consistent gains
+in the OOD setting, though with smaller margins. Nevertheless, there remains a considerable gap
+from the oracle, highlighting both the effectiveness and the generalization challenges of offline rout-
+ing—likely due to limitations in the scale, diversity, or domain coverage of available preference data.
+This underscores the importance of BayesianRouter’s online adaptation. In addition, removing the
+classification head leads to performance degradation, validating the benefit of multi-objective train-
+ing. Finally, while larger encoders yield modest improvements in routing accuracy, we adopt the
+135M encoder as a practical balance between performance and efficiency.
+
+Controlled simulation of online DPO. In practical online DPO training, it is infeasible to obtain
+real-time human annotations for policy-generated responses, making it impossible to directly verify
+whether the RM selected by a router produces correct preference labels. To address this, we design a
+controlled simulation using the 2,939 human-labeled preference pairs from RewardBench 2. Instead
+of sampling responses from a live policy, we replay existing pairs and let the router select an RM
+to label them. Since ground-truth labels are available, we can measure how often the chosen RM
+provides the correct annotation, thereby directly assessing the quality of routing. Table 3 compares
+BayesianRouter with its ablations. The results show that BayesianRouter achieves the highest
+annotation accuracy during training and attains the best downstream alignment performance. This
+confirms that BayesianRouter’s gains originate from more accurate RM routing rather than other
+confounding factors. The overall decrease in performance compared to the main results is attributed
+to the limited number of training samples. See more results in Appendix C.
+
+Ablation on integration strategy. To validate the effectiveness of combining the offline and on-
+line routers, we compare BayesianRouter with a simple variant, Weighted-score. For each prefer-
+
+
+                                                   9
+Published as a conference paper at ICLR 2026
+
+
+
+
+              Table 2: In-distribution and Out-of-distribution performance comparison.
+    Method             In-distribution                     Out-of-distribution
+                            Score         Factuality   Pre IF Math Safety             Focus     All
+    RM 0                      77.54           75.44     59.22     78.76     85.10     75.61    77.61
+    RM 1                      81.43           84.33     68.44     81.18     96.00     95.73    87.65
+    RM 2                      79.51           80.04     67.38     79.03     97.60     90.85    85.88
+    RM 3                      81.14           77.64     70.92     90.05     92.70     92.38    85.34
+    Majority                  83.17           77.74     67.73     85.75     96.50     90.85    85.64
+    Random                    79.80           79.94     65.96     82.80     92.80     87.80    84.48
+    Ours (w/o CLS)            89.73           84.12     66.67     85.22     96.20     92.99    87.34
+    Ours (135M)               90.31           84.85     65.60     86.83     96.20     92.07    87.92
+    Ours (0.5B)               90.77           85.16     66.31     87.90     95.90     91.46    88.06
+
+
+                             Table 3: Controlled online DPO results.
+    Method        AlpacaEval-2 MT-Bench Chat-Arena-Hard GSM8K                       MMLU        Acc.
+    w/o offline       55.78           54.84            55.87              67.78      54.61     85.68
+    w/o online        56.72           56.41            57.71              68.39      54.82     87.92
+    Ours              57.63           56.76            58.15              68.76      54.93     88.23
+
+
+ence pair, Weighted-score computes two separate score vectors: s1 from the offline router’s Bradley–
+Terry head, representing each RM’s estimated competence, and s2 from the online router initialized
+with zero-mean priors, representing the RM’s current reward estimates. To address scale differences,
+each score vector is converted into a probability distribution via softmax. The two distributions are
+then combined using a fixed weight α as s = αs1 +(1−α)s2 , and the RM with the highest combined
+score is selected. We sweep α ∈ {0.25, 0.5, 0.75} and report the best-performing setting. Table 4
+presents the results. BayesianRouter consistently outperforms the weighted-score variant across all
+datasets. This demonstrates that initializing the online router with offline BT embeddings provides
+a principled and more effective mechanism to integrate offline knowledge with online adaptation,
+rather than relying on a simple linear weighting scheme.
+
+
+                         Table 4: Ablation studies on integration strategy.
+     Method             AlpacaEval-2 MT-Bench Chat-Arena-Hard GSM8K                          MMLU
+     Weighted-score           61.12           56.25            63.80              74.37      56.75
+     Ours                     63.23           58.75            66.20              75.66      57.39
+
+
+5    C ONCLUSION
+In this work, we addressed the problem of adaptive reward model (RM) selection in iterative DPO
+training pipelines. We proposed BayesianRouter, a hybrid framework that first learns a multi-task
+offline router to capture RM strengths from preference data, and then injects this prior knowledge
+into a Bayesian Thompson sampling–based online router. The resulting framework adaptively se-
+lects a single RM for each preference pair while continually refining its routing policy through on-
+line rewards. Extensive experiments show that BayesianRouter consistently surpasses single-RM
+methods, RM ensembles, and strong routing baselines, demonstrating its effectiveness. For future
+work, we plan to design routers that jointly optimize the trade-off between annotation accuracy and
+RM inference cost to further improve RLHF alignment under constrained computational budgets.
+
+ACKNOWLEDGMENTS
+This work was supported by the Ministry of Education of Singapore (MOE) Tier 1 grant A8003480.
+
+
+                                                  10
+Published as a conference paper at ICLR 2026
+
+
+
+
+R EFERENCES
+Yasin Abbasi-Yadkori, Dávid Pál, and Csaba Szepesvári. Improved algorithms for linear stochastic
+  bandits. Advances in neural information processing systems, 24, 2011.
+Josh Achiam, Steven Adler, Sandhini Agarwal, Lama Ahmad, Ilge Akkaya, Florencia Leoni Ale-
+  man, Diogo Almeida, Janko Altenschmidt, Sam Altman, Shyamal Anadkat, et al. Gpt-4 technical
+  report. arXiv preprint arXiv:2303.08774, 2023.
+Shipra Agrawal and Navin Goyal. Thompson sampling for contextual bandits with linear payoffs.
+  In International conference on machine learning, pp. 127–135. PMLR, 2013.
+Mohammad Gheshlaghi Azar, Zhaohan Daniel Guo, Bilal Piot, Remi Munos, Mark Rowland,
+ Michal Valko, and Daniele Calandriello. A general theoretical paradigm to understand learn-
+ ing from human preferences. In International Conference on Artificial Intelligence and Statistics,
+ pp. 4447–4455. PMLR, 2024.
+Djallel Bouneffouf and Irina Rish. A survey on practical applications of multi-armed and contextual
+  bandits. arXiv preprint arXiv:1904.10040, 2019.
+Karl Cobbe, Vineet Kosaraju, Mohammad Bavarian, Mark Chen, Heewoo Jun, Lukasz Kaiser,
+  Matthias Plappert, Jerry Tworek, Jacob Hilton, Reiichiro Nakano, et al. Training verifiers to
+  solve math word problems. arXiv preprint arXiv:2110.14168, 2021.
+Thomas Coste, Usman Anwar, Robert Kirk, and David Krueger. Reward model ensembles help
+  mitigate overoptimization. arXiv preprint arXiv:2310.02743, 2023.
+Dujian Ding, Ankur Mallick, Chi Wang, Robert Sim, Subhabrata Mukherjee, Victor Ruhle, Laks VS
+  Lakshmanan, and Ahmed Hassan Awadallah. Hybrid llm: Cost-efficient and quality-aware query
+  routing. arXiv preprint arXiv:2404.14618, 2024.
+Hanze Dong, Wei Xiong, Bo Pang, Haoxiang Wang, Han Zhao, Yingbo Zhou, Nan Jiang, Doyen
+  Sahoo, Caiming Xiong, and Tong Zhang. Rlhf workflow: From reward modeling to online rlhf.
+  arXiv preprint arXiv:2405.07863, 2024.
+Yann Dubois, Chen Xuechen Li, Rohan Taori, Tianyi Zhang, Ishaan Gulrajani, Jimmy Ba, Carlos
+  Guestrin, Percy S Liang, and Tatsunori B Hashimoto. Alpacafarm: A simulation framework for
+  methods that learn from human feedback. Advances in Neural Information Processing Systems,
+  36:30039–30069, 2023.
+Yann Dubois, Balázs Galambosi, Percy Liang, and Tatsunori B Hashimoto. Length-controlled al-
+  pacaeval: A simple way to debias automatic evaluators. arXiv preprint arXiv:2404.04475, 2024.
+Sarah Filippi, Olivier Cappe, Aurélien Garivier, and Csaba Szepesvári. Parametric bandits: The
+  generalized linear case. Advances in neural information processing systems, 23, 2010.
+Evan Frick, Connor Chen, Joseph Tennyson, Tianle Li, Wei-Lin Chiang, Anastasios N Angelopou-
+  los, and Ion Stoica. Prompt-to-leaderboard. arXiv preprint arXiv:2502.14855, 2025.
+Aurélien Garivier and Olivier Cappé. The kl-ucb algorithm for bounded stochastic bandits and
+  beyond. In Proceedings of the 24th annual conference on learning theory, pp. 359–376. JMLR
+  Workshop and Conference Proceedings, 2011.
+Daya Guo, Dejian Yang, Haowei Zhang, Junxiao Song, Ruoyu Zhang, Runxin Xu, Qihao Zhu,
+  Shirong Ma, Peiyi Wang, Xiao Bi, et al. Deepseek-r1: Incentivizing reasoning capability in llms
+  via reinforcement learning. arXiv preprint arXiv:2501.12948, 2025.
+Shangmin Guo, Biao Zhang, Tianlin Liu, Tianqi Liu, Misha Khalman, Felipe Llinares, Alexandre
+  Rame, Thomas Mesnard, Yao Zhao, Bilal Piot, et al. Direct language model alignment from
+  online ai feedback. arXiv preprint arXiv:2402.04792, 2024.
+Dan Hendrycks, Collin Burns, Steven Basart, Andy Zou, Mantas Mazeika, Dawn Song, and
+  Jacob Steinhardt. Measuring massive multitask language understanding. arXiv preprint
+  arXiv:2009.03300, 2020.
+
+
+                                                11
+Published as a conference paper at ICLR 2026
+
+
+
+
+Aaron Hurst, Adam Lerer, Adam P Goucher, Adam Perelman, Aditya Ramesh, Aidan Clark, AJ Os-
+  trow, Akila Welihinda, Alan Hayes, Alec Radford, et al. Gpt-4o system card. arXiv preprint
+  arXiv:2410.21276, 2024.
+Timo Kaufmann, Paul Weng, Viktor Bengs, and Eyke Hüllermeier. A survey of reinforcement
+  learning from human feedback. 2024.
+Nathan Lambert, Valentina Pyatkin, Jacob Morrison, LJ Miranda, Bill Yuchen Lin, Khyathi Chandu,
+  Nouha Dziri, Sachin Kumar, Tom Zick, Yejin Choi, et al. Rewardbench: Evaluating reward
+  models for language modeling. arXiv preprint arXiv:2403.13787, 2024.
+Lihong Li, Wei Chu, John Langford, and Robert E Schapire. A contextual-bandit approach to
+  personalized news article recommendation. In Proceedings of the 19th international conference
+  on World wide web, pp. 661–670, 2010.
+Tianle Li, Wei-Lin Chiang, Evan Frick, Lisa Dunlap, Banghua Zhu, Joseph E Gonzalez, and Ion
+  Stoica. From live data to high-quality benchmarks: The arena-hard pipeline. Blog post.[Accessed
+  07-02-2025], 2024.
+Yang Li. Llm bandit: Cost-efficient llm generation via preference-conditioned dynamic routing.
+  arXiv preprint arXiv:2502.02743, 2025.
+Chris Yuhao Liu, Liang Zeng, Yuzhen Xiao, Jujie He, Jiacai Liu, Chaojie Wang, Rui Yan, Wei Shen,
+  Fuxiang Zhang, Jiacheng Xu, et al. Skywork-reward-v2: Scaling preference data curation via
+  human-ai synergy. arXiv preprint arXiv:2507.01352, 2025.
+Yan Liu, Xiaoyuan Yi, Xiaokang Chen, Jing Yao, Jingwei Yi, Daoguang Zan, Zheng Liu, Xing
+  Xie, and Tsung-Yi Ho. Elephant in the room: Unveiling the impact of reward model quality in
+  alignment. arXiv preprint arXiv:2409.19024, 2024a.
+Yantao Liu, Zijun Yao, Rui Min, Yixin Cao, Lei Hou, and Juanzi Li. Rm-bench: Benchmarking
+  reward models of language models with subtlety and style. arXiv preprint arXiv:2410.16184,
+  2024b.
+Keming Lu, Hongyi Yuan, Runji Lin, Junyang Lin, Zheng Yuan, Chang Zhou, and Jingren Zhou.
+  Routing to the expert: Efficient reward-guided ensemble of large language models. arXiv preprint
+  arXiv:2311.08692, 2023.
+Saumya Malik, Valentina Pyatkin, Sander Land, Jacob Morrison, Noah A Smith, Hannaneh Ha-
+  jishirzi, and Nathan Lambert. Rewardbench 2: Advancing reward model evaluation. arXiv
+  preprint arXiv:2506.01937, 2025.
+Duy Nguyen, Archiki Prasad, Elias Stengel-Eskin, and Mohit Bansal. Laser: Learning to adaptively
+  select reward models with multi-armed bandits. arXiv preprint arXiv:2410.01735, 2024.
+Isaac Ong, Amjad Almahairi, Vincent Wu, Wei-Lin Chiang, Tianhao Wu, Joseph E Gonzalez,
+   M Waleed Kadous, and Ion Stoica. Routellm: Learning to route llms with preference data. arXiv
+   preprint arXiv:2406.18665, 2024.
+Rafael Rafailov, Archit Sharma, Eric Mitchell, Christopher D Manning, Stefano Ermon, and Chelsea
+  Finn. Direct preference optimization: Your language model is secretly a reward model. In Thirty-
+  seventh Conference on Neural Information Processing Systems, 2023. URL https://arxiv.
+  org/abs/2305.18290.
+Ahmad Shadid, Rahul Kumar, and Mohit Mayank. Ori: O routing intelligence. arXiv preprint
+  arXiv:2502.10051, 2025.
+Lingfeng Shen, Sihao Chen, Linfeng Song, Lifeng Jin, Baolin Peng, Haitao Mi, Daniel Khashabi,
+  and Dong Yu. The trickle-down impact of reward (in-) consistency on rlhf. arXiv preprint
+  arXiv:2309.16155, 2023.
+Zhaoyang Wang, Weilei He, Zhiyuan Liang, Xuchao Zhang, Chetan Bansal, Ying Wei, Weitong
+  Zhang, and Huaxiu Yao. Cream: Consistency regularized self-rewarding language models. arXiv
+  preprint arXiv:2410.12735, 2024a.
+
+
+                                               12
+Published as a conference paper at ICLR 2026
+
+
+
+
+Zhichao Wang, Bin Bi, Shiva Kumar Pentyala, Kiran Ramnath, Sougata Chaudhuri, Shubham
+  Mehrotra, Xiang-Bo Mao, Sitaram Asur, et al. A comprehensive survey of llm alignment tech-
+  niques: Rlhf, rlaif, ppo, dpo and more. arXiv preprint arXiv:2407.16216, 2024b.
+
+Zhilin Wang, Jiaqi Zeng, Olivier Delalleau, Hoo-Chang Shin, Felipe Soares, Alexander Bukharin,
+  Ellie Evans, Yi Dong, and Oleksii Kuchaiev. Helpsteer3-preference: Open human-annotated
+  preference data across diverse tasks and languages. arXiv preprint arXiv:2505.11475, 2025.
+
+Jiachen Yu, Shaoning Sun, Xiaohui Hu, Jiaxu Yan, Kaidong Yu, and Xuelong Li. Improve llm-as-
+   a-judge ability as a general ability. arXiv preprint arXiv:2502.11689, 2025a.
+
+Qingchen Yu, Zifan Zheng, Shichao Song, Zhiyu li, Feiyu Xiong, Bo Tang, and Ding Chen. xfinder:
+  Large language models as automated evaluators for reliable evaluation. In The Thirteenth Interna-
+  tional Conference on Learning Representations, 2025b. URL https://openreview.net/
+  forum?id=7UqQJUKaLM.
+
+Tianyu Yu, Haoye Zhang, Yuan Yao, Yunkai Dang, Da Chen, Xiaoman Lu, Ganqu Cui, Taiwen He,
+  Zhiyuan Liu, Tat-Seng Chua, et al. Rlaif-v: Aligning mllms through open-source ai feedback for
+  super gpt-4v trustworthiness. arXiv e-prints, pp. arXiv–2405, 2024.
+
+Shun Zhang, Zhenfang Chen, Sunli Chen, Yikang Shen, Zhiqing Sun, and Chuang Gan. Improv-
+  ing reinforcement learning from human feedback with efficient reward model ensemble. arXiv
+  preprint arXiv:2401.16635, 2024.
+
+Yao Zhao, Rishabh Joshi, Tianqi Liu, Misha Khalman, Mohammad Saleh, and Peter J Liu. Slic-hf:
+  Sequence likelihood calibration with human feedback. arXiv preprint arXiv:2305.10425, 2023.
+
+Lianmin Zheng, Wei-Lin Chiang, Ying Sheng, Siyuan Zhuang, Zhanghao Wu, Yonghao Zhuang,
+  Zi Lin, Zhuohan Li, Dacheng Li, Eric Xing, et al. Judging llm-as-a-judge with mt-bench and
+  chatbot arena. Advances in neural information processing systems, 36:46595–46623, 2023.
+
+Li Zhou. A survey on contextual multi-armed bandits. arXiv preprint arXiv:1508.03326, 2015.
+
+Daniel M Ziegler, Nisan Stiennon, Jeffrey Wu, Tom B Brown, Alec Radford, Dario Amodei, Paul
+  Christiano, and Geoffrey Irving. Fine-tuning language models from human preferences. arXiv
+  preprint arXiv:1909.08593, 2019.
+
+
+A     E XPERIMENTS
+
+A.1   E XPERIMENTAL S ETTINGS
+
+Training setup.
+• Offline router training. We adopt SmolLM2-135M-Instruct as the encoder of the offline
+  router and perform full-parameter fine-tuning using AdamW with a learning rate of 2 × 10−5 ,
+  batch size 8, and λ = 0.2. We train for 2 epochs with weight decay 0.01.
+• Online policy training. The policy model is initialized from LLaMA3-SFT-v2. We fine-tune
+  it for 1 epoch using LoRA (rank 16, α = 32) applied to the q proj and v proj projection
+  matrices. We use a learning rate of 5 × 10−6 with Adam. Each prompt batch contains 16 prompts;
+  for each prompt we sample 6 candidate responses at temperature 0.8 and construct 4 preference
+  pairs, yielding 64 preference pairs per batch. We set the parameter β in Equation 1 to 1. We do
+  not use prompt templates during training or inference. The maximum input length is 128 tokens
+  and the maximum output length is 256 tokens, except for the second turn of MT-Bench, where the
+  input length is increased to 512 to accommodate multi-turn context. When initializing the online
+                                                                                           2
+  router with offline-learned embeddings, we set the prior variance for the RM weights σw     = 0.02
+  (with noise variance σ 2 = 1), reflecting stronger trust in the prior; when using the online router
+                  2
+  alone, we set σw  = 1 with prior mean 0 and σ 2 = 1.
+All experiments are conducted on a server equipped with 8× RTX A6000 GPUs, each with 48GB
+memory.
+
+
+                                                 13
+Published as a conference paper at ICLR 2026
+
+
+
+
+Benchmark Details. For AlpacaEval-2, MT-Bench, and Chat-Arena-Hard, we use them exclu-
+sively as test sets. The details are as follows:
+• AlpacaEval-2 (Dubois et al., 2023): This is a single-turn dialogue benchmark consisting of 805
+  prompts covering a wide range of topics.
+• MT-Bench (Zheng et al., 2023): This is a multi-turn dialogue benchmark comprising 80 prompts
+  across various domains. Each prompt contains two questions: the model first answers the ini-
+  tial question, then receives the initial question, its response, and the second question as input to
+  produce a second response. The evaluation is conducted based on the quality of both responses
+  jointly.
+• Chat-Arena-Hard (Li et al., 2024): This benchmark contains 500 high-quality prompts selected
+  from user queries in Chatbot Arena. It is designed to evaluate models on creativity, data analysis,
+  deep comprehension, and problem-solving abilities.
+For GSM8K and MMLU, we split each dataset into training and test sets. Policy models are
+fine-tuned on the training split and evaluated on the held-out test set. For GSM8K, we use
+math verify to parse model responses and compute accuracy against the ground-truth labels.
+For MMLU, we use xFinder (Yu et al., 2025b) to extract the predicted choices before comparing
+them with the labels. Table 5 summarizes the number of instances in each split.
+
+
+                                      Table 5: Dataset statistics.
+                                      Dataset Train Test
+                                      GSM8K        7465     1319
+                                      MMLU        11233     2809
+
+
+Settings for Efficiency Analysis. To evaluate the scalability of BayesianRouter, we extend the
+RM pool to 8 candidates. In addition to the 4 RMs used in the main experiments, we select 4 larger
+models from the RewardBench 2 leaderboard (Malik et al., 2025): RISE-Judge-Qwen2.5-32B
+(RM 4), Skywork-Critic-Llama-3.1-8B (RM 5), Selene-1-Mini-Llama-3.1-8B
+(RM 6), and RISE-Judge-Qwen2.5-7B (RM 7).
+We measure training time on 8 GPUs. For BayesianRouter, Majority Voting, and LAS E R, we
+allocate resources as follows: RM 4 occupies 2 GPUs; RM 0, RM 5, RM 6, and RM 7 each occupy
+1 GPU; RM 1, RM 2, and RM 3 share 1 GPU; and policy training uses the remaining GPU. For
+the single-RM baselines, we consider the slowest RM (RM 4) and the fastest RM (RM 3). In the
+slowest-RM setting, RM 4 is assigned 2 GPUs with data parallelism for policy training. In the
+fastest-RM setting, RM 3 occupies 1 GPU with data-parallel policy training.
+
+
+B    M ETHOD D ETAILS
+
+MAB reward normalization. To provide stable learning signals to the bandit router, we do not
+directly use raw per-pair losses as rewards. Instead, for each training step t we first compute a
+batch-level baseline over all preference pairs in the batch:
+                                                1 X (i)
+                                       ℓ̄t =         L (t),
+                                               |Bt |
+                                                   i∈Bt
+
+where Bt denotes the set of preference pairs at step t and L(i) (t) is the training loss of pair i under
+its selected RM. The instantaneous advantage-style reward for pair i is then
+
+                                       ri (t) = ℓ̄t − L(i) (t),
+which normalizes for batch difficulty and highlights the relative quality of each pair within the batch.
+Because the scale of ri (t) may drift over time, following LAS E R (Nguyen et al., 2024), we further
+apply quantile-based rescaling. Let R1:t−1 = {rj (τ ) | τ < t, j ∈ Bτ } denote the set of past
+rewards up to step t − 1. We compute the empirical 20th and 80th percentiles of this set, denoted qtlo
+
+
+                                                  14
+Published as a conference paper at ICLR 2026
+
+
+
+
+                               Table 6: Controlled online DPO results.
+                                 Instruction-Following                          Reasoning
+    Method              AlpacaEval-2      MT-Bench       Arena-Hard       GSM8K       MMLU      Acc.
+    SFT                     50.00           50.00          50.00              67.63   54.29      -
+    RM0                     53.05           53.33          53.39              67.17   54.18    77.61
+    RM1                     56.14           55.88          57.93              68.16   54.79    87.65
+    RM2                     55.83           54.55          56.32              67.70   54.54    85.88
+    RM3                     55.28           54.05          55.60              67.55   54.33    85.34
+    Majority                55.66           54.29          56.92              67.40   54.47    85.64
+    Random                  53.55           53.13          54.51              67.25   54.18    84.48
+    UWO                     56.19           55.56          56.65              67.78   54.61    85.64
+    LASER                   55.20           55.17          54.96              67.40   54.40    85.54
+    w/o off.                55.78           54.84          55.87              67.78   54.61    85.68
+    w/o on.                 56.72           56.41          57.71              68.39   54.82    87.92
+    BayesianRouter          57.63           56.76          58.15              68.76   54.93    88.23
+
+
+and qthi . The normalized reward is then
+                                                         if ri (t) < qtlo ,
+                                        
+                                        
+                                         0
+                                          1              if ri (t) > qthi ,
+                                        
+                              r̂i (t) =
+                                          r (t) − qtlo
+                                         i hi
+                                        
+                                                        otherwise.
+                                           qt − qtlo
+
+This two-stage procedure—batch-baseline centering followed by quantile scaling—yields rewards
+that are both variance-reduced and numerically stable across the training process.
+
+C     A DDITIONAL E MPIRICAL R ESULTS
+Controlled online DPO results. Table 6 presents the complete controlled online DPO results,
+using the same training setup as described in Appendix A.1.
+
+Analysis of reward design. We further analyze the effect of different reward formulations for
+online routing. In particular, we design two alternative variants that compute rewards based on
+RM-to-RM comparisons rather than batch-level normalization.
+Full Advantage. For each preference pair, all candidate RMs are queried to obtain their induced
+training losses. The router still selects a single RM via Thompson sampling, but the reward is
+defined as a binary advantage: if the selected RM’s loss is no greater than the average loss across all
+RMs, the reward is set to 1, otherwise to 0. This design removes the confounding effect of sample
+difficulty and purely reflects the relative quality of RMs.
+Light advantage. As a more scalable compromise, we randomly sample C = 3 RMs to compute
+the baseline average, instead of evaluating the full pool. This reduces computational overhead while
+still approximating the comparative signal.
+We compare these two variants against our proposed batch-normalized reward (with quantile rescal-
+ing) under the controlled online DPO setup on RewardBench 2. Table 7 reports the results. As
+expected, the Full advantage variant achieves the strongest performance, since it leverages the most
+informative RM comparisons, but at the cost of prohibitive computation and poor scalability. The
+Light advantage variant attains performance close to the Full advantage while being more efficient,
+showing that subsampling can preserve much of the benefit. Our proposed batch-normalized reward
+is less competitive in isolation, but it is by far the most efficient and, when combined with the offline
+prior, yields the best overall alignment performance.
+
+Empirical Justification for the Linear Head A potential concern regarding our architecture is
+whether a linear model is sufficiently expressive to capture the complexities of reward model (RM)
+
+
+                                                    15
+Published as a conference paper at ICLR 2026
+
+
+
+
+                           Table 7: Ablation studies on reward design.
+  Method               AlpacaEval-2 MT-Bench Arena-Hard GSM8K                     MMLU       Acc.
+  Full advantage            56.50          56.52           57.51       68.46      54.79     87.72
+  Light advantage           56.12          55.81           56.13       67.85      54.72     87.38
+  Ours (w/o offline)        55.78          54.84           55.87       67.78      54.61     85.68
+
+
+selection, which might involve high-order feature interactions. We argue that since our router oper-
+ates on embeddings produced by a task-aligned LLM-based encoder, the non-linear semantic struc-
+tures are already internalized within the representation space. To empirically validate this, we con-
+ducted a diagnostic study in the offline setting. We froze the pre-trained encoder and compared
+the performance of two different prediction heads: (i) a Linear head, utilizing a standard Bradley-
+Terry (BT) regression layer; (ii) a Non-linear head, consisting of a single-layer MLP (with ReLU
+activation) followed by the BT layer.
+As shown in Table 8, the non-linear head yields only marginal improvements over the linear head
+in both In-Distribution (ID) and Out-of-Distribution (OOD) scenarios. The fact that a significantly
+more expressive non-linear head fails to provide substantial gains suggests that the encoder suc-
+cessfully organizes the preference-pair embeddings into a largely linearly separable space for the
+RM-selection task. Consequently, a linear head is not an oversimplification but a sufficient and
+computationally efficient choice for both offline prediction and online Bayesian updates.
+
+
+Table 8: Comparison of Linear and Non-linear (MLP) prediction heads on top of frozen LLM em-
+beddings. Results are averaged over 3 independent runs.
+              Output Head                ID Accuracy (%) OOD Accuracy (%)
+               MLP + BT head                91.41 ± 0.10           88.42 ± 0.06
+               Linear BT head (Ours)        91.31 ± 0.09           88.35 ± 0.04
+
+
+C.1   S UFFICIENCY OF U NIMODAL P OSTERIOR UNDER D ISTRIBUTION S HIFT
+
+A critical assumption in our Bayesian Linear Thompson Sampling (BLTS) is that the uncertainty
+in RM selection can be adequately modeled by a unimodal Gaussian posterior. One might wonder
+if the shifting policy distribution during online training could induce complex, multi-modal uncer-
+tainty that a single Gaussian cannot capture. To investigate this, we compared BLTS against a more
+expressive Online Bootstrap Thompson Sampling variant. This baseline maintains M = 10 inde-
+pendent linear heads; at each step, it randomly selects one head for routing and updates each head
+using Poisson(1) resampling weights to approximate a non-parametric posterior. This approach is
+generally more robust in capturing multi-modal or complex reward distributions.
+As shown in Table 9, BLTS consistently outperforms the Bootstrap TS variant across both reason-
+ing (GSM8K) and general knowledge (MMLU) benchmarks. The observation that a more flexible
+posterior family offers no additional gain—and even slightly underperforms—suggests that the task-
+aligned encoder successfully maps preference pairs into a representation space where the uncertainty
+remains well-behaved. We attribute this to the high-quality and diverse preference data used during
+the offline pre-training phase, which allows the encoder to collapse complex multi-modal semantic
+structures into a stable embedding space that remains effective even as the policy evolves.
+
+
+Table 9: Comparison between Online Bootstrap Thompson Sampling and our Bayesian Linear
+Thompson Sampling (BLTS).
+                       Method                 GSM8K MMLU
+                          Bootstrap TS (M = 10)         74.15      56.43
+                          BLTS (Ours)                   74.37      56.64
+
+
+
+                                                   16
+Published as a conference paper at ICLR 2026
+
+
+
+
+C.2   T RAINING E FFICIENCY.
+
+We evaluate the training efficiency of
+BayesianRouter.         Unlike majority-voting
+ensembles that require O(N ) RM calls per
+preference pair, BayesianRouter selects a
+single RM at O(1) cost. The extra overhead
+relative to a single-RM baseline comes from
+(i) encoding preference pairs with the offline
+router and (ii) lightweight Bayesian posterior
+updates. Both are independent of the number
+and size of candidate RMs and amortize as
+the pool grows. Moreover, if the router often
+selects smaller, cheaper RMs, the overall cost
+may even fall below using a single large RM.
+To demonstrate the scalability of Bayesian-                 Figure 2: Training efficiency.
+Router, we increase both the size and number
+of candidate RMs and compare wall-clock training time on the GSM8K dataset against four
+baselines: the fastest single RM, the slowest single RM, Majority Voting, and LAS E R. Figure 2
+shows that while BayesianRouter is slower than the fastest single RM, it substantially outperforms
+Majority Voting and the slowest single RM, demonstrating its efficiency. LAS E R runs marginally
+faster than BayesianRouter because it reuses policy embeddings rather than encoding preference
+pairs independently. Detailed experimental settings are provided in Appendix A.1.
+
+D     LLM U SAGE
+We acknowledge the limited use of large language models (LLMs) as an editorial assistant to en-
+hance the clarity, grammar, and overall linguistic quality of our manuscript. Specifically, an LLM
+was employed for minor stylistic improvements and grammatical corrections, as well as to re-
+fine sentence structures for better readability. No LLM was used for content generation, ideation,
+methodological design, experimental execution, or data analysis. All scientific content, intellectual
+contributions, and experimental results presented in this paper are solely the work of the human au-
+thors. The authors take full responsibility for the entirety of the paper’s content, including any text
+that may have been subjected to LLM-assisted polishing.
+
+
+
+
+                                                  17
+

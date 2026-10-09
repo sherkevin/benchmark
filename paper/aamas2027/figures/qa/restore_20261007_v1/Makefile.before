@@ -1,0 +1,29 @@
+TEXINPUTS := ./reference/template//:./build/texmf/tex//:$(TEXINPUTS)
+export TEXINPUTS
+BSTINPUTS := ./reference/template//:./build//:$(BSTINPUTS)
+export BSTINPUTS
+BIBINPUTS := ./reference/template//:./build//:$(BIBINPUTS)
+export BIBINPUTS
+
+.PHONY: draft submission
+
+draft:
+	latexmk -pdf -interaction=nonstopmode -halt-on-error -outdir=build main.tex
+
+submission:
+	@set -eu; \
+	gate_status=$$(python3 -c 'import json; print(json.load(open("../../task/task49-pharma-benchmark-baseline-freeze/stage_b_scientific_submission_gate_v3/scorecard.json"))["status"])'); \
+	test "$$gate_status" = "PASS_FOR_DECLARED_ONE_CALL_DYNAMIC_SCOPE" || { echo "Scientific gate is $$gate_status"; exit 1; }; \
+	! grep -Eiq 'TBD|pre-results|empirical cells.*open|MIRA-Context' main.tex || { echo "Submission source contains stale pre-results or alias text"; exit 1; }; \
+	grep -q '\\documentclass\[sigconf,anonymous\]' main.tex || { echo "Anonymous AAMAS class is missing"; exit 1; }; \
+	out="build/submission_$$(date -u +%Y%m%d_%H%M%S)"; mkdir -p "$$out"; \
+	(cd ../.. && python3 -m src.probe_headless.audit_fresh_receipt_contract_v1 --run experiments/logs/task49_provider_fresh_context_natural_20261006/v2_statehash_run3 --output "paper/aamas2027/$$out/natural_audit.json"); \
+	(cd ../.. && python3 -m src.probe_headless.audit_fresh_receipt_contract_v1 --run experiments/logs/task49_provider_fresh_drift_stress_20261006/v3_bayesian_statehash_run1 --output "paper/aamas2027/$$out/stress_audit.json"); \
+	python3 -c 'import json,sys; paths=[(sys.argv[1]+"/natural_audit.json",270,127170),(sys.argv[1]+"/stress_audit.json",150,70650)]; [(lambda x,ns,ne: (_ for _ in ()).throw(SystemExit(f"receipt audit failed: {p}")) if (x.get("status")!="verified" or x.get("n_streams_checked")!=ns or x.get("n_events_checked")!=ne) else None)(json.load(open(p)),ns,ne) for p,ns,ne in paths]' "$$out"; \
+	pdflatex -interaction=nonstopmode -halt-on-error -output-directory="$$out" main.tex > "$$out/pass1.log"; \
+	bibtex "$$out/main" > "$$out/bibtex.log"; \
+	pdflatex -interaction=nonstopmode -halt-on-error -output-directory="$$out" main.tex > "$$out/pass2.log"; \
+	pdflatex -interaction=nonstopmode -halt-on-error -output-directory="$$out" main.tex > "$$out/pass3.log"; \
+	pages=$$(pdfinfo "$$out/main.pdf" | awk '/^Pages:/ {print $$2}'); test "$$pages" -eq 9 || { echo "Expected 9 pages total (8 body + references), got $$pages"; exit 1; }; \
+	! rg -n 'Overfull|Undefined|Citation|Missing \\$$|Fatal|Emergency' "$$out/main.log" || { echo "LaTeX warning/fatal gate failed"; exit 1; }; \
+	printf 'submission preflight passed: %s\\n' "$$out/main.pdf"; sha256sum "$$out/main.pdf" "$$out/main.log"

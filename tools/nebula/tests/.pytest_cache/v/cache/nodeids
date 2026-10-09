@@ -1,0 +1,20 @@
+[
+  "test_neb_cli.py::test_algo_whitelist_is_the_server_side_list",
+  "test_neb_cli.py::test_cluster_json_always_has_all_three_keys",
+  "test_neb_cli.py::test_cluster_json_matches_observed_team_ratios[1-1500-100-240000]",
+  "test_neb_cli.py::test_cluster_json_matches_observed_team_ratios[4-6000-400-960000]",
+  "test_neb_cli.py::test_cluster_json_matches_observed_team_ratios[8-12000-800-1920000]",
+  "test_neb_cli.py::test_defaults_are_the_project_and_queue_we_use",
+  "test_neb_cli.py::test_fail_is_aliased_to_failed",
+  "test_neb_cli.py::test_gpu_units_are_hundredths",
+  "test_neb_cli.py::test_leaves_ordinary_arguments_alone",
+  "test_neb_cli.py::test_mount_root_is_the_documented_fixed_path",
+  "test_neb_cli.py::test_noise_filter_drops_telemetry_stack",
+  "test_neb_cli.py::test_noise_filter_preserves_real_errors",
+  "test_neb_cli.py::test_oss_endpoint_has_no_scheme",
+  "test_neb_cli.py::test_per_card_defaults_match_measured_quota",
+  "test_neb_cli.py::test_redacts_equals_form",
+  "test_neb_cli.py::test_redacts_space_separated_value_but_not_the_flag",
+  "test_neb_cli.py::test_status_is_case_insensitive_and_comma_separated",
+  "test_neb_cli.py::test_unknown_status_is_rejected"
+]

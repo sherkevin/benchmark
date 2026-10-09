@@ -1,0 +1,77 @@
+{
+ "bucket": "全部400冲突行(对照基准)",
+ "rows": 400,
+ "constraint_verdict(判不通透)": 0.3375,
+ "admet_ai_1_4_0": 0.7925,
+ "deeppurpose_bbb_molnet_cnn": 0.2975,
+ "deeppurpose_bbb_molnet_morgan": 0.805,
+ "deeppurpose_bbb_molnet_mpnn": 0.62,
+ "ideal_selector": 1.0,
+ "恒答基线(全判多数类)": 0.6625
+}
+{
+ "bucket": "硬约束③严格(形式阳离子)∩400",
+ "rows": 8,
+ "constraint_verdict(判不通透)": 0.625,
+ "admet_ai_1_4_0": 0.375,
+ "deeppurpose_bbb_molnet_cnn": 0.625,
+ "deeppurpose_bbb_molnet_morgan": 0.625,
+ "deeppurpose_bbb_molnet_mpnn": 0.375,
+ "ideal_selector": 1.0,
+ "恒答基线(全判多数类)": 0.375
+}
+{
+ "bucket": "硬约束⑥(InChIKey骨架重复)∩400",
+ "rows": 8,
+ "constraint_verdict(判不通透)": 0.125,
+ "admet_ai_1_4_0": 0.625,
+ "deeppurpose_bbb_molnet_cnn": 0.125,
+ "deeppurpose_bbb_molnet_morgan": 0.875,
+ "deeppurpose_bbb_molnet_mpnn": 0.875,
+ "ideal_selector": 1.0,
+ "恒答基线(全判多数类)": 0.875
+}
+{
+ "bucket": "硬③严格+⑥ ∩400 = 约束可判定桶",
+ "rows": 16,
+ "constraint_verdict(判不通透)": 0.375,
+ "admet_ai_1_4_0": 0.5,
+ "deeppurpose_bbb_molnet_cnn": 0.375,
+ "deeppurpose_bbb_molnet_morgan": 0.75,
+ "deeppurpose_bbb_molnet_mpnn": 0.625,
+ "ideal_selector": 1.0,
+ "恒答基线(全判多数类)": 0.625
+}
+{
+ "bucket": "硬③宽松+⑥ ∩400",
+ "rows": 20,
+ "constraint_verdict(判不通透)": 0.4,
+ "admet_ai_1_4_0": 0.55,
+ "deeppurpose_bbb_molnet_cnn": 0.3,
+ "deeppurpose_bbb_molnet_morgan": 0.75,
+ "deeppurpose_bbb_molnet_mpnn": 0.6,
+ "ideal_selector": 1.0,
+ "恒答基线(全判多数类)": 0.6
+}
+{
+ "bucket": "硬③严格+⑥+软⑤ ∩400",
+ "rows": 50,
+ "constraint_verdict(判不通透)": 0.54,
+ "admet_ai_1_4_0": 0.6,
+ "deeppurpose_bbb_molnet_cnn": 0.52,
+ "deeppurpose_bbb_molnet_morgan": 0.58,
+ "deeppurpose_bbb_molnet_mpnn": 0.62,
+ "ideal_selector": 1.0,
+ "恒答基线(全判多数类)": 0.46
+}
+{
+ "bucket": "约束沉默桶(硬③严格+⑥不触发)∩400",
+ "rows": 384,
+ "constraint_verdict(判不通透)": 0.3359,
+ "admet_ai_1_4_0": 0.8047,
+ "deeppurpose_bbb_molnet_cnn": 0.2943,
+ "deeppurpose_bbb_molnet_morgan": 0.8073,
+ "deeppurpose_bbb_molnet_mpnn": 0.6198,
+ "ideal_selector": 1.0,
+ "恒答基线(全判多数类)": 0.6641
+}

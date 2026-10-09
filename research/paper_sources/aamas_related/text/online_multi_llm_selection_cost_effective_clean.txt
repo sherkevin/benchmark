@@ -1,0 +1,2199 @@
+                                             Cost-Effective Online Multi-LLM Selection with
+                                                        Versatile Reward Models
+
+                                                       Xiangxiang Dai1 , Jin Li2 , Xutong Liu3 , Anqi Yu4 , and John C.S. Lui1
+                                                                       1
+                                                                         The Chinese University of Hong Kong
+                                                                      {xxdai23, cslui}@cse.cuhk.edu.hk
+                                                                                 2
+
+
+
+
+arXiv:2405.16587v2 [cs.LG] 2 Oct 2024
+                                                                                   Southeast University
+                                                                                 jin_li@seu.edu.cn
+                                                                             3
+                                                                               Carnegie Mellon University
+                                                                             xutongl@andrew.cmu.edu
+                                                                           4
+                                                                             Huawei Technologies Co., Ltd.
+                                                                                yuanqi4@huawei.com
+
+
+
+                                                                                      Abstract
+                                                 With the rapid advancement of large language models (LLMs), the diversity of
+                                                 multi-LLM tasks and the variability in their pricing structures have become increas-
+                                                 ingly important, as costs can vary greatly between different LLMs. To tackle these
+                                                 challenges, we introduce the C2MAB-V, a Cost-effective Combinatorial Multi-
+                                                 armed Bandit with Versatile reward models for optimal LLM selection and usage.
+                                                 This online model differs from traditional static approaches or those reliant on
+                                                 a single LLM without cost consideration. With multiple LLMs deployed on a
+                                                 scheduling cloud and a local server dedicated to handling user queries, C2MAB-
+                                                 V facilitates the selection of multiple LLMs over a combinatorial search space,
+                                                 specifically tailored for various collaborative task types with different reward mod-
+                                                 els. Based on our designed online feedback mechanism and confidence bound
+                                                 technique, C2MAB-V can effectively address the multi-LLM selection challenge
+                                                 by managing the exploration-exploitation trade-off across different models, while
+                                                 also balancing cost and reward for diverse tasks. The NP-hard integer linear
+                                                 programming problem for selecting multiple LLMs with trade-off dilemmas is
+                                                 addressed by: i) decomposing the integer problem into a relaxed form by the local
+                                                 server, ii) utilizing a discretization rounding scheme that provides optimal LLM
+                                                 combinations by the scheduling cloud, and iii) continual online updates based on
+                                                 feedback. Theoretically, we prove that C2MAB-V offers strict guarantees over ver-
+                                                 satile reward models, matching state-of-the-art results for regret and violations in
+                                                 some degenerate cases. Empirically, we show that C2MAB-V effectively balances
+                                                 performance and cost-efficiency with nine LLMs for three application scenarios.
+
+
+                                        1   Introduction
+                                        In the digital era of today, large language models (LLMs) such as ChatGPT lead innovations
+                                        in computational linguistics and cognitive processing [65]. The emergence of numerous high-
+                                        performance LLMs has sparked significant interest in the challenge of model selection [22, 68].
+                                        Typically, current schemes for selecting LLMs often rely on identifying the best-performing model
+                                        in a static setting, such as selecting the LLM that achieves the lowest perplexity score [57, 53].
+                                        However, the diverse capabilities of various LLMs present an opportunity to adopt a task-specific
+                                        selection approach, where different LLMs have their own strengths and weaknesses, e.g., Investlm
+                                        [71] is specifically designed for the financial sector and may better suit queries related to investments.
+                                        Moreover, the limitations of static selection methods become more pronounced due to factors like
+“generation diversity”, where a less expensive LLM may perform better in certain scenarios [13],
+and “data drift”, which refers to changes in the characteristics of answers generated in real-time
+compared to those of training data [6]. Consequently, beyond large-scale pre-training methods, these
+issues highlight the need for an “online” approach to optimize decision-making in selecting the
+“appropriate” LLMs, which leverage continuous feedback to adapt to the varying performance levels
+of models and diverse application needs through ongoing user interaction.
+Furthermore, scenarios combining multiple LLMs (or agents) to complete tasks have commonly
+emerged, moving beyond using a single LLM. Platforms like [54] have spearheaded functionalities
+that integrate several bots within a single chat session. [46] introduces a dynamic LLM-agent network
+through dynamic interaction architecture and intelligent agent team optimization. [31] proposes a
+meta-programming framework that enhances the collaboration of multiple LLMs. [26] explores the
+implementation of LLM cascades for generative tasks. However, previous works have not considered
+optimizations tailored to the characteristics of different tasks, which may feature different forms
+of rewards. Below, we present three streamlined collaborative combinations of LLMs for different
+tasks: 1. For user experience enhancement, multiple LLMs may be deployed to ensure satisfactory
+outcomes. 2. In educational tutoring, subject-specific LLMs operate in parallel, with failures in one
+not severely impacting others. 3. In project development, LLMs manage different sub-modules,
+where any module’s failure could jeopardize the entire project. These three examples underscore the
+importance of combining multiple suitable LLMs based on the specific “task structure”.
+Additionally, it is crucial to recognize that the emergence of LLMs with diverse performance levels
+introduces varying costs in practical use, an important factor neglected in existing research. The
+operating expenses for LLMs are high; for example, it is estimated that running ChatGPT costs over
+$700,000 daily, and deploying GPT-4 for customer service could cost a small business upwards of
+$21,000 per month [13]. This implies the necessity of incorporating cost considerations into the
+selection and utilization strategies for LLMs.
+Based on the discussions above, we introduce the Cost-effective Combinatorial Multi-armed Bandit
+with Versatile reward models (C2MAB-V), designed to synergize the integration of diverse LLMs
+across different task types. C2MAB-V manages the dual challenges of selecting LLMs that both
+achieve high performance and meet cost constraints. Additionally, C2MAB-V adapts to various multi-
+LLM collaborative tasks by utilizing a “combinatorial model selection strategy” which extends beyond
+traditional single-model limitations by encompassing a broad spectrum of LLM candidates. Finally,
+to address the NP-hard complexities of combinatorial LLM selection under cost considerations, we
+transform the initial problem into a continuous form. This process is executed on the local server,
+which is required to handle user queries. Meanwhile, our discretization method, which guarantees
+precise evaluation of LLM performance post-relaxation, is implemented on the scheduling cloud
+where multiple LLMs are deployed. This two-tiered approach can accommodate both the limited
+resources of the local server and strategically mitigate the scheduling cloud’s workload. We emphasize
+that this paper focuses on a fully online learning approach that operates without initial information
+and relies solely on user feedback with robust interpretation. Our method is designed to complement,
+not compete with, current approaches that utilize GPU resources for offline training, where offline
+training can streamline the search space and enhance the convergence speed of online learning.
+In summary, our contributions are as follows.
+Novel Multi-LLM Selection Formulation. We introduce a novel formulation of the cost-effective
+multi-LLM selection, designed for tasks requiring collaboration among multiple LLMs with versatile
+reward structures. This formulation emphasizes the essential balance between exploring new models
+and exploiting proven effective models, while adhering to long-term cost budget considerations and
+securing high rewards across diverse multi-LLM tasks.
+Unique Online Algorithmic Framework. We developed the C2MAB-V framework for online
+multi-LLM selection, managing diverse collaborative LLM tasks and performance variability due to
+generation diversity and data drift. Our approach utilizes a “combinatorial bandit selection strategy”
+with a cost-conscious versatile reward structure. Based on a natural local-cloud architecture, the local
+server, with its limited resources, simplifies the selection process and alleviates the computational
+load on the scheduling cloud. The cloud coordinates and selects LLMs based on continualized
+feedback data from the local server, which also gathers user feedback to enhance LLM evaluations.
+
+
+
+
+                                                   2
+In-Depth Regret and Violation Analysis. We conduct a thorough theoretical analysis of our
+online C2MAB-V framework, covering three distinct reward models. This analysis addresses the
+trade-offs between reward and violation, and between exploration and exploitation. We identify
+common properties across different reward models and employ “martingale construction techniques”
+to examine the stochastic properties of our model under varying collaborative tasks. Notably, our
+results on regret and violation analysis match the state-of-the-art results in several degenerate cases.
+Comprehensive Empirical Validation. Our C2MAB-V framework has been empirically validated
+with superior performance outcomes across evaluations involving nine distinct LLMs. These tests
+consistently confirm C2MAB-V’s capacity to adaptively navigate the trade-off dilemmas, resulting
+in amplified rewards or decreased costs. Moreover, detailed analysis from exploratory experiments
+provides deeper insights into the strategic design and utilization of the multi-LLM approach.
+
+2     Related Work and Motivation
+
+2.1    Related Work
+
+Combinatorial Multi-Armed Bandit. The field of online learning problems under the multi-armed
+bandit (MAB) model has been extensively studied. The MAB model was first introduced by the
+seminal work [56] and has been expanded upon by many other researchers ( [42, 62, 44]). Traditional
+MAB models focus on selecting a single arm per trial; however, the more complex scenario of
+combinatorial MAB (CMAB) involves selecting multiple arms simultaneously. The stochastic
+CMAB has received much attention recently [14, 37, 67, 48, 49]. Initial research on stochastic
+CMAB is spearheaded by [23], with subsequent improvements in regret bounds offered by [38, 16].
+Later on, [14, 67] considers probabilistic feedback to extend the feedback model. Recently, [43]
+proposes the variance-adaptive algorithm BCUCB-T. [44] incorporates the contextual information
+in CUCB. Our research builds on the CMAB settings but diverges significantly by addressing more
+complicated trade-off issues. Furthermore, to address various cooperative task types, we explore
+three different combinatorial reward formulations within versatile reward models.
+Multi-LLM Combination. The combination of multiple LLM models for enhanced performance
+has received considerable attention, aimed at bolstering output quality [35]. Techniques such as
+“knowledge distillation” [28, 58] facilitate the training of compact models to mimic the behavior
+of larger and more complex models, thus optimizing resource utilization. Meanwhile, “ensemble
+learning” [30, 32] leverages the collective predictions of independently trained models for superior
+results. Nonetheless, the prevalent practice of withholding model internals from commercial LLM,
+such as [52], restricts knowledge distillation by obscuring the “teacher” model, which can decrease
+the replication efficacy of the “student” model. Concurrently, ensemble learning faces increased
+financial and procedural burdens due to the necessity of amalgamating various model outputs, a
+task complicated by the absence of open-source models. [47, 18, 13] primarily address one of the
+scenarios we have outlined, i.e., selecting a single LLM that best satisfies the user from multiple
+options. Moreover, these approaches do not incorporate user feedback. Our approach distinctively
+accounts for the online aspects of model selection, the diversity of multi-LLM task types, and the
+associated costs, setting it apart from previous methods.
+
+2.2    Motivation
+
+We introduce the rationale behind our cost-effective combinatorial LLM online selection strategy.
+Limitations of Single and Static Model Policy. Table 1 presents the commercial costs of various
+LLMs [13]. Economically, it may not be viable for businesses or government entities to consistently
+choose the most expensive option, such as GPT-4, for all applications. Therefore, a careful assessment
+of the trade-offs between cost and performance (termed as ‘reward’) is essential, as it allows for more
+strategic budget management across various tasks.
+       Table 1: Cost comparison of various LLMs based on 10 million output tokens from [13].
+       LLM       ChatGPT       GPT-3        GPT-4 ForeFrontAI J1-Large             J1-Jumbo
+      Cost ($)        2           20         60          5.8            30            250
+       LLM        Xlarge      GPT-Neox GPT-J         GPT-Curie       FAIRSEQ J1-Grande
+      Cost ($)       10           35          5           2             15             80
+
+                                                   3
+                                             'WdͲϰ                  ůĂƵĚĞϭ͘Ϯ             &ŽƌĞĨƌŽŶƚ                                                     No
+                                             'WdͲϯ͘ϱ              ůĂƵĚĞϮ                                                                       Accuracy > α               GPT-3.5
+                                    ϭ͘Ϭ
+                                                                                                                                                                 Yes
+
+
+
+
+ ǀĞƌĂŐĞĐĐƵƌĂĐǇ
+                                    Ϭ͘ϴ                                                                                                       ForeFrontAI
+                                    Ϭ͘ϲ                                                                                                                                     Yes
+                                                                                                                                                                  Output              Accuracy > α
+                                    Ϭ͘ϰ
+                                    Ϭ͘Ϯ                                                                                                       Mathematical                         No
+                                    Ϭ͘Ϭ                                                                                                        Problems                 GPT-4
+                                                  ^ĐĞŶĂƌŝŽϭ             ^ĐĞŶĂƌŝŽϮ            ^ĐĞŶĂƌŝŽϯ
+Figure 1: Accuracy of different LLMs across                                                                                                   Figure 2: Simple example of combinatorial
+varied problem samples.                                                                                                                       LLMs in a cascading form.
+
+Moreover, we evaluate the performance of various LLM, including GPT-4, GPT-3.5, Claude 1.2,
+Claude 2, Forefront [52, 21, 15], using the mathematics dataset [60] and SciQ dataset [69], which
+cover multiple topics including physics, chemistry, and biology. As shown in Fig. 1, comparing
+these LLMs across three randomly selected scenarios with problem sets (each containing 200
+samples) reveals the inherent limitations of relying on a single LLM. This measurement highlights
+the limitations of advanced models like GPT-4 in various contexts, emphasizing the phenomena of
+“generation diversity” mentioned in Section 1 and the necessity of continual online learning to select
+the “appropriate” LLMs for different queries. Moreover, challenges like “distribution shift” [55] and
+the “Matthew effect” [25] can cause deviations in the performance of models presumed optimal in
+the offline settings. Subsequently, the adoption of an online learning framework becomes essential,
+with ongoing interaction utilized to refine LLM selection.
+Benefits of Combinatorial LLMs. Among the various tasks, we select the multi-LLM collaboration
+task on ensuring user experience while minimizing costs as an example. As shown in Fig. 2,
+ForeFrontAI is the first option. If its response’s accuracy matches the right choice question label
+from the datasets [69], the query is routed to GPT-3.5. For further refinement, GPT-4 is invoked. This
+combination of multi-LLMs in a cascading form is compared with the exclusive use of GPT-4 for
+identical queries. Cost evaluation, based on the statistical data of [13], reveals that such combinatorial
+LLMs incurs only 60.1% of the expenses associated with relying solely on GPT-4. Accuracy
+assessments further highlight the merits of the combinatorial approach, achieving an accuracy of
+0.824 on the dataset, surpassing the 0.732 accuracy obtained by using GPT-4 alone. Consequently,
+the strategy of using combinatorial LLMs demonstrates a promising and compelling alternative.
+
+
+3                                     Problem Formulation
+
+In this section, we introduce our online framework of a cost-effective combinatorial bandit for
+multi-LLM selection with versatile reward models, namely, C2MAB-V (Please refer to Fig. 3 for
+details). A summary of the main symbols is provided in Appendix A.
+Local-Cloud Architecture. Given the large number of parameters and significant storage overhead of
+LLMs, a typical approach, if not opting for a streamlined but less capable version of LLMs, involves
+deploying multiple LLMs on a resource-abundant scheduling cloud. When responding to user queries,
+the local server first handles the requests and synchronizes communication with the cloud to initiate
+tasks (for discussions on asynchronous handling, see Appendix E.3). Subsequently, user feedback
+is stored on the local server.1 While the scheduling cloud serves multiple local servers, for ease of
+presentation, we focus on describing the relationship between a single local server and the cloud.
+Combinatorial LLM Instance. The scheduling cloud orchestrates multiple independent LLMs,
+to effectively fulfill requests from the local server. Let K = {1, . . . , K} represent the set of all
+LLMs, where each index k ∈ K corresponds to a specific LLM (i.e., base arm), comprising a
+total of K LLMs. The system operates in a time-slotted manner, delineated by discrete intervals
+T = {1, 2, 3, . . . , T }. During each round t ∈ T , the cloud coordinates and selects a subset St
+of available LLMs from K. This selection process, termed an “action”, adapts dynamically based
+on real-time constraints and availability, with the cardinality |St | ≤ K indicating the number of
+
+    1
+      Feedback can include both direct user input and data from techniques that quantify user behavior or
+responses, as well as preference simulators [20]. Regardless of the methods, we refer to all these collectively as
+“feedback” for simplicity.
+
+
+                                                                                                                                          4
+selected LLMs. Let S represent the set of all possible combinations of actions.2 For example, high
+demand workloads may cause GPT-4 to reach its usage limit, temporarily preventing its selection.
+Let N = maxS∈S |S|, denoting the maximum number of LLMs that can be simultaneously active.
+Online Learning Protocol. A combinatorial LLM instance involves the sequential interaction
+between the local server, the scheduling cloud, and user queries within our local-cloud architecture.
+The local server processes user activity and feedback, particularly focusing on the users’ performance
+feedback regarding the utilized LLMs. This process involves locally recording and updating the
+performance evaluations of the LLM. Then, the local server will transmit these information to the
+scheduling cloud. The scheduling cloud undertakes the new coordination and selection of an action St
+(i.e., selecting a subset of LLMs for service) after receiving the newly updated information from the
+local server. Such performance evaluations, termed as rewards, could, for instance, be based on the
+ROUGE-2 score for automatic summarization tasks [41], and are represented by a random variable
+vector X t = (Xt,1 , . . . , Xt,|St | ). For simplification, we posit that X t ∈ [0, 1]|St | . Furthermore,
+for each LLM k ∈ K included in the action St , its associated cost yt,k is observable at round t. A
+detailed definition of this cost will be provided later.
+Note that we demonstrate a fully online learning process here without any prior information for a clear
+description. In real-world scenarios, online learning can often be accelerated by incorporating offline
+pre-training. For example, for mathematical queries, narrowing the action space by offering fine-
+tuned LLMs for specific mathematical tasks, rather than selecting from a broad set, can significantly
+streamline the online selection process.
+Versatile Reward Models. Let µ = (µ1 , ..., µK ) represent the “initially unknown” mean vector
+of outcomes for each LLM with µk = E[Xt,k ]. We consider versatile reward models for different
+combinations of LLMs in multi-LLM tasks below. Q                     
+• Any Win Combination (AWC): r(S; µ) = 1 − k∈S (1 − µk ) . As illustrated in Fig. 2, this
+  reward model is designed to safeguard user experience by selecting multiple LLMs to generate
+  answers, with success defined as any LLM’s answer satisfying the user. This reward model aims to
+  maximize user satisfaction by providing a range
+                                                P of possible solutions.
+• Sum Up Combination (SUC): r(S; µ) = k∈S µk . In this setup, domain-specific LLMs inde-
+  pendently tackle tasks in parallel. Each LLM earns rewards for correctly answering questions in its
+  field. This reward model aims to speed up task completion and reduces the workload on each LLM,
+  enhancing overall task effectiveness. Q
+• All In Combination (AIC): r(S; µ) = k∈S µk . This reward model is exemplified in development
+  tasks, where each LLM is responsible for developing sub-modules simultaneously. The key aspect
+  of this reward model is that the failure of any LLM leads to the failure of the entire development
+  task, thus ensuring the success of the whole collaborative work.
+For more discussions (e.g., specify LLMs under the SUC and AIC reward models), please refer to
+Appendix C.1. Compared to previous works [18, 13, 47, 73], which primarily focus on selecting
+a single LLM to satisfy the user, our versatile reward model accounts for the diversity of tasks,
+addressing scenarios where multi-LLMs collaborate to complete tasks, besides the distinction being
+our focus on an online learning setting.
+Partial LLM Feedback. In the process of selecting and querying LLM in action St , not all LLMs
+may actually be queried in the muti-LLM tasks. Consequently, the local server often only observes
+outcomes from a subset of the selected LLMs. Formally, the local server observes feedback from the
+LLM subset Ft in action St , where the subset’s cardinality is denoted as Ft . If all LLMs in St are
+queried, then Ft = |St |, which is worst-case scenario under the AWC reward model.
+Statistically-Based Cost Model. Drawing inspiration from [1], which charges based on statistical
+computational resource utilization (with 1 CU supporting an average of 10 interactions), [3], which
+offers unlimited token pricing without the consideration of token limits, and [34], which bills based
+on exclusive resource groups, we propose a statistically-based cost model. Specifically, for any query
+q from a set Q, LLM k ∈ K processes the query using a deterministic number of input tokens, lkin (q),
+and generates a random number of output tokens, denoted as lkout (q) ∼ Dkout (q), representing the
+probabilistic nature of LLMs [70, 17]. Given a distribution Dq over Q, a user selects a query qt ∼ Dq
+in each round, and the cost for LLM k is yt,k = (lkin (qt ) + lkout (qt ))Ck , where Ck is the cost per token.
+The goal is to estimate the unknown expected cost ck = E[yt,k ].
+
+   2
+       Action St is actually a set. Similar to previous CMAB works, we also do not use script font here.
+
+
+                                                        5
+Budget Violation Consideration. The total cost of executing P     action St on the utilized LLM subset
+Ft , selected by the scheduling cloud at round t, is given by k∈Ft yt,k . Furthermore, there is a
+predetermined budget guarantee threshold ρ > 0 exists for the combinatorial set of LLM, requiring
+the cumulative cost of the selected action to remain below this threshold ρ for the long term. This
+mechanism allows organizations, including enterprises and governmental bodies, to manage LLM
+usage efficiently and align with budgetary constraints. To assess compliance with this budgetary
+constraint, the concept of constraint violation [8] is introduced as follows, with [x]+ := max(x, 0):
+                                           "     T
+                                                                  #+
+                                             1XX
+                                 V (T ) =                 yt,k − ρ ,                               (1)
+                                             T t=1
+                                                                     k∈Ft
+
+Although it is conceivable to occasionally exceed this cost constraint during the online learning
+process, significant overruns are not permissible, thus necessitating the violation metric. A violation
+rate decreasing as Õ (T −γ ) signifies effective constraint adherence, indicating that V (T ) diminishes
+at this rate, where γ > 0 illustrates the rate of reduction in violations with T [12].
+ α-Approximate Regret. The performance of an online learning algorithm A is evaluated by its
+“regret”, which is the discrepancy between the expected cumulative reward of consistently choosing
+ the optimal action St∗ ≜ arg maxS∈S r(S; µ) at each round t, with S representing the set of all
+ viable actions, and the expected cumulative reward resulting from the actions selected by algorithm
+ A. The challenge, however, lies in the computational difficulty of determining the exact St∗ , even
+ when µ is known, as this can be NP-hard [29]. Thus, following [40, 67, 43, 44], we presume that
+ algorithm A utilizes an offline α-approximation oracle. This oracle, upon receiving a mean vector µ,
+ outputs an action S that guarantees r(S; µ) ≥ α · r(St∗ ; µ). With the α-approximation oracle, the
+ α-approximate regret over T rounds is defined as:
+                                       hP                                i
+                                          T           ∗
+                            R(T ) = E     t=1 (α · r(St ; µ) − r(St ; µ)) ,                       (2)
+
+where the expectation accounts for the randomness in outcomes X 1 , ..., X T , and algorithm A itself.
+
+
+4     Algorithm Design
+We present the design of the online C2MAB-
+                                                                    Enquire LLMs
+                                               Users
+V framework, as depicted in Algorithm 1.                                                      Enquired
+                                                                                                         Stop
+                                                                                                                  Not Enquired
+                                                            Feedback?
+Our method addresses the challenge of es-                                                                                     Combination
+                                                                 Yes                                                             of LLMs
+timating unknown rewards and costs asso-                             Update                                                      (Action)
+                                                                       LLM
+ciated with using corresponding LLMs. As                Returned
+                                                                   performance                    Decide combination
+                                                                    evaluation                         of LLMs                    Budget
+shown in Fig. 3, given the NP-hardness                   Results
+
+complexity of selecting a combination of                              Local Relax LLM selection issue;                      Discretize data;
+                                                Queries                                                                     Coordinate LLMs
+                                                                      Server Send continuous data;
+LLMs under cost constraints, we transform                                     Store online user feedback
+the original integer problem into a contin-                                                          Different                Scheduling
+                                                                                                       LLMs                     Center
+uous space. Utilizing the limited resources
+of a local server, we solve this relaxed opti-
+mization problem, which can also ease the Figure 3: Design of C2MAB-V workflow, with detailed
+computational load on the scheduling cloud process descriptions provided on the left main text.
+when supporting multiple local-server query requests. A scheduling cloud with multiple LLMs
+coordinates and selects based on continuous data transmitted from the local server. Meanwhile, the
+local server collects user feedback to enhance the online evaluations of LLMs. Additionally, the
+cloud does not have access to the original sensitive user data, enhancing future privacy protection
+prospects. Next, we describe the processes undertaken by the local server and the scheduling cloud.
+4.1     Procedures by Local Server
+Confidence Bound for Reward and Cost. To avoid the limitations of a greedy LLM selection
+strategy, i.e., arg maxk∈K µ̂t,k with µ̂t,k denoting the empirical estimate of the true mean of LLM k,
+which might result in the risk of overlooking superior LLM options, we implement the confidence
+bound (CB) method [39, 43]. This “optimistic” strategy promotes exploration among various
+LLM alternatives, thereby reducing the likelihood of consistently choosing sub-optimal options
+without considering potentially better LLMs. We define the confidence radius of CB as ρt,µk =
+
+
+                                                                     6
+Algorithm 1 Online Update of C2MAB-V with Feedback
+Input: Set of all LLMs K, cost constraint ρ, probability parameter δ ∈ (0, 1].
+ 1: Initialize: ∀k ∈ K, µ̂1,k = 0, ĉ1,k = 0, T1,µk = 0,T1,ck = 0.
+ 2: for t = 1, 2, · · · , T do
+ 3:     Predict reward of k-th LLM µ̄t,k = min{µ̂t,k + αµ ρt,µk , 1} based on “optimistic” strategy;
+ 4:     Estimate cost of k-th LLM ct,k = max{ĉt,k − αc ρt,ck , 0} based on “pessimistic” strategy;
+ 5:     Utilize the greedy algorithm¯to solve the relaxed constrained optimization problem in Eq. (3);
+ 6:     Obtain LLM action St by discretization rounding (Algorithm 2 or Algorithm 3);
+ 7:     Observe the corresponding reward of LLMs and the cost of LLMs in for k ∈ Ft ;
+ 8:     Update µ̂t,k , ĉt,k ∀k ∈ K according to Eq. (6).
+ 9: end for
+
+q
+         2   3
+   ln 2π 3δKt /2Tt,µk , which quantifies the exploration potential for the reward of LLM k at round
+t, with δ in the range (0, 1]. The term Tt,µk represents the number of times LLM k has been
+selected in action St . Accordingly, the adjusted reward prediction for LLM k is defined as µ̄t,k =
+min{µ̂t,k + αµ ρt,µk , 1}, with αµ denoted as a positive control parameter. Furthermore, we take
+into account the cost associated with each LLM. In light of the uncertainty introduced by complex
+queries, we adopt a cautious approach based on “pessimistic” strategy to ensure adherence to the
+cost budget. Specifically, the adjusted cost estimate for LLM k at round t, ct,k , is determined
+                                                                                    ¯
+by ct,k = max{ĉt,k − αc ρt,ck , 0}. Here,qĉt,k is the empirical cost, αc is a positive    adjustment
+    ¯
+                                                  2π 2 Kt3
+                                                           
+parameter, and confidence radiu ρt,ck = ln           3δ      /2Tt,ck , with Tt,ck denoting the count of
+LLM k selection up to round t. Using this CB approach, we have the following lemma.
+Lemma 1. For each round t and LLM k ∈ K, define Nµ as the event where |µ̂t,k − µk | < ρt,µk ,
+and Nc as |ĉt,k − ck | < ρt,ck . Then, the probability of Nµ , Nc occurring is at least 1 − δ/2, i.e.,
+Pr{Nµ } ≥ 1 − δ/2, Pr{Nc } ≥ 1 − δ/2.
+
+Please refer to Appendix D.1 for the proof. Lemma 1 underscores the high-probability events wherein
+the empirical estimates for both reward and cost closely align with their true means of LLMs.
+Relaxation Strategy for LLM Combination Selection. To mitigate the computational hardness
+of the LLM selection problem, the local server adopts a relaxed strategy while also ensuring that
+original sensitive user information is not transmitted to the scheduling cloud. Specifically, let indicator
+variable IS = {z1 , z2 , · · · , zK } ∈ {0, 1}K denote the selection status of LLM in K, where zk = 1
+indicates LLM k is selected, and zk = 0 otherwise. zk ∈ IS is regarded as a continuous variable
+z̃k ∈ [0, 1], with Z̃ = {z̃1 , z̃2 , · · · , z̃K }. We then introduce the three different relaxation strategies.
+                                                                               Q               
+• Any Win Combination (AWC): Treating r(S; µ) = 1 − k∈S (1 − µk ) as a submodu-
+   lar function,
+             P    we apply its multi-linear extension to accommodate the relaxed problem form:
+                         Q              Q
+   r̃ Z̃, µ̄ = S⊆K k∈S z̃k k /∈S (1 − z̃k ), ensuring convexity across any direction I{i} − I{j}
+                                                                        Q                  
+   for distinct i, j ∈ K [9]. The closed form, r̃ Z̃, µ̄ = 1 − k∈K (1 − µ̄k z̃k ) , of this extension
+   leads to the following relaxed optimization problem:
+                                               !
+                        Y                           X            X
+          {max 1 −           (1 − µ̄k z̃k ) :          z̃k ≤ N,      ct,k z̃k ≤ ρ, 0 ≤ z̃k ≤ 1, ∀k ∈ K}. (3)
+                       k∈K                   k∈K             k∈K
+
+  The common greedy algorithms, apt for such constrained continuous problems, can efficiently
+  select z̃k values that optimize 1 − µ̄k z̃k within constraints [7]. Subsequently, this optimization
+  problem can be easily and effectively solved. P
+• Sum Up Combination (SUC): For r(S; µ) = k∈S µk , we choose the relaxed reward function
+                    P
+  to be r̃(Z̃, µ̄) = k∈K µ̄k z̃k and the relaxed constraint optimization problem is:
+                       X             X           X
+                  {max     µ̄k z̃k :   z̃k = N,       ct,k z̃k ≤ ρ, 0 ≤ z̃k ≤ 1, ∀k ∈ K}.          (4)
+                        k∈K          k∈K            k∈K
+
+  For such relaxed linear programming, it can be easily solved in polynomial time [10].
+
+
+                                                       7
+                                                                            Q
+• All In Combination (AIC): Since the reward function r(S; µ) = k∈S µk is the conjunctive
+  reward function and the feasible actions are S2 = {S ⊆ K : |S| = N }, we select the relaxed
+  function to be r̃(Z̃, µ̄) = k∈K µ̄k z̃k , with the following optimization problem:
+                               Q
+                        Y             X           X
+                max{        µ̄k z̃k :   z̃k = N,      ct,k z̃k ≤ ρ, 0 ≤ z̃k ≤ 1, ∀k ∈ K}.  (5)
+                        k∈K          k∈K            k∈K
+    The optimal
+              P solution in Eq.P (5) is equivalent
+                                                P to solving the logarithmic linear programming
+    arg max{ k∈K z̃k ln µ̄k : k∈K z̃k = N, k∈K ct,k z̃k ≤ ρ, 0 ≤ z̃k ≤ 1} by taking ln r(S; µ̄)
+    as our objective, thus making the optimization problem more tractable.
+The commonalities in the above three types of reward forms are in Appendix C.2. We will further de-
+scribe the selection of multiple LLMs based on the continuous variable Z̃ t = {z̃t,1 , z̃t,2 , · · · , z̃t,K } ∈
+[0, 1]K at round t in Section 4.2 on Procedures by Scheduling Cloud.
+Online Update for Combinatorial LLMs. In contrast to traditional offline approaches that use
+relaxation methods to address constrained optimization problems [24, 11], our strategy enables the
+local server to dynamically adapt LLM performance estimations for both reward and cost, leveraging
+continual feedback from the combinatorial LLM selection process.
+Specifically, the partial combinatorial feedback model is employed to enhance reward prediction and
+cost estimation based on the LLM in the chosen actions, which are updated as follows:
+                             Tt,µk µ̂t,k + Xt,k             Tt,ck ĉt,k + yt,k
+                 µ̂t+1,k =                      , ĉt+1,k =                    , k ∈ Ft .             (6)
+                                  Tt+1,µk                       Tt+1,ck
+Note that for an action St , the local server only monitors the performance of the LLMs that are
+actually used in St , as not all LLMs are utilized for every type of task. For example, in the case of an
+AWC task type, if one LLM provides a satisfactory answer, the remaining LLMs are not utilized. In
+the AWC scenario, we use a conservative approach by ensuring that the budget threshold is met even
+if all selected LLMs St are used, representing a “cautious” economic strategy.
+
+4.2    Procedures by Scheduling Cloud
+
+Discretization Rounding for LLM Selection. In our architecture, the scheduling cloud can com-
+municate with each local server, while the local servers do not directly communicate with each
+other. As described in Section 3, our focus is on elucidating the one-to-one relationship between
+a local server and the cloud. With fully original user data stored locally, the local server sends
+the relaxed continuous data Z̃ t to the scheduling cloud, which then coordinates various LLMs and
+selects a new action in response to requests. Inspired by the works of [11, 24], the synchronized
+cloud employs specialized discretization rounding algorithms based on reward models to convert the
+relaxed continuous data back into discrete form. By discretizing Z̃ t , the scheduling cloud identifies
+a feasible set of LLMs St to schedule and select for the current round t (line 6 in Algorithm 1).
+The corresponding algorithms are tailored solutions for our versatile reward model and represent a
+significant effort to find suitable methods for our specific setup. However, since the design of these
+algorithms is not our core contribution, details are provided in Appendix B. Note that discretization
+rounding can reduce the complexity of LLM combination selection, as detailed in the computational
+efficiency comparison with direct discrete constrained optimization in Appendix E.3.
+
+5     Performance Analysis
+In this section, we conduct a comprehensive analysis of the theoretical performance (regret in Eq. (2),
+and violation in Eq. (1)) of C2MAB-V. Due to the page limit, we put the proof in Appendix D.
+To state the analysis, we firstly give some definitions. Let ot,S represent the probability that all
+LLMs within a selected action S are observed at round t, and r∗ = maxS∈S r(S; µ) ≤ N L be
+the maximum reward for the L-Lipschitz reward function r(S; µ). Following [36, 40], we define
+o∗ = mint∈T ,S∈S ot,S as the minimum observation probability across all feasible combinations
+of LLM selection, within the context of partial feedback mechanisms. For the AWC scenario, as
+previously discussed, a subset may be chosen from multiple available options for an action St . In
+such cases, we provide the violation upper bound under the worst-case scenario, where each LLM in
+action St fails to satisfy the user until the last one, i.e., St = Ft for all t ∈ T .
+
+
+                                                       8
+Theorem 1 (Regret Bound). With δ = 1/T in the confidence radius, the α-approximate regret for
+the multi-LLM selection problem is bounded as follows, with probability at least 1 − 1/T :
+                                   s            2        
+                               2L                 2π KT
+                      R(T ) ≤ ∗ 2N KT ln                    + (K + 1) r∗ .                 (7)
+                               o                     3
+Remark 1. The C2MAB-V framework extends the capabilities of existing CMAB models by incorpo-
+rating long-term cost considerations, which is typically not present in previous works [14, 38, 37, 36].
+When comparing with the linear CMAB model analyzed by [38], which focuses on full rather than
+partial feedback,√by setting L = 1 and o∗ √ = 1, our regret bound aligns with theirs, adhering to the
+lower bound Ω( N KT ) in [38], up to a ln T factor. The comparability of our regret bound with
+other CMAB frameworks primarily stems from the efficient management of uncertainty in parameter
+estimation. A unique difference in our approach, however, is the implementation of a discretization
+process for the relaxed NP-hard problem. Despite this modification, due to our efforts on the shared
+attributes of different reward functions (which is not an easy task), the regret of C2MAB-V under the
+long-term cost constraint maintains the same order as those observed in other CMAB studies.
+Theorem 2 (Violation Bound). With δ = 1/T in the confidence radius, the constraint violation under
+the worst case is bounded as follows, with probability at least 1 − 1/T :
+                                             s       2                        !
+                                p                      2π KT         p
+                       V (T ) ≤ N K/T 2 2 ln                      + N K/T .                          (8)
+                                                          3
+Remark 2. As discussed in Section 3, achieving a violation that diminishes
+                                                                q          rapidly is paramount.
+Our analysis reveals that the violation decreases at a rate of Õ( K   T ). As T grows large, V (T )
+approaches zero, √suggesting an eventual elimination of violation. Furthermore, the overall violation
+is shown to be Õ( KT ), which is comparable to the order of regret. An interesting comparison
+arises with the work of [64], which studies non-linear submodular rewards and linear costs within
+the context of knapsack constraints, specifically focusing on scenarios with known and fixed costs.
+This contrasts with our exploration of scenarios characterized by unknown stochastic costs. Despite
+                                                                                                √
+the inherent challenges posed by unknown costs, our framework manages to attain an Õ( T )
+approximate regret with an approximation ratio of α1 = 1 − 1e ≈ 0.632 under knapsack constraints.
+                                                 √
+In contrast, the method from [64] achieves an Õ( T ) approximate regret with a lower approximation
+ratio α2 ≤ 0.5. Thus, our approach secures a regret improvement of at least (α1 − α2 ) T ≥ 0.132T .
+Compared to [59], which focuses on addressing constraints, our work expands to include non-linear
+rewards.
+
+6    Performance Evaluation
+Experiment Settings. We evaluate the three multi-LLM reward models (AWC, SUC, AIC) to
+represent different task types using the SciQ dataset [69] across nine LLMs: ChatGPT-3.5, ERNIE
+3.5, ChatGPT-4, ChatGLM2, Llama 2-7B, Llama 2-13B, Llama 2-70B, Mixtral-8x7B, and Claude
+2 [52, 15, 50, 5, 51].3 Costs are determined based on the official pricing. Results are averaged
+over 10 seeds with a 95% confidence interval; for more setting details, refer to Appendix E.1. The
+maximum number N is set uniformly to 4, according to the size of the LLM set. Budget threshold ρ
+is 0.45 for AWC, 0.5 for SUC, and 0.3 for AIC, according to reward models and official LLM pricing.
+More experiments (e.g., varying budget threshold, impacts of maximum number, and comparison
+to scenarios without relaxation or where only two LLMs are provided, or runtime) are available in
+Appendix E.
+Comparison Benchmarks. Comparisons include consistently utilizing the expensive ChatGPT-4
+[52] and the cheap ChatGLM2 [52], the online CMAB algorithm CUCB, [67, 42], which ignores
+constraints, Thompson Sampling, a mainstream probabilistic Bayesian online learning approach, [39]
+and ϵ-Greedy [2], which alternates
+                          √
+                                   between using empirical means and selecting uniformly based on
+the adaptive ϵt = min{1, 2√Kt
+                              } (Here, works of [59, 64] are not compared due to being restricted to
+   3
+     Our evaluation focuses exclusively on online learning from continuous feedback, incorporating offline
+pre-training, requiring offline training or GPU resources, or addressing cold-start issues. Studies, such as [72],
+on accelerating online learning to overcome cold-start challenges, can be seamlessly integrated.
+
+
+                                                        9
+                                                                            &0$%9D *UHHG\                                                                                                                                                                                                                        
+                                                                            &0$%9E &8&%                                                                              
+                                                                                    &0$%9F 7KRPSVRQ6DPSOLQJ                                                                                                                                                                                                    
+                                                                                                                                                                                       
+
+
+
+
+                                                                                                                                                                                                                                                                                                5HZDUGYLRODWLRQ5DWLR
+                                                                                    &0$%9G &KDW*37
+
+
+
+
+5HZDUGYLRODWLRQ5DWLR                                                                                                    5HZDUGYLRODWLRQ5DWLR
+                                                                                                                                                                                                                                                                                                                                                                                  &0$%9D *UHHG\
+                                                                                                                                                                                                                                                                                                                                                            &0$%9E &8&%
+                                                                                                                                                                                                                                                                                                                                                                          &0$%9F 7KRPSVRQ6DPSOLQJ
+                                                                                                                                                                                                                                                                                                                                                                          &0$%9G &KDW*37
+                                                                                                                                                                                                                                                                                                                                       
+                                                                                                                                                                                                                                    &0$%9D *UHHG\
+                                                                                                                                                                                                                        &0$%9E &8&%
+                                                                                                                                                                                                                                    &0$%9F 7KRPSVRQ6DPSOLQJ                                                    
+                                                                                                                                                                                                                        &0$%9G &KDW*37
+                                                                                                                                                                                                                                                                                                                                   
+                                                 
+                                                                                                                                                                                                                                                                                                       
+                                                                                   5RXQG                                                                                                                                      5RXQG                                                                                                                                   5RXQG
+                                                                          (a) AWC                                                                                                                                         (b) SUC                                                                                                                                       (c) AIC
+                                                                    Figure 4: Reward/violation ratio of three task types with nine different LLMs.
+fixed costs or linear reward). The robustness of C2MAB-V is validated by varying the parameters
+αµ , αc with values of (0.3, 0.05), (1, 0.05), (0.3, 0.01), and (1, 0.01), referred to as (a), (b), (c),
+(d). Although the setting in [18, 13, 47, 73] totally differs from our online learning setting, we also
+pre-learned a fixed combination of multi-LLMs offline, which we applied to online queries. This
+enables to explore how online learning based on feedback can complement the adjustment of LLM
+selections in the offline domain. The results are provided in Appendix E.3 due to space constraints.
+Performance Metric. To balance both reward and cost considerations, we assess performance using
+a reward/violation
+                 Pt
+                     ratio, defined as the average per-round reward divided by the average per-round
+                  τ =1 r(Sτ ,µ)/t
+violation, i.e.,  P t             , with higher ratios indicating superior performance. More extended
+                    τ =1 V (τ )/t
+experimental results with the varying budget threshold and a greater emphasis on performance, along
+with detailed results for individual reward and violation, are provided in Appendix E.2.
+Evaluation Results. The performance of the reward/ violation ratio is illustrated in Fig. 4. ChatGLM2
+is excluded since its rewards are significantly low, below 0.18, 0.10, and 0.0001 in the AWC, SUC,
+AIC models, despite no violations. In the AWC model (Fig. 4(a)), C2MAB-V consistently outperforms
+other algorithms in all four parameter settings, achieving the highest reward/violation ratio. This
+underscores C2MAB-V’s superior ability to balance rewards against violations. Our algorithms
+converge in fewer than 1,000 rounds, significantly faster than the ϵ-greedy algorithm, which requires
+nearly 10,000 rounds, even without incorporating offline information and relying entirely on online
+learning from scratch. The patterns observed for the SUC and AIC models (Fig. 4(b) and Fig. 4(c))
+mirror those of the AWC model, further showing the robustness of C2MAB-V across different settings.
+When randomly evaluating C2MAB-V(c), it improves by at least 64.72% over ϵ-Greedy, performs
+3.9× better than Thompson Sampling, 4×that of CUCB, and 6× that of Always using ChatGPT-4
+across three tasks. In summary, C2MAB-V maintains the highest reward/violation ratio under different
+(αµ , αc ) for the ablation study on multi-LLM tasks aligning with our theoretical analysis.
+
+7                                                         Conclusion
+In this paper, we introduce C2MAB-V, a cost-effective combinatorial online model with a versatile re-
+ward structure, designed to efficiently select multiple LLMs based on specific task requirements while
+adhering to budget constraints. C2MAB-V incorporates continual online feedback, and transform the
+NP-hard multi-LLM selection problem into a manageable relaxed form, with specified discretization
+rounding schemes designed to coordinate LLMs within a local-cloud architecture. Theoretical analy-
+sis of C2MAB-V provides novel and robust guarantees for the efficacy of the framework, including
+sublinear regret and a rapidly decreasing violation. Moreover, empirical evaluations with nine LLMs
+demonstrate C2MAB-V’s capability to balance performance with cost efficiency across three distinct
+types of collaborative multi-LLM tasks.
+Looking ahead, there are several compelling directions for future research. For example, further
+development could focus on enhancing privacy protection and improving communication between
+multiple local servers within our local-cloud architecture. Additionally, incorporating contextual
+combinatorial multi-armed bandit approaches could more effectively capture user preferences.
+
+
+
+
+                                                                                                                                                                                                                              10
+References
+ [1] Alibabacloud-Opensearch. Opensearch. https://www.alibabacloud.com/en/product/
+     opensearch/, 2024.
+ [2] Peter Auer, Nicolo Cesa-Bianchi, and Paul Fischer. Finite-time analysis of the multiarmed
+     bandit problem. Mach. Learn.,, 47:235–256, 2002.
+ [3] Awan-LLM. Awan. https://www.awanllm.com/, 2024.
+ [4] Kazuoki Azuma. Weighted sums of certain dependent random variables. Tohoku Mathematical
+     Journal, Second Series, 19(3):357–367, 1967.
+ [5] Baidu. Wenxin. https://wenxin.baidu.com/, 2024.
+ [6] Romil Bhardwaj, Zhengxu Xia, Ganesh Ananthanarayanan, Junchen Jiang, Yuanchao Shu,
+     Nikolaos Karianakis, Kevin Hsieh, Paramvir Bahl, and Ion Stoica. Ekya: Continuous learning
+     of video analytics models on edge compute servers. In 19th USENIX Symposium on Networked
+     Systems Design and Implementation (NSDI 22), pp. 119–135, 2022.
+ [7] Stephen P Boyd and Lieven Vandenberghe. Convex optimization. Cambridge university press,
+     2004.
+ [8] Kechao Cai, Xutong Liu, Yu-Zhen Janice Chen, and John CS Lui. Learning with guarantee
+     via constrained multi-armed bandit: Theory and network applications. IEEE Transactions on
+     Mobile Computing, 2022.
+ [9] Gruia Calinescu, Chandra Chekuri, Martin Pál, and Jan Vondrák. Maximizing a submodular set
+     function subject to a matroid constraint. In International Conference on Integer Programming
+     and Combinatorial Optimization, pp. 182–196. Springer, 2007.
+[10] Timothy M Chan. Approximation schemes for 0-1 knapsack. In 1st Symposium on Simplicity in
+     Algorithms (SOSA 2018). Schloss Dagstuhl-Leibniz-Zentrum fuer Informatik, 2018.
+[11] Chandra Chekuri, Jan Vondrák, and Rico Zenklusen. Dependent randomized rounding for
+     matroid polytopes and applications. arXiv preprint arXiv:0909.4348, 2009.
+[12] Kun Chen, Kechao Cai, Longbo Huang, and John Lui. Beyond the click-through rate: Web link
+     selection with multi-level feedback. arXiv preprint arXiv:1805.01702, 2018.
+[13] Lingjiao Chen, Matei Zaharia, and James Zou. Frugalgpt: How to use large language models
+     while reducing cost and improving performance. arXiv preprint arXiv:2305.05176, 2023.
+[14] Wei Chen, Yajun Wang, Yang Yuan, and Qinshi Wang. Combinatorial multi-armed bandit and
+     its extension to probabilistically triggered arms. The Journal of Machine Learning Research, 17
+     (1):1746–1778, 2016.
+[15] Claude. Claude AI LLM API. https://www.anthropic.com/, 2023.
+[16] Richard Combes, Mohammad Sadegh Talebi Mazraeh Shahi, Alexandre Proutiere, et al. Com-
+     binatorial bandits revisited. Advances in neural information processing systems, 28, 2015.
+[17] Siddhartha Dalal and Vishal Misra. The matrix: A bayesian learning model for llms. arXiv
+     preprint arXiv:2402.03175, 2024.
+[18] Dujian Ding, Ankur Mallick, Chi Wang, Robert Sim, Subhabrata Mukherjee, Victor Ruhle,
+     Laks VS Lakshmanan, and Ahmed Hassan Awadallah. Hybrid llm: Cost-efficient and quality-
+     aware query routing. arXiv preprint arXiv:2404.14618, 2024.
+[19] Devdatt P Dubhashi and Alessandro Panconesi. Concentration of measure for the analysis of
+     randomized algorithms. Cambridge University Press, 2009.
+[20] Vikranth Dwaracherla, Seyed Mohammad Asghari, Botao Hao, and Benjamin Van Roy. Efficient
+     exploration for llms. arXiv preprint arXiv:2402.00396, 2024.
+
+
+                                                11
+[21] Forefront-AI. Forefront AI LLM API. https://forefront.ai/, 2023.
+[22] Dylan J Foster, Akshay Krishnamurthy, and Haipeng Luo. Model selection for contextual
+     bandits. In H. Wallach, H. Larochelle, A. Beygelzimer, F. d’Alché Buc, E. Fox, and R. Garnett
+     (eds.), Advances in Neural Information Processing Systems, volume 32, 2019.
+[23] Yi Gai, Bhaskar Krishnamachari, and Rahul Jain. Combinatorial network optimization with
+     unknown variables: Multi-armed bandits with linear rewards and individual observations.
+     IEEE/ACM Transactions on Networking (TON), 20(5):1466–1478, 2012.
+[24] Rajiv Gandhi, Samir Khuller, Srinivasan Parthasarathy, and Aravind Srinivasan. Dependent
+     rounding and its applications to approximation algorithms. Journal of the ACM (JACM), 53(3):
+     324–360, 2006.
+[25] Chongming Gao, Kexin Huang, Jiawei Chen, Yuan Zhang, Biao Li, Peng Jiang, Shiqin Wang,
+     Zhong Zhang, and Xiangnan He. Alleviating matthew effect of offline reinforcement learning
+     in interactive recommendation. Proceedings of the 46th International ACM SIGIR Conference
+     on Research and Development in Information Retrieval, 2023.
+[26] Neha Gupta, Harikrishna Narasimhan, Wittawat Jitkrittum, Ankit Singh Rawat, Aditya Krishna
+     Menon, and Sanjiv Kumar. Language model cascades: Token-level uncertainty and beyond.
+     arXiv preprint arXiv:2404.10136, 2024.
+[27] Gurobi-Optimization. GUROBI. https://www.gurobi.com/, 2024.
+[28] Geoffrey Hinton, Oriol Vinyals, and Jeff Dean. Distilling the knowledge in a neural network.
+     arXiv preprint arXiv:1503.02531, 2015.
+[29] Dorit S Hochba. Approximation algorithms for np-hard problems. ACM Sigact News, 28(2):
+     40–52, 1997.
+[30] Chris Hokamp, Demian Gholipour Ghalandari, Nghia The Pham, and John Glover. Dyne: Dy-
+     namic ensemble decoding for multi-document summarization. arXiv preprint arXiv:2006.08748,
+     2020.
+[31] Sirui Hong, Xiawu Zheng, Jonathan Chen, Yuheng Cheng, Jinlin Wang, Ceyao Zhang, Zili
+     Wang, Steven Ka Shing Yau, Zijuan Lin, Liyang Zhou, et al. Metagpt: Meta programming for
+     multi-agent collaborative framework. arXiv preprint arXiv:2308.00352, 2023.
+[32] Ngo Quang Huy, Tu Minh Phuong, and Ngo Xuan Bach. Autoencoding language model
+     based ensemble learning for commonsense validation and explanation. arXiv preprint
+     arXiv:2204.03324, 2022.
+[33] Rishabh Iyer, Stefanie Jegelka, and Jeff Bilmes. Monotone closure of relaxed constraints in
+     submodular optimization: Connections between minimization and maximization: Extended
+     version. In UAI. Citeseer, 2014.
+[34] JD-Cloud-Yanxi-AI. JDCloud. https://yanxi.jd.com/, 2024.
+[35] Sehoon Kim, Karttikeya Mangalam, Jitendra Malik, Michael W Mahoney, Amir Gholami, and
+     Kurt Keutzer. Big little transformer decoder. arXiv preprint arXiv:2302.07863, 2023.
+[36] Branislav Kveton, Csaba Szepesvari, Zheng Wen, and Azin Ashkan. Cascading bandits:
+     Learning to rank in the cascade model. In International Conference on Machine Learning, pp.
+     767–776. PMLR, 2015.
+[37] Branislav Kveton, Zheng Wen, Azin Ashkan, and Csaba Szepesvári. Combinatorial cascading
+     bandits. In Proceedings of the 28th International Conference on Neural Information Processing
+     Systems-Volume 1, pp. 1450–1458, 2015.
+[38] Branislav Kveton, Zheng Wen, Azin Ashkan, and Csaba Szepesvari. Tight regret bounds for
+     stochastic combinatorial semi-bandits. In AISTATS, 2015.
+[39] Tor Lattimore and Csaba Szepesvári. Bandit algorithms. Cambridge University Press, 2020.
+
+
+                                               12
+[40] Shuai Li, Baoxiang Wang, Shengyu Zhang, and Wei Chen. Contextual combinatorial cascading
+     bandits. In International conference on machine learning, pp. 1245–1253. PMLR, 2016.
+
+[41] Chin-Yew Lin. Rouge: A package for automatic evaluation of summaries. In Text summarization
+     branches out, pp. 74–81, 2004.
+
+[42] Xutong Liu, Jinhang Zuo, Xiaowei Chen, Wei Chen, and John CS Lui. Multi-layered network
+     exploration via random walks: From offline optimization to online learning. In International
+     Conference on Machine Learning, pp. 7057–7066. PMLR, 2021.
+
+[43] Xutong Liu, Jinhang Zuo, Siwei Wang, Carlee Joe-Wong, John Lui, and Wei Chen. Batch-size
+     independent regret bounds for combinatorial semi-bandits with probabilistically triggered arms
+     or independent arms. arXiv preprint arXiv:2208.14837, 2022.
+
+[44] Xutong Liu, Jinhang Zuo, Siwei Wang, John CS Lui, Mohammad Hajiesmaili, Adam Wierman,
+     and Wei Chen. Contextual combinatorial bandits with probabilistically triggered arms. In
+     International Conference on Machine Learning, pp. 22559–22593. PMLR, 2023.
+
+[45] Xutong Liu, Jinhang Zuo, Hong Xie, Carlee Joe-Wong, and John CS Lui. Variance-adaptive al-
+     gorithm for probabilistic maximum coverage bandits with general feedback. In IEEE INFOCOM
+     2023-IEEE Conference on Computer Communications, pp. 1–10. IEEE, 2023.
+
+[46] Zijun Liu, Yanzhe Zhang, Peng Li, Yang Liu, and Diyi Yang. Dynamic llm-agent net-
+     work: An llm-agent collaboration framework with agent team optimization. arXiv preprint
+     arXiv:2310.02170, 2023.
+
+[47] Aman Madaan, Pranjal Aggarwal, Ankit Anand, Srividya Pranavi Potharaju, Swaroop Mishra,
+     Pei Zhou, Aditya Gupta, Dheeraj Rajagopal, Karthik Kappaganthu, Yiming Yang, et al. Automix:
+     Automatically mixing language models. arXiv preprint arXiv:2310.12963, 2023.
+
+[48] Nadav Merlis and Shie Mannor. Batch-size independent regret bounds for the combinatorial
+     multi-armed bandit problem. In Conference on Learning Theory, pp. 2465–2489. PMLR, 2019.
+
+[49] Nadav Merlis and Shie Mannor. Tight lower bounds for combinatorial multi-armed bandits. In
+     Conference on Learning Theory, pp. 2830–2857. PMLR, 2020.
+
+[50] Mistral-AI. Mistral. https://mistral.ai/, 2024.
+
+[51] Ollama. Ollama. https://github.com/jmorganca/ollama/, 2023.
+
+[52] OpenAI. OpenAI LLM API. https://platform.openai.com/, 2023.
+
+[53] Baolin Peng, Michel Galley, Pengcheng He, Hao Cheng, Yujia Xie, Yu Hu, Qiuyuan Huang,
+     Lars Liden, Zhou Yu, Weizhu Chen, et al. Check your facts and try again: Improving large
+     language models with external knowledge and automated feedback.(2023). arXiv preprint
+     cs.CL/2302.12813, 2023.
+
+[54] Poe. Poe. https://poe.com/ChatGPT, 2024.
+
+[55] Rafael Figueiredo Prudencio, Marcos R. O. A. Maximo, and Esther Luna Colombini. A survey
+     on offline reinforcement learning: Taxonomy, review, and open problems. IEEE Transactions
+     on Neural Networks and Learning Systems, pp. 1–0, 2023. ISSN 2162-2388. doi: 10.1109/
+     tnnls.2023.3250269. URL http://dx.doi.org/10.1109/TNNLS.2023.3250269.
+
+[56] Herbert Robbins. Some aspects of the sequential design of experiments. Bulletin of the American
+     Mathematical Society, 58(5):527–535, 1952.
+
+[57] Julian Salazar, Davis Liang, Toan Q Nguyen, and Katrin Kirchhoff. Masked language model
+     scoring. arXiv preprint arXiv:1910.14659, 2019.
+
+[58] Victor Sanh, Lysandre Debut, Julien Chaumond, and Thomas Wolf. Distilbert, a distilled version
+     of bert: smaller, faster, cheaper and lighter. arXiv preprint arXiv:1910.01108, 2019.
+
+
+                                                13
+[59] Karthik Abinav Sankararaman and Aleksandrs Slivkins. Combinatorial semi-bandits with
+     knapsacks. In International Conference on Artificial Intelligence and Statistics, pp. 1760–1770.
+     PMLR, 2018.
+[60] David Saxton, Edward Grefenstette, Felix Hill, and Pushmeet Kohli. Analysing mathematical
+     reasoning abilities of neural models. arXiv preprint arXiv:1904.01557, 2019.
+[61] Kurt Shuster, Jing Xu, Mojtaba Komeili, Da Ju, Eric Michael Smith, Stephen Roller, Megan
+     Ung, Moya Chen, Kushal Arora, Joshua Lane, et al. Blenderbot 3: a deployed conversational
+     agent that continually learns to responsibly engage. arXiv preprint arXiv:2208.03188, 2022.
+[62] Aleksandrs Slivkins et al. Introduction to multi-armed bandits. Foundations and Trends® in
+     Machine Learning, 12(1-2):1–286, 2019.
+[63] Xiaoming Sun, Jialin Zhang, and Zhijie Zhang. Simple deterministic approximation for
+     submodular multiple knapsack problem. In 31st Annual European Symposium on Algorithms
+     (ESA 2023). Schloss Dagstuhl-Leibniz-Zentrum für Informatik, 2023.
+[64] Sho Takemori, Masahiro Sato, Takashi Sonoda, Janmajay Singh, and Tomoko Ohkuma. Sub-
+     modular bandit problem under multiple constraints. In Conference on Uncertainty in Artificial
+     Intelligence, pp. 191–200. PMLR, 2020.
+[65] Lin Tian, Nannan Huang, and Xiuzhen Zhang. Efficient multilingual sexism detection via large
+     language model cascades. In Conference and Labs of the Evaluation Forum, 2023.
+[66] Pravin M Vaidya. Speeding-up linear programming using fast matrix multiplication. In 30th
+     annual symposium on foundations of computer science, pp. 332–337. IEEE Computer Society,
+     1989.
+[67] Qinshi Wang and Wei Chen. Improving regret bounds for combinatorial semi-bandits with
+     probabilistically triggered arms and its applications. Advances in Neural Information Processing
+     Systems, 30, 2017.
+[68] Yiding Wang, Kai Chen, Haisheng Tan, and Kun Guo. Tabi: An efficient multi-level inference
+     system for large language models. In Proceedings of the Eighteenth European Conference on
+     Computer Systems, pp. 233–248, 2023.
+[69] Johannes Welbl, Nelson F Liu, and Matt Gardner. Crowdsourcing multiple choice science
+     questions. arXiv preprint arXiv:1707.06209, 2017.
+[70] Sang Michael Xie, Aditi Raghunathan, Percy Liang, and Tengyu Ma. An explanation of
+     in-context learning as implicit bayesian inference. arXiv preprint arXiv:2111.02080, 2021.
+[71] Yi Yang, Yixuan Tang, and Kar Yan Tam. Investlm: A large language model for investment
+     using financial domain instruction tuning. arXiv preprint arXiv:2309.13064, 2023.
+[72] Xiaoying Zhang, Hong Xie, Hang Li, and John C.S. Lui. Conversational contextual bandit:
+     Algorithm and application. In Proceedings of the web conference 2020, pp. 662–672, 2020.
+[73] Banghua Zhu, Ying Sheng, Lianmin Zheng, Clark Barrett, Michael I Jordan, and Jiantao
+     Jiao. On optimal caching and model multiplexing for large model inference. arXiv preprint
+     arXiv:2306.02003, 2023.
+
+
+
+
+                                                 14
+A    Description Supplement
+
+
+                                Table 2: Summary of the main symbols.
+           Symbol       Description
+                 K      Set of all LLMs, where k indexes an LLM
+                 T      Set of discrete time intervals or rounds
+                St      Set of LLMs selected at round t, i.e., an action
+                 S      Set of all possible combinations of LLM actions
+                N       Maximum number of LLMs active simultaneously
+              Xt,k      Reward associated with LLM k at round t
+               yt,k     Cost associated with LLM k at round t
+                µk      Unknown expected performance reward for LLM k
+                ck      Unknown expected cost for LLM k
+                Dq      Distribution over queries
+             lkin (q)   Number of input tokens by LLM k for query q
+            lkout (q)   Random number of output tokens by LLM k for query q
+                Ck      Cost per token for LLM k
+           Dkout (q)    Distribution of output tokens for LLM k given query q
+                Q       Set of all queries
+                Ft      Subset of LLMs from which feedback is observed at round t
+                Ft      Cardinality of the subset Ft
+            V (T )      Total budget violation over T rounds
+            R(T )       Total regret over T rounds
+                 ρ      Budget guarantee threshold
+                 δ      Probability parameter
+              µ̂t,k     Empirical estimate of the mean reward for LLM k at round t
+               ĉt,k    Empirical estimate of the cost for LLM k at round t
+                αµ      Control parameter for adjusting the reward confidence bound
+                αc      Control parameter for adjusting the cost confidence bound
+             ρt,µk      Confidence radius for the reward of LLM k at round t
+              ρt,ck     Confidence radius for the cost of LLM k at round t
+             Tt,µk      Count of selections of LLM k concerning the reward up to round t
+             Tt,ck      Count of selections of LLM k concerning the cost up to round t
+                z̃k     Continuous variable representing the selection status of LLM k
+                Z̃      Vector of z̃k for all LLMs
+              ot,S      Probability all LLMs within action S are observed at round t
+                r∗      Maximum reward for the L-Lipschitz reward function
+                o∗      Minimum observation probability across all LLM combinations
+                 L      Lipschitz constant for the reward function
+
+
+
+B    Discretization Rounding Algorithms
+
+For the AWC reward, as detailed in Algorithm 2, the scheduling cloud initiates the process by setting
+up a vector v and identifying K sets {B1 , · · · , BK } (line 1). Following this initialization, Algorithm
+2 enters an iterative phase where it fine-tunes the composition of the sets B1 and B2 , aiming to keep
+the evolving solution within acceptable bounds while also seeking to optimize the reward (lines 3-9).
+Subsequent steps involve refining B1 by excluding all elements found in set G, and updating Ai+1 to
+reflect the current state of B1 (line 10), which are designed to gradually construct the final integrated
+solution. Finally, Algorithm 2 designates AK as the final action of selected LLM St (line 12). The
+validity of the resultant solution for LLM selection is underpinned by the lemma that follows (more
+discussions are in Appendix C.1).
+Lemma 2 (Theorem 2.1 in [11]). For a matroid M = (K, S) with a rank function r : 2N → Z+ , the
+matroid polytope P (M) is defined as the convex hull of the characteristic vectors of the independent
+sets S, and the base polytope B(M) as the convex hull of the characteristic vectors of the bases B.
+
+
+                                                   15
+Algorithm 2 Discretization Rounding for LLM Selection with AWC Reward Model
+Input: Relaxed continuous data Z̃ t from the local server.
+                                                         P
+ 1: Initialize: Find v = (v1 , . . . , vK ) where vk ≥ 0, k∈K vk = 1 and sets B1 , · · · , BK satisfying
+             P
+    z̃t,k = k∈K vk IBk ; Set A1 = B1 .
+ 2: for i = 1, . . . , K − 1 do
+                 Pi
+ 3:      p1 ← j=1 vj , p2 ← vi+1 , B1 ← Ai , B2 ← Bi+1 ;
+ 4:      if |B1 | < |B2 | then swap p1 and p2 , B1 and B2 ;
+ 5:      Find a set G ⊆ B1 \ B2 : cardinality |G| = |B1 | − |B2 | and B2 ∪ G ⊆ S, and set B2 ← B2 ∪ G;
+ 6:      while B1 ̸= B2 do
+ 7:           Find i ∈ B1 \B2 and j ∈ B2 \B1 satisfying (B1 \{i})∪{j} ∈ S and (B2 \{j})∪{i} ∈ S;
+ 8:           Set B1 ← (B1 \{i})∪{j} with probability p2 /(p1 +p2 ), otherwise B2 ← (B2 \{j})∪{i};
+ 9:      end while
+10:      Set B1 ← B1 \{i}, ∀i ∈ G with probability p2 /(p1 + p2 ); Ai+1 ← B1 ;
+11: end for
+12: Return the final output AK as the combinatorial LLM action St .
+
+
+Algorithm 3 Discretization Rounding for LLM Selection with SUC/AIC Reward Models
+Input: Relaxed continuous data Z̃ t from the local server.
+ 1: while exists k ∈ K such that 0 < z̃t,k < 1 do
+ 2:    Identify distinct k ̸= j ∈ K, such that 0 < z̃t,k < 1, 0 < z̃t,j < 1;
+ 3:    Let p = min{1 − z̃t,k , z̃t,j }, q (
+                                          = min{z̃t,k , 1 − z̃t,j };
+                                                                                      q
+                                            (z̃t,k + p, z̃t,j − p), with probability p+q ,
+ 4:    Update the pair (z̃t,k , z̃t,j ) ←                                             p
+                                            (z̃t,k − q, z̃t,j + q), with probability p+q ;
+ 5: end while
+ 6: Return {k ∈ K : z̃t,k = 1} as the selected LLM as the combinatorial LLM action St .
+
+
+
+For any two bases B1 , B2 ∈ B and an element i ∈ B1 \B2 , there exists an element j ∈ B2 \B1 such
+that (B1 \{i}) ∪ {j} and (B2 \{j}) ∪ {i} also belong to B.
+
+For the SUC and AIC reward, as elucidated in Algorithm 3, the process commences with the
+examination of set K to identify LLM k such that their corresponding value z̃t,k lies strictly between
+0 and 1 (line 1). Subsequently, Algorithm 3 progresses by identifying a pair of distinct LLM, k and j,
+within K, both of which satisfy the criterion 0 < z̃t,k , z̃t,j < 1 (line 2). The core of the discretization
+procedure involves computing the probabilities for adjusting the values of z̃t,k and z̃t,j . This is
+achieved by determining p and q, which represent the minimum increments and decrements needed
+for the adjustment, ensuring the discretization stays within bounds (line 3). With these parameters,
+Algorithm 3 probabilistically updates the pair (z̃t,k , z̃t,j ) to either increase z̃t,k and decrease z̃t,j ,
+or vice versa, thus balancing the overall distribution (line 4). Finally, Algorithm 3 concludes by
+assembling the set St comprised of all k ∈ K for which z̃t,k = 1, marking them as the selected
+LLM for the given timestep (line 6). This discrete selection process, grounded in the probabilistic
+adjustments of the z̃ values, systematically refines the selection of LLM.
+One fundamental aspect of the reward r(S; µ) is its demonstration of the “diminishing marginal”
+property. Specifically, when a new LLM k ∈ K is added into action Sj with a relatively larger set
+size, the resultant increase in reward is less than or equal to the increase observed when the same
+LLM k is added to a smaller set Si , given Si ⊆ Sj ⊆ S, i, j ∈ T . This behavior exemplifies a
+submodular function, formally expressed as follows:
+
+                      r(Si ∪ {k}; µ) − r(Si ; µ) ≥ r(Sj ∪ {k}; µ) − r(Sj ; µ).                           (9)
+
+By applying the common greedy algorithm to solve the maximization of submodular function problem,
+we have the following lemma:
+Lemma 3 (Theorem 1 in [63]). The problem of maximizing a submodular function can be efficiently
+solved by a greedy algorithm, achieving an approximate ratio of α = (1 − 1/e) relative to the
+theoretical optimum.
+
+
+                                                     16
+This lemma indicates a significant efficiency in approximating the optimal solution of the submodular
+reward function r(S; µ). Attentive readers will recognize that the previously discussed three different
+reward functions (AWC, SUC, and AIC reward) are actually special cases of submodular functions,
+all with monotonicity and Lipschitz coninuity condition satisfied. However, we focus on designing
+and discussing different algorithmic components that offer better performance guarantees with α = 1
+for SUC and AIC, rather than merely categorizing them as submodular functions.
+
+
+C     Constraint and Reward Analysis
+
+C.1   Discussions on Constraint Type and Extended Task Type
+
+In the context of C2MAB-V, we define ground base arms as K = {1, ..., K} and denote S as
+combinatorially feasible sets, structured by specific combinatorial frameworks. A set S is linearizable
+if its convex hull forms a polytope in RK , meaning we can describe it using a finite number of
+linear constraints in RK , with S representing the integral solutions. Matroids represent a prominent
+category of linearizable combinatorial sets, characterized by:
+       • Containment of the empty set: ∅ ∈ S.
+       • Downward closure: For any S ∈ S and S ′ ⊂ S, it follows that S ′ ∈ S.
+       • Exchange property: For S, S ′ ∈ S with |S ′ | > |S|, there exists an i ∈ S ′ \ S such that
+         S ∪ {i} ∈ S.
+For any S ∈ S, the rank function rank(S) is defined as the maximal size of independent subsets
+in S, and IS indicates a vector in {0, 1}K representing the membership of elements in S. The
+polytope induced by S, denoted as P (S), is defined as the convex hull of these characteristic vectors,
+encapsulating the feasible integral solutions for S.
+The base of a matroid, B, consists of independent sets of maximumP
+                                                                 size N , and the base polytope,
+B(S), is the intersection of P (S) with a hyperplane defined by k∈K z̃k = N . Examples of
+matroids include:
+
+      1. Cardinality-constrained subsets: Where S = {S ⊆ K : |S| ≤ N }.
+      2. Partition matroids: Defined over disjoint subsets D1 , ..., DM of K with cardinality con-
+         straints d1 , ..., dM .
+      3. Spanning trees: For a graph G = (V, K), S includes all subsets of K that form a tree
+         covering all vertices in V .
+
+For each matroid type, the corresponding polytope P (S) is detailed by a linear program, reflecting
+its combinatorial structure and constraints.
+Attentive readers may have noticed that our main text’s discussion of three different types of tasks
+involving LLM collaboration, namely the AWC, SUC, and AIC rewards, as well as their corresponding
+constraints, fundamentally relates to concepts associated with matroids and their bases constrained
+by cardinality. To facilitate better understanding, we have organized this information as follows:
+Matroids and Their Bases Subject to Cardinality Constraints. For a given fixed N , a subset
+S ⊂ K can belong to S either if |S| ≤ N or |S| = N . The former is considered in the AWC
+application to guarantee user satisfaction and experience, where each feasible action selects at most
+N LLMs. The latter case is used in settings of SUC on independently tackling tasks and AIC on
+developing a whole project, where exactly N LLMs are selected.
+The corresponding induced polytopes P (S) can be described by a vector Z̃ ∈ RK that adheres to the
+following linear programs:
+
+      1. For subsets with size at most N (Inclusive Matroids):
+                                           X
+                                               z̃k ≤ N,                                           (10)
+                                            k∈K
+                                           z̃k ∈ [0, 1], for ∀ k ∈ K.                             (11)
+
+
+                                                  17
+      2. For subsets with size exactly N (Base Matroids):
+                                           X
+                                               z̃k = N,                                              (12)
+                                               k∈K
+                                            z̃k ∈ [0, 1], for ∀ k ∈ K.                               (13)
+
+This structure clarifies the types of constraints applied to different combination of multiple LLMs for
+different task types.
+However, the generalization of our framework design extends beyond this; it is also applicable to
+other types of settings. To illustrate this, consider a specific analytical example that employs Partition
+matroids as the foundational structure. Suppose we have a collection of disjoint subsets D1 , . . . , DM
+of K, with M = {1, 2, ..., M }. This can be interpreted as further domain-specific divisions within a
+complete set of LLMs, K, such as dedicating groups of non-overlapping LLMs specialized in different
+subjects like mathematics and physics, or each LLM being responsible for a specific submodule
+within a large project. Additionally, the constraints can be expanded further; for example, each
+submodule may have different budget requirements. Formally, this involves M cardinality constraints
+d1 , . . . , dM . A subset S ⊂ K belongs to S if and only if |S ∩ Di | ≤ di for some fixed N , where
+S = {S ⊆ K : |S ∩ Di | ≤ di , i ∈ M}. This combinatorial feasible set S can model products that
+belong to mutually exclusive categories.
+The corresponding induced polytope P (S) can be described by Z̃ ∈ RK that follows the linear
+program:
+                                   X
+                                       z̃k ≤ dj , ∀ j ∈ M
+                                        i∈Dj
+
+                                        z̃k ∈ [0, 1], for ∀ k ∈ K.
+
+For instance, utilizing the constraints outlined above, combined with the AIC reward structure, we can
+easily apply our model to coordinate tasks like a development project where each LLM is responsible
+for different non-overlapping modules. This allows for online selection of an optimal combination of
+multiple LLMs tailored to the specific needs of the project. Alternatively, by combining partition
+matroids and SUC reward, it is possible to address a unified teaching task with different LLMs
+focusing on independent but complementary academic disciplines. Thus, within the S framework,
+based on our defined reward structure and various types of constraints, we can effectively handle a
+wide range of collaborative tasks among multiple LLMs.
+Based on the above analysis, regarding extended tasks, such as identifying the set of LLMs to
+be deployed, are addressed, the strategy lacks specificity on which LLM should be assigned to a
+particular task (as in the SUC case) or which LLM should handle a given sub-module (as in the AIC
+case). This issue can be mitigated by transitioning from cardinality-constrained subsets to partition
+matroids. Specifically, a smaller and more suitable subset of LLMs can be preselected for specific
+query tasks. For example, in mathematical problems, the selection space for LLMs could be restricted
+to those fine-tuned for mathematical queries, rather than choosing from the full set of LLMs. This
+targeted selection not only reduces the search space but also accelerates the online learning process
+by avoiding the misallocation of resources.
+Alternatively, the selection process can rely entirely on online learning through match bandit. The
+match bandit problem, a variant of the maximum weight matching problem, is modeled as a bipartite
+graph G = (Q, K, E), where Q represents query tasks, K represents LLMs, and E represents
+weighted edges denoting the probability of assigning a query task q to an LLM k. The Combinatorial
+MAB proposed in our paper can naturally be transformed into this bipartite graph structure based on
+[].[45, 14].
+
+C.2   Exploration on Attributes of Reward Functions
+
+Next, we examine the common attributes of the three defined reward functions. All three correspond-
+ing constraint optimization problems (defined in Eq. (3), Eq. (4), and Eq. (5)) are linear programming
+(LP) models with K variables. The optimal solutions for these models, i.e., α = 1 − e for the AWC
+reward and α = 1 for the SUC and AIC rewards, can be determined in polynomial time [66, 9, 33].
+
+
+                                                     18
+Next, we define the discretization procedure σ used in Algorithm 2 and Algorithm 3 as St = σ(Z̃ t ),
+where ISt∗ represents the feasible solutions of the optimization problem. The indicator variable
+IS = {z1 , z2 , · · · , zK } ∈ {0, 1}K denotes the selection status of LLMs in the set K. Referencing
+Theorem 1.1 in [11] for Algorithm 2 and Properties P1 and P2 in [24] for Algorithm 3, it is established
+that ES∼σ(Z̃ t ) [IS ] = Z̃ t for any S ∼ σ(Z̃ t ) within the feasible set S. Consequently, we can conclude
+that:                                 Q                
+                                1 − P k∈S (1 − µk ) = r̃ (IS , µ) , AWC reward,
+                  r (S, µ) =                 µ              = r̃ (IS , µ) , SUC reward,                (14)
+                                      Q k∈S k
+                                            µ
+                                         k∈S k              =    r̃ (IS , µ) ,   AIC reward.
+                                                        ∗
+                                                                               
+Following Eq. (14), we can then deduce that r (St , µ̄t ) = r̃ ISt∗ , µ̄t .
+Finally, we establish a relationship between the actual reward function and its relaxed counterpart by
+demonstrating the inequality E [r̃ (ISt , µ)] ≥ r̃(Z̃ t , µ).
+❶ For the AWC reward, the proof can be streamlined as follows: Based on Algorithm 2, the process
+transitions from an initial continuous solution Z̃ to a final integral solution X s = IS over s steps,
+resulting in the sequence (X 1 , ..., X s ), where X 1 = Z̃ and X s = IS . Utilizing Lemma B.1 and
+Lemma 4.1 from [11], at any round t, we can represent X t as a weighted sum of indicator functions
+                  Pk
+for bases, X t = l=1 pl IBl , where Bl represents the bases. The state transition to X t+1 is modeled
+as follows:                   (
+                                X t + p2 (I{i} − I{j} ), with probability p1p+p1
+                                                                                   ,
+                    X t+1 =                                                   p2
+                                                                                 2
+                                X t − p1 (I{i} − I{j} ), with probability p1 +p2 .
+Defining a = X t and ϑ = I{i} − I{j} , we let h(p) = r̃(X t + pϑ, µ). The expected value of r̃ at
+t + 1 given X t is then
+                                         p1                          p2
+            E[r̃(X t+1 , µ)|X t ] =           r̃(X t + p2 ϑ, µ) +         r̃(X t − p1 ϑ, µ),
+                                      p1 + p2                     p1 + p2
+which simplifies to p1p+p1
+                           2
+                             h(p2 ) + (1 − p1p+p
+                                               1
+                                                 2
+                                                   )h(−p1 ). Due to the convexity of h, this is at least
+h(0) = r̃(X t , µ). Applying this inequality recursively from t = 1 to s − 1 via the tower rule, we
+conclude that E[r̃(X s , µ)] ≥ r̃(X 1 , µ) = r̃(Z̃, µ), thereby satisfying E [r̃ (ISt , µ)] ≥ r̃(Z̃ t , µ).
+❷ For the SUC reward, recall that indicator variable IS = {z1 , z2 , · · · , zK } ∈ RK , with zk = 1
+indicating LLM k selected, and zk = 0 otherwise, and z̃k ∈ [0, 1] is a continuous variable P    , with Z̃ =
+{z̃1 , z̃2 , · · · , z̃K }. On the basis of Eq. (14), it holds that ES∼σ(Z̃) [r̃(IS , µ)] = k∈K E[zk ]µk =
+P
+   k∈K z̃k µk = r̃(Z̃, µ). This fulfills that E [r̃ (ISt , µ)] ≥ r̃(Z̃ t , µ).
+
+❸ For Pthe AIC reward,      consider the vector Z := (z1 , . . . , zK ) ∈ RK , where r̃(Z, µ) =
+exp      k∈K zk ln µk is demonstrated to be a convex function with respect to Z. This is evidenced
+by the Hessian matrix of r̃(Z, µ), denoted as Hr̃ (Z) ∈ RK × RK . The entries of Hr̃ (Z) are given
+by Hr̃ (Z)i,j = ln µi ln µj r̃(Z, µ). The Hessian can be expressed as Hr̃ (Z) = r̃(Z, µ)W W T ,
+where W is the column vector W := (ln µ1 , . . . , ln µK ). Consequently, Hr̃ (Z) is positive semi-
+definite because for any vector x ∈ RK , we have xT Hr̃ (Z)x = r̃(Z, µ)(W T x)2 ≥ 0, given that
+r̃(Z, µ) ≥ 0 and (W T x)2 ≥ 0. Applying Jensen’s inequality         and acknowledging that EZ [zk ] = z̃k
+                                            P                            P
+as per Eq. (14), it follows that EZ [exp        k∈K k z ln µk   ] ≥ exp    k∈K EZ [zk ] ln µk = r̃(Z̃, µ),
+thereby ensuring that E [r̃ (ISt , µ)] ≥ r̃(Z̃ t , µ).
+
+D     Proof Appendix
+D.1   Proof of Lemma 1
+
+Proof. We aim to establish a bound for the probability given by:
+                                                                s               
+                                                                         2    3
+                                                                  ln( 2π 3δKt ) 
+               Pr{¬Kµ } = Pr ∃t ∈ T , k ∈ K, |µ̂t,k − µk | ≥
+                                                                    2Tt,µk 
+
+
+                                                    19
+which can be expressed as follows:
+                                                                  s                              
+                        K X
+                          T X
+                            t                                                2    3
+                        X                                             ln( 2π 3δKt )              
+                    ≤                   Pr       |µ̂t,k − µk | ≥                       , Tt,µk = s
+                                                                        2Tt,µk                   
+                        k=1 t=1 s=1
+                        K XT X t
+                        X          3δ 1
+                    ≤
+                          t=1 s=1
+                                  π 2 K t3
+                        k=1
+                        δ
+                    ≤     .
+                        2
+The initial inequality employs the union bound over the indices k, t, and s. The subsequent inequality
+                                                                                              Ps
+leverages the Chernoff-Hoeffding inequality (see Lemma 5) when Ts,µk = s and µ̂t,k = 1s j=1 µjk
+is the sample mean of s independent and identically distributed random variables µ1k , . . . , µsk , each
+representing the j-th observation of index k. The final inequality is justified by the series sum
+               π2
+P∞ 1
+   k=1 k2 = 6 .
+Analogously, for the probability concerning ¬Kc , we derive:
+                                                             s                 
+                                                                        2    3
+                                                                ln( 2π 3δKt ) 
+             Pr{¬Kc } = Pr ∃t ∈ T , k ∈ K, |ĉt,k − ck | ≥
+                                                                    2Tt,ck 
+                                                         s                           
+                           K X  T X t                              2    3
+                          X                                 ln( 2π 3δKt )            
+                        ≤              Pr |ĉt,k − ck | ≥                  , Tt,ck = s
+                               t=1 s=1
+                                                               2Tt,ck                
+                                  k=1
+                                  K XT X t
+                                  X          3δ 1
+                              ≤               2 K t3
+                                    t=1 s=1
+                                            π
+                                  k=1
+                                  δ
+                              ≤     .
+                                  2
+
+Through consideration of the complementary events, we ascertain that the events Kµ and Kc each
+occur with a probability of at least 1 − 2δ , respectively.
+
+D.2   Comprehensive Proof of Theorem 1
+
+General regret proof analysis
+
+The proof of Theorem 1 is structured into three pivotal segments. Initially, it focuses on transforming
+the total regret into over-estimation regret (Step 1: Reduce to the over-estimation regret). Subse-
+quently, it addresses the conversion of partially observed actions to fully observed ones, leveraging
+the Lipschitz condition to dissect the regret associated with an action into the regrets of its constituent
+base arms (Step 2: Deal with the partial observation and apply the L-Lipschitz condition). The
+final segment synthesizes these elements through meticulous mathematical manipulations (Step 3:
+Derivation to get the final regret bound).
+We begin with a sketch of the proof to enhance comprehension.
+                                                 q                  From Lemma 1, for every round t ∈ T
+                                                         2π 2 Kt3
+                                                                  
+and LLM k ∈ K, the inequality |µ̂t,k − µk | < ln            3δ      /2Tt,µk is satisfied with probability at
+least 1 − δ/2. By setting δ = 1/T , we can assert with high probability that µk ≤ µ̂t,k + ρµ,t,k = µ̄t,k
+and ck ≥ ĉt,k − ρc,t,k = ct,k .
+                           ¯
+Given the monotonicity property of reward function r(S; µ) and r (St∗ , µ̄t ) = r̃ ISt∗ , µ̄t , we derive
+                                                                                               
+the following inequality:
+                                                               h                       i
+                R(T ) ≤ E [αr (St∗ , µ̄t ) − r (St , µ)] ≤ E r̃ Z̃ t , µ̄t − r (St , µ) .               (15)
+
+
+                                                           20
+Substituting E [E [r̃ (ISt , µ̄t )]] = E [r̃ (ISt , µ̄t )] = E [R (St , µ̄t )] into Eq. (15), we obtain:
+                              h                                i
+              R(T ) ≤ E r̃ Z̃ t , µ̄t − E [r̃ (ISt , µ̄t )] +E [r (St , µ̄t ) − r (St , µ)] .
+                              |                {z                }       |            {z         }              (16)
+                                                                                   regret (b)
+                                              regret (a)
+
+Regret (a) arises from the    relaxation   and discretization , which is no greater than zero due to the
+inequality E [r̃ (ISt , µ̄t )]≥ r̃ Z̃ t , µ̄t . Regret (b) is a result of the overestimating of rewards.
+Following the analysis idea in [67] to bound this over-estimation regret, the observation probability
+o∗ is used to derive:
+                              E [r (St , µ̄t ) − r (St , µ)]
+                                    " T                                              #
+                               1      X
+                             ≤ ∗E           r (St , µ̄t ) − r (St , µ) I {Ft = |St |}
+                               o      t=1
+                                    " T                           #
+                               L      XX
+                             ≤ ∗E                 |µ̄t,k − µt,k |
+                               o      t=1 k∈Ft
+                                    " T                    #
+                               L      XX
+                             ≤ ∗E                 2ρt,µk .
+                               o      t=1      k∈Ft
+
+By synthesizing the bounds of regret components (a) and (b), we can establish an upper bound for the
+regret.
+We proceed with a comprehensive proof. This detailed analysis is predicated on the concurrent
+occurrence of both Kµ and Kc events, with probability at least 1 − δ (by Lemma 1). In scenarios
+where Kµ and Kc fail to occur, the expected additional regret is bounded by r∗ δT .
+
+Step 1: Reduce to the over-estimation regret
+
+We begin by recalling the definition of the optimal action St∗ ≜ arg maxS∈S r(S; µt ) for each
+round t, where S encompasses P all feasible actions. And Z̃ t is the α-approximate solution of
+{max r̃(Z̃, µ̄) : Z̃ ∈ P (S), k∈K ct,k z̃k ≤ ρ}, where P (S) is defined as the convex hull induced
+by S:
+                                                       X
+ P (S) := conv{IS : S ∈ S} = {Z̃ ∈ RK : z̃k ∈ [0, 1],      z̃k ≤ rank(S), for ∀k ∈ K, ∀S ⊆ K}.
+                                                                  k∈S
+
+
+Denote the discretization procedure σ for Algorithm 2 and Algorithm 3 as St = σ(Z̃ t ). The feasible
+solution St = σ(Z̃ t ) guarantees r(S; µ) ≥ α · r(S ∗ ; µ). Under high probability events Kµ and Kc ,
+the constraints µk ≤ µ̂t,k + ρt,µk = µ̄t,k and ck ≥ ĉt,k − ρt,ck = ct,k are satisfied. We first apply
+the monotonicity of the reward function and the property of the multi-linear extension to reduce the
+total regret to the over-estimation regret,
+                   E[(αr(St∗ , µ) − r(St , µ))]
+                  ≤ E[(αr(St∗ , µ̄t ) − r(St , µ))]                                                             (17)
+                  ≤ E[(r̃(Z̃ t , µ̄t ) − r(St , µ))]                                                            (18)
+                  = E[(r̃(Z̃ t , µ̄t ) − ESt ∼σ(Z̃ t ) [r̃(ISt , µ̄t )]) + (r(St , µ̄t ) − r(St , µ))]          (19)
+                       |                     {z                        } |             {z          }
+                                             regret (a)                           regret (b)
+
+                  ≤ E[r(St , µ̄t ) − r(St , µ)]                                                                 (20)
+                      |           {z         }
+                           Over-estimation regret
+
+Here, Eq. (17) exploits the action reward function’s monotonicity, while Eq. (18) is due to the
+equivalency of r(St∗ , µ̄t ) and r̃(ISt∗ , µ̄t ) for any feasible action S ∈ S, i.e., r(St∗ , µ̄t ) = r̃(ISt∗ , µ̄t ).
+Recall that ISt∗ = {z1 , z2 , · · · , zK } ∈ {0, 1}K denotes one feasible solution for the optimal selection
+status of base arms in K at round t of the following three relaxed continuous optimization problems:
+
+
+                                                           21
+       1. Any Win Combination (AWC):
+                                                                                              !
+                                                                            Y
+                                            max r̃(Z̃, µ̄) =       1−           (1 − µ̄k z̃¯k )
+                                                                        k∈K
+                                            X
+                                     s.t.         z̃k ≤ N,
+                                            k∈K
+                                            X
+                                                  ct,k z̃k ≤ ρ,
+                                            k∈K
+                                0 ≤ z̃k ≤ 1, ∀k ∈ K,
+                             Q                  
+          where r̃ Z̃, µ̄ = 1 − k∈K (1 − µ̄k z̃k ) is the closed form of the multi-linear extension
+                   P      Q      Q
+          r̃ Z̃, µ̄ = S⊆K k∈S z̃k k /∈S (1 − z̃k ).
+       2. Sum Up Combination (SUC):
+                                                                            X
+                                                      max r̃(Z̃, µ̄) =            µ̄k z̃k
+                                                                            k∈K
+                                                      X
+                                               s.t.         z̃k = N,
+                                                      k∈K
+                                                      X
+                                                            ct,k z̃k ≤ ρ,
+                                                      k∈K
+                                                      0 ≤ z̃k ≤ 1, ∀k ∈ K.
+       3. All In Combination (AIC):
+                                                                            Y
+                                                      max r̃(Z̃, µ̄) =            µ̄k z̃k
+                                                                            k∈K
+                                                      X
+                                               s.t.         z̃k = N,
+                                                      k∈K
+                                                      X
+                                                            ct,k z̃k ≤ ρ,
+                                                      k∈K
+                                                      0 ≤ z̃k ≤ 1, ∀k ∈ K,
+                                                                                    P
+          whose
+          P     optimal solution
+                         P       is equivalent to solving the LP program arg max{ k∈K z̃k ln µ̄k :
+            k∈K z̃k = N,    k∈K ct,k z̃k ≤ ρ, 0 ≤ z̃k ≤ 1} by taking ln r(S; µ) as our objective.
+
+Here, Z̃ = {z̃1 , z̃2 , · · · , z̃K } represents the selected probability for each base arm, with z̃k ∈ [0, 1]
+reflecting the probability of selecting the k-th base arm.
+Moreover, Eq. (19) is because E[ESt ∼σ(Z̃ t ) [r̃(ISt , µ̄t )]] = E[r̃(ISt , µ̄t )] = E[r(St , µ̄t )] (St ∼
+σ(Z̃ t ) denotes selecting St from Algorithm 2 and
+                                                Algorithm
+                                                          3), and Eq. (20) holds because of the
+convex-preserving property: E [r̃ (ISt , µ̄t )]≥ r̃ Z̃ t , µ̄t . Here we can see paralleling approaches in
+[38, 37, 67] that bounds the over-estimation regret E[r(St , µ̄t ) − r(St , µ)]. We will follow the idea
+in [67] but a more simplified proof to deal with this over-estimation regret.
+
+Step 2: Deal with the partial observation and apply the L-Lipschitz condition
+
+Define the over-estimation regret for C2MAB-V at round t as ¯                       reg(St , µ̄t ) = r(St , µ̄t ) −
+r(St , µ), where St denotes the action and µ̄t represents the upper confidence bound (UCB)
+value of base arms at round t. The history of C2MAB-V prior to selecting action St , de-
+noted as Ht , encompasses the sequence of actions and observations up to round t − 1, ex-
+pressed as Ht = ((S1 , F1 , µ1,F1 , c1,S1 ), . . . , (St−1 , Ft−1 , µt−1,Ft−1 , ct−1,St−1 )). Here, µt,Ft =
+(µt,St,1 , ..., µt,St,Ft ) and ct,St = (ct,St,1 , ..., ct,St,|St | ) detail the partial observed rewards and full
+costs of LLM for the tth action, respectively.
+
+
+                                                             22
+Introduce Ωt as the random seed influencing the discretization procedure σ from Algorithm 2 and
+Algorithm 3 at round t, ensuring that St = σ(Z̃ t ) is deterministic given Ωt and Z̃ t . The notation
+E[·|Ht , Ωt ] specifies the conditional expectation given the historical context Ht and the random seed
+Ωt .
+Our analysis proceeds under the premise that all base arms (i.e., LLM) in the selected set St are
+observed, yielding the expected regret at round t, conditioned on history Ht and random seed Ωt , as
+follows:
+                              E[ ¯
+                                 reg(St , µ̄t )|Ht , Ωt ]                                           (21)
+                                                                                
+                                                     1
+                         =E ¯   reg(St , µ̄t )E          I{Ft = |St |}|St |Ht , Ωt                  (22)
+                                                   ot,St
+                                                                          
+                                                 1
+                         =E ¯   reg(St , µ̄t )       I{Ft = |St |}|Ht , Ωt                          (23)
+                                               ot,St
+                             1
+                         ≤ ∗ E[ ¯ reg(St , µ̄t )I{Ft = |St |}|Ht , Ωt ]                             (24)
+                            o
+where Eq. (22) utilizes the fact that, with St determined, ot,St represents the probability of observing
+Ft = |St |, Eq. (23) simplifies the expression by considering the conditions where Ht and Ωt are fixed,
+thus fixing St . And the last inequality in Eq. (24) emerges from defining o∗ = mint∈T ,S∈S ot,S
+as the minimum observation probability, highlighting the analysis within the framework of partial
+feedback mechanisms and its implications for LLM selections.
+Integrating the results from Eq. (2), Eq. (20), and Eq. (24), the expected cumulative regret R(T ) can
+be expressed and bounded as follows:
+                                  " T                                          #
+                                   X
+                       R(T ) = E        E[E[r(St , µ̄t ) − r(St , µ)]|Ht , Ωt ]
+                                    t=1
+                                  " T                              #
+                                   X
+                             ≤E           E[ ¯
+                                            reg(St , µ̄t )|Ht , Ωt ]                                (25)
+                                    t=1
+                                  " T                                           #
+                               1      X
+                             ≤ ∗ E E[     reg(St , µ̄t )I{Ft = |St |}|Ht , Ωt ]
+                                            ¯                                                       (26)
+                              o       t=1
+                                  " T                                         #
+                               1   X
+                             = ∗E       r(St , µ̄t ) − r(St , µ)I{Ft = |St |}                       (27)
+                              o    t=1
+                                  " T F                             #
+                                          t
+                               L   XX
+                             ≤ ∗E           |µ̄t,St,k − µt,St,k |                                   (28)
+                              o    t=1 k=1
+                                              s                  
+                                     T Ft                 2    3
+                               L X X              ln( 2π 3δKt )
+                             ≤ ∗E            2                     , k ∈ St                        (29)
+                              o     t=1 k=1
+                                                     2T  t,µ k
+
+                                                 s                      
+                                     K TT +1,µ                  2 KT 3
+                               L X X k 2 ln( 2π 3δ                    )
+                             = ∗E                                                                  (30)
+                              o           s=1
+                                                               s
+                                       k=1
+
+where Eq. (25) follows from Eq. (20), Eq. (26) is due to Eq. (24), Eq. (27) is by the tower rule of
+expectation (E[X] = E[E[X|Y ]] for two random variables Z̃ and Y ) and the definition ¯   reg(St , µ̄t ),
+Eq. (28) leverages the L-Lipschitz continuity of r(S; µ), Eq. (29) employs the bound 0 ≤ µ̄t,k −
+µt,k ≤ 2ρt,µk k ∈ St , given event Kµ , Eq. (30) accounts for the observation counter Tt,µk increasing
+by one whenever the weight of base arm k is observed.
+where Eq. (41) is due to 0 ≤ ci − ct,i ≤ 2ρc,t,i , Eq. (42) is because the counter T w,t,i increase by 1
+if and only if i’s cost has been observed, Eq. (43) is by replacing summation with integral, Eq. (44) is
+                                                               PL PL
+due to the Cauchy-Schwarz inequality, Eq. (45) is because i=1 i=1 T w,T +1,i ≤ KT .
+
+Step 3: Derivation to get the final regret bound
+
+
+                                                      23
+To get the final regret bound, we proceed with the following mathematical derivation:
+                                                   s                     
+                                         K TT +1,µ              2 KT 3
+                                   L X X k              ln( 2π 3δ      )
+                          R(T ) ≤ ∗ E                  2                  
+                                  o                            s
+                                        k=1 s=1
+                                                      s                         
+                                         K Z TT +1,µ             2π 2 KT 3
+                                   L     X           k    2 ln(      3δ     )
+                                ≤ ∗E                                         ds                                (31)
+                                  o                                s
+                                        k=1 s=0
+                                       "K r                                  #
+                                  2L     X                    2π 2 KT 3
+                                = ∗E           TT +1,µk 2 ln(              )
+                                   o                               3δ
+                                         k=1
+                                       v                                        
+                                         u      K                     2       3
+                                  2L     u      X                  2π KT 
+                                ≤ ∗ E t2K          TT +1,µk ln(                )                                (32)
+                                   o                                   3δ
+                                               k=1
+                                     r
+                                  2L               2π 2 KT 3
+                                ≤ ∗ 2N KT ln(                 ),                                                 (33)
+                                   o                   3δ
+where Eq. (31) approximates the discrete sum with an integral for a smoother upper bound, Eq. (32)
+applies the Cauchy-Schwarz inequality to transition from the sum of square roots to the square root
+of a sum, and Eq. (33) recognizes that the total number of times base arms are observed is bounded
+                                                             PK PK
+by N T , considering N as the maximum selection size, i.e., k=1 k=1 TT +1,µk ≤ N T .
+The proof concludes by acknowledging that the initial K rounds contribute at most r∗ K to the regret,
+combined with the bound established in Eq. (33) and setting δ = 1/T for the regret analysis.
+
+D.3   Comprehensive Proof of Theorem 2
+
+General violation proof analysis
+
+To prove the violation bound, we focus on the scenario where event Kc occurs with a probability of
+at least 1 − δ/2 (by Lemma 1), specifically:
+                                                            s                
+                                                                      2    3
+                                                               ln( 2π 3δKt )  δ
+               Pr{¬Kc } = Pr ∃t ∈ T , k ∈ K, |ĉt,k − ck | ≥                    ≤ .
+                                                                  2Tt,ck  2
+
+
+Given the occurrence of Kc , it follows that 0 ≤ ck −ct,k ≤ 2ρt,ck . From Algorithm 2 and Algorithm 3,
+                         P
+we know that ρ ≥ k∈K ct,k z̃t,k = ct · Z̃ t , where ct := {ct,1 , ct,2 , . . . , ct,K }, and we also denote
+ct := {ct,1 , ct,2 , . . . , ct,K }. This setup allows us to estimate the per-round violation as follows:
+                                     T
+                         1XX
+                   V (T ) ≤         yt,k − ρ                                                                     (34)
+                         T t=1
+                               k∈St
+                      T
+                                              !
+                   1 X X
+                 ≤           yt,k − ct · Z̃ t                                                                    (35)
+                   T t=1
+                                  k∈St
+                          T
+                         X                                       !        T
+                                                                                                             !
+                   1                X                    X                 X     X             X
+                 ≤                         yt,k −            ck        +                ck −          ct,k       (36)
+                   T        t=1                                            t=1
+                                    k∈St             k∈St                        k∈St          k∈St
+                            |                  {z                  }       |             {z                  }
+                                         violation (a)                             violation (b)
+                        T
+                                                             ! 
+                        X         X
+                    +                    ct,k − ct · Z̃ t                                                        (37)
+                        t=1       k∈St
+                        |                 {z                  }
+                                    violation (c)
+
+
+
+                                                              24
+where Eq. (34) originates from the violation definition, Eq. (35) leverages the inequality ρ ≥ ct · Z̃ t
+illustrated above, and Eq. (37) utilizes the inequality |a + b + c| ≤ |a| + |b| + |c| for separation of
+terms.
+Similarly, we begin with a sketch of the
+                                      q proof to enhance  comprehension. For every round t ∈ T and
+                                              2   3
+LLM k ∈ K, the event |ĉt,k − ck | < ln 2π 3δKt /2Tc,t,k occurs with probability at least 1 − δ/2,
+from Lemma 1, thus resulting in ck ≥ ĉt,k − ρc,t,k = yt,k via setting δ = 1 − 1/T . From Eq. (3), we
+                                                      ¯h PT P                       i+
+have that ρ ≥ k∈K ct,k z̃t,k , ∀t ∈ T . Then V (T ) = T1 t=1 k∈St yt,k − ρ is bounded by:
+              P
+                     ¯
+               T                          T X                       T X                           
+            1 XX                          X                         X
+  V (T ) ≤                (yt,k − ck ) +           (ck − ct,k ) +            (ct,k − ct,k z̃t,k ) .
+            T    t=1 k∈St                 t=1 k∈St                  t=1 k∈St
+                                                                                                     (38)
+                |         {z          } |          {z          } |              {z               }
+                        violation (a)              violation (b)                violation (c)
+
+By constructing martingale sequences
+                                         and applying Azuma-Hoeffding inequality, we can bound
+                       p
+violation (a) by N 2T ln(8T ) with probability at least 1 − 1/4T . Similarly, violation (c) is
+                p             
+bounded by N 2T ln(8T ) with probability at least 1 − 1/4T . With ck ≥ ĉt,k − ρc,t,k = ct,k
+                                                                      q                          ¯
+                                                                                2π 2 KT
+                                                                                        
+satisfied at least 1 − 1/2T probability, violation (b) is bounded by 4 2N KT ln     3     . Utilizing
+the union bounds, we get the desired results in Eq. (8).
+Next, we individually bound violations (a), (b), and (c) to further quantify the violation and finally
+use the union bounds for violation (a), (b), (c) with the initialization process that causes at most N K
+violation to prove the desired terms in Eq. (8).
+
+Step 1: Bound violation (a)
+
+To address violation (a), we introduce a series of random variables {Y1 , Y2 , . . . , YT }, construct-
+ing a martingale sequence relative to the historical data of C2MAB-V, denoted Ht . The his-
+tory Ht encompasses the sequence of actions and observed outcomes up to round t − 1, en-
+capsulating both the actions taken and the corresponding observed rewards and full costs. For-
+mally, Ht includes tuples ((S1 , F1 , µ1,F1 , c1,S1 ), . . . , (St−1 , Ft−1 , µt−1,Ft−1 , ct−1,St−1 )), where
+µt,Ft = (µt,St,1 , ..., µt,St,Ft ) and ct,St = (ct,St,1 , ..., ct,St,|St | ), representing the observed rewards
+and costs, respectively, for the action set St .
+The martingale is recursively defined starting with Y 0 = 0, and for each round t = 1, . . . , T ,
+                                                 X           X
+                                 Y t − Y t−1 =       yt,k −      ck                                (39)
+                                                     k∈St          k∈St
+
+where W t = Y t − Y t−1 denotes the change in the martingale value from round t − 1 to t. Given
+the construction of W t , we assert that E[W t |Ht ] = 0 and the absolute change |W t | is bounded
+by the maximum size of the action set, denoted as N , i.e., |W t | ≤ N . Therefore, applying the
+Azuma-Hoeffding inequality (Lemma 6), we derive that
+                            T
+                                                     !     r
+                           X      X           X                        8
+                                       yt,k −      ck ≤ 2N 2 T ln                              (40)
+                           t=1
+                                                                       δ
+                                        k∈St      k∈St
+
+holds with a probability of at least 1 − δ/4. This step bounds the expected deviation arising from the
+selection of actions and their associated costs.
+
+Step 2: Bound violation (b)
+
+In addressing violation (b), we focus on the scenario where event Kc occurs, which holds with a
+probability of at least 1 − δ/2. Under this condition, we estimate the cumulative difference between
+the actual costs ck and their lower confidence bounds ct,k for all actions in St across all rounds t.
+
+
+                                                      25
+The bound is derived as follows:
+                                                     !                 s
+                   T                                         T X                 2   3
+                   X      X            X                     X           ln( 2π 3δKt )
+                                ck −          ct,k       ≤            2                               (41)
+                   t=1                                     t=1 k∈St
+                                                                            2T c,t,i
+                         k∈St          i∈St
+                                                                       s
+                                                            K TTX+1,ck              2 KT 3
+                                                           X               2 ln( 2π 3δ     )
+                                                         =                                            (42)
+                                                                                   s
+                                                           k=1 s=1
+                                                                          s
+                                                            K Z TT +1,c                2 KT 3
+                                                           X            k     2 ln( 2π 3δ     )
+                                                         ≤                                      ds    (43)
+                                                                                      2s
+                                                           k=1 s=0
+                                                             K
+                                                                r
+                                                            X                       2π 2 KT 3
+                                                         =2        TT +1,ck 2 ln(               )
+                                                                                        3δ
+                                                            k=1
+                                                            v
+                                                            u       K
+                                                            u     X                    2π 2 KT 3
+                                                         ≤ 2t2K        TT +1,ck ln(               )   (44)
+                                                                                           3δ
+                                                                  k=1
+                                                            r
+                                                                            2π 2 KT 3
+                                                         ≤ 2 2N KT ln(                  )             (45)
+                                                                                3δ
+where Eq. (41) utilizes the confidence interval for cost estimation under event Kc , i.e., 0 ≤ ck −ct,k ≤
+2ρt,ck , Eq. (42) rearranges the summation to account for the total observations of cost ck for each
+action based on the fact that the counter Tt,ck increase by 1 if and only if base arm k’s cost has been
+observed, Eq. (43) replaces the summation with an integral to provide an upper bound, given the
+increasing sequence of √1s , the final two inequalities, Eq. (44) and Eq. (45), apply the Cauchy-Schwarz
+                                                                            PK PK
+inequality and the total number of selections to conclude the bound k=1 k=1 TT +1,ck ≤ N T .
+This derivation quantifies the discrepancy between the actual costs and their estimated lower bounds
+over all rounds.
+
+Step 3: Bound violation (c)
+
+Similar to how we prove violation (a), we will define a series of random variables
+{Y1 , . . . , YT } to form a martingale with respect to history of C2MAB-V Ht , defined as Ht =
+((S1 , F1 , µ1,F1 , c1,F1 ), . . . , (St−1 , Ft−1 , µt−1,Ft−1 , ct−1,Ft−1 )) to encompasses the sequence of
+actions and observations up to round t − 1, before choosing the action St which includes the first t − 1
+actions and first t−1 partial observed rewards and full costs, where µt,Ft = (µt,St,1 , ..., µt,St,Ft ) and
+ct,St = (ct,St,1 , ..., ct,St,Ft ). The martingale sequence is defined recursively starting with Y 0 = 0.
+For each round t = 1, . . . , T , the incremental change is given by:
+                                                         X
+                                        Y t − Y t−1 =         ct,k − ct · Z̃ t ,                       (46)
+                                                             k∈St
+
+where W t = Y t − Y t−1 denotes the change in the martingale value from round t − 1 to t. Recall
+that the discretization procedure σ is denoted for Algorithm 2 and Algorithm 3 as St = σ(Z̃ t ) and
+N = maxS∈S |S|. Given that E[W t |Ht ] = 0 follows from the expectation ESt ∼σ(Z̃ t ) [ISt ] = Z̃ t
+and and the bound |W t | ≤ N . Therefore, we can apply the Azuma-Hoeffding inequality (Lemma 6)
+to obtain:                                              !
+                              T                            r
+                             X     X                                  8
+                                        ct,k − ct · Z̃ t ≤ 2K 2 T ln                           (47)
+                             t=1
+                                                                      δ
+                                       k∈St
+
+with probability at least 1 − δ/4.
+Employing the union bound across violations (a), (b), and (c), and accounting for the initial setup
+contributing a maximum of KN to the violation, we affirm the desired bounds as specified in Eq. (8)
+with a collective probability of at least 1 − δ. The proof concludes by setting δ = 1/T for the
+violation analysis.
+
+
+                                                             26
+    Prompts
+    Please answer the following          multiple-choice                             Answers
+    questions. Give options directly.
+                                                                                    Sure, just let me know the questions and
+    Question: Who proposed the theory of evolution by                               options, and I'll provide the answers in the
+    natural selection?                                                              format you specified.
+    Options:
+    1. Linnaeus
+    3. Scopes
+                     2. Shaw
+                     4. Darwin    Biology
+                                                                                     Question: Who proposed the           theory   of
+    Question: Each specific polypeptide has a unique                                 evolution by natural selection?
+    linear sequence of which acids?
+    Options:
+                                                                                     Answer: 4. Darwin
+    1. Fatty         2. Lactic
+    3. Hydrochloric 4. Amino   Chemistry                                             Question: Each specific polypeptide has a
+                                                              LLM                    unique linear sequence of which acids?
+    Question: What is an area of land called that is wet                             Answer: 4. amino
+    for all or part of the year?
+    Options:                                                                         Question: What is an area of land called that is
+    1. Plains
+    3. Tundra                  Geography
+                    2. Grassland
+                    4. Wetland
+                                                                                     wet for all or part of the year?
+                                                                                     Answer: 4. wetland
+
+    Question: Surface waters are heated by the radiation                             Question: Surface waters are heated by the
+    from?
+                                                                                     radiation from?
+    Options:
+                                                                                     Answer: 4. the sun
+    1. Decomposition 2. The moon
+    3. Gamma rays     4. The sun  Physics
+        Figure 5: Sample conversation with LLM on biology, chemistry, geography, and physics.
+
+
+D.4      Technical Inequalities
+
+We finally introduce some well-known fundamental results without proofs that serve as pivotal tools
+in probability theory and statistical inference, particularly in the realms of concentration inequalities
+and martingale sequences.
+Lemma 4 (Subgaussian random variables). Suppose that random variables X is σ-subgaussian, X1
+and X2 are independent and σ1 and σ2 -subgaussian, respectively, then
+                                               
+                                            ε2
+     1. For any ε > 0, Pr [X ≥ ε] ≤ exp − 2σ  2   .
+                                p
+         2. X1 + X2 is              σ12 + σ22 -subgaussian.
+Lemma 5 (Chernoff-Hoeffding inequality [19].). Let Y1 , ..., Yn be independent and identically
+distributed (i.e., i.i.d.) random variables with common support [0, 1] and mean µ. Let Z = Y1 + ... +
+Yn . Then for any ϵ > 0,
+                                                                                   2ϵ2
+                                                    Pr{|Z − nµ| ≥ ϵ} ≤ 2e− n .
+Lemma 6 (Azuma-Hoeffding inequality [4].). Let {zk : i = 0, 1, 2, . . . , n} be a martingale and
+|Yk − Yk−1 | ≤ ck for k ∈ [n] almost surely, then for any ϵ > 0
+                                                                                    ϵ2
+                                                                          −       Pn
+                                                                                       c2
+                                                Pr{|Yn − Y0 | ≥ ϵ} ≤ 2e       2
+                                                                                   i=1 k    .
+
+E      More Experiments
+E.1      Experimental Details
+
+Consistent with Section 6, we conduct all experiments on a device equipped with an Intel Core
+i5-13600KF CPU @ 3.50GHz and 32 GB of memory. Gurobi, a powerful mathematical optimization
+solver that supports various programming models, is utilized to solve relaxed constraint optimization
+problems, employing version 11.0.1 [27]. Fig. 5 depicts a sample interaction involving large
+language models (LLMs) across various scientific disciplines—Biology, Chemistry, Geography, and
+Physics—utilizing the SciQ dataset [69]. Table 3 lists the LLMs used in the experiments (refer to
+Section 6), detailing each model’s name with parameters, cost per 1,000 tokens in USD, and size
+in gigabytes. The models range from smaller configurations, such as ChatGLM2-6B-32K, to larger
+ones like Llama 2-70B. Considering the variability in generating answers when using LLMs, as well
+as potential non-responses, we specify reward allocations based on different LLM return scenarios in
+addition to comparisons with the SciQ dataset’s labels. If the question is answered accurately and
+
+
+                                                               27
+                                                                                                                                                                                                                                                           
+                                                        &0$%9D *UHHG\                                                                                                                                                                
+                                                                  &0$%9E &8&%
+                                                        &0$%9F 7KRPSVRQ6DPSOLQJ                                                                                                                                                  
+                                                                  &0$%9G &KDW*37                                                                          &0$%9D *UHHG\
+                                                                                                                                                                                                                                                                 
+                                                                                                                              5HZDUG                                                                                                            5HZDUG
+                                                                                                                                                                                         &0$%9E &8&%
+5HZDUG                                                                                                                                                             &0$%9F 7KRPSVRQ6DPSOLQJ
+                                                                                                                                                                                         &0$%9G &KDW*37                                           
+                                                                                                                                                                                                                                                                                            &0$%9D *UHHG\
+                                                                                                                                                                                                                                                                                                                  &0$%9E &8&%
+                                                                                                                                                                                                                                                                                                        &0$%9F 7KRPSVRQ6DPSOLQJ
+                                                                                                                                                                                                                                                                     
+                                                                                                                                                                                                                                                                                                        &0$%9G &KDW*37
+                                                                                                                                                                                                                                                                           
+                                                                                                                                         
+                                                                                                                                                                                                                                        
+                                                                 5RXQG                                                                                                             5RXQG                                                                                                              5RXQG
+                                                       (a) AWC                                                                                                                 (b) SUC                                                                                                                  (c) AIC
+                                                                   Figure 6: Reward of three task types with nine different LLMs.
+
+                                                                                                                                                                                                                                                           
+                                                         &0$%9D *UHHG\                                                                                      &0$%9D *UHHG\                                                                              &0$%9D *UHHG\
+                                                                                                                                                                                                                                                                                                           &0$%9E &8&%
+                                                         &0$%9E &8&%                                                                                            &0$%9E &8&%                                                    
+                                                                 &0$%9F 7KRPSVRQ6DPSOLQJ                                                                  &0$%9F 7KRPSVRQ6DPSOLQJ                                                                  &0$%9F 7KRPSVRQ6DPSOLQJ
+                                                                                                                                                                                                                                                                                                           &0$%9G &KDW*37
+                                                         &0$%9G &KDW*37                                                                                  &0$%9G &KDW*37                                          
+9LRODWLRQ                                                                                                            9LRODWLRQ                                                                                                      9LRODWLRQ
+                                                                                                                                                                                                                                                                   
+                     
+                                                                                                                                                                                                                                                           
+                                                                                                                                                                                                                                                           
+                                                                                                                                                                                                                                                           
+                                                                                                                                                                                                                                                         
+                                                                                                                                                                                                                                          
+                                                                5RXQG                                                                                                               5RXQG                                                                                                              5RXQG
+
+                                                       (a) AWC                                                                                                                 (b) SUC                                                                                                                  (c) AIC
+                                                                Figure 7: Violation of three task types with nine different LLMs.
+
+
+adheres to the prescribed prompt format, the reward is set at 0.5. In the event of an incorrect response,
+no reward is granted. However, if factors such as network congestion or potential issues with the
+LLM result in an empty response, a reward of 0.1 is allocated. Should the response adhere to the
+format guidelines yet fail to meet the specified requirements, a reward of 0.3 is assigned. We simulate
+user feedback for each round using the public SciQ dataset to function as a binary feedback [61], and
+our algorithm learns the performance of LLMs based on this feedback. Our entire framework is built
+on the popular bandit framework [39], which continuously updates and adjusts decisions based on a
+steady stream of data (i.e., user feedback) to address the classic exploration-exploitation dilemma
+regarding LLM performance and cost.
+
+                                        Table 3: List of utilized large language models in Section 6, associated cost per usage.
+                                         LLM_ID                               Model Name (with Parameters)                                                                                                     Cost (USD/1k tokens)                                                                         Size (GB)
+                                           1                                   ChatGLM2-6B-32K [52]                                                                                                                   0.005                                                                                    12.5
+                                           2                                       ChatGPT-3.5 [52]                                                                                                                    0.02                                                                                      /
+                                           3                                         Claude 2 [15]                                                                                                                     0.08                                                                                      /
+                                           4                                      ERNIE 3.5-8K [5]                                                                                                                    0.015                                                                                      /
+                                           5                                        Llama 2-7B [51]                                                                                                                   0.005                                                                                    12.6
+                                           6                                       Llama 2-13B [51]                                                                                                                   0.008                                                                                    24.3
+                                           7                                       Llama 2-70B [51]                                                                                                                    0.05                                                                                   128.3
+                                           8                                   Mixtral-8x7B-Instruct [50]                                                                                                              0.05                                                                                   93.37
+                                           9                                        ChatGPT-4 [52]                                                                                                                     0.12                                                                                      /
+
+
+E.2                                    Respective Results for Reward and Violation
+
+Per-round Reward and Violation. Fig. 6 and Fig. 7 display the experimental rewards and violations
+for three different task types. In Fig. 6, C2MAB-V consistently outperforms or matches the ϵ-Greedy
+baseline in terms of rewards per round. The parameters on αµ and αc used are (0.3, 0.05), (1,
+0.05), (0.3, 0.01), and (1, 0.01), respectively denoted as (a), (b), (c), and (d). Adjusting the values
+of αµ and αc consistently results in higher rewards for C2MAB-V settings. These settings also
+significantly reduce violations per round compared to the ϵ-Greedy approach. Although the CUCB
+algorithm achieves the highest per-round rewards, it does so completely ignoring cost constraints,
+leading to a per-round violation rate at least four times higher than that of C2MAB-V, as shown in
+
+
+                                                                                                                                                                                   28
+                                                                                                                                                                                                                                                                                                                                        
+                                                                                                                                                                                        
+                                                                                                                                                                                                                                                                                                                                                  &0$%*        *UHHG\    &8&%
+                                                                          &0$%*     *UHHG\   &8&%                                                                                     &0$%*                *UHHG\              &8&%
+
+
+
+
+      5HZDUGYLRODWLRQ5DWLR                                                                                       5HZDUGYLRODWLRQ5DWLR                                                                                                    5HZDUGYLRODWLRQ5DWLR
+                                                                                                                                                                                        
+                                                     
+
+                                                                                                                                                                                                                                                                                                                                        
+
+                                                                                                                                                                                        
+                                                     
+
+
+
+
+                                                                                                                                                                                    
+                                                                                                                                                                                                                                                                                                                                        
+
+
+
+                                                                                                                                                                                      
+
+
+
+
+                                                                                                                                                                                                                                                                                                                                    
+                                                                                                                                                                                                                                                                                                                                      
+                                                                              %XGJHW7KUHVKROG                                                                                                 %XGJHW7KUHVKROG                                                                                                           %XGJHW7KUHVKROG
+
+
+                                                                              (a) AWC                                                                                                                          (b) SUC                                                                                                                                       (c) AIC
+                                           Figure 8: Reward/violation ratio for three task types across different budget thresholds ρ.
+
+
+
+                                                                                                                                                                                                                                                                                                                                                 &0$%93HUIRUPDQFHGULYHQ
+                                                                                                                                                                                                                                                                                                                                                   &0$%93HUIRUPDQFHGULYHQ
+                                                                                                                                                                                                                                                                                                                                                 &0$%9&RVWGULYHQ
+                                                                                                                                                                                                                                                                                                                                                   &0$%9&RVWGULYHQ
+                                                      
+                                                                                                                                                                                                                                                  
+                                                      
+    5HZDUG                                                                                                                                                                                                             9LRODWLRQ
+                                                                                                                                                                                                                                          
+                                                                                                                                                                                                                                          
+                                                                                                                 &0$%93HUIRUPDQFHGULYHQ                                                                 
+                                                                                                                         &0$%93HUIRUPDQFHGULYHQ
+                                                                                                                 &0$%9&RVWGULYHQ                                                                               
+                                                                                                                         &0$%9&RVWGULYHQ
+                                                                                                                                                                                                                                                                                                                 
+                                                                                                                 5RXQG                                                                                                                                                                                                                     5RXQG
+                                                                                      (a) Average Reward                                                                                                                                                                             (b) Average Violation
+ Figure 9: Analysis of reward and violation metrics across two task-driven variants of C2MAB-V.
+
+
+
+Fig. 7. This figure also indicates that C2MAB-V’s violations are lower than those of the ϵ-Greedy
+baseline, highlighting its ability to effectively manage constraints. Additionally, since Thompson
+Sampling relies on Bayesian updates, which can be highly variable, this method may lack stability
+and potentially cause severe oscillations, as observed in scenarios like the AIC task.
+Additionally, as shown in Fig. 6(c), we can observe a convergence trend in the rewards of C2MAB-V.
+This trend suggests that the initial actions selected might have had higher rewards but also higher
+violations. Over time, the cost-aware online learning strategy adjusts by slightly reducing rewards to
+achieve greater cost savings, demonstrating its effectiveness in managing long-term constraints.
+Varying Budget Threshold. We then examine the influence of the budget threshold ρ. As depicted
+in Fig. 8, the optimal action of combinatorial LLMs varies with the change in the budget threshold
+ρ. This variation in both arm and action selection space results in fluctuations in reward and
+violation. Furthermore, it is evident that across different values of ρ, our proposed C2MAB-V with
+αµ = 1, αc = 0.01 consistently outperforms the benchmarks CUCB and ϵ-Greedy by at least 356.0%
+and 55.7% improvment, highlighting the robustness of our algorithm.
+Performance-Driven Scenarios. Our study explores a range of trade-offs, extending beyond the
+typical exploration-exploitation dichotomy to include cost and reward considerations. Given the
+anticipated reduction in costs over time with the development of LLMs, our analysis focuses on
+scenarios that have a generous budget and prioritize performance. In such performance-driven
+scenarios, our theoretical analysis suggests setting the cost exploration parameter αc higher to
+better emphasize performance outcomes, which means exploring enough to have good empirical
+performance. Consequently, we adjust both αµ and αc as follows: Performance-driven1 with
+(αµ , αc ) = (0.3, 1), Performance-driven2 with (αµ , αc ) = (1, 1), Cost-driven1 with (αµ , αc ) =
+(0.3, 0.01), and Cost-driven2 with (αµ , αc ) = (1, 0.01). As shown in Fig. 9, the performance-driven
+types of C2MAB-V yield higher rewards, whereas the cost-driven types exhibit fewer cost violations.
+The preferable approach varies, depending on the specific needs and constraints of the task at hand.
+
+
+                                                                                                                                                                                                                      29
+                                               
+                                                                 &0$%91    *UHHG\1    &8&%1 
+
+                                                                 &0$%91    *UHHG\1    &8&%1 
+
+
+
+
+5HZDUGYLRODWLRQ5DWLR
+                                               
+                                                                 &0$%91    *UHHG\1    &8&%1 
+
+
+
+
+                                               
+
+
+
+
+                                               
+
+
+
+
+                                                 
+
+
+
+
+                                                 
+                                                                                                                                                                                                                                          
+                                                                                                                                                                    %XGJHW7KUHVKROG
+
+
+                      Figure 10: Impact of varying the maximum number N on performance metrics over 3000 rounds.
+
+                                                                     
+
+                                                                                                                                                                                                        
+                                                                     
+
+
+                                                                     
+                                                                                                                                                                                                        
+
+                                                                                                                                                                                                                                                                    &0$%9D
+
+
+
+                                                                                                                                                                                   9LRODWLRQ
+                                                                     
+
+
+
+                                                      5HZDUG
+                                                                                                                                                                                                                                                                    &0$%9E
+                                                                                                                                                                                                        
+                                                                                                                                                                                                                                                          &0$%9F
+
+                                                                                                                                                                                                                                                                    &0$%9G
+                                                                     
+                                                                                                                                                                                                                                                                    &0$%9'LUHFW
+                                                                                                                                                                                                        
+                                                                                                                                                  &0$%9D
+                                                                                                                                        &0$%9E
+
+                                                                                                                                                  &0$%9F
+                                                                                                                                                                                              
+                                                                                                                                                  &0$%9G
+
+                                                                                                                                                  &0$%9'LUHFW
+                                                                     
+
+                                                                                                                                                                                                         
+                                                                                                                          5RXQG                                                                                                    5RXQG
+
+                                                                                              (a) Average Reward                                                                                                       (b) Average Violation
+                                                      Figure 11: Comparison of reward and violation between C2MAB-V and C2MAB-V-Direct.
+
+E.3                                                                  In-depth Analysis of Exploratory Results.
+
+Impacts of Maximum Number of LLMs. To investigate how the maximum number of selectable
+LLMs, denoted as N , impacts performance, we present the reward/violation ratio for different N
+values after T = 3, 000 rounds in Fig. 10. Recognizing that different task types should not adhere to
+a universal budget threshold, we specifically use AWC as an example to underscore the influence of
+N , while keeping the budget threshold constant. It is important to note that as N changes, the optimal
+combination of LLMs, i.e., the optimal action, also changes. Under the same budget threshold ρ,
+increasing N expands the selection space, adding complexity and thus affecting the efficiency of all
+algorithms. However, we observe that with an increase in N , C2MAB-V consistently outperforms
+both the CUCB and ϵ-Greedy baselines.
+Comparison of Computational Efficiency on Relaxation. C2MAB-V-Direct is an adjusted version
+that finds the best feasible solution by directly solving the discrete constrained optimization Eq. (48)
+via enumeration, rather than using relaxation techniques:
+                          Q                      P
+              max 1 − Pk∈K (1 − µ̄k zk ) , Pk∈K ct,k zk ≤ ρ, zk ∈ {0, 1}, ∀k ∈ K,
+                max                µ̄ z ,                c z ≤ ρ, zk ∈ {0, 1}, ∀k ∈ K,              (48)
+                           Q k∈K kzkk             Pk∈K t,k k
+                                                                ≤        ∈ {0,     ∀k ∈ K.
+              
+                max           k∈K kµ̄   ,                c   z
+                                                     k∈K t,k k     ρ, zk       1},
+The objective of this study is to compare the computational efficiency between C2MAB-V, and
+C2MAB-V-Direct, which directly solves the constrained integer optimization problem without this
+approach. As illustrated in Fig. 11, using the AwC reward function as an example, the comparison of
+reward and violation shows that C2MAB-V-Direct almost completely avoids violations, while the
+reward for C2MAB-V at four different parameter pair settings (αµ , αc ) ((0.3, 0.05) = (a), (1, 0.05) =
+(b), (0.3, 0.01) = (c), and (1, 0.01) = (d)) is higher than that of C2MAB-V-Direct.
+Next, we compare the runtime of the two methods. Due to response latency fluctuations when directly
+invoking the LLM, which may be influenced by network conditions or query tokens (with observed
+delays ranging from 1 ms to 4 s), we employ a synthetic setting to focus solely on the comparative
+analysis of algorithmic runtime. The specifics are as follows: For each arm k, we independently
+simulate µi and ci from a uniform distribution U [0, 1]. All tasks are recorded over 10,000 rounds.
+Regarding parameter settings: in the AWC reward, K = 16, N = 8, and ρ = 2.5; in the SUC reward,
+K = 25, N = 8, and ρ = 1.4; and in the AIC reward, K = 25, N = 8, and ρ = 1.6.
+
+
+                                                                                                                                                                                 30
+       Table 4: Comparison of runtime between C2MAB-V and C2MAB-V-Direct methods.
+                       Runtime (s) C2MAB-V C2MAB-V-Direct
+                          AWC            221.78        1464.33
+                           SUC           267.20       16890.91
+                           AIC           283.06       17320.47
+
+                                                                                                                                                            
+                                                &0$%9D *UHHG\                                                                                                  &0$%9D *UHHG\
+                                                          &0$%9E &8&%                                                                                                  &0$%9E &8&%
+                                                &0$%9F &0$%9'LUHFW                                                                                    &0$%9F &0$%9'LUHFW
+                                                          &0$%9G 7ZRWLHU//06HOHFWLRQ6WUDWHJ\                                                  &0$%9G 7ZRWLHU//06HOHFWLRQ6WUDWHJ\
+
+              5HZDUG                                                                                                                       9LRODWLRQ
+                             
+                                                                                                                                                                      
+                             
+                                                                                                                                                            
+                             
+                                                                                                                                                                      
+                                                                                                                                                                                           
+                                                                         5RXQG                                                                                                                           5RXQG
+                                                      (a) Reward                                                                                                                          (b) Violation
+Figure 12: Comparison with a “two-tier LLM selection strategy”, which only considers one larger
+and one smaller LLM, against a multi-tier approach under the AWC task type.
+
+
+As shown in Table 4, the computational efficiency of C2MAB-V-Direct is significantly lower than that
+of C2MAB-V. Specifically, C2MAB-V is at least 6 times faster across three different reward scenarios.
+Due to our relaxation and discretization design, the time complexity of C2MAB-V is polynomial,
+whereas C2MAB-V-Direct likely requires exponential time for the constrained integer problem,
+particularly when the search space is large. Nevertheless, for scenarios requiring stricter adherence
+to constraints, C2MAB-V-Direct remains a viable option. In summary, in practical applications,
+C2MAB-V and C2MAB-V-Direct each serve distinct purposes, offering targeted choices between
+computational efficiency and strict constraint compliance.
+Enhancing LLM Selection: From Two-Tier to Multi-Tier. We further demonstrate the benefits of
+transitioning from a traditional “two-tier” to a more complex “multi-tier” LLM selection strategy
+in online settings. In the simpler two-tier system, selections are limited to just two levels of LLM
+engagement, which might not adequately address the diverse range of queries typically encountered
+in dynamic environments. By adopting a multi-tier strategy, our system can more precisely match the
+complexity and specificity of incoming queries with an appropriate level of computational resources
+and LLM expertise. The ratio comparison is not displayed in Fig. 12, as the denominator may be zero.
+Fig. 12 underscores the necessity and effectiveness of our advanced multi-tier strategy in enhancing
+response quality and system adaptability in real-time online interactions.
+Necessity of Online Learning for LLM Selection. As discussed in Section 6, our approach
+emphasizes online learning methodologies that incorporate continuous feedback. To highlight the
+significance of ongoing online adjustments in LLM selection, we present a comparison. Initially,
+we pre-learned a fixed combination of multiple LLMs offline, which was then utilized to manage
+online queries. As illustrated in Fig. 13, our feedback-driven adjustments significantly enhance
+the effectiveness of pre-set LLM selections. By comparing our method with purely offline-learned,
+cascaded combinations of multi-LLMs for the AWC task type, we demonstrate the essential role of
+continuous online adaptations in optimizing LLM selection for real-time queries.
+Exploring Asynchronous Local-Cloud Architecture. Recall the flow of the C2MAB-V algorithm:
+Based on our online learning-based multi-LLM selection algorithm C2MAB-V, multiple LLMs are
+coordinated and selected through a scheduling cloud. When new user data feedback is received,
+the local server adjusts the performance evaluation of the corresponding LLMs and notifies the
+scheduling cloud to update the multi-LLM selection strategy.
+In the main text, we primarily demonstrate a synchronized local-cloud setting. However, in practice,
+the local server may not receive user feedback every round, and local-cloud communication may not
+be entirely synchronous. Therefore, we explore an asynchronous local-cloud architecture with a batch
+size. Specifically, when the batch size B is reached, the local server sends new relaxed continuous
+data to the scheduling cloud after storing B pieces of user feedback. This prompts the cloud to
+re-coordinate multiple LLMs and adjust the multi-model selection strategy. Until then, the previous
+
+
+                                                                                                                                            31
+                                                                                                                                                                                                                                                                                                                                                                                          &0$%9D *UHHG\
+                                                                                                                                                                                                                                                                                                                                                                          &0$%9E &8&%
+                                                                                                                                                                                                                                                                                                                                                                                        &0$%9F &0$%9'LUHFW
+                                             &0$%9D *UHHG\                                                                                                                &0$%9D *UHHG\                                                                                                                                                       &0$%9G )L[HG//0&DVFDGLQJ&RPELQDWLRQ
+
+
+
+
+                                                                                                                                                                                                                                                                                               5HZDUGYLRODWLRQ5DWLR
+                                             &0$%9E &8&%                                                                                                                      &0$%9E &8&%
+                                   &0$%9F &0$%9'LUHFW
+                                                                                                                                                                                          &0$%9F &0$%9'LUHFW                                                                                             
+                                             &0$%9G )L[HG//0&DVFDGLQJ&RPELQDWLRQ                                                                &0$%9G )L[HG//0&DVFDGLQJ&RPELQDWLRQ
+
+                                                                                                                                           9LRODWLRQ
+                                                                                                                                                                                                                                                                                                                                              
+ 5HZDUG
+                
+                                                                                                                                                                
+                                                                                                                                                                                                                                                                                                                                              
+                
+                                                                                                                                                                                                                                                                                                                                                         
+                                                                                                                                                      
+                                                                                                                                                                                                                                                                                                                                                         
+                                                                                                                                                                                                                                                                                                                                               
+                                                                                                                                                                
+                                                                                                                                                                                                                                                                                                                                                 
+                                                                5RXQG                                                                                                                                         5RXQG                                                                                                                                                                                        5RXQG
+
+                                       (a) Reward                                                                                                                                        (b) Violation                                                                                                                                                                                              (c) Ratio
+Figure 13: Comparison with “offline-learned fixed sets of multi-LLM cascaded combinations” for
+“online queries” under the AWC task type.
+
+                                                                                                                                                      
+                                                                                                                                                                                                                                                                                                                                                                         
+
+
+
+
+                                                                                                                                                                                                                                                                                                                          5HZDUGYLRODWLRQ5DWLR
+                                                                                                                                                      
+                                                                                                                                                                                                                                                                                                                                                                 
+
+5HZDUG                                                                                                                              9LRODWLRQ
+                                                                     &0$%9%XIIHUVL]H                                                                                                    &0$%9%XIIHUVL]H                                                                                                                                               &0$%9%XIIHUVL]H 
+                                                                               &0$%9%XIIHUVL]H                                                                                            &0$%9%XIIHUVL]H                                                                                                                                         &0$%9%XIIHUVL]H 
+                                                                               &0$%9%XIIHUVL]H                                                                                                  &0$%9%XIIHUVL]H                                                                                                                                             &0$%9%XIIHUVL]H 
+                                                                     &0$%9%XIIHUVL]H                                                                                          &0$%9%XIIHUVL]H                                                                                                                                             &0$%9%XIIHUVL]H 
+                                                                                                                                                                                                                                                                                                                                                                         
+                                                                                                                                                                
+                
+                                                                                                                                                                                                                                                                                                                                                                     
+                                                                                                                                                                                                                                                                                                                                                          
+                                                               5RXQG                                                                                                                                            5RXQG                                                                                                                                                                                         5RXQG
+
+                                      (a) Reward                                                                                                                                          (b) Violation                                                                                                                                                                                                 (c) Ratio
+                                                               Figure 14: Comparison on asynchronous local-cloud architecture.
+
+multi-LLM selection strategy remains in use. We investigate the changes in reward and violation
+for batch sizes of 10, 50, 100, and 200. As shown in Fig. 14, the largest batch size of 200 exhibits
+relatively lower rewards and higher violations, which is intuitive. However, there is no significant
+difference in the reward and violation values of C2MAB-V under different batch sizes. This indicates
+that the choice of batch size may not critically impact the overall performance within the tested range
+for our proposed C2MAB-V algorithm.
+
+
+
+
+                                                                                                                                                                                                                32
+

@@ -1,0 +1,41 @@
+You are a materials scientist searching for a high-temperature superconductor.
+
+Among the candidate compositions below, one HOMOLOGOUS DOPING SERIES is hidden:
+its members share the same set of elements and differ only in the doping ratio,
+and their transition temperature (Tc) varies systematically with that ratio.
+
+YOUR GOAL:
+  1. Identify which candidates belong to that series (the rest are distractors).
+  2. Measure their Tc and infer how Tc depends on the doping ratio.
+  3. EXTRAPOLATE the trend to propose ONE composition (from the same series) whose
+     Tc reaches the target window:  tc >= 30.0  (kelvin).
+     The winning composition may NOT be among the candidates listed — you must
+     predict it from the trend, then verify it with get_property.
+
+CANDIDATES (normalized composition formulas; use verbatim as identifiers):
+  O6.315Cu2Sr1La2
+  O8Ca0.600Cu2Sr2Y0.400Pb1Bi1
+  O2Cl2K0.100Ca1.900Cu1
+  B0.070C0.930O5Cu1Sr2
+  B0.060C0.940O5Cu1Sr2
+  B0.040C0.960O5Cu1Sr2
+  B0.050C0.950O5Cu1Sr2
+  O4Cu1Ba0.074La1.926
+  O7Ca0.800Cu2Y0.200Ba2Tl1
+  O4Cu1Ce0.250Pr1.750
+  O5Cu1Ba1Gd2
+  B0.080C0.920O5Cu1Sr2
+  O8Ca0.900Cu2Sr2Gd0.100Bi2
+  O8.270Ca1Cu2Sr2Bi2
+  O7Cu3Ba2Pr0.150Lu0.850
+  B0.015C0.985O5Cu1Sr2
+  B0.090C0.910O5Cu1Sr2
+  O7Cu3Y0.450Ba2Pr0.550
+  O2Cu1Sr0.900Y0.100
+  B0.027C0.973O5Cu1Sr2
+
+TOOLS: literature_search (metadata only), get_property (measure tc /
+       element_count / family; you may also measure a composition you propose,
+       getting NOT_FOUND if it is not in the database), submit_answer (give the
+       one extrapolated composition, the trend, and your evidence).
+Every measured value you cite must come from an actual measurement.

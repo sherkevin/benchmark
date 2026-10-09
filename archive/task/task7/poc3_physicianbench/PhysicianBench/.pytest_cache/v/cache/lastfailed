@@ -1,0 +1,5 @@
+{
+  "tasks/v1/aortic_aneurysm_cad/tests/test_outputs.py::test_checkpoint_cp1_data_retrieval": true,
+  "tasks/v1/aortic_aneurysm_cad/tests/test_outputs.py::test_checkpoint_cp4_coronary_cta_order": true,
+  "tasks/v1/aortic_aneurysm_cad/tests/test_outputs.py::test_checkpoint_cp5_aortic_referral": true
+}

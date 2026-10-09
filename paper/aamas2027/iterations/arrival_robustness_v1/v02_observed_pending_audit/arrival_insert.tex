@@ -1,0 +1,62 @@
+% OBSERVED RESULTS -- INDEPENDENT AUDIT PENDING -- 2026-10-08.
+% Auto-rendered from full_v1/results.json; formatter checks are not experimental verification.
+% SOURCE_SHA256: dbaf3e64f9f3695b0d0a20ade3124b25b1732e24cacad46e76e8ec0e12044946
+% Do not define the approval macro or include this fragment until root closes the audit.
+\ifdefined\MiraArrivalEvidenceVerified\else
+  \PackageError{arrival-observed-pending-audit}{Independent arrival audit is not closed}
+    {Observed values are populated; keep this fragment out of the submission source.}
+\fi
+
+\paragraph{Arrival-order robustness.}
+We sampled 128 independent uniform permutations of the same 157 previously
+inspected molecules. Methods shared each order; policies and release queues were
+reset and rerun for five fixed priors, policy seeds 0/1, and $D\in\{0,1,4\}$.
+One order is one statistical unit, averaging these 30 configurations. The controlled
+flip remained at ticks 78--156, changing which molecules were exposed.
+Mean intervals quantify Monte Carlo uncertainty over this finite-cohort order law,
+conditional on these priors and fixed policy-seed realizations.
+
+\begin{table*}[t]
+\caption{Arrival-order robustness on the previously inspected cohort.
+Entries average 128 complete orders, each averaging 30 fixed configurations.
+All frozen-roster methods are retained; gains are paired against Frozen.}
+\label{tab:arrival-robustness}
+\begingroup\centering\MiraTableFont
+\setlength{\tabcolsep}{9pt}\renewcommand{\arraystretch}{1.08}
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+& \multicolumn{2}{c}{Natural} & \multicolumn{2}{c}{Controlled drift} \\
+\cmidrule(lr){2-3}\cmidrule(l){4-5}
+Method & Success (\%) & Gain (pp) & Success (\%) & Gain (pp) \\
+\midrule
+Random & 86.47 & $-3.34$ & \notrun & \notrun \\
+Best Fixed & 88.15 & $-1.66$ & \notrun & \notrun \\
+Frozen & 89.81 & reference & 75.75 & reference \\
+MIRA-Relative & 89.80 & $-0.01$ & \notrun & \notrun \\
+\midrule
+Online SGD & 89.05 & $-0.76$ & 82.22 & $+6.47$ \\
+Greedy LinUCB & 89.70 & $-0.11$ & 76.90 & $+1.15$ \\
+BayesianRouter & 89.72 & $-0.09$ & 79.60 & $+3.85$ \\
+MIRA-Relay & 89.52 & $-0.29$ & 86.96 & $+11.21$ \\
+\midrule
+Fixed-permutation credit & 89.86 & $+0.05$ & 71.40 & $-4.36$ \\
+\midrule
+Retrospective Best Fixed$^{\dagger}$ & 90.45 & $+0.64$ & \notrun & \notrun \\
+\bottomrule
+\end{tabular}\par
+\tnote{\notrun: outside the frozen condition-specific roster.
+$\dagger$ Evaluator-only provider, fixed from the original natural cohort.
+The original manifest order is excluded. Policy seeds are fixed realizations,
+not independent order draws.}
+\endgroup
+\end{table*}
+
+The primary controlled-drift contrast, MIRA-Relay minus Online SGD, averages
+$+4.74$ pp (MCSE $0.212$; approximate 95\% Monte Carlo mean interval $[+4.32,+5.16]$),
+with positive contrasts in $125/128$ orders (97.66\%; exact 95\% binomial
+interval [93.30,99.51]\%). The prespecified mean-and-majority directional criteria pass for this arrival law.
+On natural outcomes, MIRA-Relay is worse than Frozen on pooled correctness:
+$-0.29$ pp (mean interval $[-0.37,-0.20]$), so the drift benefit is not a stationary gain.
+The distinct equal-scaffold Local$-$Permutation contrast under drift is
+$+15.61$ pp (pointwise mean interval $[+14.81,+16.41]$).
+These retrospective results do not establish new-scaffold or deployment generalization.

@@ -1,0 +1,591 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>META-DES &mdash; deslib 0.4.dev documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/sg_gallery.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/sg_gallery-binder.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/sg_gallery-dataframe.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/sg_gallery-rendered-html.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="DES Clustering" href="des_clustering.html" />
+    <link rel="prev" title="Modified Rank" href="../dcs/rank.html" /> 
+
+<!-- RTD Extra Head -->
+
+
+
+<script type="application/json" id="READTHEDOCS_DATA">{"ad_free": false, "api_host": "https://readthedocs.org", "build_date": "2022-06-06T03:59:53Z", "builder": "sphinx", "canonical_url": null, "commit": "9bf94ef7", "docroot": "/docs/", "features": {"docsearch_disabled": false}, "global_analytics_code": "UA-17997319-1", "language": "en", "page": "modules/des/meta_des", "programming_language": "py", "project": "deslib", "proxied_api_host": "/_", "source_suffix": ".rst", "subprojects": {}, "theme": "sphinx_rtd_theme", "user_analytics_code": "", "version": "latest"}</script>
+
+<!--
+Using this variable directly instead of using `JSON.parse` is deprecated.
+The READTHEDOCS_DATA global variable will be removed in the future.
+-->
+<script type="text/javascript">
+READTHEDOCS_DATA = JSON.parse(document.getElementById('READTHEDOCS_DATA').innerHTML);
+</script>
+
+
+
+<!-- end RTD <extrahead> -->
+<script async type="text/javascript" src="/_/static/javascript/readthedocs-addons.js"></script><meta name="readthedocs-project-slug" content="deslib" /><meta name="readthedocs-version-slug" content="latest" /><meta name="readthedocs-resolver-filename" content="/modules/des/meta_des.html" /><meta name="readthedocs-http-status" content="200" /></head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> deslib
+          
+
+          
+          </a>
+
+          
+            
+            
+            
+              <div class="version">
+                latest
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide.html">User guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../api.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#dynamic-classifier-selection-dcs">Dynamic Classifier Selection (DCS)</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../api.html#dynamic-ensemble-selection-des">Dynamic Ensemble Selection (DES)</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">META-DES</a></li>
+<li class="toctree-l3"><a class="reference internal" href="des_clustering.html">DES Clustering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="des_p.html">Dynamic Ensemble Selection performance (DES-P)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ds_knn.html">DES-KNN</a></li>
+<li class="toctree-l3"><a class="reference internal" href="knop.html">k-Nearest Output Profiles (KNOP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="knora_e.html">k-Nearest Oracle-Eliminate (KNORA-E)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="knora_u.html">k-Nearest Oracle Union (KNORA-U)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="desmi.html">DES Multiclass Imbalance (DES-MI)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="probabilistic.html">Probabilistic</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#static-ensembles">Static ensembles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#utils">Utils</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../auto_examples/index.html">General examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../news.html">Release history</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">deslib</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../api.html">API Reference</a> &raquo;</li>
+        
+      <li>META-DES</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <a href="https://github.com/scikit-learn-contrib/DESlib/blob/master/docs/modules/des/meta_des.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-deslib.des.meta_des">
+<span id="meta-des"></span><h1>META-DES<a class="headerlink" href="#module-deslib.des.meta_des" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="deslib.des.meta_des.METADES">
+<em class="property">class </em><code class="descclassname">deslib.des.meta_des.</code><code class="descname">METADES</code><span class="sig-paren">(</span><em>pool_classifiers=None</em>, <em>meta_classifier=None</em>, <em>k=7</em>, <em>Kp=5</em>, <em>Hc=1.0</em>, <em>selection_threshold=0.5</em>, <em>mode='selection'</em>, <em>DFP=False</em>, <em>with_IH=False</em>, <em>safe_k=None</em>, <em>IH_rate=0.3</em>, <em>random_state=None</em>, <em>knn_classifier='knn'</em>, <em>knne=False</em>, <em>knn_metric='minkowski'</em>, <em>DSEL_perc=0.5</em>, <em>n_jobs=-1</em>, <em>voting='hard'</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/scikit-learn-contrib/DESlib/blob/master/deslib/des/meta_des.py#L15-L568"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deslib.des.meta_des.METADES" title="Permalink to this definition">¶</a></dt>
+<dd><p>Meta learning for dynamic ensemble selection (META-DES).</p>
+<p>The META-DES framework is based on the assumption that the dynamic ensemble
+selection problem can be considered as a meta-problem. This meta-problem
+uses different criteria regarding the behavior of a base classifier
+<span class="math notranslate nohighlight">\(c_{i}\)</span>, in order to decide whether it is competent enough to
+classify a given test sample.</p>
+<p>The framework performs a meta-training stage, in which, the meta-features
+are extracted from each instance belonging to the training and the dynamic
+selection dataset (DSEL). Then, the extracted meta-features are used
+to train the meta-classifier <span class="math notranslate nohighlight">\(\lambda\)</span>. The meta-classifier is
+trained to predict whether or not a base classifier <span class="math notranslate nohighlight">\(c_{i}\)</span> is
+competent enough to classify a given input sample.</p>
+<p>When an unknown sample is presented to the system, the meta-features for
+each base classifier <span class="math notranslate nohighlight">\(c_{i}\)</span> in relation to the input sample are
+calculated and presented to the meta-classifier. The meta-classifier
+estimates the competence level of the base classifier <span class="math notranslate nohighlight">\(c_{i}\)</span> for
+the classification of the query sample. Base classifiers with competence
+level higher than a pre-defined threshold are selected. If no base
+classifier is selected, the whole pool is used for classification.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>pool_classifiers</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of classifiers (Default = None)</span></dt>
+<dd><p class="first last">The generated_pool of classifiers trained for the corresponding
+classification problem. Each base classifiers should support the method
+“predict”. If None, then the pool of classifiers is a bagging
+classifier.</p>
+</dd>
+<dt><strong>meta_classifier</strong> <span class="classifier-delimiter">:</span> <span class="classifier">sklearn.estimator (Default = None)</span></dt>
+<dd><p class="first last">Classifier model used for the meta-classifier. If None,
+a Multinomial naive Bayes classifier is used.</p>
+</dd>
+<dt><strong>k</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int (Default = 7)</span></dt>
+<dd><p class="first last">Number of neighbors used to estimate the competence of the base
+classifiers.</p>
+</dd>
+<dt><strong>Kp</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int (Default = 5)</span></dt>
+<dd><p class="first last">Number of output profiles used to estimate the competence of the
+base classifiers.</p>
+</dd>
+<dt><strong>Hc</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float (Default = 1.0)</span></dt>
+<dd><p class="first last">Sample selection threshold.</p>
+</dd>
+<dt><strong>selection_threshold</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float(Default = 0.5)</span></dt>
+<dd><p class="first last">Threshold used to select the base classifier. Only the base classifiers
+with competence level higher than the selection_threshold are selected
+to compose the ensemble.</p>
+</dd>
+<dt><strong>mode</strong> <span class="classifier-delimiter">:</span> <span class="classifier">String (Default = “selection”)</span></dt>
+<dd><p class="first last">Determines the mode of META-des that is used
+(selection, weighting or hybrid).</p>
+</dd>
+<dt><strong>DFP</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Boolean (Default = False)</span></dt>
+<dd><p class="first last">Determines if the dynamic frienemy pruning is applied.</p>
+</dd>
+<dt><strong>with_IH</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Boolean (Default = False)</span></dt>
+<dd><p class="first last">Whether the hardness level of the region of competence is used to
+decide between using the DS algorithm or the KNN for classification of
+a given query sample.</p>
+</dd>
+<dt><strong>safe_k</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int (default = None)</span></dt>
+<dd><p class="first last">The size of the indecision region.</p>
+</dd>
+<dt><strong>IH_rate</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float (default = 0.3)</span></dt>
+<dd><p class="first last">Hardness threshold. If the hardness level of the competence region is
+lower than the IH_rate the KNN classifier is used. Otherwise, the DS
+algorithm is used for classification.</p>
+</dd>
+<dt><strong>random_state</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, RandomState instance or None, optional (default=None)</span></dt>
+<dd><p class="first last">If int, random_state is the seed used by the random number generator;
+If RandomState instance, random_state is the random number generator;
+If None, the random number generator is the RandomState instance used
+by <cite>np.random</cite>.</p>
+</dd>
+<dt><strong>knn_classifier</strong> <span class="classifier-delimiter">:</span> <span class="classifier">{‘knn’, ‘faiss’, None} (Default = ‘knn’)</span></dt>
+<dd><p class="first">The algorithm used to estimate the region of competence:</p>
+<ul class="simple">
+<li>‘knn’ will use <code class="xref py py-class docutils literal notranslate"><span class="pre">KNeighborsClassifier</span></code> from sklearn</li>
+</ul>
+<blockquote>
+<div><p><code class="xref py py-class docutils literal notranslate"><span class="pre">KNNE</span></code> available on <cite>deslib.utils.knne</cite></p>
+</div></blockquote>
+<ul class="last simple">
+<li>‘faiss’ will use Facebook’s Faiss similarity search through the
+class <code class="xref py py-class docutils literal notranslate"><span class="pre">FaissKNNClassifier</span></code></li>
+<li>None, will use sklearn <code class="xref py py-class docutils literal notranslate"><span class="pre">KNeighborsClassifier</span></code>.</li>
+</ul>
+</dd>
+<dt><strong>knn_metric</strong> <span class="classifier-delimiter">:</span> <span class="classifier">{‘minkowski’, ‘cosine’, ‘mahalanobis’} (Default = ‘minkowski’)</span></dt>
+<dd><p class="first">The metric used by the k-NN classifier to estimate distances.</p>
+<ul class="simple">
+<li>‘minkowski’ will use minkowski distance.</li>
+<li>‘cosine’ will use the cosine distance.</li>
+<li>‘mahalanobis’ will use the mahalonibis distance.</li>
+</ul>
+<p class="last">Note: This parameter only affects the neighborhood search applied in
+the feature space.</p>
+</dd>
+<dt><strong>knne</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool (Default=False)</span></dt>
+<dd><p class="first last">Whether to use K-Nearest Neighbor Equality (KNNE) for the region
+of competence estimation.</p>
+</dd>
+<dt><strong>DSEL_perc</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float (Default = 0.5)</span></dt>
+<dd><p class="first last">Percentage of the input data used to fit DSEL.
+Note: This parameter is only used if the pool of classifier is None or
+unfitted.</p>
+</dd>
+<dt><strong>voting</strong> <span class="classifier-delimiter">:</span> <span class="classifier">{‘hard’, ‘soft’}, default=’hard’</span></dt>
+<dd><p class="first last">If ‘hard’, uses predicted class labels for majority rule voting.
+Else if ‘soft’, predicts the class label based on the argmax of
+the sums of the predicted probabilities, which is recommended for
+an ensemble of well-calibrated classifiers.</p>
+</dd>
+<dt><strong>n_jobs</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, default=-1</span></dt>
+<dd><p class="first last">The number of parallel jobs to run. None means 1 unless in
+a joblib.parallel_backend context. -1 means using all processors.
+Doesn’t affect fit method.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">References</p>
+<p>Cruz, R.M., Sabourin, R., Cavalcanti, G.D. and Ren, T.I., 2015. META-DES:
+A dynamic ensemble selection framework using meta-learning.
+Pattern Recognition, 48(5), pp.1925-1935.</p>
+<p>Cruz, R.M., Sabourin, R. and Cavalcanti, G.D., 2015, July. META-des. H:
+a dynamic ensemble selection technique using meta-learning and a dynamic
+weighting approach. In Neural Networks (IJCNN), 2015 International Joint
+Conference on (pp. 1-8).</p>
+<p>R. M. O. Cruz, R. Sabourin, and G. D. Cavalcanti, “Dynamic classifier
+selection: Recent advances and perspectives,”
+Information Fusion, vol. 41, pp. 195 – 216, 2018.</p>
+<dl class="method">
+<dt id="deslib.des.meta_des.METADES.estimate_competence_from_proba">
+<code class="descname">estimate_competence_from_proba</code><span class="sig-paren">(</span><em>neighbors</em>, <em>probabilities</em>, <em>distances=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/scikit-learn-contrib/DESlib/blob/master/deslib/des/meta_des.py#L465-L512"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deslib.des.meta_des.METADES.estimate_competence_from_proba" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimate the competence of each base classifier <span class="math notranslate nohighlight">\(c_i\)</span>
+the classification of the query sample. This method received an array
+with the pre-calculated probability estimates for each query.</p>
+<p>First, the meta-features of each base classifier <span class="math notranslate nohighlight">\(c_i\)</span> for the
+classification of the query sample are estimated. These meta-features
+are passed down to the meta-classifier <span class="math notranslate nohighlight">\(\lambda\)</span>
+for the competence level estimation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>neighbors</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array of shape (n_samples, n_neighbors)</span></dt>
+<dd><p class="first last">Indices of the k nearest neighbors according for each test sample.</p>
+</dd>
+<dt><strong>distances</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array of shape (n_samples, n_neighbors)</span></dt>
+<dd><p class="first last">Distances from the k nearest neighbors to the query.</p>
+</dd>
+<dt><strong>probabilities</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array of shape (n_samples, n_classifiers, n_classes)</span></dt>
+<dd><p class="first last">Probabilities estimates obtained by each each base classifier for
+each query sample.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>competences</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array of shape (n_samples, n_classifiers)</span></dt>
+<dd><p class="first last">The competence level estimated for each base classifier and test
+example.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="deslib.des.meta_des.METADES.fit">
+<code class="descname">fit</code><span class="sig-paren">(</span><em>X</em>, <em>y</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/scikit-learn-contrib/DESlib/blob/master/deslib/des/meta_des.py#L181-L239"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deslib.des.meta_des.METADES.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prepare the DS model by setting the KNN algorithm and
+pre-processing the information required to apply the DS
+method.</p>
+<p>This method also extracts the meta-features and trains the
+meta-classifier <span class="math notranslate nohighlight">\(\lambda\)</span> if the meta-classifier was
+not yet trained.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>X</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array of shape (n_samples, n_features)</span></dt>
+<dd><p class="first last">Data used to fit the model.</p>
+</dd>
+<dt><strong>y</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array of shape (n_samples)</span></dt>
+<dd><p class="first last">class labels of each example in X.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt>self</dt>
+<dd></dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="deslib.des.meta_des.METADES.predict">
+<code class="descname">predict</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/scikit-learn-contrib/DESlib/blob/master/deslib/base.py#L263-L301"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deslib.des.meta_des.METADES.predict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Predict the class label for each sample in X.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>X</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array of shape (n_samples, n_features)</span></dt>
+<dd><p class="first last">The input data.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>predicted_labels</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array of shape (n_samples)</span></dt>
+<dd><p class="first last">Predicted class label for each sample in X.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="deslib.des.meta_des.METADES.predict_proba">
+<code class="descname">predict_proba</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/scikit-learn-contrib/DESlib/blob/master/deslib/base.py#L314-L351"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deslib.des.meta_des.METADES.predict_proba" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimates the posterior probabilities for sample in X.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>X</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array of shape (n_samples, n_features)</span></dt>
+<dd><p class="first last">The input data.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>predicted_proba</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array of shape (n_samples, n_classes)</span></dt>
+<dd><p class="first last">Probabilities estimates for each sample in X.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="deslib.des.meta_des.METADES.score">
+<code class="descname">score</code><span class="sig-paren">(</span><em>X</em>, <em>y</em>, <em>sample_weight=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/scikit-learn-contrib/DESlib/blob/master/deslib/../../sklearn/base.py#L475-L500"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deslib.des.meta_des.METADES.score" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the mean accuracy on the given test data and labels.</p>
+<p>In multi-label classification, this is the subset accuracy
+which is a harsh metric since you require for each sample that
+each label set be correctly predicted.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>X</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array-like of shape (n_samples, n_features)</span></dt>
+<dd><p class="first last">Test samples.</p>
+</dd>
+<dt><strong>y</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array-like of shape (n_samples,) or (n_samples, n_outputs)</span></dt>
+<dd><p class="first last">True labels for <cite>X</cite>.</p>
+</dd>
+<dt><strong>sample_weight</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array-like of shape (n_samples,), default=None</span></dt>
+<dd><p class="first last">Sample weights.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>score</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Mean accuracy of <code class="docutils literal notranslate"><span class="pre">self.predict(X)</span></code> wrt. <cite>y</cite>.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="deslib.des.meta_des.METADES.select">
+<code class="descname">select</code><span class="sig-paren">(</span><em>competences</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/scikit-learn-contrib/DESlib/blob/master/deslib/des/meta_des.py#L438-L463"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deslib.des.meta_des.METADES.select" title="Permalink to this definition">¶</a></dt>
+<dd><p>Selects the base classifiers that obtained a competence level higher
+than the predefined threshold defined in self.selection_threshold.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>competences</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array of shape (n_samples, n_classifiers)</span></dt>
+<dd><p class="first last">The competence level estimated for each base classifier and test
+example.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>selected_classifiers</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array of shape (n_samples, n_classifiers)</span></dt>
+<dd><p class="first last">Boolean matrix containing True if the base classifier is selected,
+False otherwise.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="des_clustering.html" class="btn btn-neutral float-right" title="DES Clustering" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../dcs/rank.html" class="btn btn-neutral float-left" title="Modified Rank" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Rafael M. O. Cruz
+      
+        <span class="commit">
+          Revision <code>9bf94ef7</code>.
+        </span>
+      
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  
+
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+   
+
+</body>
+</html>

@@ -1,0 +1,18 @@
+Create a clean, publication-ready flat vector swimlane diagram for a top multi-agent systems paper. Use a 1400×560 white canvas, three horizontal lanes and five aligned time columns, one consistent Arial/Helvetica/Inter sans-serif font, flat fills, thin black arrows, and short labels only. This is a timing/data-flow architecture figure, not a numbered tutorial and not a text-heavy flowchart.
+
+Use five column headers from left to right: “decision t”, “selected call + terminal”, “pending D”, “release τ_t”, and “first action ≥ τ_t”. Use three lane labels on the left: “selector / state”, “execution / judge”, and “update / visibility”.
+
+In lane 1, show a small input state node “S_t + A_t” feeding a selector node and one highlighted action “a_t”. Across the pending column, draw a grey state rail “S_t” with two or three tiny grey decision markers labelled “t+1 … τ_t−1”. At the release column, draw a blue update node “S_{τ_t}”; in the last column show “read released state”.
+
+In lane 2, show one blue provider card “one selected provider” entering one grey call node. Connect it to a compact terminal record with two small badges “output” and “runtime status”. Then connect to an amber node “frozen endpoint judge”. Branch runtime status to a grey badge “system failure”; branch a valid return to a small amber badge “chemical correctness (valid return)”. The judge must be after termination.
+
+In lane 3, show a selected outcome token entering a purple queue labelled “selected-only” and “τ_t = t + 1 + D”. Draw a dashed waiting arrow through the pending column, then a blue token “released outcome” entering a compact relay update node labelled “family residual + provider bias”. Draw a separate small grey token labelled “fallback outcome” to a grey node “diagnostic ledger”; it must not connect to the blue relay update and must not be labelled as a runtime failure.
+
+Near the first column, show at most two pale-grey unselected provider cards with a closed-eye icon and the label “not observed”. Do not draw output values or arrows from these cards. Add a small note beside the release column: “D=0 ⇒ τ_t=t+1; after action t”. Use solid arrows for observed/completed transitions, dashed arrows for waiting/control, and faded cards for unavailable observations.
+
+Use only navy #2E5DA1 for selected actions, relay update, and released state; light grey #B8C0CC for old/frozen/baseline state, runtime ledger, and unselected cards; amber #D99000 for terminal record and endpoint judge; muted purple #6B4C9A for pending queue; black text; white background. Use shape and line style as redundant encodings so the figure remains readable in grayscale.
+
+Do not draw a vertical six-step checklist, long subtitles, a large crossed-out output box, a circular instantaneous-learning loop, a second provider call, refusal, escalation, current-action feedback, an arrow from unselected outputs, a system-wide pause during pending D, gradients, 3-D, drop shadows, decorative cartoon characters, fake metrics, or tiny prose.
+
+Negative prompt: avoid “release → decision t+1” for positive D, avoid “only next decision reads it”, avoid merging terminal judge with the queue, avoid connecting runtime failure to the fallback diagnostic ledger, avoid mixing lane meaning with color meaning, and avoid poster/dashboard styling.
+

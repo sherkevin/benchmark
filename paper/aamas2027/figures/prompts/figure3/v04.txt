@@ -1,0 +1,11 @@
+Create a polished AI-generated flat-vector results figure for a top-tier AAMAS paper. Use a wide white landscape canvas with three aligned panels (a), (b), and (c), compact typography, restrained navy/gray/amber/purple palette, thin dark axes, sparse light gridlines, rounded panel headers, and generous but controlled whitespace. Match the quality of modern top-conference results figures: clear panel hierarchy, no dashboard clutter, no decorative illustrations, no 3-D, no gradients, and no fake data.
+
+Panel (a) is titled Effect of released feedback. Reserve a clean plotting area with x categories D=0, D=1, D=4 and a y label Paired change in system success (pp). Show only a thin zero reference line and an empty legend with navy MIRA-Relay minus ProbeNoUpdate and gray MIRA-Relay minus Frozen. Do not draw points, bars, error bars, numerical y ticks, stars, or a trend.
+
+Panel (b) is titled Benefit and harm from switching. Reserve a clean plotting area with x label Decision tick and y label Cumulative rescued − harmed. Include a small caption Relative to fit-only incumbent; all selected actions. Do not draw an illustrative curve, points, or numbers.
+
+Panel (c) is titled Adaptation cost. Reserve a clean plotting area with x label Update p95 latency (ms) and y label Serialized state (KiB). Leave space for paired effect annotations and an exact-data legend, but do not draw points, labels with values, a Pareto frontier, or a dominance claim.
+
+Use navy for the proposed adaptive method, gray for matched references, amber only for terminal/evaluation emphasis, muted purple for delayed feedback. Put a short unobtrusive footer placeholder: Selected-only delayed feedback; paired scaffold-cluster intervals; scope and denominator declared. Keep all text short and readable at full paper width.
+
+Negative prompt: fake points, fake curves, fake bars, fake error bars, invented percentages, invented y ticks, significance stars, Pareto frontier, dominance claim, decorative icons, dashboard cards, dense table, 3-D, gradients, shadows, watermark, illegible microtext, extra panels.

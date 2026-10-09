@@ -1,0 +1,6 @@
+conference: ICLR 2024
+title: GAIA: a benchmark for General AI Assistants
+arxiv_id: 2311.12983v1
+arxiv_abs: http://arxiv.org/abs/2311.12983v1
+pdf_url: https://arxiv.org/pdf/2311.12983v1
+matched_arxiv_title: GAIA: a benchmark for General AI Assistants

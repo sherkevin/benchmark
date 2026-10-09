@@ -1,0 +1,1466 @@
+                Online Cascade Learning for Efficient Inference over Streams
+
+
+                Lunyiu Nie 1 Zhimin Ding 2 Erdong Hu 2 Christopher Jermaine 2 Swarat Chaudhuri 1
+
+
+                          Abstract                                               It was so touching and           LR
+                                                                                                                          update
+                                                                                 beautiful. I strongly
+       Large Language Models (LLMs) have a natural                               recommend seeing for all.
+
+       role in answering complex queries about data                             😎                                        Pos
+                                                                                 This film is interesting
+       streams, but the high computational cost of LLM                           as an experiment but
+       inference makes them infeasible in many such                              tells no cogent story.          BERT     update
+                                                                                                                 -base
+       tasks. We propose online cascade learning as an                          🤔
+       approach to address this challenge. The objective                         This is the movie for
+                                                                                 those who believe cinema                Neg
+       here is to learn a “cascade” of models, starting                          is the seventh art, not an
+                                                                                 entertainment business.
+       with lower-capacity models (such as logistic re-                                                          GPT-
+       gression) and ending with a powerful LLM, along                          😵💫                                3.5
+                                                                                     Incoming Queries of
+       with a deferral policy that determines the model                              Varying Complexi8es          Pos
+       to be used on a given input. We formulate the
+       task of learning cascades online as an imitation-                 Figure 1: A sentiment analysis task over a stream of IMDB
+       learning problem, where smaller models are up-                    movie reviews (Maas et al., 2011). We use the cheapest
+       dated over time imitating the LLM expert demon-                   logistic regression model (green lines) to process simpler
+       strations, and give a no-regret algorithm for the                 queries and defer more complex queries to the larger models
+       problem. Experimental results across four bench-                  (orange & red lines). When the cascade proceeds to the
+       marks show that our method parallels LLMs in                      LLM, the annotations are collected to update the smaller
+       accuracy while cutting down inference costs by                    models online (blue lines).
+       as much as 90% with strong robustness against
+       input distribution shifts, underscoring its efficacy              server with eight A100 GPUs takes 3.6 seconds to process a
+       and adaptability in stream processing.                            document containing 8,192 tokens using the largest Llama
+                                                                         (Touvron et al., 2023a). To process one million such doc-
+                                                                         uments per hour would thus require 1,000 A100 servers.
+1. Introduction                                                          Using Amazon Web Services, this computation would cost
+                                                                         more than 30,000 USD per hour, if it were even possible to
+Large language models (LLMs) (Bommasani et al., 2021;                    procure the machines required.
+Touvron et al., 2023b; Brown et al., 2020) hold great promise
+as a means of one-pass query answering over text streams.                There are two popular ways to reduce the cost of LLM
+For example, suppose we have a stream of movie reviews                   inference. The first is to distill a large language model into
+posted on the internet and would like to retrieve the ones               a smaller model that can process a document using less
+that are positive (Figure 1). To address this without human              computation (Hinton et al., 2015; Gu et al., 2023; Hsieh
+annotations, we can create a prompt for the LLM to identify              et al., 2023). The second is to use a cascade of models that
+the sentiment in a review. The LLM can then use this prompt              use smaller models to process “easier” inputs and reserve
+to process each statement in sequence.                                   the largest models for the most difficult inputs (Varshney
+                                                                         & Baral, 2022; Chen et al., 2023). However, these existing
+However, LLM inference can be extremely expensive, es-                   proposals assume a model of learning in which a labeled
+pecially in a streaming setup where queries arrive continu-              training set is available beforehand, making them unsuitable
+ously. Based on our benchmarking (Appendix B.1), a GPU                   for a streaming setting. In contrast, the streaming setting
+   1                                                                     requires online learning (Hoi et al., 2021).
+   The University of Texas at Austin 2 Rice University. Correspon-
+dence to: Lunyiu Nie <lynie@utexas.edu>, Swarat Chaudhuri                In this paper, we propose online cascade learning to bridge
+<swarat@cs.utexas.edu>.                                                  this gap in the literature. Our goal here is to develop a cas-
+Proceedings of the 41 st International Conference on Machine             cade of models, arrayed from the least to the most complex,
+Learning, Vienna, Austria. PMLR 235, 2024. Copyright 2024 by             that can process queries in a data stream with optimal cost-
+the author(s).                                                           performance trade-offs. The critical difference from prior
+
+                                                                     1
+           Online Model Cascade
+                                Online Cascade Learning for Efficient Inference over Streams
+
+                                                                                             Online Cascade Learning
+
+
+
+
+                  🔎                   𝑚!      defer
+                                                           𝑚"          defer
+                                                                                      𝑚#          ……
+
+              User Queries
+                                                                                                                LLM
+
+                               conﬁdent?              confident?                conﬁdent?
+                                                                                                               output
+                                         output               output                     output
+             Confidence Calibration
+
+Figure 2: The proposed online cascade learning framework, where smaller models with monotonically increasing capacities
+and costs (c1 < c2 < ... < cN ) can progressively learn from the ongoing outputs of an LLM (as denoted in red arrows).
+Meanwhile, the deferral policy and corresponding confidence scores are also calibrated online (in green arrows).
+
+
+work is that our cascades are trained in a fully online manner                 ing analytics settings. The framework enables systematic
+and do not require any human-labeled training data. The                        trade-offs between prediction accuracy and resource us-
+smaller models in the cascade would continuously evolve                        age, and allows learning without any human annotations.
+and improve over time by imitating the LLM’s demonstra-                  • We offer a formulation of the online learning of cascades
+tions on the harder queries, enabling them to handle an                    in terms of episodic MDPs and give a no-regret imitation
+expanding range of queries with increasing proficiency.                    learning method for solving this problem.
+A key component of our cascades is the deferral policy                   • We present rigorous experiments showing that our pro-
+that decides, given an input, the best “level” of the cascade              posed algorithm can achieve comparable accuracy as
+that should handle the input (Figure 2). At startup, the                   LLMs while saving up to 90% of the inference costs. Our
+policy keeps its “gates” open, allowing all initial inputs                 source code is available at https://github.com/
+to flow through the cascade and be processed by the most                   flitternie/online_cascade_learning.
+expensive model (an LLM). These processed inputs then
+become training labels for updating the smaller models and
+the deferral policy within the cascade. Over time, as the
+                                                                        2. Problem Formulation
+model sees more data, the system stabilizes at a state where            Inference over Streams as an MDP Problem.                        We
+the smaller, less expensive models can handle the majority              consider stream processing scenarios that have as input a
+of the new inputs. The framework also incorporates a set of             fixed infinite stream X = ⟨x1 , . . . , xt , . . . ⟩ of user queries.
+learning hyperparameters that adjust the trade-off between              The t-th query xt is associated with a ground-truth label
+accuracy and cost based on user needs.                                  yt ∈ Y , where Y is a label set. Our goal is to predict the
+We formalize the problem of online cascade learning in                  label for each xt using an N -level model cascade.
+terms of an episodic Markov decision process (MDP) that                 We formulate our problem using an episodic Markov deci-
+considers both prediction loss and computational costs for              sion process (MDP) (S, A, T , C). Here:
+co-optimization. We assume an expert policy — a high-
+capacity LLM — for this MDP. We learn the various compo-                • S is a set of states. A state in the t-th episode is either
+nents of the cascade through imitation learning (Ross et al.,             a pair ⟨xt , i⟩, where i ∈ {1, ..., N } indicates the current
+2011) based on the LLM demonstrations. We show that                       cascade level, or a special terminal state exit that ends
+our algorithm comes with a theoretical no-regret guarantee.               the episode. The initial state of the t-th episode is ⟨xt , 1⟩.
+Our experimental results, on four tasks of various complex-               For clarity, we abbreviate ⟨xt , i⟩ by st,i .
+ity, show that our proposed method can achieve accuracy                 • A is a set of actions, consisting of:
+comparable to LLM at a vastly reduced inference cost.
+                                                                          – The label set Y , representing the potential predictions
+To summarize the main contributions of our work:                            if the cascade chooses to output at the current state. For
+                                                                            instance, in a binary classification task, Y = {0, 1}.
+• We introduce online cascade learning, a new framework                   – A special action defer that activates the next level of
+  for learning model cascades in resource-intensive stream-                 the cascade.
+
+                                                                   2
+                                  Online Cascade Learning for Efficient Inference over Streams
+
+• T (st,i , a) is a deterministic transition function, consisting            deferral functions ⟨f1 , . . . , fN −1 ⟩ that decide whether the
+  of transitions of the form:                                                current level can perform a high-confidence classification
+                                                                             or to defer. We assume each mi to produce a vector of prob-
+ – T (st,i , a) = exit for a ∈ Y .
+                                                                             abilities, with one probability for each label, and each fi to
+ – T (st,i , defer) = st,i+1 .
+                                                                             produce a probability of deferral. Then the overall policy
+• C(st,i , a) is a cost function defined as:                                 has the form:
+                          (
+                            L(a|yt ) if a ∈ Y ,                                       π(st,i , defer) = fi (mi (xt )),
+            C(st,i , a) =
+                            µci+1      if a =defer.                                         π(st,i , y) = (mi (xt )) [y] for y ∈ Y.
+
+  Here, L(a|yt ) is a prediction loss that measures the ac-                  We assume the two parameterized function representations
+  curacy of the cascade’s prediction. ci+1 represents the                    for each level i: the classification model mi and the deferral
+  penalty we pay for a deferral — intuitively, this penalty                  function fi , are both characterized by a crucial property:
+  captures the computational overheads of going one level                    they guarantee uniform computational costs for evaluating
+  deeper into the cascade. The adjustable constant µ guides                  the functions, regardless of the specific function parameters
+  the trade-off between computational cost and accuracy.                     and function inputs. This means that for any instantiation
+                                                                             of the parameters in mi and fi , the inference costs remain
+Online Cascade Learning. We now formulate online cas-                        constant, irrespective of the specific input query. This as-
+cade learning as the problem of solving the above episodic                   sumption is reasonable in the practical scenarios we target.
+MDP. Let a policy π be a stochastic map from states to ac-                   For example, the inference cost of a BERT-base model is
+tions. We use π(st,i , defer) to represent the probability                   approximately the same, no matter how it is parameterized.
+that π chooses to defer in state st,i , and π(st,i , y) to repre-            This uniform cost assumption also underpins the use of fixed
+sent the probability that π chooses y ∈ Y , conditioned on                   cost penalties ci in our MDPs.
+no deferral having occurred.
+The probability of a policy π entering state st,i in episode                 3. Learning Algorithm
+                      s
+t is denoted as pπt,i . For i > 1, st,i can be reached if and
+only if the policy chooses the defer action in all preceding                 To learn cascades online without human annotations, we
+states st,1 , ..., st,i−1 within the current episode. Thus,                  propose an imitation learning algorithm that assumes an
+                                                                             expert policy (an LLM) that can demonstrate ground-truth
+                                       i−1
+                                       Y                                     labels. The algorithm iteratively updates the classification
+      psπt,1 = 1,           psπt,i =         π(st,j , defer).                models and deferral functions in the cascade by imitating
+                                       j=1                                   the expert as in DAgger (Ross et al., 2011). However, unlike
+                                                                             traditional imitation learning, our goal here is to balance
+Then, the cost of executing π over T episodes is computed
+                                                                             computational efficiency and accuracy.
+by summing over all the episodes and cascade levels:
+                           "                     #                           We incorporate such an expert into our cascades by assum-
+                       X N
+                        T    X                                               ing that the final classification model mN is the expert LLM.
+            J(π, T ) =          psπt,i Cπ (st,i )     (1)
+                                                                             When invoked on a query xt , mN always outputs a vector
+                         t=1    i=1
+                                                                             whose largest value is associated with ground-truth label
+                                                                             yt . However, it may not always be the case that choosing to
+Here, Cπ (st,i ) is the expected, immediate cost of applying                 invoke mN leads to optimal cost. There may be a smaller
+policy π at state st,i . This is computed as:                                model mi for i < N that also produces the correct label yt ,
+Cπ (st,i ) = π(st,i , defer) · µci+1                                         without the cost of the additional defer actions. Indeed,
+                                        X                                    an optimal policy may occasionally incur prediction errors
+          + (1 − π(st,i , defer)) ·            π(st,i , y) · L(y|yt ).       to manage the cost of incurring defer actions. Designing
+                                        y∈Y                                  an algorithm that can train a policy in an online fashion to
+                                                                             manage those trade-offs is at the core of the paper.
+After having seen the first T queries in the input stream
+                                                                             Our overall algorithm is detailed in Algorithm 1. Here,
+X, our learning goal is to find a policy that minimizes
+                                                                             m1 , ..., mN are the classification models (with mN being
+J(π, T ). When T is clear from the context, we often abbre-
+                                                                             the expert for imitation) and f1 , ..., fN −1 are the deferral
+viate J(π, T ) by J(π).
+                                                                             functions. The smaller models m1 , ..., mN −1 are initialized
+Policy Representations. We represent policies in a factor-                   either randomly or with their respective pretrained weights.
+ized way using a set of classification models ⟨m1 , . . . , mN ⟩             For each incoming query xt (outer loop), we sequentially uti-
+that constitute the different levels of the cascade, and a set of            lize the i-th model in the cascade to make a prediction (inner
+
+                                                                         3
+                                  Online Cascade Learning for Efficient Inference over Streams
+
+Algorithm 1 Online Cascade Learning.                                   policy in hindsight. In our setting, the regret of a learned
+  Initialize models m1 , ..., mN , deferral functions                  policy π is:
+  f1 , ..., fN −1 , β1 , D ← ∅                                           γ = J(π, T ) − min J(π, T )                                         (2)
+  for xt in stream X do                                                                         π∈Π
+     for mi in m1 to mN do                                                     T X
+                                                                               X N                                 T X
+                                                                                                                   X N
+         At probability βt :                                               =             psπt,i Cπ (st,i ) − min             psπt,i Cπ (st,i ),
+                                                                                                           π∈Π
+             Jump to mN // like DAgger                                         t=1 i=1                             t=1 i=1
+         predi = mi (xt ) // probability vector                                                                                              (3)
+         actioni ∼ fi (predi ) // whether to defer                     where Π denotes the whole possible policy space. An al-
+         if mi is mN or actioni ̸= defer then                          gorithm is defined to have no-regret if it can produce a
+             ŷt = arg max(predi ) // discretization                   sequence of policies π1 , . . . , πT such that the expected av-
+             D ← D ∪ {xt , ŷt } if mi is mN                           erage regret γ/T goes to 0 as T → ∞ (Ross et al., 2011).
+             Break
+         end if                                                        To aid our no-regret analysis of online cascade learning, we
+     end for                                                           start by constructing a simplified online ensemble learning
+     Output ŷt                                                        algorithm under the same stream processing setting that
+     Update m1 to mN −1 on D via OGD // imitating expert               comprises the linear combination of a series of classification
+     Compute loss J(π, t) and update f1 to fN −1 via OGD               PN m1 , ..., mN , each with a static operating probability
+                                                                       models
+     Decay βt+1                                                           i=1 wi = 1, without any deferral functions. Let us denote
+  end for                                                              the model parameters of mi at time t by mti . Assuming
+                                                                       a convex, differentiable cost function ct for all t that can
+                                                                       evaluate mti , and bounded, closed, nonempty model spaces
+loop). Specifically, the model generates a probability vector          ||Mi || for all mi , we analyze the regret of this algorithm.
+predi , which is processed by the deferral function fi . This          Theorem 3.1. With online gradient descent and a learning
+yields a deferral probability score that can be discretized            rate ηt = t−1/2 , the total regret γ of the online ensemble
+into a binary actioni to determine whether the prediction at           learning algorithm is bounded as follows:
+the current cascade level is reliable.
+                                                                               T X
+                                                                               X N                                  T X
+                                                                                                                    X N
+If the action is defer, the query would be navigated to the              γ=              wi · ct (mti ) − min i                wi · ct (mti )
+                                                                                                          mi ∈M
+cascade’s next (i + 1)-th model. Otherwise, it will make a                     t=1 i=1                              t=1 i=1
+                                                                                        √
+prediction ŷt = arg max(predi ), and break the inner loop                          2
+                                                                               ||M ||       T         √1
+(succeeding models will not be activated for current query                 ≤                    + ( T − )||∇c||2 .                           (4)
+                                                                                    2                  2
+xt ). If the query has been deferred to the LLM expert mN
+at the last cascade level, its annotation ŷt is regarded as the       Therefore, limT →∞ γ/T ≤ 0.
+ground truth yt and aggregated to the dataset D.
+                                                                       The proof of Theorem 3.1 can be constructed as an exten-
+Throughout the inner iteration, at cascade level i, it may             sion of Theorem 1 in Zinkevich (2003). Here, ||M || denotes
+optionally skip the rest layers and jump to the LLM expert             the maximum distance within model spaces, and ||∇c|| rep-
+mN at a non-zero decaying probability βi to directly obtain            resents the largest gradient magnitude of the cost function
+its demonstration and aggregate it to dataset D, similar to            across models. We defer its proof to Appendix A.
+DAgger (Ross et al., 2011), for faster convergence.                    Theorem 3.2. For online cascade learning with ηt =
+After processing each query, the algorithm outputs the pre-            t−1/2 , the algorithm’s total regret is o(T ), implying
+diction yt , then updates the small models m1 , ..., mN −1 to          limT →∞ γ/T ≤ 0, i.e., the average regret approaches zero
+mimic the expert demonstrations on the collected trajecto-             as T grows ∞.
+ries D. Similarly, the deferral functions f1 , ..., fN −1 are
+                                                                       Having established the no-regret property for online ensem-
+also updated based on the loss computed by Equation (1).
+                                                                       ble learning, we extend this to our online cascade learn-
+The algorithm continuously collects annotations from the
+                                                                       ing algorithm. By replacing the static probabilities wi in
+LLM expert (e.g., at a decaying probability βt or when the
+                                                                       Equation (4) with dynamic probabilities based on preced-
+query is deferred to mN ) and updates the policy via online
+                                                                       ing model actions, and demonstrating convergence of these
+gradient descent (OGD). Practically, the user can change
+                                                                       dynamic probabilities to optimal values as T → ∞ (proof
+the cost weighting factor µ in the loss function J(π) and the
+                                                                       in Appendix A, Lemma A.2), we mirror the total regret
+initial decaying factor β1 for adjusting cost budgets.
+                                                                       of online cascade learning to that of the online ensemble
+Theoretical Analysis. In online learning, a policy’s regret            learning algorithm, completing the proof for Theorem 3.2.
+over time T is its total cost minus the cost of the best fixed         Further details are in Appendix A.
+
+                                                                   4
+                                       Online Cascade Learning for Efficient Inference over Streams
+
+Confidence Calibration. A reliable deferral rule is cru-                 Benchmarks. We evaluate our approach on four bench-
+cial for a cascade system to determine whether to invoke the             marks that reflect the demands of real-world streaming ap-
+next model (i.e., to defer) or to output the predictions. Cur-           plications in a wide range of commercial services, from
+rently, most existing works make deferral decisions based                customer feedback analysis to content moderation:
+on a confidence score, typically measured either by the max-
+imum predictive probability across all classes (Wang et al.,              • IMDB. A binary sentiment classification benchmark
+2022; Varshney & Baral, 2022), or the Shannon entropy of                    with 50,000 movie reviews (Maas et al., 2011). The
+the predictive distribution (Stogiannidis et al., 2023).                    dataset has an even distribution of positive and
+                                                                            negative samples. We use the official training split
+However, for online cascade learning, where the model ca-
+                                                                            for our experiments, which contains 25,000 samples.
+pabilities are dynamically updated, and the annotations from
+LLMs may be noisy, confidence-based deferral rules have                   • HateSpeech. A binary classification dataset consisting
+been shown to be inadequate (Jitkrittum et al., 2023). To                   of posts from an online forum, annotated with hate and
+aid the learning of deferral functions (i.e., f1 , ..., fN −1 ),            noHate labels (de Gibert et al., 2018). After filtering,
+we adopt a post-hoc approach to calibrate the confidence                    the dataset contains 10,703 samples with a pronounced
+estimate of a certain model’s prediction mi (xt ). It is imple-             class imbalance (1:7.95 ratio) between hatespeech and
+mented using a multi-layer perceptron (MLP) that takes the                  non-hatespeech examples. This imbalance mirrors a
+corresponding model’s predictive probabilities as input, and                realistic challenge in streaming data environments, par-
+the functions can be updated with the following objective:                  ticularly in detecting harmful content. Our evaluation
+                                                                            on this benchmark focuses on both accuracy and recall.
+                          −1
+                       X NX                                               • ISEAR. A multi-class emotion detection benchmark
+             min                      L(fi (mi (xt )), zi ),   (5)
+          πi′ :R|Y | →R                                                     encompassing 7,666 samples across seven categories
+                        xt ∈X   i=1
+                                                                            (Joy, Fear, Anger, Sadness, Disgust, Shame,
+where zi = 1[arg max mi (xt ) ̸= yt∗ ] (i.e., zi = 1 if model               Guilt) (Shao et al., 2015). Each category is well-
+mi ’s prediction is not equal to the annotation yt∗ , otherwise             represented, providing a balanced label distribution
+zi = 0) and L is the mean-squared error loss function.                      across the dataset.
+                                                                          • FEVER. A fact-checking dataset with 6,512 claims
+Since we treat the expert LLM predictions (i.e.,
+                                                                            manually verified against Wikipedia, labeled as
+arg max(mN (xt ))) as the ground truth labels yt , calibra-
+                                                                            Supported or Refuted (Thorne et al., 2018). It tests
+tion is only performed on those input queries where the
+                                                                            our framework’s ability to perform complex reasoning
+expert LLM is invoked. During the calibration, the learn-
+                                                                            and information verification, a crucial aspect for real-
+ing of fi would only optimize the parameters of the MLP,
+                                                                            time truth assessment in streaming data applications.
+not the models mi in the cascade. During inference time,
+the post-hoc deferral function would choose to defer if
+                                                                         Baselines. We compare online cascade learning against
+fi (mi (xt )) > 0.5. Otherwise, it would output the predic-
+                                                                         several baselines to establish its effectiveness:
+tion of the current model.
+                                                                          • LLMs in the Cascade: This includes GPT-3.5 Turbo
+4. Experimental Setup                                                       and Llama 2 70B Chat with zero-shot task prompting
+                                                                            (details in Appendix B.2). The LLM outputs are also
+We construct a cascade system using three models: (i) a                     used as the annotations for online cascade learning and
+logistic regression model, (ii) a pretrained BERT-base model                distillation.
+with 110M parameters (Kenton & Toutanova, 2019), and
+(iii) GPT-3.5 Turbo1 . This diverse set of models allows us               • Knowledge Distillation: We fine-tune smaller models
+to evaluate the effectiveness and robustness of our approach                using different portions of LLM annotations. To ensure
+across various complexities and types of queries.                           fairness, datasets are split equally, with 50% prepared
+                                                                            for training (as distillation labels) and the remaining 50%
+To further test the adaptability and scalability of our system,             for testing. All methods are evaluated on the identical
+we also conduct supplementary experiments where (a) a                       test sets. In our experiments, the distilled smaller models
+Llama 2 70B Chat (Touvron et al., 2023b) is used as the al-                 are used in isolation without any ensemble or cascade.
+ternative LLM, and (b) a BERT-large with 340M parameters
+                                                                          • Online Ensemble Learning: We employ all available
+is incorporated to create a larger cascade. These variations
+                                                                            models in an ensemble with learned predetermined prob-
+aim to demonstrate the flexibility of our framework in ac-
+                                                                            abilities. The smaller models are also continuously up-
+commodating different cascade sizes and structures.
+                                                                            dated based on LLM annotations. This serves as an
+  1
+    https://platform.openai.com/docs/models/                                ablation of our method by excluding the deferral policy
+gpt-3-5                                                                     learning component.
+
+                                                                     5
+                                                                             Online Cascade Learning for Efficient Inference over Streams
+
+                                                                        IMDB                                              HateSpeech (Accuracy | Recall)                                                             ISEAR                                     FEVER
+                                                         N =1300       N =3800                 N =5200             N =600               N =2700                                 N =4900          N =1200         N =1500      N =2700            N =700        N =2000          N =2800
+ GPT-3.5 Turbo                                                            94.15                                                 83.34           |       83.28                                                        70.34                                       79.98
+ Distilled LR                                                82.61        83.60                  87.01          80.18 | 37.94         82.23 | 49.25                           85.03 | 45.59        44.97             47.46      48.92             56.51         57.80            57.13
+ Distilled BERT-base                                         85.28        90.18                  90.19          80.49 | 64.39         80.71 | 73.88                           79.35 | 77.37        61.49             62.62      63.37             61.70         63.64            70.82
+ Online Ensemble Learning                                    86.73        88.80                  89.95          82.61 | 76.75         77.48 | 76.89                           81.55 | 80.30        56.56             60.42      61.78             61.69         69.78            76.67
+ Online Cascade Learning                                     87.95        92.48                  93.01          82.66 | 82.36         85.35 | 77.20                           83.26 | 81.03        60.78             65.34      69.75             61.95         71.86            78.49
+
+ Llama 2 70B Chat                                                         93.33                                                 77.81           |       82.19                                                        68.23                                       77.15
+ Distilled LR                                                82.17        85.80                  86.88          67.94 | 66.56         79.71 | 61.73                           81.46 | 49.91        46.78             47.56      51.76             57.46         61.24            58.42
+ Distilled BERT-base                                         85.39        85.59                  85.44          75.84 | 78.87         79.18 | 75.54                           80.27 | 72.21        62.18             61.84      65.12             65.88         65.66            67.54
+ Online Ensemble Learning                                    87.14        88.66                  89.61          75.99 | 60.36         70.79 | 79.16                           76.82 | 81.84        54.74             57.35      60.19             63.48         71.27            76.46
+ Online Cascade Learning                                     87.58        92.14                  92.63          78.30 | 63.06         78.32 | 76.54                           78.32 | 82.03        59.24             63.34      67.25             63.81         72.47            77.73
+
+
+Table 1: Comparison of accuracy (and recall for HateSpeech dataset) among different methods under various cost budgets.
+The upper part of the table uses GPT-3.5 Turbo as the LLM in the cascade, while the lower part employs Llama 2 70B Chat.
+To ensure fairness, the same annotation cost budgets (i.e., the maximum allowable LLM calls, denoted as N , controlled via
+adjusting the cost weighting factor µ and decaying factor β for online cascade learning) are applied across all methods.
+
+                           1.0
+                                                  IMDB                                                      HATESPEECH                                                                          ISEAR                                                  FEVER
+                                                                                                                                                              0.70                                                           0.80
+                                                                                         0.8
+
+
+                                                                              Accuracy
+                           0.9                                                                                                                                0.65
+                                                                                         0.7
+
+
+
+
+        Overall Accuracy
+                                                                                                                                                              0.60                                                           0.75
+                                                                                         0.6
+                           0.8                                                                                                                                0.55
+                                                                                                                                                                                                                             0.70
+                                                                                                                                                              0.50
+                           0.7                                                           0.8                                                                  0.45
+                                                                                         0.7                                                                                                                                 0.65
+                                                                              Recall
+                           0.6
+                                               Online Cascade Learning                                                                                        0.40
+                                               GPT 3.5 Turbo                             0.6
+                                                                                                                                                              0.35
+                                               Online Ensemble Learning                  0.5                                                                                                                                 0.60
+                           0.5                                                           0.4                                                                  0.30
+                                 1000   2000   3000   4000     5000   6000                     1000      2000      3000       4000       5000                                   500   1000 1500 2000 2500 3000 3500                    500     1000    1500     2000     2500     3000
+                                   Cost Budget (number of LLM calls)                             Cost Budget (number of LLM calls)                                            Cost Budget (number of LLM calls)                     Cost Budget (number of LLM calls)
+
+Figure 3: Accuracy curve (and Recall curve for HateSpeech) with respect to costs, using GPT-3.5 Turbo as the LLM in a
+cascade that also comprises logistic regression and BERT-base.
+
+                    1.00
+                                                 IMDB                                                      HATESPEECH                                                  0.70
+                                                                                                                                                                                                ISEAR                                                     FEVER
+                                                                                        0.8                                                                                                                                    0.775
+
+
+                                                                             Accuracy
+                    0.95                                                                0.7                                                                            0.65                                                    0.750
+
+
+
+
+ Overall Accuracy                                                                                                                                   Overall Accuracy
+                    0.90                                                                0.6
+                                                                                                                                                                                                                               0.725
+                                                                                                                                                                       0.60
+                                                                                                                                                                                                                               0.700
+                    0.85
+                                                                                                                                                                       0.55                                                    0.675
+                                                                                        0.8
+                    0.80                                                                                                                                                                                                       0.650
+                                                                                                                                                                       0.50
+                                                                             Recall
+                                               Online Cascade Learning                  0.7                                                                                                                                    0.625
+                    0.75                       LLAMA 2
+                                               Online Ensemble Learning                 0.6                                                                            0.45                                                    0.600
+                    0.70
+                       1000 1500 2000 2500 3000 3500 4000 4500 5000                               1000      2000     3000      4000       5000                            500     1000   1500   2000   2500   3000    3500               500    1000    1500     2000     2500    3000
+                                  Cost Budget (number of LLM calls)                            Cost Budget (number of LLM calls)                                               Cost Budget (number of LLM calls)                         Cost Budget (number of LLM calls)
+
+Figure 4: Accuracy curve (and Recall curve for HateSpeech) with respect to costs, using Llama 2 70B Chat as the LLM in a
+cascade that also comprises logistic regression and BERT-base.
+
+
+5. Experimental Results                                                                                                                                           efficiency in balancing cost with performance.
+5.1. Overall Performance and Cost Trade-offs                                                                                                                      HateSpeech. The results on the HateSpeech dataset further
+                                                                                                                                                                  reveal the strengths of our online cascade learning system
+IMDB. The results presented in Table 1, Figure 3 and 4                                                                                                            in handling datasets with significant class imbalance. Most
+demonstrate that our proposed online cascade learning sys-                                                                                                        models may face a trade-off between accuracy and recall
+tem can consistently achieve higher accuracies compared to                                                                                                        due to the imbalanced nature of HateSpeech. However,
+knowledge distillation and online ensemble learning base-                                                                                                         the accuracy-cost and recall-cost trade-offs, respectively
+lines on the IMDB dataset across different cost budgets,                                                                                                          depicted in the upper and lower subplots of Figure 3 and
+regardless of whether using GPT-3.5 Turbo or Llama 2 70B                                                                                                          4, demonstrate that our system effectively improves recall
+Chat in the cascade. Notably, Figure 4 highlights our sys-                                                                                                        with minimal impact on accuracy as the cost budget in-
+tem’s ability to closely rival the performance of Llama 2                                                                                                         creases. Although the recall rate of online cascade learning
+70B Chat while achieving a 60% reduction in inference                                                                                                             is marginally lower than the baselines under certain budgets,
+costs (i.e., calling LLM ∼5200 times in processing a total of                                                                                                     it can achieve a better balance between recall and preci-
+12500 queries). This effectively demonstrates the system’s                                                                                                        sion, as evidenced by its consistently higher F1 scores in
+
+                                                                                                                                                    6
+                                 Online Cascade Learning for Efficient Inference over Streams
+
+Appendix Figure 10. In particular, as demonstrated in Table                                                    IMDB
+                                                                                   1.0                                                                   1.0
+1 where Llama 2 70B Chat is the LLM and the cost budget
+N = 4900, our system even outperforms the LLM with a                               0.8                                                                   0.8
+                                                                                                                                           LR
+
+                                                                      Proportion
+similar recall (ours: 82.03% vs. LLM: 82.19%) and a better
+
+                                                                                                                                                          Accuracy
+accuracy (78.32% vs. 77.81%), underlining its effectiveness                        0.6                                                     BERT-base     0.6
+                                                                                                                                           LLM
+in handling imbalanced data streams.                                               0.4                                                                   0.4
+                                                                                                                              Overall Accuracy
+ISEAR. On the ISEAR benchmark, our online cascade                                                                             LLM Accuracy               0.2
+                                                                                   0.2                                        BERT-base Accuracy
+learning system also effectively balances cost and accuracy                                                                   LR Accuracy
+                                                                                                                                                         0.0
+in complex multi-class classification. As indicated in Figure                      0.0
+                                                                                         0   2000    4000      6000          8000     10000      12000
+3 and 4, the system’s performance gradually aligns with that                                         Number of samples
+of GPT-3.5 Turbo and even surpasses Llama 2 70B Chat
+as the cost budget increases. This success underscores the             Figure 5: Inference results on IMDB when N = 3671.
+advantages of smaller models in adapting to complex classi-            Online cascade learning system performs similarly to GPT-
+fications by learning from the LLM annotations, enabling               3.5 Turbo while saving ∼70% of the inference costs.
+them to potentially outshine zero-shot LLMs. Moreover, the
+notable performance gap between online ensemble learning                           1.0
+                                                                                                       HATESPEECH                                        1.0
+
+
+                                                                      Proportion                                                                          Accuracy
+and online cascade learning also confirms the benefit of
+co-optimizing model learning with deferral policy learning                         0.5                                                                   0.5
+
+for optimal cost-performance equilibrium.                                          0.0                                                                   0.0
+
+FEVER. FEVER is a significantly more complex dataset
+                                                                                   1.0                                                                   1.0
+
+
+                                                                      Proportion
+compared to the previous benchmarks. It demands models
+to reason over the statements and validate their factuality                        0.5
+                                                                                                                                                          Recall
+                                                                                                                                                         0.5
+based on parametric knowledge. Therefore, small models
+                                                                                   0.0                                                                   0.0
+of limited capacities, such as logistic regression, struggle to                          0    1000      2000          3000          4000        5000
+perform effectively on FEVER even after several iterations                                           Number of samples
+of update, as evident in Table 1 where distilled LR can
+                                                                       Figure 6: Inference results on HateSpeech when N = 507.
+perform only slightly better than random guess (i.e., 50%).
+                                                                       Online cascade learning system performs similarly to GPT-
+Recognizing these limitations, our online cascade learning
+                                                                       3.5 Turbo while saving ∼90% of the inference costs.
+system smartly adapts by prioritizing more capable models,
+such as BERT-base and the LLM, for processing most of
+the queries, leading to a favorable accuracy-cost trade-off.           by BERT-base, leaving only 30% of the queries deferred
+Remarkably, when using Llama 2 70B Chat as the LLM with                to GPT-3.5 Turbo. Meanwhile, the system can achieve an
+a cost budget of N = 2800, our system slightly outperforms             overall accuracy consistently close to or even slightly higher
+the LLM in accuracy (77.73% vs. 77.15%), showcasing the                than the LLM (marked by the blue dashed line), which af-
+system’s proficiency at navigating intricate reasoning tasks           firms the effectiveness of online cascade learning in saving
+with enhanced cost-efficiency.                                         inference costs with minimum performance degradation.
+
+5.2. Case Analysis                                                     HateSpeech. Similarly, on HateSpeech dataset, when
+                                                                       N = 507, as shown in Figure 6, as the number of samples
+To examine our approach’s online learning process more                 approaches 5000, 30.31% of the queries are handled by
+closely, we run the online cascade learning at specific cost           logistic regression, while 60.24% are handled by BERT-
+budgets and conduct a detailed case analysis.                          base, which altogether cut down the LLM inference costs
+IMDB. Figure 5 illustrates the online cascade system per-              by more than 90%. At the same time, the online cascade
+formance at a specific cost budget (N = 3671) throughout               system can still achieve an overall accuracy of 82.66% and
+the inference of the IMDB dataset. Initially, for the first 160        recall of 82.36%, which aligns closely with the performance
+samples, all queries are processed exclusively by the LLM,             of GPT-3.5 Turbo (Accuracy: 83.34%, Recall: 83.28%)
+as indicated by the stacked plot in the background. However,           ISEAR. Our analysis of the ISEAR dataset under a spe-
+with the arrival of more queries over time, both the logistic          cific cost budget (N = 2517) also confirms the dynamic
+regression and BERT-base models, denoted by the green                  adaptability and cost-saving features of our online cascade
+and orange dashed lines, dynamically improve by learning               system. As the number of processed samples increases, the
+from the GPT-3.5 Turbo annotations and increasingly con-               system demonstrates an impressive ability to gradually shift
+tribute to query processing. When the incoming number                  query processing from the expensive GPT-3.5 Turbo to the
+of samples approaches 4000, most queries are processed                 more economical models. This transition is evident in the
+
+                                                                  7
+                                                     Online Cascade Learning for Efficient Inference over Streams
+
+                                          ISEAR                                                   cade system by further integrating a BERT-large model (4
+             1.0                                                                  1.0
+                                                                                                  models in total). The results of this integration are encourag-
+             0.8                                                                  0.8             ing, detailed in Appendix Figure 11. The expanded cascade
+
+
+Proportion
+                                                                                                  system, particularly when trained on Llama 2 70B Chat an-
+
+                                                                                   Accuracy
+             0.6                                                                  0.6
+                                                                                                  notations, demonstrates equivalent or even superior results
+             0.4                                                                  0.4             compared to the standalone LLM in most cases, with the
+                                                                                                  exception of the HateSpeech dataset, a simpler task setting
+             0.2                                                                  0.2
+                                                                                                  where a larger cascade might complicate the deferral policy
+                                                                                  0.0             learning and thus degrading overall performance. Therefore,
+             0.0
+                   0   500    1000     1500      2000     2500   3000   3500   4000
+                                 Number of samples                                                it is important to align cascade size with task complexity
+                                                                                                  to optimize performance and avoid overfitting. A more
+ Figure 7: Inference results on ISEAR when N = 2517.                                              detailed analysis is in Appendix C.2
+ Online cascade learning system performs very close to GPT-                                       The success of this larger cascade system signals the huge
+ 3.5 Turbo while saving ∼30% of the inference costs.                                              potential in our work’s extensions. It showcases our sys-
+                                                                                                  tem’s inherent flexibility and scalability, enabling it to ac-
+                                          FEVER                                                   commodate and efficiently utilize more powerful models
+             1.0                                                                  1.0             as part of its architecture. Future investigations on online
+                                                                                  0.8
+                                                                                                  cascade systems may further scale up the system by incorpo-
+             0.8
+                                                                                                  rating LLMs of different sizes and specialties, allowing for
+
+Proportion                                                                         Accuracy
+             0.6                                                                  0.6             refined tailoring of responses to the specific characteristics
+                                                                                  0.4             of different queries. However, there are also several factors
+             0.4
+                                                                                                  worth noting when scaling up the cascade, as outlined in our
+             0.2                                                                  0.2             analysis in Appendix C.1 and C.3.
+                                                                                  0.0
+             0.0
+                   0    500     1000          1500      2000     2500   3000                      5.4. Robustness against Distributional Shifts
+                                 Number of samples
+                                                                                                  Distribution Shift in Input Length. Longer inputs typ-
+ Figure 8: Inference results on FEVER when N = 2635.                                              ically involve more complex semantics. For example, on
+ Online cascade learning system performs similarly to GPT-                                        IMDB, the average accuracy of GPT-3.5 Turbo is notably
+ 3.5 Turbo while saving ∼20% of the inference costs.                                              lower on longer movie reviews, as evidenced in Appendix
+                                                                                                  Table 5. Therefore, to verify our method’s robustness against
+                                                                                                  input distribution shifts, we rearrange the IMDB benchmark
+ increasing proportions of queries handled by BERT-base                                           with length ascending order to simulate a distribution shift
+ over time, as shown in Figure 7. Most importantly, since                                         over the inputs’ semantic complexity. The results are shown
+ the proportion of queries handled by BERT-base is not yet                                        in Figure 9 and Table 2. Despite the distribution shift in
+ converged, the whole system can further cut inference costs                                      input length, online cascade learning demonstrates good
+ while sustaining high accuracy as more samples come in.                                          performance with minimal accuracy drops across different
+                                                                                                  cost budgets, regardless of the LLM adopted in the cascade.
+ FEVER. On the FEVER dataset, our system’s performance
+ at a cost budget (N = 3671) further validates its usefulness                                     Distribution Shift in Input Category. We further val-
+ even under complex reasoning task settings. The system’s                                         idate our approach with a distribution shift in input se-
+ learning curve, as depicted in Figure 8, illustrates a steady                                    mantic categories, by filtering all the input samples regard-
+ increase in the number of queries processed by the BERT-                                         ing “Comedy” movies in the IMDB dataset (8,140 out of
+ base models. Given logistic regression’s limited capability                                      25,000), and feeding them into the cascade as the last part
+ in fact-checking, our online cascade learning system smartly                                     of the input stream. This means that the system had not
+ shifts its reliance towards more capable models, such as                                         seen any comedy movie reviews in the first 2/3 of the inputs
+ BERT-base and the larger LLMs. The overall performance                                           before processing comedy movie reviews in the last 1/3 of
+ in terms of accuracy aligns closely with that of the GPT-                                        the inputs. As shown in Figure 9 and Table 2, our approach
+ 3.5 Turbo, achieving significant cost savings (17%) without                                      also performs reliably under the distribution shift in input
+ compromising on the quality of the results.                                                      categories, with a slight increase in average accuracy.
+                                                                                                  Based on the results, we conclude that our proposed ap-
+ 5.3. Adaptability to Larger Cascade                                                              proach can well utilize the advantages of online learning,
+ To further validate the adaptability of our online cascade                                       quickly adapt to unseen inputs, and perform robustly against
+ learning system, we have also explored scaling up the cas-                                       distribution shifts in the data streams.
+
+                                                                                              8
+                                                                Online Cascade Learning for Efficient Inference over Streams
+
+ 1.0
+                           IMDB                                 1.00
+                                                                                           IMDB                                  1.0
+                                                                                                                                                            IMDB                                1.00
+                                                                                                                                                                                                                        IMDB
+ 0.9                                                            0.95                                                             0.9                                                            0.95
+
+                                                                0.90                                                                                                                            0.90
+ 0.8                                                                                                                             0.8
+                                                                0.85                                                                                                                            0.85
+ 0.7                                                                                                                             0.7
+                                                                0.80                                                                                                                            0.80
+                     OCL, with Distribution Shift (Length)                        OCL, with Distribution Shift (Length)                            OCL, with Distribution Shift (Category)                     OCL, with Distribution Shift (Category)
+                     OCL, without Distribution Shift (Length)                     OCL, without Distribution Shift (Length)                         OCL, without Distribution Shift (Category)                  OCL, without Distribution Shift (Category)
+ 0.6                 OEL, with Distribution Shift (Length)      0.75              OEL, with Distribution Shift (Length)          0.6               OEL, with Distribution Shift (Category)      0.75           OEL, with Distribution Shift (Category)
+                     OEL, without Distribution Shift (Length)                     OEL, without Distribution Shift (Length)                         OEL, without Distribution Shift (Category)                  OEL, without Distribution Shift (Category)
+                     GPT 3.5 Turbo                                                LLAMA 2                                                          GPT 3.5 Turbo                                               LLAMA 2
+ 0.5                                                            0.70                                                             0.5                                                            0.70
+       1000   2000    3000      4000       5000       6000         1000 1500 2000 2500 3000 3500 4000 4500 5000                        1000   2000      3000       4000      5000       6000        1000    2000        3000         4000          5000
+         Cost Budget (number of LLM calls)                              Cost Budget (number of LLM calls)                                Cost Budget (number of LLM calls)                             Cost Budget (number of LLM calls)
+
+Figure 9: Cost-accuracy trade-off curves on two input distributional shift scenarios, respectively using GPT-3.5 Turbo
+and Llama 2 70B Chat as the LLM with logistic regression and BERT-base in a cascade. “OCL” refers to online cascade
+learning, and “OEL” means online ensemble learning.
+
+
+                                                                       GPT-3.5 Turbo            Llama 2 70B                        et al., 2023) are proposed to accelerate LLM inference by
+ Without Any Distribution Shift                                           90.77%                     90.97%                        using smaller language models to predict token sequences.
+ With Distribution Shift in Input Length                                  90.23%                     90.64%                        Our work differs from these works in that small models are
+ ⇒ Difference                                                             -0.54%                     -0.33%
+                                                                                                                                   separately trained as plugins, and the performance of LLMs
+ With Distribution Shift in Input Category                                90.85%                     91.46%                        is prioritized. Instead, we focus on the overall performance
+ ⇒ Difference                                                             +0.08%                     +0.49%
+                                                                                                                                   of the entire cascade.
+Table 2: Average accuracy of our approach across different
+cost budgets with distribution shifts in input length or input                                                                     6.3. Model Cascade
+category, compared to the default setting.                                                                                         By orchestrating multiple models with varying complexities,
+                                                                                                                                   model cascade has been widely adopted in both CV and NLP
+                                                                                                                                   tasks to enhance system efficiency. An early theme in this
+6. Related Work                                                                                                                    field is the early exiting from a neural network’s intermedi-
+                                                                                                                                   ate layers (Liu et al., 2020; Xin et al., 2020; Schwartz et al.,
+6.1. Knowledge Distillation
+                                                                                                                                   2020). These works have later inspired the cascade of com-
+Knowledge distillation, originally conceptualized by Hinton                                                                        plete models (Li et al., 2020; Khalili et al., 2022). Among
+et al. (2015), emerged as a technique to transfer knowledge                                                                        them, Varshney & Baral (2022) systematically examines the
+from a large, complex model (teacher) to a smaller, more ef-                                                                       trade-off between accuracy and cost in a cascade of variants
+ficient one (student), intending to retain performance while                                                                       of BERT. Chen et al. (2023) further extends the cascade to
+reducing computational costs. Notable advancements in-                                                                             cover multiple LLM APIs by incorporating a scoring func-
+clude the works of Sanh et al. (2019), who demonstrated                                                                            tion. Compared to the previous works, our work expands
+the effectiveness of distilling the capabilities of BERT into                                                                      the model cascade by allowing small models to learn online
+smaller models, and Gu et al. (2023) who successfully ap-                                                                          and improve rather than having fixed capabilities, similar to
+plied distillation to LLMs, achieving comparable perfor-                                                                           the recent idea of “neural caching” (Ramı́rez et al., 2023;
+mance with significantly reduced model sizes. However, the                                                                         Stogiannidis et al., 2023). Moreover, by formulating the
+significant difference in capabilities between the teacher and                                                                     model confidence as part of the learning objective, our work
+student model can lead to challenges, particularly when deal-                                                                      eliminates the need to set confidence thresholds manually.
+ing with complex queries that require advanced reasoning
+or involve intricate subject matter (Cho & Hariharan, 2019;                                                                        7. Conclusion
+Zhang et al., 2022), thereby highlighting a performance gap
+that distillation alone cannot overcome (Rawat et al., 2021).                                                                      In this work, we address the challenge of managing stream-
+                                                                                                                                   ing queries with LLMs in a cost-efficient way. We propose
+6.2. Boosting LLMs with Small Models                                                                                               an online cascade learning framework that adapts to evolv-
+                                                                                                                                   ing queries by improving smaller models in the cascade
+Recent advancements in combining LLMs with smaller                                                                                 through imitation of LLM behaviors. Our theoretical analy-
+models have suggested promising avenues for improving                                                                              sis provides a no-regret performance guarantee for the algo-
+model performance and efficiency. For classification tasks,                                                                        rithm. Extensive experiments confirmed the effectiveness
+SuperICL improves LLMs’ performance by utilizing the pre-                                                                          of our approach, showing that it can achieve performance
+dictions of smaller models to enrich the prompting context                                                                         levels comparable to LLMs while significantly reducing
+(Xu et al., 2023). For generative tasks, speculative decoding                                                                      inference costs, with potential savings of up to 90%.
+techniques (Leviathan et al., 2023; Miao et al., 2023; Liu
+
+                                                                                                                             9
+                                 Online Cascade Learning for Efficient Inference over Streams
+
+Acknowledgements                                                         Hate Speech Dataset from a White Supremacy Forum. In
+                                                                         Proceedings of the 2nd Workshop on Abusive Language
+We thank the anonymous reviewers for their valuable com-                 Online (ALW2), pp. 11–20, Brussels, Belgium, October
+ments and suggestions in enhancing the paper. This re-                   2018. Association for Computational Linguistics. doi: 10.
+search was supported by the NSF under grant numbers CCF-                 18653/v1/W18-5102. URL https://www.aclweb.
+1918651, 2008240, 2131294, and 2212557, ARO award                        org/anthology/W18-5102.
+#W911NF-21-1-0009, DARPA award #HR00112320018,
+NIH CTSA award No. UL1TR003167, and US DOT Tier-1                      Gu, Y., Dong, L., Wei, F., and Huang, M. Knowledge
+UTC CYBER-CARE grant #69A3552348332.                                     distillation of large language models. arXiv preprint
+                                                                         arXiv:2306.08543, 2023.
+Impact Statement                                                       Gupta, N., Narasimhan, H., Jitkrittum, W., Rawat, A. S.,
+                                                                         Menon, A. K., and Kumar, S. Language model cascades:
+This work presents an online cascade learning framework
+                                                                        Token-level uncertainty and beyond. arXiv preprint
+for enhancing the efficiency of LLMs in handling streaming
+                                                                         arXiv:2404.10136, 2024.
+queries. While primarily advancing the field of machine
+learning, it also has broader societal implications. Notably,          Hinton, G., Vinyals, O., and Dean, J.     Distilling
+by significantly reducing computational demands (up to 90%               the knowledge in a neural network. arXiv preprint
+in inference costs), our framework addresses environmental               arXiv:1503.02531, 2015.
+concerns related to the energy consumption of large-scale
+computing. This reduction in resource utilization aligns               Hoi, S. C., Sahoo, D., Lu, J., and Zhao, P. Online learning:
+with global efforts towards sustainable technology use.                 A comprehensive survey. Neurocomputing, 459:249–289,
+                                                                         2021.
+Furthermore, our work has the potential to democratize ac-
+cess to advanced machine learning technologies. By lower-              Hsieh, C.-Y., Li, C.-L., Yeh, C.-K., Nakhost, H., Fujii, Y.,
+ing operational costs, smaller organizations and researchers             Ratner, A., Krishna, R., Lee, C.-Y., and Pfister, T. Distill-
+with limited resources can leverage the power of LLMs, fos-              ing step-by-step! outperforming larger language models
+tering inclusivity and diversity in research and application             with less training data and smaller model sizes. arXiv
+development. Additionally, our approach could contribute                 preprint arXiv:2305.02301, 2023.
+to sectors like healthcare, finance, and public policy, where          Jitkrittum, W., Gupta, N., Menon, A. K., Narasimhan, H.,
+real-time, cost-effective data processing is crucial.                     Rawat, A. S., and Kumar, S. When does confidence-
+                                                                          based cascade deferral suffice? CoRR, abs/2307.02764,
+References                                                                2023. doi: 10.48550/arXiv.2307.02764. URL https:
+                                                                          //doi.org/10.48550/arXiv.2307.02764.
+Bommasani, R., Hudson, D. A., Adeli, E., Altman, R.,
+  Arora, S., von Arx, S., Bernstein, M. S., Bohg, J., Bosse-           Kenton, J. D. M.-W. C. and Toutanova, L. K. Bert: Pre-
+  lut, A., Brunskill, E., et al. On the opportunities and risks          training of deep bidirectional transformers for language
+  of foundation models. arXiv preprint arXiv:2108.07258,                 understanding. In Proceedings of NAACL-HLT, pp. 4171–
+  2021.                                                                  4186, 2019.
+Brown, T., Mann, B., Ryder, N., Subbiah, M., Kaplan, J. D.,            Khalili, L., You, Y., and Bohannon, J. Babybear: Cheap
+  Dhariwal, P., Neelakantan, A., Shyam, P., Sastry, G.,                  inference triage for expensive language models. arXiv
+  Askell, A., et al. Language models are few-shot learners.              preprint arXiv:2205.11747, 2022.
+  Advances in neural information processing systems, 33:
+  1877–1901, 2020.                                                     Leviathan, Y., Kalman, M., and Matias, Y. Fast inference
+                                                                         from transformers via speculative decoding. In Inter-
+Chen, L., Zaharia, M., and Zou, J. Frugalgpt: How to use                 national Conference on Machine Learning, pp. 19274–
+  large language models while reducing cost and improving                19286. PMLR, 2023.
+  performance. CoRR, abs/2305.05176, 2023. doi: 10.
+  48550/arXiv.2305.05176. URL https://doi.org/                         Li, L., Lin, Y., Chen, D., Ren, S., Li, P., Zhou, J., and Sun,
+  10.48550/arXiv.2305.05176.                                             X. Cascadebert: Accelerating inference of pre-trained
+                                                                         language models via calibrated complete models cascade.
+Cho, J. H. and Hariharan, B. On the efficacy of knowledge                arXiv preprint arXiv:2012.14682, 2020.
+  distillation. In Proceedings of the IEEE/CVF interna-
+  tional conference on computer vision, pp. 4794–4802,                 Li, X. and Orabona, F. On the convergence of stochastic
+  2019.                                                                  gradient descent with adaptive stepsizes. In The 22nd
+                                                                         International Conference on Artificial Intelligence and
+de Gibert, O., Perez, N., Garcı́a-Pablos, A., and Cuadros, M.            Statistics, pp. 983–992. PMLR, 2019.
+
+                                                                  10
+                                Online Cascade Learning for Efficient Inference over Streams
+
+Liu, W., Zhou, P., Wang, Z., Zhao, Z., Deng, H., and Ju,             Stogiannidis, I., Vassos, S., Malakasiotis, P., and Androut-
+  Q. Fastbert: a self-distilling bert with adaptive inference          sopoulos, I. Cache me if you can: an online cost-aware
+  time. In Proceedings of the 58th Annual Meeting of                   teacher-student framework to reduce the calls to large lan-
+  the Association for Computational Linguistics, pp. 6035–             guage models. arXiv preprint arXiv:2310.13395, 2023.
+  6044, 2020.
+                                                                     Thorne, J., Vlachos, A., Christodoulopoulos, C., and Mittal,
+Liu, X., Hu, L., Bailis, P., Stoica, I., Deng, Z., Cheung,             A. Fever: a large-scale dataset for fact extraction and
+  A., and Zhang, H. Online speculative decoding. arXiv                 verification. arXiv preprint arXiv:1803.05355, 2018.
+  preprint arXiv:2310.07177, 2023.
+                                                                     Touvron, H., Lavril, T., Izacard, G., Martinet, X., Lachaux,
+Maas, A. L., Daly, R. E., Pham, P. T., Huang, D., Ng,                  M.-A., Lacroix, T., Rozière, B., Goyal, N., Hambro, E.,
+ A. Y., and Potts, C. Learning word vectors for sen-                   Azhar, F., et al. Llama: Open and efficient foundation lan-
+ timent analysis. In Lin, D., Matsumoto, Y., and Mi-                   guage models. arXiv preprint arXiv:2302.13971, 2023a.
+ halcea, R. (eds.), The 49th Annual Meeting of the As-
+ sociation for Computational Linguistics: Human Lan-                 Touvron, H., Martin, L., Stone, K., Albert, P., Almahairi,
+ guage Technologies, Proceedings of the Conference, 19-                A., Babaei, Y., Bashlykov, N., Batra, S., Bhargava, P.,
+ 24 June, 2011, Portland, Oregon, USA, pp. 142–150.                    Bhosale, S., et al. Llama 2: Open foundation and fine-
+ The Association for Computer Linguistics, 2011. URL                   tuned chat models. arXiv preprint arXiv:2307.09288,
+ https://aclanthology.org/P11-1015/.                                   2023b.
+                                                                     Varshney, N. and Baral, C. Model cascading: Towards
+Miao, X., Oliaro, G., Zhang, Z., Cheng, X., Wang, Z., Wong,
+                                                                       jointly improving efficiency and accuracy of NLP sys-
+ R. Y. Y., Chen, Z., Arfeen, D., Abhyankar, R., and Jia,
+                                                                       tems. In Goldberg, Y., Kozareva, Z., and Zhang, Y.
+ Z. Specinfer: Accelerating generative llm serving with
+                                                                       (eds.), Proceedings of the 2022 Conference on Empir-
+ speculative inference and token tree verification. arXiv
+                                                                       ical Methods in Natural Language Processing, EMNLP
+ preprint arXiv:2305.09781, 2023.
+                                                                       2022, Abu Dhabi, United Arab Emirates, December 7-11,
+Ramı́rez, G., Lindemann, M., Birch, A., and Titov, I. Cache            2022, pp. 11007–11021. Association for Computational
+  & distil: Optimising api calls to large language models.             Linguistics, 2022. doi: 10.18653/v1/2022.emnlp-main.
+  arXiv preprint arXiv:2310.13561, 2023.                               756. URL https://doi.org/10.18653/v1/
+                                                                       2022.emnlp-main.756.
+Rawat, A. S., Zaheer, M., Menon, A. K., Ahmed, A., and Ku-
+  mar, S. When in doubt, summon the titans: Efficient infer-         Wang, X., Kondratyuk, D., Christiansen, E., Kitani, K. M.,
+  ence with large models. arXiv preprint arXiv:2110.10305,            Movshovitz-Attias, Y., and Eban, E. Wisdom of com-
+  2021.                                                               mittees: An overlooked approach to faster and more ac-
+                                                                      curate models. In The Tenth International Conference
+Ross, S., Gordon, G., and Bagnell, D. A reduction of imita-           on Learning Representations, ICLR 2022, Virtual Event,
+  tion learning and structured prediction to no-regret online         April 25-29, 2022. OpenReview.net, 2022. URL https:
+  learning. In Proceedings of the Fourteenth International            //openreview.net/forum?id=MvO2t0vbs4-.
+  Conference on Artificial Intelligence and Statistics, pp.
+  627–635. JMLR Workshop and Conference Proceedings,                 Xin, J., Tang, R., Lee, J., Yu, Y., and Lin, J. Deebert: Dy-
+  2011.                                                                namic early exiting for accelerating bert inference. In
+                                                                       Proceedings of the 58th Annual Meeting of the Associa-
+Sanh, V., Debut, L., Chaumond, J., and Wolf, T. Distilbert,            tion for Computational Linguistics, pp. 2246–2251, 2020.
+  a distilled version of bert: smaller, faster, cheaper and
+  lighter. arXiv preprint arXiv:1910.01108, 2019.                    Xu, C., Xu, Y., Wang, S., Liu, Y., Zhu, C., and McAuley,
+                                                                      J. Small models are valuable plug-ins for large language
+Schwartz, R., Stanovsky, G., Swayamdipta, S., Dodge, J.,               models. arXiv preprint arXiv:2305.08848, 2023.
+  and Smith, N. A. The right tool for the job: Matching
+  model and instance complexities. In Proceedings of the             Zhang, C., Yang, Y., Liu, J., Wang, J., Wu, W., Wang, B.,
+  58th Annual Meeting of the Association for Computa-                  and Song, D. Lifting the curse of capacity gap in distilling
+  tional Linguistics, pp. 6640–6651, 2020.                             large language models. 2022.
+
+Shao, B., Doucet, L., and Caruso, D. R. Universality ver-            Zinkevich, M. Online convex programming and generalized
+  sus cultural specificity of three emotion domains: Some              infinitesimal gradient ascent. In Proceedings of the 20th
+  evidence based on the cascading model of emotional in-               International Conference on Machine Learning (ICML-
+  telligence. Journal of Cross-Cultural Psychology, 46(2):             03), pp. 928–936, 2003.
+  229–251, 2015.
+
+                                                                11
+                                 Online Cascade Learning for Efficient Inference over Streams
+
+A. Detailed Proofs and Theoretical Analysis
+This appendix section provides detailed proofs and explanations for the theoretical analysis presented in the main paper
+Section 3.
+
+Preliminaries
+To ensure clarity, we begin by defining the concept of regret in online learning.
+Definition A.1. Given an online learning algorithm operating over time steps 1, ..., T , the regret γ is defined as the difference
+between the total loss incurred by the algorithm and the loss of the best fixed policy in hindsight. For online cascade learning,
+regret γ is formally expressed as:
+
+                                      γ = J(π, T ) − min J(π, T )                                                             (6)
+                                                               π∈Π
+                                            T X
+                                            X N                                        T X
+                                                                                       X N
+                                        =               psπt,i Cπ (st,i ) − min                  psπt,i Cπ (st,i )            (7)
+                                                                               π∈Π
+                                            t=1 i=1                                    t=1 i=1
+
+As the value of t is clear from the context, we abbreviate states st,i = ⟨xt , i⟩ by si . We denote the best fixed policy as
+π ∗ = arg minπ∈Π J(π, T ) and π(st,i , defer) as p(π, si )′P  . Furthermore, since the prediction loss is computed as the
+aggregation over a class probability distribution, we simplify y∈Y π(st,i , y) · L(y|yt ) as L(ai |yt ) by using ai to represent
+the output probability vector, which leads to the following representation of regret:
+
+                            X N
+                            T X                         X N
+                                                        T X
+                      γ=              psπi Cπ (si ) −                psπi∗ Cπ∗ (si )                                          (8)
+                            t=1 i=1                     t=1 i=1
+                            T X
+                            X N i−1
+                                Y                                                                         
+                        =                 p(π, sj )′ · (1 − p(π, si )′ ) · L(ai |yt ) + p(π, si )′ · µci+1
+                            t=1 i=1 j=1
+                             T X
+                             X N i−1
+                                 Y                                                                                   
+                         −                  p(π ∗ , sj )′ · (1 − p(π ∗ , si )′ ) · L(a∗i |yt ) + p(π ∗ , si )′ · µci+1 .      (9)
+                             t=1 i=1 j=1
+
+
+Online Ensemble Learning Analysis
+To contextualize the no-regret analysis of our proposed online cascade learning algorithm, we first analyze a simplified
+online ensemble learning algorithm under the same stream processing setting thatP      comprises the linear combination of a
+                                                                                         N
+series of classification models m1 , ..., mN , each with a static operating probability i=1 wi = 1. Let us denote the model
+                                 t
+parameters of mi at time t by mi . Assuming a convex, differentiable cost function
+                                                                                 √      ct for all t that can evaluate mti , and
+bounded, closed, nonempty model spaces ||Mi || for all mi , we define ||x|| = x · x and d(x, y) = ||x − y|| to establish:
+
+                                            ||M || =             max             d(x, y)
+                                                           x,y∈Mi ,i∈[1,N −1]
+
+                                            ||∇c|| =                     max              ||∇ct (mi )||.
+                                                           mi ∈Mi ,i∈[1,N −1],t∈[1,T ]
+
+Theorem 3.1. With online gradient descent and a learning rate ηt = t−1/2 , the total regret γ of the online ensemble
+learning algorithm is bounded as follows:
+                                            T X
+                                            X N                                         T X
+                                                                                        X N
+                                      γ=                wi · ct (mti ) − min i                    wi · ct (mti )
+                                                                            mi ∈M
+                                            t=1 i=1                                     t=1 i=1
+                                                       √
+                                            ||M || 2
+                                                           T         √1
+                                        ≤                      + ( T − )||∇c||2 .                                             (4)
+                                                 2                    2
+Therefore, limT →∞ γ/T ≤ 0.
+
+Proof. First, we show that, without loss of generality, for all t there exists a git ∈ Rn such that for all models mi ∈ Mi ,
+ct (mi ) = git · mi .
+
+                                                                          12
+                                  Online Cascade Learning for Efficient Inference over Streams
+
+By defining git = ∇ct (mi ), because ct (mi ) is convex, for all mi ∈ Mi :
+
+                                                ct (mi ) ≥ (∇ct (mti )) · (mi − mti ) + ct (mti ).                          (10)
+
+Set m∗i to be the best-fixed model in hindsight. Then, because m∗i ∈ Mi : ct (m∗i ) ≥ g t · (m∗i − mt ) + ct (mti ). Thus,
+                                                                                                 
+                                ct (mti ) − ct (m∗i ) ≤ ct (mti ) − git · (m∗i − mti ) + ct (mti )                         (11)
+                                                             ≤ git mti − git m∗i                                            (12)
+
+Thus we show that for all mi , git mti − git m∗i is the upper bound of ct (mti ) − ct (m∗i ):
+
+                                                T X
+                                                X N                                 T X
+                                                                                    X N
+                                          γ=               wi · ct (mti ) − min i             wi · ct (mti )                (13)
+                                                                            mi ∈M
+                                                t=1 i=1                             t=1 i=1
+                                                T
+                                                X N
+                                                  X                                
+                                            =              wi ct (mti ) − ct (m∗i )                                         (14)
+                                                t=1 i=1
+                                                T X
+                                                X N                           
+                                            ≤              wi g t mti − g t m∗i .                                           (15)
+                                                t=1 i=1
+
+
+We define for all t, m̂i t+1 = mti − ηt git (gradient descent). Note that mt+1
+                                                                           i   = P (m̂i t+1 ) = arg min ||mi − m̂i t+1 || (greedy
+                                                                                                               mi ∈Mi
+projection). We will attempt to bound the regret of not playing action m∗i on round t:
+
+                                   m̂i t+1 − m∗i = mti − ηt git − m∗i                                                       (16)
+                               (m̂i   t+1
+                                            − m∗i )2 = (mti − m∗i )2 − 2ηt (mti − m∗i ) · git + ηt2 ||git ||2               (17)
+
+Since by definition, for all m̂i ∈ Rn , for all mi ∈ Mi , (m̂i − mi )2 ≥ (P (m̂i ) − mi )2 . Also, ||git || ≤ ||∇c||. So
+
+                              (mt+1
+                                i   − m∗i )2 ≤ (m̂i t+1 − m∗i )2                                                            (18)
+                                                     ≤ (mti − m∗i )2 − 2ηt (mti − m∗i ) · git + ηt2 ||∇c||2 ,               (19)
+
+which can be converted into:
+                                                       1 h t                           i η
+                                                                                           t
+                             git mti − git m∗i ≤          (mi − m∗i )2 − (mt+1
+                                                                           i   − m∗i )2 + ||∇c||2 .                         (20)
+                                                      2ηt                                2
+
+By summing Equation (15) and Equation (20) we get:
+                                 T X
+                                 X N           
+                           γ≤                wi g t mti − g t m∗i )                                                         (21)
+                                 t=1 i=1
+                                 X N
+                                 T X       1 h t
+                                                                          i η
+                                                                              t
+                                                                                                               
+                             ≤         wi      (mi − m∗i )2 − (mt+1
+                                                                i   − m∗ 2
+                                                                       i )  + ||∇c||2                                       (22)
+                               t=1 i=1
+                                          2η t                               2
+                                 N                                N
+                                 X wi                             X wi
+                             ≤               (m1i − m∗i )2 −                (mTi +1 − m∗i )2                                (23)
+                                 i=1
+                                     2ηt                          i=1
+                                                                      2ηt
+                                      T     N                                                    T    N
+                                 1 XX          1    1                   ||∇c||2 X X
+                             +             wi ( −      )(mti − m∗i )2 +                 wi · ηt                             (24)
+                                 2 t=2 i=1     ηt ηt−1                     2    t=1 i=1
+                                 N                                 T                                   T   N
+                                 X                    1         1X 1       1  ||∇c||2 X X
+                             ≤         wi ||M ||2            +        ( −      ) +              wi · ηt                     (25)
+                                 i=1
+                                                      2η1        2 t=2 ηt ηt−1     2    t=1 i=1
+
+
+                                                                         13
+                                 Online Cascade Learning for Efficient Inference over Streams
+        PN
+Since    i=1 wi = 1,
+
+                                                               T                               T
+                                                  1        1X 1       1  ||∇c||2 X
+                                  γ ≤ ||M ||2           +        ( −      ) +          ηt                                      (26)
+                                                  2η1       2 t=2 ηt ηt−1     2    t=1
+                                                                     T
+                                                  1    ||∇c||2 X
+                                     ≤ ||M ||2       +             ηt                                                          (27)
+                                                 2ηT      2    t=1
+
+
+Now, if we define ηt = √1t , then
+
+                                                        T          T
+                                                        X         X    1
+                                                              ηt =    √                                                        (28)
+                                                        t=1       t=1
+                                                                         t
+                                                                      Z T
+                                                                            dt
+                                                                ≤1+         √                                                  (29)
+                                                                        t=1   t
+                                                                         √ T
+                                                                ≤ 1 + [2 t]1                                                   (30)
+                                                                   √
+                                                                ≤2 T −1                                                        (31)
+
+Plugging this into Equation (27) yields
+                                                        √
+                                                 ||M ||2 T   ||∇c||2 √
+                                              γ≤           +        (2 T − 1)                                                  (32)
+                                                      2√        2
+                                                 ||M ||2 T    √      1
+                                               ≤           + ( T − )||∇c||2                                                    (33)
+                                                      2              2
+
+Therefore, when the number of iterations T approaches infinity, the average regret limT →∞ γ/T ≤ 0.
+
+Extension to Online Cascade Learning
+The above theorem establishes that the online ensemble learning algorithm achieves no regret as T → ∞. Transitioning
+to online cascade learning, we extend this analysis by substituting the fixed model probabilities wi in Equation (4) with
+                                                                           Qi−1
+dynamic probabilities influenced by preceding model actions (i.e., psπi = j=1 p(π, sj )′ ) in Equation (9). Thus, we now
+analyze the convergence of the deferral policies psπi .
+                                                                                  T →∞
+Lemma A.2. For online cascade learning, for all i ∈ [1, N ], psπi − psπi∗ −−−−→ 0.
+
+Proof. We begin by revisiting Equation (9), transforming its first term to facilitate our analysis:
+                              T X
+                              X N i−1
+                                  Y                                                                         
+                                            p(π, sj )′ · (1 − p(π, si )′ ) · L(ai |yt ) + p(π, si )′ · µci+1                   (34)
+                              t=1 i=1 j=1
+                              T X
+                              X N i−1
+                                  Y                                                                
+                          =                 p(π, sj )′ · p(π, si )′ µci+1 − L(ai |yt )) + L(ai |yt ) .                         (35)
+                              t=1 i=1 j=1
+
+                                                                                                                Qi−1
+Given that p(π, si )′ lies within the range (0, 1) for all t and i, the coefficient preceding L(ai |yt ), namely j=1 p(π, sj )′ (1 −
+p(π, si )′ ), also falls within (0, 1). Assuming L is convex, and following the convergence arguments in Li & Orabona (2019),
+we establish that as T → ∞, L(ai |yt ) converges to a minimal loss value ϵi for each model.
+Integrating this convergence into our transformed regret expression of Equation (35), we arrive at:
+                                     T X
+                                     X N i−1
+                                         Y                                                 
+                                                   p(π, sj )′ · p(π, si )′ µci+1 − ϵi ) + ϵi .                                 (36)
+                                     t=1 i=1 j=1
+
+
+                                                                     14
+                                 Online Cascade Learning for Efficient Inference over Streams
+
+As discussed in Jitkrittum et al. (2023) Proposition 3.1, to minimize the aggregated costs, the optimal deferral rule p(π ∗ , si )′
+should be:                                                 (
+                                                ∗     ′      0 if µci+1 − ϵi > 0,
+                                            p(π , si ) =
+                                                             1 otherwise.
+
+With gradient descent, as T → ∞, we can show that for all i, p(π, si )′ gradually approaches p(π ∗ , si )′ = 1[µci+1 − ϵi ≤ 0]
+by pointwise convergence. Therefore, in the base case of N = 2, we have psπ1 − psπ1∗ = p(π, s1 )′ − p(π ∗ , s1 )′ =
+0, psπ2 − psπ2∗ = 1 − 1 = 0.
+Assuming the lemma holds for N = k, i.e., psπi − psπi∗ = 0 for all i ∈ [1, k], we extend this to N = k + 1:
+
+                                              p(π, sk+1 )′ − p(π ∗ , sk+1 )′                                                  (37)
+                                                  k
+                                                  Y                    k
+                                                                       Y
+                                              =         p(π, sj )′ −        p(π ∗ , sj )′                                     (38)
+                                                  j=1           j=1
+
+                                              = pπ · p(π, sk ) − psπk∗ · p(π ∗ , sk )′
+                                                 sk           ′
+                                                                                                                              (39)
+                                                                                     
+                                              = psπk∗ p(π, sk )′ − p(π ∗ , sk )′ = 0                                          (40)
+
+Hence by mathematical induction, for online cascade learning, when T → ∞, for all i ∈ [1, N ], psπi − psπi∗ = 0.
+
+With the conclusions of Theorem 3.1 and Lemma A.2, we can now analyze the performance of our proposed online cascade
+learning algorithm.
+Theorem 3.2. For online cascade learning with ηt = t−1/2 , the algorithm’s total regret is o(T ), implying limT →∞ γ/T ≤
+0, i.e., the average regret approaches zero as T grows ∞.
+
+Proof. Leveraging the findings of Lemma A.2, assuming L is a convex function and T → ∞, we can now reformulate the
+regret expression in Equation (8) as:
+
+
+                                              T X
+                                              X N                          T X
+                                                                           X N
+                                        γ=              psπi Cπ (si ) −              psπi∗ Cπ∗ (si )                          (41)
+                                              t=1 i=1                      t=1 i=1
+                                              T X
+                                              X N                          T X
+                                                                           X N
+                                          =             psπi∗ Cπ (si ) −             psπi∗ Cπ∗ (si )                          (42)
+                                              t=1 i=1                      t=1 i=1
+
+
+The transformation of the regret expression to Equation (42) is significant as it bridges our understanding of the regret
+in online cascade learning with the established results from online ensemble learning. Specifically, by treating psπi∗ as
+analogous to the fixed model probabilities wi and Cπ (si ) as equivalent to the costs ct (mti ) in the ensemble learning context,
+we establish a parallel between the two regret formulations.
+Therefore, following the conclusion of Theorem 3.1, we can infer that, with a learning rate ηt = t−1/2 , the online cascade
+learning algorithm is guaranteed can achieve no regret, i.e., limT →∞ γ/T ≤ 0.
+
+
+
+B. Detailed Experimental Setups
+B.1. A Simple Prefill Experiment
+To determine time required to process a document-plus-prompt in a realistic scenario, we performed the following, simple
+experiment. Using the 65B parameter LLaMA model (Touvron et al., 2023a) and PyTorch 2.1.2, on an Amazon Web
+Services ‘m6in.16xlarge’ machine with eight, A100 GPUs, we prepare a sequence of 10 prompts each consisting of
+8192 tokens, and perform “first token” inference on each in sequence. That is, we process the prompt and obtain the first
+output token, and record the total time taken, which is 36.2 seconds, for an average of 3.6 seconds per prompt.
+
+                                                                  15
+                                               Online Cascade Learning for Efficient Inference over Streams
+
+                                                                                      HATESPEECH
+                                                                                                           0.45
+                                 0.8
+
+
+                      Accuracy                                                                 Precision
+                                                                                                           0.40
+                                 0.7
+                                                                                                           0.35
+                                 0.6                                                                       0.30
+
+
+                                0.55                                                                        0.8
+
+
+                     F1 Score
+                                0.50                                                                        0.7
+                                                                                                Recall
+                                0.45
+                                0.40                                                                        0.6                                      Online Cascade Learning
+                                0.35                                                                        0.5                                      Online Ensemble Learning
+                                                                                                                                                     GPT 3.5 Turbo
+                                0.30                                                                        0.4
+                                       1000          2000          3000      4000     5000                        1000          2000          3000       4000        5000
+                                         Cost Budget (number of LLM calls)                                          Cost Budget (number of LLM calls)
+                                                                                      HATESPEECH
+                                 0.8                                                                       0.35
+
+
+
+                      Accuracy                                                                 Precision
+                                 0.7                                                                       0.30
+
+                                 0.6                                                                       0.25
+
+                                                                                                           0.20
+
+                                0.45                                                                        0.8
+
+
+                     F1 Score                                                                   Recall
+                                0.40                                                                        0.7
+                                                                                                                                                     Online Cascade Learning
+                                0.35                                                                        0.6                                      Online Ensemble Learning
+                                                                                                                                                     LLAMA 2 70B
+                                0.30
+                                              1000          2000      3000     4000     5000                             1000          2000      3000        4000       5000
+                                         Cost Budget (number of LLM calls)                                          Cost Budget (number of LLM calls)
+
+Figure 10: A more detailed cost-performance trade-off plot with accuracy, F1-score, recall, and precision curves, respectively
+using GPT-3.5 Turbo and Llama 2 70B Chat as the LLM.
+
+
+The reason we perform first-token inference is that relative to the first output token—which requires a quadratic all-to-all
+attention computation—subsequent tokens are relatively costless, taking a fraction of a second. For our application, where the
+full response sequence is expected to be short, first token inference is by far the most costly step. Note that in our experiment,
+inference is performed separately on each prompt, rather than as a batch. This is necessary to avoid out-of-memory errors
+(there is not enough GPU memory to process more than one prompt at a time, due to the memory requirements of the
+all-to-all attention computation).
+
+B.2. LLM Prompts
+IMDB
+System Prompt: You are a helpful, respectful and honest assistant. The user has given you a movie review to help them
+make their decision. You should read the review and tell the user whether the review overall shows a positive or negative
+sentiment towards the movie. Return the answer in one word.
+User Prompt: Here is the movie review: {REVIEW} \\Tell me whether the above review overall shows a positive or negative
+sentiment towards the movie. Return the answer in one word.
+HateSpeech
+System Prompt: You are given a post from an online forum and you need to check whether the post contains any hate speech.
+Return your answer in one word (yes or no) without any explanations.
+User Prompt: Post: {POST}
+ISEAR
+System Prompt: In this task, you will be performing a classification exercise aimed at identifying the underlying emotion
+conveyed by a given sentence. The emotions to consider are as follows:
+Anger: Anger is a strong feeling of displeasure, hostility, or frustration.
+Joy: Joy is a positive and uplifting emotion characterized by happiness, elation, and a sense of contentment.
+Sadness: Sadness is a feeling of sorrow, unhappiness, or despondency.
+Guilt: Guilt is a self-directed emotion that arises from a sense of wrongdoing or moral transgression.
+Shame: Shame is a powerful emotion associated with feeling embarrassed, humiliated, or unworthy.
+
+                                                                                               16
+                                                                                     Online Cascade Learning for Efficient Inference over Streams
+
+                         1.0
+                                                     IMDB                                                      HATESPEECH                                                  ISEAR                                                       FEVER
+                                                                                                0.8                                             0.70                                                      0.80
+
+
+                                                                                     Accuracy
+                                                                                                                                                0.68                                                      0.78
+                         0.9                                                                    0.7
+
+
+
+
+      Overall Accuracy
+                                                                                                                                                0.66                                                      0.76
+                                                                                                0.6                                                                                                       0.74
+                         0.8                                                                                                                    0.64
+                                                                                                                                                0.62                                                      0.72
+                         0.7                                                                    0.8                                                                                                       0.70
+                                                                                                                                                0.60
+                                                                                                                                                                                                          0.68
+                                                                                     Recall
+                         0.6
+                                                Online Cascade Learning                         0.7                                             0.58
+                                                GPT 3.5 Turbo                                                                                   0.56                                                      0.66
+                                                Online Ensemble Learning                        0.6
+                                                                                                                                                                                                          0.64
+                         0.5                                                                                                                    0.54
+                               1000   2000    3000     4000   5000    6000    7000                     1000   2000    3000     4000    5000            1000     1500     2000     2500    3000    3500        500         1000      1500      2000          2500          3000
+                                Cost Budget (number of LLM calls)                                      Cost Budget (number of LLM calls)               Cost Budget (number of LLM calls)                          Cost Budget (number of LLM calls)
+                    1.00
+                                                     IMDB                                                       HATESPEECH                                                  ISEAR                                                          FEVER
+                                                                                                                                                                                                          0.775
+
+
+                                                                                     Accuracy
+                                                                                                0.80
+                    0.95                                                                                                                                                                                  0.750
+                                                                                                                                                0.65
+
+
+
+
+ Overall Accuracy
+                                                                                                0.75
+                    0.90                                                                                                                                                                                  0.725
+                                                                                                0.70                                            0.60                                                      0.700
+                    0.85
+                                                                                                                                                                                                          0.675
+                                                                                                                                                0.55
+                    0.80                                                                        0.80                                                                                                      0.650
+
+                                                                                     Recall
+                                                Online Cascade Learning                         0.75                                                                                                      0.625
+                    0.75                        LLAMA 2                                                                                         0.50
+                                                Online Ensemble Learning                        0.70                                                                                                      0.600
+                    0.70
+                       1000            2000          3000      4000          5000                      1000   2000     3000    4000    5000              1000     1500     2000    2500    3000    3500             500      1000      1500          2000          2500          3000
+                                Cost Budget (number of LLM calls)                                      Cost Budget (number of LLM calls)               Cost Budget (number of LLM calls)                            Cost Budget (number of LLM calls)
+
+Figure 11: Accuracy curve (and Recall curve for HateSpeech) with respect to costs, respectively using GPT-3.5 Turbo and
+Llama 2 70B Chat as the LLM in a larger cascade that also comprises logistic regression, BERT-base, and BERT-large.
+
+
+Fear: Fear is an emotion triggered by a perceived threat or danger.
+Disgust: Disgust is an aversive emotion linked to feelings of revulsion, repulsion, or strong distaste. It arises in response to
+things that are offensive or unpleasant.
+Your task is to analyze each sentence provided and categorize it into one of these emotions based on the dominant feeling
+conveyed by the text.
+This classification will require an understanding of the nuances of human emotions and the context in which the sentences
+are presented. Remember, you have to classify the sentences using only anger, joy, sadness, guilt, shame, fear or disgust.
+Please respond with only the word and nothing else.
+User Prompt: {SENTENCE} \\Classify the emotion of this hypothetical sentence. Respond in exactly one word in all
+lowercase with a response in the exact format requested by the user. Do not acknowledge my request with “sure” or in any
+other way besides going straight to the answer. Only answer in exactly one word.
+FEVER
+System Prompt: You are a helpful, respectful and honest assistant. This is a fact-checking task. Use your knowledge to
+determine whether a given claim is true or false. Answer only in “true” or “false” without providing any explanations.
+User Prompt: In June 2017, the following claim was made: {CLAIM}.
+
+B.3. Experimental Configurations
+The experiments involved querying Llama 2 70B Chat utilized a single machine equipped with 8 NVIDIA A40 GPUs, each
+with 48GB of memory, running CUDA 12.0. All the other experiments were conducted on a machine with 4 NVIDIA
+Quadro RTX 8000 GPUs (48GB memory each) on CUDA 12.2.
+The detailed hyperparameter settings for online cascade learning are listed in Table 3 and 4. We tuned the hyperparameters
+using a grid search method on a separate validation set, which is a standard practice to avoid overfitting. In particular, we
+used the training set prepared for the knowledge distillation (as mentioned in Section 4) as our online cascade learning
+method’s validation set.
+Specifically, for the hyperparameters β and µ, we observed that our experimental results are notably robust to variations in
+β. Regarding µ, we tuned it specifically in the context of different cost budgets, which was essential for plotting Figure 3
+and Figure 4 in our paper. By adjusting µ, we were able to effectively manage the cost budgets to evaluate our method’s
+performance on cost-accuracy trade-offs, which is a critical aspect of our research objective.
+Note that the “learning rate” in the table refers to the learning rates of the MLPs (in Section 3: Confidence Calibration), not
+the models’. We used a consistent configuration for both online cascade learning and the distillation baselines by setting
+BERT-base’s batch size to 8, the learning rate to 0.00001, and the number of epochs to 5.
+
+                                                                                                                                           17
+                                Online Cascade Learning for Efficient Inference over Streams
+
+       Table 3: Hyperparameter settings for online cascade learning experiments with GPT-3.5 Turbo as the LLM.
+
+                 Model Cost Cache Size           Batch Size    Learning Rate     Decaying Factor    Calibration Factor
+    IMDB, Small Cascade
+    LR               1          8                      8            0.0007                0.97              0.4
+    BERT-base      1182        16                      8            0.0007                0.95              0.3
+    IMDB, Large Cascade
+    LR               1          8                       8           0.0007                0.99             0.45
+    BERT-base        3         16                      8            0.0007                0.97             0.4
+    BERT-large     1182        32                      16           0.0007                0.95             0.4
+    HateSpeech, Small Cascade
+    LR               1          8                      8             0.001                0.97              0.4
+    BERT-base      1182        16                      8            0.0007                0.9               0.4
+    HateSpeech, Large Cascade
+    LR               1          8                       8            0.001                0.99             0.45
+    BERT-base        3         16                      8            0.0007                0.97             0.45
+    BERT-large     1182        32                      16           0.0007                0.95             0.45
+    ISEAR, Small Cascade
+    LR               1          8                      8            0.0007                0.8              0.15
+    BERT-base      1182        16                      8            0.0007                0.9              0.45
+    ISEAR, Large Cascade
+    LR               1          8                       8           0.0007                0.99              0.4
+    BERT-base        3         16                      8            0.0007                0.97             0.35
+    BERT-large     1182        32                      16           0.0007                0.95              0.3
+    FEVER, Small Cascade
+    LR               1          8                      8            0.0007                0.97              0.4
+    BERT-base      1182        16                      8            0.0007                0.95              0.3
+    FEVER, Large Cascade
+    LR               1          8                       8           0.0007                0.97              0.4
+    BERT-base        3         16                      8             0.001                0.95              0.4
+    BERT-large     1182        32                      16           0.0001                0.93              0.4
+
+
+C. Discussion
+C.1. Analysis of Training & Inference Cost Equilibrium
+We conduct a thorough analysis of the training overhead for the models involved in our cascade to quantify the computational
+costs incurred in our approach. Below are the computation costs for training or inference over one sample (the computational
+costs of the confidence calibration MLP in Section 3, inference: 897 F lops, training: 1794 F lops, are negligible):
+
+• Logistic Regression training: 33.8 × 104 F lops (floating-point operations).
+• Logistic Regression inference: 16.9 × 104 F lops.
+• BERT-base training: 18.5 × 107 F lops.
+• BERT-base inference: 9.2 × 107 F lops.
+• BERT-large training: 55.5 × 107 F lops.
+• BERT-large inference: 27.7 × 107 F lops.
+
+Comparatively, Llama 2 70B’s inference costs for generating one token is approximately 39.86 × 1015 F lops (we have
+no access to GPT-3.5 Turbo’s running statistics). Even if all the small models are consistently updated per sample, the
+per-sample training costs of a large cascade 33.8 × 104 + 18.5 × 107 + 55.5 × 107 ≈ 7.4 × 108 F lops is still 5.3 × 107
+                                                  LR           BERT-base     BERT-large
+times smaller than the per-sample Llama 2 70B inference costs.
+Therefore, the computational costs regarding the deferral policy’s inference and training are minimal when comparing
+against the enormous LLM inference costs. In the real world, as the smaller models’ capabilities grow over time and the
+
+                                                              18
+                               Online Cascade Learning for Efficient Inference over Streams
+
+     Table 4: Hyperparameter settings for online cascade learning experiments with Llama 2 70B Chat as the LLM.
+
+                 Model Cost Cache Size          Batch Size    Learning Rate    Decaying Factor    Calibration Factor
+    IMDB, Small Cascade
+    LR               1          8                   8             0.0007             0.97                 0.4
+    BERT-base       636        16                   8             0.0007             0.95                 0.3
+    IMDB, Large Cascade
+    LR               1          8                    8            0.0007             0.99                0.45
+    BERT-base        3         16                   8             0.0007             0.97                0.4
+    BERT-large      636        32                   16            0.0007             0.95                0.4
+    HateSpeech, Small Cascade
+    LR               1          8                   8              0.001             0.97                 0.4
+    BERT-base       636        16                   8             0.0007             0.9                  0.4
+    HateSpeech, Large Cascade
+    LR               1          8                    8             0.001             0.99                0.45
+    BERT-base        3         16                   8             0.0007             0.97                0.45
+    BERT-large      636        32                   16            0.0007             0.95                0.45
+    ISEAR, Small Cascade
+    LR               1          8                   8             0.0007              0.8                0.15
+    BERT-base       636        16                   8             0.0007              0.9                0.45
+    ISEAR, Large Cascade
+    LR               1          8                    8            0.0007             0.99                 0.4
+    BERT-base        3         16                   8             0.0007             0.97                0.35
+    BERT-large      636        32                   16            0.0007             0.95                 0.3
+    FEVER, Small Cascade
+    LR               1          8                   8             0.0007             0.97                 0.4
+    BERT-base       636        16                   8             0.0007             0.95                 0.3
+    FEVER, Large Cascade
+    LR               1          8                    8            0.0007             0.97                 0.4
+    BERT-base        3         16                   8              0.001             0.95                 0.4
+    BERT-large      636        32                   16            0.0001             0.93                 0.4
+
+
+need for training decreases, the incurred model training overhead is also negligible compared to the tremendous LLM
+inference costs saved with our approach.
+More formally, we can formulate the theoretical cost equilibrium as follows:
+
+                                    100% · C = x · M + (1 − x) · (M + 2M + C),
+
+where the LHS refers to the inference overheads for using the LLM to process all queries, and the RHS comprises the
+maximum inference costs forusing the small models to handle x% of the queries (which are not deferred to the LLM), and
+the LLM inference costs, plus the inference & training costs for updating the small models when handling the rest (1 − x%)
+queries. This equation can be further simplified to
+
+                                                               xC
+                                                     M=             ,
+                                                             3 − 2x
+
+where C represents the LLM inference cost, x is the proportion of queries handled by small models, and M indicates small
+models’ aggregated inference costs.
+For example, assuming C = 39.86 × 1015 F lops, x = 0.5, then M ≈ 9.95 × 1015 F lops,typically refers to a total number
+of parameters around 17.5 Billion. That means, when using Llama 2 70B as the LLM, even if the smaller models can only
+handle 50% of the input queries, as long as the smaller models’ total number of parameters does not exceed 17.5B, our
+approach can still save costs.
+
+                                                             19
+                                  Online Cascade Learning for Efficient Inference over Streams
+
+                          Length           Count    Average Length      GPT-3.5 Turbo Accuracy
+                          52-664           4975           481.92                  95.54%
+                          664-843          5018           745.86                  95.08%
+                          843-1160         5003           985.05                  93.96%
+                          1160-1852        5001          1453.49                  93.74%
+                          1852-13704       5002          2953.95                  92.44%
+                          Total            25000         1325.07                  94.15%
+
+Table 5: GPT-3.5 Turbo’s classification accuracy across different IMDB review lengths. Longer inputs are typically more
+complex and thus have lower average accuracies.
+
+
+C.2. Potential Overfitting in Larger Cascades
+When scaling up the cascade, the task complexity may influence the appropriate cascade size, as suggested by the performance
+dynamics observed in Section 5.3. There are several factors that may affect this:
+Task Complexity vs. Cascade Size. The HateSpeech dataset, despite its class imbalance, represents arelatively simple
+binary classification task where hate speech is often identifiable through specific keywords. Our findings, illustrated in
+Figure 6, show that a basic cascade of logistic regression and BERT-base can already handle 90% of the queries effectively,
+matching the performance of more complex models like GPT3.5 Turbo. This indicates that for simpler tasks, adding more
+models to the cascade might introduce unnecessary noise, complicating the deferral policy learning and thus degrading
+overall performance.
+Capability Gap in Models. The performance impact of adding more models to a cascade also depends onthe capability
+gap between these models. In our larger cascade setup, we incorporated BERT-large alongside BERT-base. However,
+both models exhibit similar performance on the HateSpeech dataset, meaning the addition of BERT-large brought minimal
+benefit. This redundancy shows that the effectiveness of a cascade does not solely rely on adding more models, but rather on
+ensuring that each model contributes unique capabilities to the given task.
+Improved Performance on More Complex Dataset. In contrast, for the more complex ISEAR dataset, the larger cascade
+that includes BERT-large outperformed the smaller cascade, despite the ISEAR dataset’s smaller size (3833) compared
+to HateSpeech (5352). This outcome supports the idea that as task complexity increases, a larger cascade can still better
+balance the cost-performance trade-off, leveraging the distinct strengths of each model in the cascade.
+
+C.3. Challenges in Scaling Up Cascade
+Scaling up the cascade for more complex task processing is technically feasible and compatible with our proposed framework,
+but can present notable challenges:
+Confidence Measurement in Generative Tasks. For complex generative tasks, such as conversation, the measurement of
+confidence scores is also challenging. For example, traditional confidence estimation methods may not be well-suited for
+measuring LLMs’ token-by-token generation (Gupta et al., 2024). This difficulty in accurately assessing model confidence
+complicates the deferral policy learning within cascades, potentially leading to suboptimal routing of queries and affecting
+overall system efficiency.
+Constraints with API-Based LLMs. More practically, many current LLMs, especially those accessible only via APIs, do
+not support fine-tuning. This restriction hinders our ability to tailor each LLM in the cascade to specific tasks in an online
+learning setting, presenting a significant limitation for customizing LLM-only cascades.
+Computational Costs. The most important hurdle in a more complex cascade is the significant computational expense
+associated with online learning. For example, in an LLM-only cascade, updating LLMs in real-time (even if using
+efficient training techniques like LoRA) demands substantial resources, making it impractical for many applications. This
+computational burden not only affects scalability but also limits the frequency and extent to which LLMs can be updated,
+impacting the cascade’s adaptability and performance. As analyzed in Appendix C.1’s cost equilibrium, when the learnable
+model space grows too large, the training costs would offset the saved inference costs, which is against our initial motivation
+of enhancing cost-efficiency.
+
+                                                              20
+

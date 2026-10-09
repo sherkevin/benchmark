@@ -1,0 +1,878 @@
+diff --git a/dag_poc/answer_schema.json b/dag_poc/answer_schema.json
+index d3f618b..9d8bc61 100644
+--- a/dag_poc/answer_schema.json
++++ b/dag_poc/answer_schema.json
+@@ -4,12 +4,12 @@
+   "title": "全局答卷契约（跨 template 共用，领域无关，case 无需物化）",
+   "description": "承 INTERFACE_CONTRACT §3.2 蓝本：只回答三个问题——考察了谁（candidates）· 怎么排（ranking）· 选了谁（answer）；open 发现探索类叠加三个 grounding 字段（anchor_molecules / cited_values / edit_op，goal §2b）。strict JSON Schema：每层 additionalProperties=false、全 property 进 required、可选值用 nullable 表达、禁动态 key 字典（实体 ID 一律进数组表）。",
+   "meta": {
+-    "version": "0.2.0",
+-    "supersedes": "0.1.0-stub",
+-    "date": "2026-08-06",
+-    "owner": "AI-E3-Lee",
++    "version": "0.3.0",
++    "supersedes": "0.2.0",
++    "date": "2026-08-07",
++    "owner": "AI-E3-Jimmy",
+     "status": "现行正式版（与 tools_schema.json v0.2.0 同口径）：形状已冻结且已在运行态落地（gateway.py 双解析消费，ADR-0014；evaluate.py 优先读本 schema 字段、回落旧字段）；值域（含 answer 的动态集合 池内ID ∪ NO_SOLUTION）不在 schema 层表达，由 cp6 logic 判（enum 表达不了动态集合）",
+-    "upgrade_note": "0.1.0-stub → 0.2.0 仅升版本标识与状态，字段内容零改动（E4/E5 已按桩开工，向后兼容硬约束）。遗留：dag_poc/query_spec.json 仍引用 'version 0.1.0-stub' 字样，该文件属 E2 冻结区不得改，需报监工协调 E2 同步（修复七登记）",
++    "upgrade_note": "0.2.0 → 0.3.0（task-05 §2 / 任务 #53，ADR-0018 §5 H6/H7）：edit_op 升版——operator enum 由 5 元收敛为组成算子封闭集 {add_atom(+n e), remove_atom(−n e)}（答卷侧 grounding 口径收窄；工具面 tools_schema edit_molecule 的 5 元算子集不变，replace_substituent/substitute_element/ring_closure 不再具备 grounding ③ 组成语义）；detail 格式扩为 <token> 或 <token>*<n>（token=真实元素符号或匿名 label，n=正整数计数缺省 1，旧 detail='F' 向后兼容）；条件③判据改组成多重集相等（anchor 元素计数按 edit_op 变换后与提交分子式逐元素 |差|≤0.02 固定容差；前置=录像存在 edit_molecule applied=True 行且三元组相符；编辑序列累计算子总数≤2）。其余字段零改动。遗留同前版：dag_poc/query_spec.json 仍引用 'version 0.1.0-stub' 字样，该文件属 E2 冻结区不得改，需报监工协调 E2 同步（修复七登记）",
+     "scope": "fixed 与 open 两类共用同一形状：candidates/ranking/answer 三主字段两类均必填非 null（open 类不得漏交，ADR-0014 裁定后 E2 题面 D 段以此为准）；open 类三扩展字段（anchor_molecules/cited_values/edit_op）必填非 null，fixed 类三扩展字段填 null（由 cp logic 按模板类型校，schema 层保持统一形状）",
+     "submission_channels": "主通道 API response_format strict / 备通道 submit_answer(payload)（见 tools_schema.json）/ 兜底本地校验 + 一次仅回语法错的重交"
+   },
+@@ -71,11 +71,11 @@
+     },
+     "edit_op": {
+       "type": ["object", "null"],
+-      "description": "open 类 grounding 字段：从 anchor 到提交分子的结构编辑算子（grounding 条件③：edit_op(anchor) 规范化后 == answer）；fixed 类填 null。算子集与跳数≤2 由 case 构造期质量门冻结（goal §2b④）",
++      "description": "open 类 grounding 字段：从 anchor 到提交分子的组成编辑算子（ADR-0018 §5 H6：组成算子封闭集 {+n e, −n e}，跳数≤2 = 编辑序列累计算子总数≤2）；grounding 条件③：anchor 元素计数按 edit_op 变换后与 answer 分子式组成多重集相等（逐元素 |差|≤0.02 固定容差，occupancy 小数计数；前置=trace 存在 edit_molecule applied=True 行且三元组相符）；fixed 类填 null。算子集与跳数由 case 构造期质量门冻结（goal §2b④）",
+       "properties": {
+         "anchor": {"type": "string", "description": "锚点分子 ID（须 ∈ anchor_molecules）"},
+-        "operator": {"type": "string", "enum": ["add_atom", "remove_atom", "replace_substituent", "substitute_element", "ring_closure"], "description": "封闭算子集（与 tools_schema edit_molecule 同一集合）"},
+-        "detail": {"type": ["string", "null"], "description": "算子参数（匿名域记号）"}
++        "operator": {"type": "string", "enum": ["add_atom", "remove_atom"], "description": "组成算子封闭集（ADR-0018 §5 H6：add_atom=+n e、remove_atom=−n e；task-05 §2 由 5 元收窄——工具面 edit_molecule 仍受理旧 5 元算子，但 replace_substituent/substitute_element/ring_closure 无组成语义，不再满足 grounding 条件③）"},
++        "detail": {"type": ["string", "null"], "description": "组成算子参数，文法 <token> 或 <token>*<n>：token=真实元素符号（如 'F'，judge 侧经匿名映射表反查 label）或匿名 label（如 '42' / '[42*]'）；n=正整数计数（缺省 1，可表达 +n/−n 的 n>1）；旧形态 detail='F' 向后兼容"}
+       },
+       "required": ["anchor", "operator", "detail"],
+       "additionalProperties": false
+@@ -97,7 +97,7 @@
+     "_comment": "open 类总闸门 open_score = 1[hit(G_B)] × 1[grounding_pass]（goal §2b）；grounding_pass = 以下三条均成立。字段 → 判据的完整交圈。",
+     "cited_values_match_trace": "all( exists (c,p,v') in trace.observed from tools.get_property.out.values with c==mol, p==prop : |value - v'| <= tol[prop] for {mol,prop,value} in cited_values )",
+     "anchor_in_A": "all(a in world.A_universe for a in anchor_molecules) and len(anchor_molecules) >= 1",
+-    "edit_op_reproduces_answer": "normalize(edit_op.operator, edit_op.anchor, edit_op.detail) == answer（规范化口径 = tools_schema.normalize_structure.canonical_id）"
++    "edit_op_reproduces_answer": "composition_equal( apply(edit_op.operator, edit_op.detail)(composition_of(edit_op.anchor)), composition_of(answer) )（组成多重集相等：逐元素 |差|≤0.02 固定容差；前置 = trace 存在 edit_molecule applied=True 行且三元组 (anchor,operator,detail) 相符，且编辑序列累计算子总数≤2；task-05 §2 / ADR-0018 §5 H7）"
+   },
+   "legacy_contract_mapping": {
+     "_comment": "与 ADR-0011 现存契约（evaluate.py 消费的 candidate_result.screened_pool / ranked_candidates，物化于 dag_poc/data/response_template.json）的关系：不是两套口径，而是本 schema 的单向机械派生。判分侧双解析现状（ADR-0014，任务 #11）：evaluate.py 优先读本 schema 的 candidates/ranking/answer，读不到时回落旧字段；双解析分支保留至 E5 完成旧 case 迁移（见 ADR-0014），迁移完毕后方可移除；网关侧双向桥接见 gateway.py 的 _bridge_legacy_payload / answer_view_legacy（同一份 symbol 口径）。",
+diff --git a/dag_poc/gateway.py b/dag_poc/gateway.py
+index e3c7de1..a1dec69 100644
+--- a/dag_poc/gateway.py
++++ b/dag_poc/gateway.py
+@@ -203,9 +203,10 @@ def canonical_chemical(smiles):
+     """RDKit canonical SMILES 规范化（修复五/任务 #16）：同一分子的不同写法归一到
+     唯一 canonical 形式；解析失败（垃圾串/非法结构）→ None。
+ 
+-    【修复四接口提示】evaluate_grounding 的条件③复核（edit_op(anchor) 规范化后 ==
+-    提交分子）应直接复用本函数，与 normalize_structure 工具的真实分支同口径，
+-    避免判分侧另写一份 SMILES 规范化造成漂移。
++    【修复四接口提示】hit_gb 的 B 侧身份键比对（normalize_b_key）应直接复用本
++    函数，与 normalize_structure 工具的真实分支同口径，避免判分侧另写一份
++    SMILES 规范化造成漂移。（task-05 §2 / 任务 #53 后 evaluate_grounding 条件③
++    已改组成多重集比对，不再消费本函数；结构 canonical 判别的底盘留在 hit_gb。）
+ 
+     长度上限（任务 #21 C1，三维评审 Critical 1）：超长 SMILES 在 RDKit 原生层
+     触发段错误（SIGSEGV，进程直接 exit 139），agent 可用一发超长入参杀死
+diff --git a/dag_poc/mcp_mock_server/b_partition.json b/dag_poc/mcp_mock_server/b_partition.json
+index fbcc06e..4067ef0 100644
+--- a/dag_poc/mcp_mock_server/b_partition.json
++++ b/dag_poc/mcp_mock_server/b_partition.json
+@@ -4,7 +4,7 @@
+     "members": "B 成员集合（存在性接口定义域）。exists 严格等价 m ∈ members：A 内分子与库外分子一律 False（goal §2b⑤）。成员记录形状 {id, case_ref, provenance}，字段集对齐 E1《后端库规格契约》§3.2 B 侧。",
+     "g_b": "B 侧合格集 G_B（goal §2b①：终态须命中 G_B 且经 B 侧性质复核，评分由评测机在 B 侧执行，不经存在性接口）。G_B ⊆ members，且 G_B 成员必带 case_ref（契约 §3.4：B 侧 case_ref 必填）。",
+     "cases": "per-case 分区（任务 #13）：cases[case_id] = {key_space, members[], g_b[]}。case_id 对应 dag_poc/templates/**/case_*.json 的文件名（去扩展名）。加载规则见 _note 与 gateway.BPartitionJsonReader。",
+-    "placeholder_warning": "顶层 members/g_b 与 cases.case_fixture_isolation_v1 均为 fixture/占位数据，仅用于网关语义与可证伪隔离测试；真实 B 侧内容待 E5 造题冻结 G_B、E1 入库 backend/*_B.jsonl 后替换（届时换 BPartitionReader 实现，不改 Gateway 接口）。隔离验证以 rehearsal_logs 为准，本文件不构成隔离已验证依据。"
++    "placeholder_warning": "顶层 members/g_b 与 cases.case_fixture_isolation_v1 / case_fixture_isolation_v2 均为 fixture/占位数据，仅用于网关语义与可证伪隔离测试；真实 B 侧内容待 E5 造题冻结 G_B、E1 入库 backend/*_B.jsonl 后替换（届时换 BPartitionReader 实现，不改 Gateway 接口）。隔离验证以 rehearsal_logs 为准，本文件不构成隔离已验证依据。"
+   },
+   "cases": {
+     "case_fixture_isolation_v1": {
+@@ -34,6 +34,24 @@
+       "g_b": [
+         "[16*][16*](=[22*])[22*][16*]1:[16*]:[16*]:[16*]:[16*]:[16*]:1[16*]([22*])=[22*]"
+       ]
++    },
++    "case_fixture_isolation_v2": {
++      "key_space": "过渡期 fixture 口径（占位数据，task-05 §2 / 任务 #53 新增）：组成自洽金标准 fixture——G_B 成员 = 匿名域 edit_molecule 分支 2 真实产物 canonical SMILES（aa + add_atom F 的 RDKit 实跑产物，与顶层成员 1 同键）。条件③改组成多重集相等判法（ADR-0018 §5 H7，ε=0.02）后，composition(aa)+F == 本键组成成立（实跑证据 rehearsal_logs/task-05_condition3_composition_realdata.log），供金标准/三门闭环测试使用；v1（阿司匹林 fixture，与 aa 无组成方程关系）保留不动供隔离组测试。目标口径同 v1：InChIKey 列待 E5 冻结时回填；本 case 非真实出题。",
++      "members": [
++        {
++          "id": "[16*][16*]([16*])[81*][16*][16*]([22*])[16*][22*][16*]1:[16*]:[16*]:[16*]([16*][16*][22*][16*]F):[16*]:[16*]:1",
++          "case_ref": "case_fixture_isolation_v2",
++          "provenance": {
++            "source_db": "manual_annotation",
++            "source_url": "https://example.org/e3/fixture/isolation-v2#aa-plus-F-anon",
++            "source_paper_doi": "N/A（task-05 §2 组成自洽金标准 fixture，非真实出题；构造：A 内分子 aa 经 edit_molecule add_atom F 的 RDKit 实跑产物 canonical SMILES，即顶层成员 1。组成方程：comp(aa 载体 -H)={16:15,22:3,81:1} + {7:1} == 本键组成 {7:1,16:15,22:3,81:1}）",
++            "note": "组成自洽金标准 fixture（G_B 成员）：条件③组成多重集判法下 aa+F 变换 == 本键组成"
++          }
++        }
++      ],
++      "g_b": [
++        "[16*][16*]([16*])[81*][16*][16*]([22*])[16*][22*][16*]1:[16*]:[16*]:[16*]([16*][16*][22*][16*]F):[16*]:[16*]:1"
++      ]
+     }
+   },
+   "members": [
+diff --git a/dag_poc/mcp_mock_server/rehearsal_logs/grounding_condition3_realdata.log b/dag_poc/mcp_mock_server/rehearsal_logs/grounding_condition3_realdata.log
+index 3b210d0..d36d984 100644
+--- a/dag_poc/mcp_mock_server/rehearsal_logs/grounding_condition3_realdata.log
++++ b/dag_poc/mcp_mock_server/rehearsal_logs/grounding_condition3_realdata.log
+@@ -1,5 +1,5 @@
+ # grounding 条件③真实数据实跑证据（任务 #36 / task-03 §1）
+-# 生成时刻: 2026-08-07T14:46:49
++# 生成时刻: 2026-08-07T15:09:32
+ # 生成方式: test_gateway_rdkit_grounding.py::test_grounding_condition3_realdata_entity_id_anchor
+ # 锚点形态: 实体 ID 锚点
+ # 数据源: E1 backend 匿名层（get_entity_A.jsonl / search_candidates_A.jsonl，ADR-0017）
+@@ -47,7 +47,13 @@
+   "edit_op_reproduces_answer": true,
+   "details": {
+     "cited_unmatched": [],
+-    "anchors_not_in_A": []
++    "anchors_not_in_A": [],
++    "composition": {
++      "epsilon": 0.02,
++      "hop_limit": 2,
++      "hops_total": 1,
++      "composition_match": true
++    }
+   }
+ }
+ 
+diff --git a/dag_poc/mcp_mock_server/tests/test_evaluate_open_discovery.py b/dag_poc/mcp_mock_server/tests/test_evaluate_open_discovery.py
+index 5f3fa21..f3628ba 100644
+--- a/dag_poc/mcp_mock_server/tests/test_evaluate_open_discovery.py
++++ b/dag_poc/mcp_mock_server/tests/test_evaluate_open_discovery.py
+@@ -21,8 +21,11 @@
+      + 新契约 6 点必须与旧快照在判分字段子集上不同且 cp1-cp5 至少一项非 0
+      （不许只删断言放行；断言灵敏度面见任务 #50 Major4 登记）。
+ 
+-fixture 对齐修复三/任务 #32 ②：case_id = case_fixture_isolation_v1，
+-G_B = [阿司匹林 ADR-0017 dummy atom 匿名形态]（新键空间，canonical 回环稳定）。
++fixture 对齐修复三/任务 #32 ②；task-05 §2（任务 #53）切 v2：
++case_id = case_fixture_isolation_v2，G_B = [aa + add_atom F 的 RDKit 实跑产物
++匿名形态]——条件③改组成多重集相等判法（ADR-0018 §5 H7）后金标准必须组成
++自洽（composition(aa)+F == G_B 成员组成）；v1 阿司匹林 fixture 与 aa 无组成
++方程关系，保留供隔离组测试不动。
+ 
+ 运行：
+   python3 -m pytest dag_poc/mcp_mock_server/tests/test_evaluate_open_discovery.py -q
+@@ -43,11 +46,13 @@ sys.path.insert(0, SRC_BENCH)
+ 
+ import evaluate as E   # noqa: E402
+ 
+-FIXTURE_CASE = 'case_fixture_isolation_v1'
+-# 任务 #32 ② B 键迁移：cases[fixture].g_b = 阿司匹林匿名形态（dummy atom
+-# canonical SMILES）；合成 discovery trace 中 edit_molecule 成功行的 result_id
+-# 自洽声明为该键（分支 2 RDKit 产物口径，canonical_chemical 回环稳定）。
+-GB_MEMBER = '[16*][16*](=[22*])[22*][16*]1:[16*]:[16*]:[16*]:[16*]:[16*]:1[16*]([22*])=[22*]'
++FIXTURE_CASE = 'case_fixture_isolation_v2'
++# task-05 §2（任务 #53）：条件③改组成多重集判法后金标准 fixture 切 v2——
++# G_B 成员 = aa + add_atom F 的 RDKit 实跑产物 canonical（即顶层回落成员 1，
++# 组成自洽：comp(aa 载体 -H)+{7:1} == 本键组成）；v1 阿司匹林键（与 aa 无
++# 组成方程关系）在旧结构口径下曾作金标准，现仅供隔离组。
++GB_MEMBER = ('[16*][16*]([16*])[81*][16*][16*]([22*])[16*][22*][16*]1:'
++             '[16*]:[16*]:[16*]([16*][16*][22*][16*]F):[16*]:[16*]:1')
+ EDIT_TRIPLE = ('aa', 'add_atom', 'F')
+ OPEN_CASE_PATH = os.path.join(DAG_POC, 'templates', 'open_discovery',
+                               'case_open_superconductor.json')
+@@ -268,7 +273,7 @@ def test_main_end_to_end_with_discovery_case(tmp_path, monkeypatch, capsys):
+     exec(code, ns)   # 旧写法在此处对无 gt case 必 KeyError；修法后端到端跑通
+ 
+     rows = json.load(open(traces / '_all_results.json'))
+-    disc = [r for r in rows if r['case'] == 'fixture_isolation_v1']
++    disc = [r for r in rows if r['case'] == 'fixture_isolation_v2']
+     assert len(disc) == 1
+     d = disc[0]
+     assert d['gt'] is None and d['open_gate'] is True
+@@ -284,7 +289,7 @@ def test_main_end_to_end_with_discovery_case(tmp_path, monkeypatch, capsys):
+     # cardiac_sotalol/cns_metoprolol × 3 model）；账本解冻/增案时需同步本名单。
+     _NEW_CONTRACT_CASES = {'cardiac_sotalol', 'cns_metoprolol'}
+     fixed_new = {r['case'] + '|' + r['model']: r for r in rows
+-                 if r['case'] != 'fixture_isolation_v1'}
++                 if r['case'] != 'fixture_isolation_v2'}
+     assert len(fixed_new) == len(baseline) == 15
+     n_legacy = 0
+     for o in baseline:
+diff --git a/dag_poc/mcp_mock_server/tests/test_existence_interface_task05.py b/dag_poc/mcp_mock_server/tests/test_existence_interface_task05.py
+index 558a2a7..0c84f1a 100644
+--- a/dag_poc/mcp_mock_server/tests/test_existence_interface_task05.py
++++ b/dag_poc/mcp_mock_server/tests/test_existence_interface_task05.py
+@@ -35,8 +35,11 @@ HERE = os.path.dirname(os.path.abspath(__file__))
+ DAG_POC = os.path.abspath(os.path.join(HERE, '..', '..'))
+ sys.path.insert(0, os.path.join(DAG_POC, 'mcp_mock_server'))
+ 
+-FIXTURE_CASE = 'case_fixture_isolation_v1'
+-GB_MEMBER = '[16*][16*](=[22*])[22*][16*]1:[16*]:[16*]:[16*]:[16*]:[16*]:1[16*]([22*])=[22*]'
++FIXTURE_CASE = 'case_fixture_isolation_v2'
++# task-05 §2（任务 #53）：条件③改组成多重集判法后，金标准 fixture 切 v2
++# （组成自洽：comp(aa)+F == TOP_EDIT_PRODUCT 组成）；v1 阿司匹林键与 aa 无
++# 组成方程关系，仅供隔离组。TOP_EDIT_PRODUCT 即 v2 的 g_b 成员（gwtest_common）。
++GB_MEMBER = TOP_EDIT_PRODUCT
+ EDIT_TRIPLE = ('aa', 'add_atom', 'F')
+ 
+ # 库外样本（既不在 A 也不在 B）：乱串/超长串/结构状串/边界
+diff --git a/dag_poc/templates/discovery_haystack/case_dh_drug_03.json b/dag_poc/templates/discovery_haystack/case_dh_drug_03.json
+index bae1876..b1b32af 100644
+--- a/dag_poc/templates/discovery_haystack/case_dh_drug_03.json
++++ b/dag_poc/templates/discovery_haystack/case_dh_drug_03.json
+@@ -47,8 +47,8 @@
+     "z072543",
+     "z074901"
+   ],
+-  "view_ref": null,
+-  "view_ref_note": "E1-05 per-case 视图定义格式未交付，先以 visible_set ID 数组落盘；E1 交付后回填本字段（已登记 progress.md）",
++  "view_ref": "dag_poc/data/backend/per_case_views/case_dh_drug_03.json",
++  "view_ref_note": "E1-05 视图规范已定稿（per_case_view_v1，见 task/E1-后端数据库构造/per-case视图交接说明.md §2），visible_set 可直接按该格式表达：family_sequence = evidence_set 的 n 个实体（沿外推轴有序），distractors = visible_set 余下 K 个成员，gt 属 B 侧不在白名单；视图文件本体待冻结验收后按 E1 规范落盘（本收口边界不含写 dag_poc/data/）",
+   "g_b": [
+     "z001336"
+   ],
+diff --git a/dag_poc/templates/discovery_haystack/case_dh_drug_04.json b/dag_poc/templates/discovery_haystack/case_dh_drug_04.json
+index 1bef1bd..4be167c 100644
+--- a/dag_poc/templates/discovery_haystack/case_dh_drug_04.json
++++ b/dag_poc/templates/discovery_haystack/case_dh_drug_04.json
+@@ -48,8 +48,8 @@
+     "z069429",
+     "z069620"
+   ],
+-  "view_ref": null,
+-  "view_ref_note": "E1-05 per-case 视图定义格式未交付，先以 visible_set ID 数组落盘；E1 交付后回填本字段（已登记 progress.md）",
++  "view_ref": "dag_poc/data/backend/per_case_views/case_dh_drug_04.json",
++  "view_ref_note": "E1-05 视图规范已定稿（per_case_view_v1，见 task/E1-后端数据库构造/per-case视图交接说明.md §2），visible_set 可直接按该格式表达：family_sequence = evidence_set 的 n 个实体（沿外推轴有序），distractors = visible_set 余下 K 个成员，gt 属 B 侧不在白名单；视图文件本体待冻结验收后按 E1 规范落盘（本收口边界不含写 dag_poc/data/）",
+   "g_b": [
+     "z011837"
+   ],
+diff --git a/dag_poc/templates/discovery_haystack/case_dh_drug_05.json b/dag_poc/templates/discovery_haystack/case_dh_drug_05.json
+index 91bbe27..d244d99 100644
+--- a/dag_poc/templates/discovery_haystack/case_dh_drug_05.json
++++ b/dag_poc/templates/discovery_haystack/case_dh_drug_05.json
+@@ -47,8 +47,8 @@
+     "z065584",
+     "z068950"
+   ],
+-  "view_ref": null,
+-  "view_ref_note": "E1-05 per-case 视图定义格式未交付，先以 visible_set ID 数组落盘；E1 交付后回填本字段（已登记 progress.md）",
++  "view_ref": "dag_poc/data/backend/per_case_views/case_dh_drug_05.json",
++  "view_ref_note": "E1-05 视图规范已定稿（per_case_view_v1，见 task/E1-后端数据库构造/per-case视图交接说明.md §2），visible_set 可直接按该格式表达：family_sequence = evidence_set 的 n 个实体（沿外推轴有序），distractors = visible_set 余下 K 个成员，gt 属 B 侧不在白名单；视图文件本体待冻结验收后按 E1 规范落盘（本收口边界不含写 dag_poc/data/）",
+   "g_b": [
+     "z065578"
+   ],
+diff --git a/dag_poc/templates/discovery_haystack/case_dh_drug_06.json b/dag_poc/templates/discovery_haystack/case_dh_drug_06.json
+index 222dd53..82aeb70 100644
+--- a/dag_poc/templates/discovery_haystack/case_dh_drug_06.json
++++ b/dag_poc/templates/discovery_haystack/case_dh_drug_06.json
+@@ -47,8 +47,8 @@
+     "z065570",
+     "z065584"
+   ],
+-  "view_ref": null,
+-  "view_ref_note": "E1-05 per-case 视图定义格式未交付，先以 visible_set ID 数组落盘；E1 交付后回填本字段（已登记 progress.md）",
++  "view_ref": "dag_poc/data/backend/per_case_views/case_dh_drug_06.json",
++  "view_ref_note": "E1-05 视图规范已定稿（per_case_view_v1，见 task/E1-后端数据库构造/per-case视图交接说明.md §2），visible_set 可直接按该格式表达：family_sequence = evidence_set 的 n 个实体（沿外推轴有序），distractors = visible_set 余下 K 个成员，gt 属 B 侧不在白名单；视图文件本体待冻结验收后按 E1 规范落盘（本收口边界不含写 dag_poc/data/）",
+   "g_b": [
+     "z045475"
+   ],
+diff --git a/dag_poc/templates/discovery_haystack/case_dh_drug_07.json b/dag_poc/templates/discovery_haystack/case_dh_drug_07.json
+index 92ef2cd..3fce287 100644
+--- a/dag_poc/templates/discovery_haystack/case_dh_drug_07.json
++++ b/dag_poc/templates/discovery_haystack/case_dh_drug_07.json
+@@ -46,8 +46,8 @@
+     "z063844",
+     "z063967"
+   ],
+-  "view_ref": null,
+-  "view_ref_note": "E1-05 per-case 视图定义格式未交付，先以 visible_set ID 数组落盘；E1 交付后回填本字段（已登记 progress.md）",
++  "view_ref": "dag_poc/data/backend/per_case_views/case_dh_drug_07.json",
++  "view_ref_note": "E1-05 视图规范已定稿（per_case_view_v1，见 task/E1-后端数据库构造/per-case视图交接说明.md §2），visible_set 可直接按该格式表达：family_sequence = evidence_set 的 n 个实体（沿外推轴有序），distractors = visible_set 余下 K 个成员，gt 属 B 侧不在白名单；视图文件本体待冻结验收后按 E1 规范落盘（本收口边界不含写 dag_poc/data/）",
+   "g_b": [
+     "z012362"
+   ],
+diff --git a/dag_poc/templates/discovery_haystack/case_dh_drug_08.json b/dag_poc/templates/discovery_haystack/case_dh_drug_08.json
+index c94d0e4..61ced54 100644
+--- a/dag_poc/templates/discovery_haystack/case_dh_drug_08.json
++++ b/dag_poc/templates/discovery_haystack/case_dh_drug_08.json
+@@ -48,8 +48,8 @@
+     "z068955",
+     "z070355"
+   ],
+-  "view_ref": null,
+-  "view_ref_note": "E1-05 per-case 视图定义格式未交付，先以 visible_set ID 数组落盘；E1 交付后回填本字段（已登记 progress.md）",
++  "view_ref": "dag_poc/data/backend/per_case_views/case_dh_drug_08.json",
++  "view_ref_note": "E1-05 视图规范已定稿（per_case_view_v1，见 task/E1-后端数据库构造/per-case视图交接说明.md §2），visible_set 可直接按该格式表达：family_sequence = evidence_set 的 n 个实体（沿外推轴有序），distractors = visible_set 余下 K 个成员，gt 属 B 侧不在白名单；视图文件本体待冻结验收后按 E1 规范落盘（本收口边界不含写 dag_poc/data/）",
+   "g_b": [
+     "z002195"
+   ],
+diff --git a/dag_poc/templates/discovery_haystack/case_dh_drug_09.json b/dag_poc/templates/discovery_haystack/case_dh_drug_09.json
+index 25d9b49..0167c91 100644
+--- a/dag_poc/templates/discovery_haystack/case_dh_drug_09.json
++++ b/dag_poc/templates/discovery_haystack/case_dh_drug_09.json
+@@ -48,8 +48,8 @@
+     "z063388",
+     "z063622"
+   ],
+-  "view_ref": null,
+-  "view_ref_note": "E1-05 per-case 视图定义格式未交付，先以 visible_set ID 数组落盘；E1 交付后回填本字段（已登记 progress.md）",
++  "view_ref": "dag_poc/data/backend/per_case_views/case_dh_drug_09.json",
++  "view_ref_note": "E1-05 视图规范已定稿（per_case_view_v1，见 task/E1-后端数据库构造/per-case视图交接说明.md §2），visible_set 可直接按该格式表达：family_sequence = evidence_set 的 n 个实体（沿外推轴有序），distractors = visible_set 余下 K 个成员，gt 属 B 侧不在白名单；视图文件本体待冻结验收后按 E1 规范落盘（本收口边界不含写 dag_poc/data/）",
+   "g_b": [
+     "z000008",
+     "z006792",
+diff --git a/dag_poc/templates/discovery_haystack/case_dh_drug_10.json b/dag_poc/templates/discovery_haystack/case_dh_drug_10.json
+index 96c440a..0c64448 100644
+--- a/dag_poc/templates/discovery_haystack/case_dh_drug_10.json
++++ b/dag_poc/templates/discovery_haystack/case_dh_drug_10.json
+@@ -46,8 +46,8 @@
+     "z069359",
+     "z069428"
+   ],
+-  "view_ref": null,
+-  "view_ref_note": "E1-05 per-case 视图定义格式未交付，先以 visible_set ID 数组落盘；E1 交付后回填本字段（已登记 progress.md）",
++  "view_ref": "dag_poc/data/backend/per_case_views/case_dh_drug_10.json",
++  "view_ref_note": "E1-05 视图规范已定稿（per_case_view_v1，见 task/E1-后端数据库构造/per-case视图交接说明.md §2），visible_set 可直接按该格式表达：family_sequence = evidence_set 的 n 个实体（沿外推轴有序），distractors = visible_set 余下 K 个成员，gt 属 B 侧不在白名单；视图文件本体待冻结验收后按 E1 规范落盘（本收口边界不含写 dag_poc/data/）",
+   "g_b": [
+     "z070014"
+   ],
+diff --git a/dag_poc/templates/discovery_haystack/case_dh_drug_11.json b/dag_poc/templates/discovery_haystack/case_dh_drug_11.json
+index 9a4e862..f50a37c 100644
+--- a/dag_poc/templates/discovery_haystack/case_dh_drug_11.json
++++ b/dag_poc/templates/discovery_haystack/case_dh_drug_11.json
+@@ -46,8 +46,8 @@
+     "z065577",
+     "z070907"
+   ],
+-  "view_ref": null,
+-  "view_ref_note": "E1-05 per-case 视图定义格式未交付，先以 visible_set ID 数组落盘；E1 交付后回填本字段（已登记 progress.md）",
++  "view_ref": "dag_poc/data/backend/per_case_views/case_dh_drug_11.json",
++  "view_ref_note": "E1-05 视图规范已定稿（per_case_view_v1，见 task/E1-后端数据库构造/per-case视图交接说明.md §2），visible_set 可直接按该格式表达：family_sequence = evidence_set 的 n 个实体（沿外推轴有序），distractors = visible_set 余下 K 个成员，gt 属 B 侧不在白名单；视图文件本体待冻结验收后按 E1 规范落盘（本收口边界不含写 dag_poc/data/）",
+   "g_b": [
+     "z065584"
+   ],
+diff --git a/dag_poc/templates/discovery_haystack/case_dh_drug_12.json b/dag_poc/templates/discovery_haystack/case_dh_drug_12.json
+index f4ab28a..3fbbf49 100644
+--- a/dag_poc/templates/discovery_haystack/case_dh_drug_12.json
++++ b/dag_poc/templates/discovery_haystack/case_dh_drug_12.json
+@@ -46,8 +46,8 @@
+     "z070585",
+     "z070907"
+   ],
+-  "view_ref": null,
+-  "view_ref_note": "E1-05 per-case 视图定义格式未交付，先以 visible_set ID 数组落盘；E1 交付后回填本字段（已登记 progress.md）",
++  "view_ref": "dag_poc/data/backend/per_case_views/case_dh_drug_12.json",
++  "view_ref_note": "E1-05 视图规范已定稿（per_case_view_v1，见 task/E1-后端数据库构造/per-case视图交接说明.md §2），visible_set 可直接按该格式表达：family_sequence = evidence_set 的 n 个实体（沿外推轴有序），distractors = visible_set 余下 K 个成员，gt 属 B 侧不在白名单；视图文件本体待冻结验收后按 E1 规范落盘（本收口边界不含写 dag_poc/data/）",
+   "g_b": [
+     "z007224"
+   ],
+diff --git a/dag_poc/templates/discovery_haystack/case_dh_drug_13.json b/dag_poc/templates/discovery_haystack/case_dh_drug_13.json
+index 7137933..ed27964 100644
+--- a/dag_poc/templates/discovery_haystack/case_dh_drug_13.json
++++ b/dag_poc/templates/discovery_haystack/case_dh_drug_13.json
+@@ -48,8 +48,8 @@
+     "z070850",
+     "z071195"
+   ],
+-  "view_ref": null,
+-  "view_ref_note": "E1-05 per-case 视图定义格式未交付，先以 visible_set ID 数组落盘；E1 交付后回填本字段（已登记 progress.md）",
++  "view_ref": "dag_poc/data/backend/per_case_views/case_dh_drug_13.json",
++  "view_ref_note": "E1-05 视图规范已定稿（per_case_view_v1，见 task/E1-后端数据库构造/per-case视图交接说明.md §2），visible_set 可直接按该格式表达：family_sequence = evidence_set 的 n 个实体（沿外推轴有序），distractors = visible_set 余下 K 个成员，gt 属 B 侧不在白名单；视图文件本体待冻结验收后按 E1 规范落盘（本收口边界不含写 dag_poc/data/）",
+   "g_b": [
+     "z006758"
+   ],
+diff --git a/dag_poc/templates/discovery_haystack/case_dh_drug_14.json b/dag_poc/templates/discovery_haystack/case_dh_drug_14.json
+index 044d059..d3d1e7b 100644
+--- a/dag_poc/templates/discovery_haystack/case_dh_drug_14.json
++++ b/dag_poc/templates/discovery_haystack/case_dh_drug_14.json
+@@ -48,8 +48,8 @@
+     "z062625",
+     "z063405"
+   ],
+-  "view_ref": null,
+-  "view_ref_note": "E1-05 per-case 视图定义格式未交付，先以 visible_set ID 数组落盘；E1 交付后回填本字段（已登记 progress.md）",
++  "view_ref": "dag_poc/data/backend/per_case_views/case_dh_drug_14.json",
++  "view_ref_note": "E1-05 视图规范已定稿（per_case_view_v1，见 task/E1-后端数据库构造/per-case视图交接说明.md §2），visible_set 可直接按该格式表达：family_sequence = evidence_set 的 n 个实体（沿外推轴有序），distractors = visible_set 余下 K 个成员，gt 属 B 侧不在白名单；视图文件本体待冻结验收后按 E1 规范落盘（本收口边界不含写 dag_poc/data/）",
+   "g_b": [
+     "z043948"
+   ],
+diff --git a/dag_poc/templates/discovery_haystack/case_dh_drug_15.json b/dag_poc/templates/discovery_haystack/case_dh_drug_15.json
+index 0eda5f7..bfda689 100644
+--- a/dag_poc/templates/discovery_haystack/case_dh_drug_15.json
++++ b/dag_poc/templates/discovery_haystack/case_dh_drug_15.json
+@@ -46,8 +46,8 @@
+     "z070157",
+     "z070411"
+   ],
+-  "view_ref": null,
+-  "view_ref_note": "E1-05 per-case 视图定义格式未交付，先以 visible_set ID 数组落盘；E1 交付后回填本字段（已登记 progress.md）",
++  "view_ref": "dag_poc/data/backend/per_case_views/case_dh_drug_15.json",
++  "view_ref_note": "E1-05 视图规范已定稿（per_case_view_v1，见 task/E1-后端数据库构造/per-case视图交接说明.md §2），visible_set 可直接按该格式表达：family_sequence = evidence_set 的 n 个实体（沿外推轴有序），distractors = visible_set 余下 K 个成员，gt 属 B 侧不在白名单；视图文件本体待冻结验收后按 E1 规范落盘（本收口边界不含写 dag_poc/data/）",
+   "g_b": [
+     "z045546"
+   ],
+diff --git a/src/benchmark/evaluate.py b/src/benchmark/evaluate.py
+index 4e104af..ca916a0 100644
+--- a/src/benchmark/evaluate.py
++++ b/src/benchmark/evaluate.py
+@@ -11,7 +11,7 @@
+   （时刻相等/缺证据）→ 降级为既有行为并给出警告，不改变既有 case 得分。
+   网关录像（gateway.py 输出）走严格模式：相等/缺证据同样判不通过。
+ """
+-import json, logging, os, sys
++import json, logging, os, re, sys
+ 
+ # 任务 #41 Major4：材料侧身份键通道异常一次性告警标志（不重复刷屏）。
+ _material_channel_warned = False
+@@ -554,6 +554,225 @@ def hit_gb(answer, case_id, reader=None):
+     return key in gb_set, gb_set, placeholder
+ 
+ 
++# ── 组成层面 grounding 纯函数（task-05 §2 / task #53，ADR-0018 §5 H6-H9）──────
++# 条件③判法改组成多重集比对：anchor 元素计数按 edit_op（{+n e, −n e} 封闭算子集）
++# 变换后与提交分子式逐元素 |差|≤ε。四条用户裁定口径写死（不得自行变更）：
++#   ① edit_op 算子集 = {add_atom(+n e), remove_atom(−n e)}，detail 可携带计数 n；
++#   ② occupancy 小数计数（材料侧，如 [20*]1.98）用固定容差 COMPOSITION_EPSILON；
++#   ③ 保留前置：trace 须有 edit_molecule applied=True 行且三元组相符（防跳过工具
++#      直编 edit_op 绕 trace grounding）；
++#   ④ 跳数 = 编辑序列累计算子总数（detail 计数 n 之和）≤ COMPOSITION_HOP_LIMIT。
++# composition_of / apply_composition_edit / composition_equal 为稳定复用接口，
++# #54（E5 质量门 composition_grounding_gate）直接调用，签名与行为勿轻动。
++COMPOSITION_EPSILON = 0.02     # 组成多重集相等固定容差（裁定 2，写死）
++COMPOSITION_HOP_LIMIT = 2      # 编辑序列累计算子总数上限（裁定 4，写死）
++# 匿名式 token：[label*]计数——计数可为 occupancy 小数，可省略（省略=1，
++# 与 E1 reduced_formula 口径一致，如材料键前段 [20*]99[32*]50[42*][48*]100）。
++_ANON_FORMULA_TOKEN_RE = re.compile(r'\[(\d+)\*\]([0-9]+(?:\.[0-9]+)?)?')
++_ANON_FORMULA_FULL_RE = re.compile(
++    r'^(?:\[\d+\*\](?:[0-9]+(?:\.[0-9]+)?)?)+$')
++# detail 文法（ADR-0018 §5 H6 / answer_schema 升版登记）：<token> 或 <token>*<n>；
++# token = 真实元素符号（'F'，judge 侧经 E1-03 映射表反查 label）或匿名 label
++# （'42' 或 '[42*]'）；n 为正整数计数，缺省 1（旧 detail='F' 形态向后兼容）。
++_EDIT_DETAIL_RE = re.compile(
++    r'^(?P<tok>\[\d+\*\]|[A-Za-z]{1,2}|\d+)(?:\*(?P<n>[1-9]\d*))?$')
++
++
++def _parse_anon_formula(text):
++    """匿名式片段 '[16*]15[19*]25[22*]3[81*]1' → {label: count}（材料侧计数可为
++    occupancy 小数；计数省略=1）。空串/无 token → None。"""
++    if not isinstance(text, str) or not text.strip():
++        return None
++    comp = {}
++    for m in _ANON_FORMULA_TOKEN_RE.finditer(text):
++        label = int(m.group(1))
++        count = float(m.group(2)) if m.group(2) is not None else 1
++        comp[label] = comp.get(label, 0) + count
++    return comp or None
++
++
++def parse_edit_detail(detail):
++    """edit_op.detail 文法解析（{+n e, −n e} 组成算子参数）。
++
++    文法：<token> 或 <token>*<n>——token = 真实元素符号（'F'/'Cl'，大小写不敏感，
++    归一为首字母大写规范形）或匿名 label（'42' / '[42*]'）；n = 正整数计数，缺省 1。
++    返回 (kind, value, n)：kind∈{'element','label'}，value=元素符号 str 或 int label；
++    非法（非串/空/不合文法）→ None。"""
++    if not isinstance(detail, str):
++        return None
++    m = _EDIT_DETAIL_RE.match(detail.strip())
++    if not m:
++        return None
++    tok, n = m.group('tok'), int(m.group('n') or 1)
++    if tok.startswith('['):
++        return ('label', int(tok[1:-2]), n)
++    if tok.isdigit():
++        return ('label', int(tok), n)
++    return ('element', tok.capitalize(), n)
++
++
++def _element_to_label_map():
++    """judge 侧 E1-03 匿名映射表 element_to_label 读取（映射表只服务 judge 侧
++    评分反查，ADR-0017；走 gateway._load_anon_mapping 既有容错接缝，只读不自建）。
++    缺失 → {}。"""
++    gwmod = _import_gateway()
++    mapping = gwmod._load_anon_mapping() if gwmod is not None else None
++    return (mapping or {}).get('element_to_label') or {}
++
++
++def _smiles_composition(smiles):
++    """dummy atom SMILES → {label: count}：isotope 非 0 原子按 isotope=label 计数
++    （ADR-0017 载体记法 [N*]）；isotope 0 原子（如 edit 添加的真实元素原子）经
++    judge 侧映射表 element_to_label 反查 label。RDKit 缺席/解析失败/映射表缺该
++    元素 → None（不静默降级）。隐式 H 不入组成（RDKit 不计隐式氢）——分子侧
++    组成口径天然不含 H，与 formula 字段的隐式 H 口径差异由调用侧剥离处理。"""
++    try:
++        from rdkit import Chem
++    except ImportError:
++        return None
++    if not isinstance(smiles, str) or not smiles.strip():
++        return None
++    mol = Chem.MolFromSmiles(smiles)
++    if mol is None:
++        return None
++    comp, e2l = {}, None
++    for atom in mol.GetAtoms():
++        iso = atom.GetIsotope()
++        if iso:
++            comp[iso] = comp.get(iso, 0) + 1
++            continue
++        if e2l is None:
++            e2l = _element_to_label_map()
++        sym = atom.GetSymbol()
++        if sym not in e2l:
++            return None
++        comp[e2l[sym]] = comp.get(e2l[sym], 0) + 1
++    return comp or None
++
++
++def composition_of(x, gw=None):
++    """组成（元素计数多重集）统一解析器——task-05 §2（task #53）落码，
++    #54 E5 质量门 composition_grounding_gate 复用接口（签名与行为冻结）。
++
++    签名：composition_of(x, gw=None) -> dict | None
++      x（str）受理四种形态，按序自动判别：
++        ① 纯匿名式串：'[16*]15[19*]25[22*]3[81*]1' 全串匹配（计数可为 occupancy
++           小数如 '[20*]1.98，可省略=1）；
++        ② 材料身份键 '<reduced_formula>_SG<n>'：取 '_SG' 前段按 ① 解析；
++        ③ 实体 ID（需 gw）：查 A 侧身份档 get_entity_A.jsonl——分子实体优先取
++           smiles_map 的 dummy SMILES 走 RDKit 同位素计数（formula 字段含隐式 H
++           而 SMILES 载体不含显式 H，两口径不一致，分子侧以 SMILES 为准），
++           SMILES 缺失回落 formula 字段；晶体实体取 formula 字段按 ① 解析；
++        ④ dummy atom SMILES（需 gw）：走 _smiles_composition。
++      gw = Gateway 实例（judge 侧，持有 _a_identity 身份档）；仅 ①② 两形态可
++      离线（gw=None）解析。
++      返回 {label: count}（材料侧可为小数）；不可解析/查无 → None。
++      本函数返原始组成，**不做隐式 H 剥离**——剥离是分子域比对口径，由调用侧
++      按载体域处置（evaluate_grounding 条件③ / #54 质量门）。"""
++    if not isinstance(x, str) or not x.strip():
++        return None
++    s = x.strip()
++    if _ANON_FORMULA_FULL_RE.match(s):
++        return _parse_anon_formula(s)
++    if '_SG' in s:
++        return _parse_anon_formula(s.split('_SG', 1)[0])
++    identity = getattr(gw, '_a_identity', None) if gw is not None else None
++    if identity and identity[0] and s in identity[0]:
++        rec = identity[0][s]
++        if rec.get('entity_type') == 'crystal':
++            return _parse_anon_formula(rec.get('formula'))
++        smi = (identity[1] or {}).get(s)
++        if smi:
++            comp = _smiles_composition(smi)
++            if comp is not None:
++                return comp
++        return _parse_anon_formula(rec.get('formula'))
++    if gw is not None and ('[' in s or '(' in s or '=' in s or '#' in s):
++        return _smiles_composition(s)
++    return None
++
++
++def apply_composition_edit(comp, operator, detail):
++    """对组成字典施加 {+n e, −n e} 组成算子（ADR-0018 §5 H6 封闭集）。
++
++    入参：comp {label: count} | None；operator ∈ {'add_atom'(+n e),
++    'remove_atom'(−n e)}（封闭集外一律拒绝）；detail 按 parse_edit_detail 文法
++    （<token>|<token>*<n>；元素符号 token 经 judge 侧映射表反查 label）。
++    返回变换后的**新**字典（纯函数，不改入参）；comp 为 None / 算子出集 /
++    detail 非法 / 映射表缺元素 / remove 超出现有计数（容差内视为剥零）→ None。"""
++    if not isinstance(comp, dict) or operator not in ('add_atom', 'remove_atom'):
++        return None
++    parsed = parse_edit_detail(detail)
++    if parsed is None:
++        return None
++    kind, value, n = parsed
++    if kind == 'element':
++        e2l = _element_to_label_map()
++        if value not in e2l:
++            return None
++        label = e2l[value]
++    else:
++        label = value
++    out = dict(comp)
++    if operator == 'add_atom':
++        out[label] = out.get(label, 0) + n
++        return out
++    cur = out.get(label, 0)
++    if cur + COMPOSITION_EPSILON < n:      # 移除超出存量（容差外）→ 非法
++        return None
++    new = cur - n
++    if new <= COMPOSITION_EPSILON:         # 容差内剥零（如 occupancy 1.98 移除 2）
++        out.pop(label, None)
++    else:
++        out[label] = new
++    return out
++
++
++def composition_equal(a, b, epsilon=COMPOSITION_EPSILON):
++    """组成多重集相等：逐元素 |计数差| ≤ ε（裁定 2：occupancy 小数固定容差 0.02）。
++    任一输入 None/非 dict → False。浮点比较附 1e-9 护卫位（2.0-1.98 的浮点
++    残差不得把恰在 ε 边界的判定挤出界）。"""
++    if not isinstance(a, dict) or not isinstance(b, dict):
++        return False
++    for k in set(a) | set(b):
++        if abs(float(a.get(k, 0)) - float(b.get(k, 0))) > epsilon + 1e-9:
++            return False
++    return True
++
++
++def _edit_op_hops(events):
++    """编辑序列累计算子总数（裁定 4 跳数定义）：trace 中全部 edit_molecule
++    applied=True 行的 detail 计数 n 之和（detail 缺省/不可解析计 1）。"""
++    hops = 0
++    for e in events or []:
++        if e.get('tool') != 'edit_molecule':
++            continue
++        args, ret = _event_args_ret(e)
++        if not (isinstance(ret, dict) and 'error_code' not in ret
++                and ret.get('applied') is True):
++            continue
++        parsed = parse_edit_detail(args.get('detail'))
++        hops += parsed[2] if parsed is not None else 1
++    return hops
++
++
++def _anchor_carrier_domain(anchor, judge):
++    """锚点载体域判别（隐式 H 剥离口径）：分子实体/SMILES 载体 → 'molecule'；
++    晶体实体/材料身份键/纯式串 → 'material'；不可判 → None（保守不剥离）。"""
++    if not isinstance(anchor, str) or not anchor.strip():
++        return None
++    s = anchor.strip()
++    identity = getattr(judge, '_a_identity', None) if judge is not None else None
++    if identity and identity[0] and s in identity[0]:
++        return 'material' if identity[0][s].get('entity_type') == 'crystal' \
++            else 'molecule'
++    if '_SG' in s or _ANON_FORMULA_FULL_RE.match(s):
++        return 'material'
++    if '[' in s or '(' in s or '=' in s or '#' in s:
++        return 'molecule'
++    return None
++
++
+ def evaluate_grounding(payload, events, gw=None):
+     """open 类 grounding 三判据（answer_schema.open_grounding_checks 逐条实现）。
+ 
+@@ -562,10 +781,12 @@ def evaluate_grounding(payload, events, gw=None):
+        杜绝判分侧双口径）；
+     ② anchor_in_A：anchor_molecules 非空且每个锚点 ∈ A（实体 ID 全集，或真实
+        SMILES 的 canonical 属 A 分子全集）；
+-    ③ edit_op_reproduces_answer：录像中存在 edit_op 同三元组的 edit_molecule
+-       成功行（applied=True，修复五后为真实判断）且其 result_id 与 answer 同
+-       canonical 形式——离线回放不依赖活体网关会话态（_edit_products 不可用），
+-       以录像成功行为证据源（修复五交接口径）。
++    ③ edit_op_reproduces_answer（task-05 §2 组成口径，ADR-0018 §5 H6/H7）：
++       前置保留——录像中存在 edit_op 同三元组的 edit_molecule 成功行（applied=True，
++       修复五后为真实判断）；身份判据改为组成多重集相等——anchor 元素计数按
++       edit_op（+n e/−n e）变换后与 answer 组成逐元素 |差|≤0.02（同分异构判相等
++       是预期行为，H8）；叠加编辑序列累计算子总数 ≤2 跳数校验（H6）。离线回放
++       不依赖活体网关会话态，以录像成功行为证据源（修复五交接口径）。
+     返回 dict：grounding_pass + 三判据 bool + details 诊断明细。
+     """
+     gw = gw or _import_gateway()
+@@ -639,10 +860,17 @@ def evaluate_grounding(payload, events, gw=None):
+         and not bad_anchor
+     out['details']['anchors_not_in_A'] = bad_anchor
+ 
+-    # ③ normalize(edit_op) == answer：录像成功行为证（applied=True 行）
++    # ③ edit_op(anchor) 组成 == answer 组成（task-05 §2，ADR-0018 §5 H6/H7）：
++    #    前置保留（裁定 3）——录像存在 edit_molecule applied=True 行且三元组相符
++    #    （防 agent 跳过工具直编 edit_op 绕 trace grounding）；身份判据从
++    #    result_id==answer 结构 canonical 相等改为组成多重集相等——anchor 组成
++    #    按 edit_op（+n e/−n e）变换后与 answer 组成逐元素 |差|≤ε（裁定 2）；
++    #    叠加编辑序列累计算子总数 ≤ COMPOSITION_HOP_LIMIT（裁定 4）。
+     eo = payload.get('edit_op')
+     answer = payload.get('answer')
+     ok3 = False
++    comp_diag = {'epsilon': COMPOSITION_EPSILON,
++                 'hop_limit': COMPOSITION_HOP_LIMIT, 'hops_total': 0}
+     if isinstance(eo, dict) and isinstance(answer, str) and answer:
+         edits = []
+         for e in events or []:
+@@ -653,28 +881,31 @@ def evaluate_grounding(payload, events, gw=None):
+                     and ret.get('applied') is True):
+                 continue
+             edits.append((args.get('anchor_id'), args.get('operator'),
+-                          args.get('detail'), ret.get('result_id')))
++                          args.get('detail')))
++        comp_diag['hops_total'] = _edit_op_hops(events or [])
+         claimed = (eo.get('anchor'), eo.get('operator'), eo.get('detail'))
+-        answer_canon = None
+-        try:
+-            answer_canon = gw.canonical_chemical(answer)
+-        except Exception:
+-            answer_canon = None
+-        answer_key = answer_canon if answer_canon is not None \
+-            else gw.canonical_structure(answer)
+-        for anchor, op, detail, rid in edits:
+-            if (anchor, op, detail) == claimed and isinstance(rid, str):
+-                rid_canon = None
+-                try:
+-                    rid_canon = gw.canonical_chemical(rid)
+-                except Exception:
+-                    rid_canon = None
+-                rid_key = rid_canon if rid_canon is not None \
+-                    else gw.canonical_structure(rid)
+-                if rid_key == answer_key:
+-                    ok3 = True
+-                    break
++        if comp_diag['hops_total'] <= COMPOSITION_HOP_LIMIT \
++                and claimed in edits:
++            anchor_comp = composition_of(claimed[0], judge)
++            transformed = apply_composition_edit(
++                anchor_comp, claimed[1], claimed[2])
++            answer_comp = composition_of(answer, judge)
++            if _anchor_carrier_domain(claimed[0], judge) == 'molecule':
++                # 分子侧 dummy SMILES 载体无显式 H 而 formula 字段含隐式 H——
++                # 两侧剥 H 后再比（H label 取自映射表，不在场则保守不剥）。
++                h_label = _element_to_label_map().get('H')
++                if h_label is not None:
++                    if isinstance(transformed, dict):
++                        transformed = {k: v for k, v in transformed.items()
++                                       if k != h_label}
++                    if isinstance(answer_comp, dict):
++                        answer_comp = {k: v for k, v in answer_comp.items()
++                                       if k != h_label}
++            ok3 = transformed is not None and answer_comp is not None \
++                and composition_equal(transformed, answer_comp)
++            comp_diag['composition_match'] = ok3
+     out['edit_op_reproduces_answer'] = ok3
++    out['details']['composition'] = comp_diag
+     out['grounding_pass'] = out['cited_values_match_trace'] \
+         and out['anchor_in_A'] and out['edit_op_reproduces_answer']
+     return out
+diff --git a/src/eval_matrix/bare_baseline.py b/src/eval_matrix/bare_baseline.py
+index d067782..0c35828 100644
+--- a/src/eval_matrix/bare_baseline.py
++++ b/src/eval_matrix/bare_baseline.py
+@@ -115,16 +115,19 @@ def _valid_sample(path: str) -> bool:
+         return False
+ 
+ 
+-def chat_with_retry(messages, model, temperature, attempts=3, chat=None):
++def chat_with_retry(messages, model, temperature, attempts=5, chat=None,
++                    timeout=300):
+     """llm_chat 包一层连接层异常重试（超时/连接断：llm_chat 自身只对
+-    HTTP 状态码退避，ReadTimeout 会直接抛）。判据无关，仅通道健壮性。"""
++    HTTP 状态码退避，ReadTimeout 会直接抛）。判据无关，仅通道健壮性。
++    timeout 默认 300s：llm_chat 默认 120s 对推理模型长思考不够（实测 qwen
++    多次 ReadTimeout）；不改 agent_harness 默认值，本批显式透传。"""
+     from src.benchmark.agent_harness import llm_chat
+     chat = chat or llm_chat
+     last = None
+     for _ in range(attempts):
+         try:
+             return chat(messages, tools=None, model=model,
+-                        temperature=temperature)
++                        temperature=temperature, timeout=timeout)
+         except Exception as e:  # noqa: BLE001
+             last = e
+     raise last
+diff --git "a/task/E1-\345\220\216\347\253\257\346\225\260\346\215\256\345\272\223\346\236\204\351\200\240/\346\235\220\346\226\231\344\276\247\350\272\253\344\273\275\351\224\256\344\272\244\346\216\245\350\257\264\346\230\216.md" "b/task/E1-\345\220\216\347\253\257\346\225\260\346\215\256\345\272\223\346\236\204\351\200\240/\346\235\220\346\226\231\344\276\247\350\272\253\344\273\275\351\224\256\344\272\244\346\216\245\350\257\264\346\230\216.md"
+index 43be776..8dac42b 100644
+--- "a/task/E1-\345\220\216\347\253\257\346\225\260\346\215\256\345\272\223\346\236\204\351\200\240/\346\235\220\346\226\231\344\276\247\350\272\253\344\273\275\351\224\256\344\272\244\346\216\245\350\257\264\346\230\216.md"
++++ "b/task/E1-\345\220\216\347\253\257\346\225\260\346\215\256\345\272\223\346\236\204\351\200\240/\346\235\220\346\226\231\344\276\247\350\272\253\344\273\275\351\224\256\344\272\244\346\216\245\350\257\264\346\230\216.md"
+@@ -107,12 +107,25 @@ key = material_identity_key(formula_anon, spacegroup_symbol)
+ 
+ **总结：当前快照空间群 5,771/5,771 全可得，预案未触发；已踩过的五类坑逐条写清，消费方遇到同型输入可直接对照。**
+ 
+-### 7.1 空间群取不到时的预案（当前未触发）
++### 7.1 空间群取不到时的预案（E1-05 Task #31 已首次触发并实现，非静默）
+ 
+-本批无缺口（§1 实测三源全非空）。若未来增量入库出现空间群缺失/不可解析（新增源库、脏行），处置预案（task-04 §1 指定口径，不硬凑）：
+-1. **首选：修复源头**——空间群可从 CIF 重新精解（pymatgen `SpacegroupAnalyzer`）或回源库补字段，补得即走主键；
+-2. **不可修复：降级替代键**——`material_identity_key = <匿名域 reduced_formula> + "_ALT_" + <tc 分档> + "_K" + <元素种类数>`，其中 tc 分档取 get_property 已冻结的 tc 分档口径、元素种类数＝匿名公式去重标签数；同时**如实登记降级清单并报监工**（降级键判别力弱于主键：同公式+同分档不同空间群的材料会合并，E5 造题时降级键只能用于排除而不得用于唯一性判定）；
+-3. **实现位置**：`sg_symbol_to_number` 解析失败当前直接抛错（构建期快速失败，不静默）；降级路径须另行实现并同步本文后启用，**不得静默降级**。
++3DSC 本批无缺口（§1 实测三源全非空）。E1-05 Task #31 入库 UCI SuperCon（纯组成表，无 CIF/空间群）时首次触发本预案第 2 条降级路径，实现与报备如下：
++1. **首选：修复源头**——空间群可从 CIF 重新精解（pymatgen `SpacegroupAnalyzer`）或回源库补字段，补得即走主键；UCI 源本身无结构数据，不可修复，走降级；
++2. **不可修复：降级替代键**——`material_identity_key = <匿名域 reduced_formula> + "_ALT_" + <tc 分档> + "_K" + <元素种类数>`，元素种类数＝匿名公式去重标签数（零计量 token 剔除）。**tc 分档口径报备（与原文差异）**：原文要求“取 get_property 已冻结的 tc 分档口径”，但该口径在构造期实际未冻结（性质值量化/加噪方案仍在监工裁量中，见性质值指纹风险评估.md 选项 B）；本轮按选项 B 的**整 K 向下取档（floor(tc)）**落地（`material_identity.tc_tier_floor`），监工若后续裁定其他分档，降级键须重建；同时**如实登记降级清单并报监工**（降级键判别力弱于主键：同公式+同分档不同空间群的材料会合并，E5 造题时降级键只能用于排除而不得用于唯一性判定）；
++3. **实现位置**：`sg_symbol_to_number` 解析失败当前直接抛错（构建期快速失败，不静默）；降级路径由 `material_identity.degraded_material_identity_key` 实现、`build_material_identity_keys.py` 逐行产出（`key_type=degraded` + `degradation_reason` 显式标记，S6 自检：registry tc == A 侧 tc 且 A 侧可见字段可复算同一把键），已同步本文（本节即报备），**非静默降级**。
++
++### 7.1.1 降级键首次执行记录（E1-05 Task #31，2026-08-07）
++
++| 项 | 值 |
++|---|---|
++| 触发源 | UCI SuperCon（unique_m.csv，纯组成表，cif=null） |
++| 降级行数 | **11,481 条**（键列 material_identity_keys.jsonl 中 key_type=degraded） |
++| 主键行 | 5,771 条（3DSC，key_type=primary，口径不变） |
++| tc 分档口径 | 整 K 向下取档 floor(tc)（§7.1 原文引用的已冻结口径实际未冻结，按选项 B 落地，已报备） |
++| 键列产物 | `_build_state/material_identity_keys.jsonl` 17,252 行，md5=`9f6ad6c78c8769541430f09017019eef` |
++| 自检 | S1–S6 全过（S6 为降级行新增：registry tc == get_property_A tc 逐一相等；A 侧 formula+tc 可独立复算同键） |
++| 冲突统计 | 唯一键 17,170；冲突组 82/164 条（含 3DSC 既有 31 组上游重复录入） |
++| 消费约束 | E5 造题对降级键只能用于排除，不得用于唯一性判定；E3 可用 A 侧可见字段（formula+tc）复算 |
+ 
+ ### 7.2 已踩过的坑（全部有实测处置）
+ 
+diff --git "a/task/E5-template\344\270\216case\346\236\204\351\200\240/progress.md" "b/task/E5-template\344\270\216case\346\236\204\351\200\240/progress.md"
+index caa8431..c42bc8b 100644
+--- "a/task/E5-template\344\270\216case\346\236\204\351\200\240/progress.md"
++++ "b/task/E5-template\344\270\216case\346\236\204\351\200\240/progress.md"
+@@ -21,6 +21,7 @@
+ - 方法：五步法（ADR-0018）：gt 入 B（A 可见集白名单不含 gt）→ 同族 logS 单调段入 A → K=25 非目标族干扰项 → 双质量门（门1 可见集穷举无替代解 δ=0.25；门2 anchor+组成算子 edit_op 跳数1+evidence≥3 条对账 get_property_A.jsonl）→ 落盘。首道即任务书起始原型（族 var16 base {19:22,22:1,81:2}，gt=z064386，d=1）。同分异构按 ADR §8：仅对有 logS 的可复核 B 侧候选判窗口（存在≠得分 §4.3），口径落盘 isomer_handling。
+ - lint（批次 `e5_task03`，strict）：**case 级违规 0**；corpus 级恰 1 条 M13（type4 drug=15/material=0，材料侧计划缺口，E1-05 批合并后消除，预期内）；pending 仅 A1 留痕；M9a 开头两词 8 种/15 道=0.533（≥0.3）；M9b gt 与 task-02 的 30 个 gt 无重复（脚本断言）。人工复核清单（M2/M3/M10/N6 语义项）待送审，同 task-02 惯例。
+ - 待回填/上报：见 E5-03（edit_op 枚举不一致）、E5-04（case_ref 口径）、E1-05（view_ref 待回填）。
++- 【2026-08-07 收口更新】独立验证完成（首轮 13/15 全绿，09/14 族泄漏见 Task #11）；根因修复后复检 5 项全过，**15 道可冻结**。view_ref 已按 E1-05 定稿规范回填（`per_case_views/case_dh_drug_NN.json`，视图文件本体随冻结落盘）；回填后重跑 lint 结论不变。收口见 `task-03-report.md`，经验见 `造case经验/task-03-open药物批.md`。
+ 
+ ## Task #11：可见集族泄漏缺陷根因修复 + 09/14 重配
+ 
+@@ -30,10 +31,12 @@
+ - 重配结果：09（gt=z000008 保持，n=5 d=1 K=25 maximize，|G_B|=3）与 14（gt=z043948 保持，n=5 d=2 K=25 maximize，|G_B|=1）均一次过两门 + self_lint，段成员不变仅干扰项重抽，泄漏实体已移出可见集，趋势严格单调；新增判废 0 条（账本 task11_repair 另列留痕，原批次 7 判废/1018 预筛记录保留）。
+ - 回归：15 道批量断言全通过（同 backbone 数==n、可见集长==n+K、gt 不在可见集、同族序列严格单调、evidence 与当前库对账一致）；lint 整批重跑（批次 e5_task03，strict）预期不变：case 级违规 0、corpus 恰 1 条 M13（drug=15/material=0）、pending 仅 A1。
+ - 库已变复核（E1-05 扩容 92,268 实体/73,830 属性行，药物分子池 74,941，logS 池仍 2,299）：① 门1 穷举口径在可见集内、可见集为固定白名单 → 不受影响；② 15 道同分异构全库普查成员与落盘一致（gt 组成未新增有 logS 同组成实体），g_b 结论不变；③ evidence 数值与当前库逐条对账一致。无受影响项。
++- 【2026-08-07 收口更新】复检 5 项（同 backbone 数==n、可见集长==n+K、gt 不在可见集、同族序列严格单调、evidence 对账）全过，新增判废 0，药物批 15 道可冻结。注：库规模后续口径以最新实算为准（当前 get_entity_A.jsonl 92,193 行 / get_property_A.jsonl 73,530 行，HEAD ab7a2db）。
+ 
+-## 进行中
++## 进行中 / 待办
+ 
+-- 无。等待独立验证药物侧 open 15 道（任务 #9）；材料侧 open 等 E1-05 扩数据后再造（本批不造，query_spec 配额 material=21 未动）。
++- 已完成：**药物批 open 15 道冻结就绪**（task-03 收口文档已交付：`task-03-report.md` + `造case经验/task-03-open药物批.md`；view_ref 已回填）。
++- 待办：① 材料侧 open 15 道等 E1-05 扩数据后开工（配额 material=21 未动；扩完仍不足则报监工、不降标准）；② G_B 冻结入库（`ingest_open_gt.py`）待本批验收后执行，同步落盘 `per_case_views/` 视图文件本体并复跑 `assert_per_case_view.py`；③ 裸答基线（E6）待跑，命中 G_B 的 case 将再废一批；④ 人工复核清单（M2/M3/M10/N6 ×15）待送审，M10 深审归 owner。
+ 
+ ## ⛔️ 阻塞/问题上报
+ 
+@@ -47,6 +50,7 @@
+ - 实测证据（30 道新 case，--freeze-batch e5_task02 --strict）：违规 0 条；pending 仅 1 条 = A1 扫描留痕（189,339 行 / 4 个 A 侧文件，三项 0 命中 ✔）；M9a 变体率已转实判并通过（无 M9 违规/pending）；退出码 = 2。非 strict 同批退出码 = 0。
+ - 影响：E5 Task #2 以"违规 0 条 + strict 下 pending 仅 A1 信息性留痕（退出码 2）"为达标线（监工 2026-08-07 批准）。
+ - 建议修法（供监工裁决，E5 不擅改 lint）：将"全绿留痕"从 pending 列表移到独立的 info/trace 通道（不参与 strict 退出码），或在 L927 区分 pending.kind（"留痕" vs "待启用"），仅"待启用"计入 strict 退出码。
++- 【2026-08-07 状态】task-03 药物批沿用已批达标线（违规 0 + pending 仅 A1），待监工最终裁决。
+ 
+ ### E5-02 方向 A 备选：atom_count/element_count 注册为正式可查性质（归 E1/E3，待监工批准）
+ 
+@@ -60,19 +64,23 @@
+ - 现象：`dag_poc/answer_schema.json` 的 operator 枚举是**结构算子五件套**（add_atom/remove_atom/replace_substituent/substitute_element/ring_closure），而 ADR-0018 §5 规定 open 题 edit_op 是**组成算子** {+n 个元素 e, −n 个元素 e}（元素计数层面，多重集相等校验，不需拓扑）。
+ - E5 处置（按任务书口径）：case 的 edit_op.operator 取枚举中最贴近者（add_atom/remove_atom），语义细节写入 edit_op.detail（组成变换+多重集相等+跳数）；质量门按 ADR 口径执行。
+ - 需裁决：E3 是否按 ADR-0018 扩充/修订 answer_schema operator 枚举（如 add_element_count/remove_element_count），或出官方映射表；此前 E6 评分链路解析 edit_op 请以 detail 的组成语义为准。
++- 【2026-08-07 状态】task-03 药物批 15 道已按"最贴近枚举值 + detail 记组成语义"落盘交付，继续待裁决。
+ 
+ ### E5-04 case_ref 口径：get_property_A.jsonl 全部 case_ref=None（归 E1，登记备查）
+ 
+ - 现象：`dag_poc/data/backend/get_property_A.jsonl` 全部 27,606 行 `case_ref` 字段均为 null。open 题为 per-case A/B 配对（ADR-0018），A 侧性质数据物理上全库共享、按 case 可见集白名单逻辑隔离，故 evidence 对账只能按 entity_id+prop+value 三元组，不依赖 case_ref。
+ - 影响：无（对账已在脚本内逐条断言通过）；若 E1-05 视图交付后 case_ref 有正式语义，E5 再按新口径回填 evidence_set。
++- 【2026-08-07 状态】E1-05 视图规范已定稿（per_case_view_v1）但未给 case_ref 引入新语义，本条口径维持不变，继续登记备查。
+ 
+ ### E1-05（外部依赖）per-case 视图定义格式未交付 → visible_set 暂以 ID 数组落盘
+ 
+ - 现象：ADR-0018 要求每 case 落盘可见集白名单；E1-05 的视图定义格式未交付。
+ - E5 处置：15 道 open case 以 `visible_set`（实体 ID 数组）落盘 + `view_ref: null` 占位 + `view_ref_note` 说明；**E1 交付视图格式后 E5 回填 view_ref**（脚本已预留）。
+ - 连带：材料侧 open 题需 E1-05 扩数据后开造（query_spec 配额 material=21 保留）；当前 type4 存量 drug=15/material=0 的 M13 corpus 违规为计划缺口，E1-05 批合并后消除。
++- 【2026-08-07 状态】E1-05 视图机制与格式已交付（`per_case_view_v1`，交接说明见 `task/E1-后端数据库构造/per-case视图交接说明.md`）：15 道 `view_ref` 已回填、映射可行性已确认；剩两项待办——视图文件本体随冻结落盘（本收口边界不含写 `dag_poc/data/`）、材料侧扩数据后评估开造。
+ 
+ ### E1-04（外部依赖）材料侧身份键未交付 → open 材料题未开
+ 
+ - 影响：open 类本批一道未造（进场文档 §7 明令先 fixed）；材料侧 15 道 open 的可发现性质量门依赖 E1-04 身份键的判别力，键未到不开工。
+ - E5 侧动作：等待 E1-04 交付通知，期间不预造 open 题（避免身份键判别力不足导致整批废弃）。
++- 【2026-08-07 状态】E1-05 视图机制已交付，但材料侧身份键仍未到；材料批 open 的前置依赖现为"E1-05 扩数据 + 身份键"两项，维持不开工。
+diff --git "a/task/E6-\344\270\211\345\261\202\347\237\251\351\230\265\350\257\204\346\265\213/bare_baseline/failures.jsonl" "b/task/E6-\344\270\211\345\261\202\347\237\251\351\230\265\350\257\204\346\265\213/bare_baseline/failures.jsonl"
+index 35e1689..99aefb4 100644
+--- "a/task/E6-\344\270\211\345\261\202\347\237\251\351\230\265\350\257\204\346\265\213/bare_baseline/failures.jsonl"
++++ "b/task/E6-\344\270\211\345\261\202\347\237\251\351\230\265\350\257\204\346\265\213/bare_baseline/failures.jsonl"
+@@ -9,3 +9,16 @@
+ {"case_id": "case_cs_drug_04", "model": "qwen3.7-max", "sample_index": 0, "timestamp": "2026-08-07T14:49:00", "error": "ReadTimeout: HTTPSConnectionPool(host='idealab.alibaba-inc.com', port=443): Read timed out. (read timeout=120)"}
+ {"case_id": "case_cs_drug_02", "model": "qwen3.7-max", "sample_index": 0, "timestamp": "2026-08-07T14:49:00", "error": "ReadTimeout: HTTPSConnectionPool(host='idealab.alibaba-inc.com', port=443): Read timed out. (read timeout=120)"}
+ {"case_id": "case_cs_drug_03", "model": "qwen3.7-max", "sample_index": 0, "timestamp": "2026-08-07T14:49:00", "error": "ReadTimeout: HTTPSConnectionPool(host='idealab.alibaba-inc.com', port=443): Read timed out. (read timeout=120)"}
++{"case_id": "case_cs_drug_03", "model": "qwen3.7-max", "sample_index": 1, "timestamp": "2026-08-07T14:55:00", "error": "ReadTimeout: HTTPSConnectionPool(host='idealab.alibaba-inc.com', port=443): Read timed out. (read timeout=120)"}
++{"case_id": "case_cs_drug_02", "model": "qwen3.7-max", "sample_index": 1, "timestamp": "2026-08-07T14:55:00", "error": "ReadTimeout: HTTPSConnectionPool(host='idealab.alibaba-inc.com', port=443): Read timed out. (read timeout=120)"}
++{"case_id": "case_cs_drug_05", "model": "qwen3.7-max", "sample_index": 0, "timestamp": "2026-08-07T14:55:04", "error": "ReadTimeout: HTTPSConnectionPool(host='idealab.alibaba-inc.com', port=443): Read timed out. (read timeout=120)"}
++{"case_id": "case_cs_drug_04", "model": "qwen3.7-max", "sample_index": 2, "timestamp": "2026-08-07T14:59:32", "error": "ReadTimeout: HTTPSConnectionPool(host='idealab.alibaba-inc.com', port=443): Read timed out. (read timeout=120)"}
++{"case_id": "case_cs_drug_02", "model": "qwen3.7-max", "sample_index": 2, "timestamp": "2026-08-07T15:01:01", "error": "ReadTimeout: HTTPSConnectionPool(host='idealab.alibaba-inc.com', port=443): Read timed out. (read timeout=120)"}
++{"case_id": "case_cs_drug_05", "model": "qwen3.7-max", "sample_index": 1, "timestamp": "2026-08-07T15:01:04", "error": "ReadTimeout: HTTPSConnectionPool(host='idealab.alibaba-inc.com', port=443): Read timed out. (read timeout=120)"}
++{"case_id": "case_cs_drug_03", "model": "qwen3.7-max", "sample_index": 3, "timestamp": "2026-08-07T15:03:28", "error": "ReadTimeout: HTTPSConnectionPool(host='idealab.alibaba-inc.com', port=443): Read timed out. (read timeout=120)"}
++{"case_id": "case_cs_drug_02", "model": "moonshot/kimi-k3", "sample_index": 8, "timestamp": "2026-08-07T15:04:16", "error": "ReadTimeout: HTTPSConnectionPool(host='idealab.alibaba-inc.com', port=443): Read timed out. (read timeout=120)"}
++{"case_id": "case_cs_drug_04", "model": "moonshot/kimi-k3", "sample_index": 3, "timestamp": "2026-08-07T15:04:34", "error": "ReadTimeout: HTTPSConnectionPool(host='idealab.alibaba-inc.com', port=443): Read timed out. (read timeout=120)"}
++{"case_id": "case_cs_drug_06", "model": "qwen3.7-max", "sample_index": 0, "timestamp": "2026-08-07T15:04:45", "error": "ReadTimeout: HTTPSConnectionPool(host='idealab.alibaba-inc.com', port=443): Read timed out. (read timeout=120)"}
++{"case_id": "case_cs_drug_04", "model": "qwen3.7-max", "sample_index": 3, "timestamp": "2026-08-07T15:05:33", "error": "ReadTimeout: HTTPSConnectionPool(host='idealab.alibaba-inc.com', port=443): Read timed out. (read timeout=120)"}
++{"case_id": "case_cs_drug_02", "model": "qwen3.7-max", "sample_index": 3, "timestamp": "2026-08-07T15:07:09", "error": "ReadTimeout: HTTPSConnectionPool(host='idealab.alibaba-inc.com', port=443): Read timed out. (read timeout=120)"}
++{"case_id": "case_cs_drug_05", "model": "qwen3.7-max", "sample_index": 2, "timestamp": "2026-08-07T15:07:11", "error": "ReadTimeout: HTTPSConnectionPool(host='idealab.alibaba-inc.com', port=443): Read timed out. (read timeout=120)"}
+diff --git "a/task/E6-\344\270\211\345\261\202\347\237\251\351\230\265\350\257\204\346\265\213/task-03-\350\243\270\347\255\224\345\237\272\347\272\277\345\256\236\350\267\221.md" "b/task/E6-\344\270\211\345\261\202\347\237\251\351\230\265\350\257\204\346\265\213/task-03-\350\243\270\347\255\224\345\237\272\347\272\277\345\256\236\350\267\221.md"
+index eec34d9..6d2756f 100644
+--- "a/task/E6-\344\270\211\345\261\202\347\237\251\351\230\265\350\257\204\346\265\213/task-03-\350\243\270\347\255\224\345\237\272\347\272\277\345\256\236\350\267\221.md"
++++ "b/task/E6-\344\270\211\345\261\202\347\237\251\351\230\265\350\257\204\346\265\213/task-03-\350\243\270\347\255\224\345\237\272\347\272\277\345\256\236\350\267\221.md"
+@@ -17,7 +17,7 @@
+ |---|---|
+ | **Task ID / 路径** | E6-03 / `task/E6-三层矩阵评测/` |
+ | **类型** | Implementation（污染检验，goal 明写"必需"） |
+-| **状态** | 🟡 待开工 |
++| **状态** | 🔄 实跑中（2026-08-07）：脚本/配置/单测已落盘，fixed 30 + open 15 × 3 模型 × k=10 全量采样进行中；open/fixed 判定受三处跨线口径缺口阻塞（见 progress.md 阻塞节），见 report-03.md |
+ | **负责人** | E6（矩阵评测线） |
+ | **预计起止** | 2026-08-07 ~ （约 1 天，含跑批时间） |
+ | **上游来源** | `goal.md` §2b「open 类特有的防蒙对手段（必需）」+ §4 支柱 5 · **ADR-0018** §9 项 8 |

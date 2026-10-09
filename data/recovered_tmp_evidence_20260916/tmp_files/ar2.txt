@@ -1,0 +1,42 @@
+HTTP/2 302 
+date: Tue, 08 Sep 2026 10:24:26 GMT
+content-type: text/html;charset=utf-8
+content-length: 0
+cache-control: public, must-revalidate, max-age=0
+expires: Tue, 08 Sep 2026 10:24:26 GMT
+location: https://codeload.github.com/bowang-lab/CONCERTO/legacy.tar.gz/refs/heads/main
+x-github-api-version-selected: 2022-11-28
+x-ratelimit-limit: 60
+x-ratelimit-remaining: 60
+x-ratelimit-reset: 1788866666
+x-ratelimit-used: 0
+x-ratelimit-resource: core
+access-control-expose-headers: ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset, Warning
+access-control-allow-origin: *
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+content-security-policy: default-src 'none'
+vary: Accept-Encoding, Accept, X-Requested-With
+server: github.com
+x-github-request-id: 4EEE:1EDC31:2B4E7BC:2DE06E6:6A9FE25A
+x-github-edge-region: southeastasia
+
+HTTP/2 200 
+access-control-allow-origin: https://render.githubusercontent.com
+content-disposition: attachment; filename=bowang-lab-CONCERTO-8e1c099.tar.gz
+content-security-policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
+content-type: application/x-gzip
+cross-origin-resource-policy: cross-origin
+etag: "55a4844200cd16a018b0afe8e5b77e530bc1bb6fa0cb2c9639f1f400b68d0105"
+strict-transport-security: max-age=31536000
+vary: Authorization,Accept-Encoding
+x-content-type-options: nosniff
+x-frame-options: deny
+x-xss-protection: 1; mode=block
+date: Tue, 08 Sep 2026 10:24:27 GMT
+x-github-request-id: A245:233703:33D4A7:AFCD91:6A9FE25B
+x-github-edge-region: southeastasia
+

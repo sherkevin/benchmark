@@ -1,0 +1,67 @@
+# 出处：/Users/jingwu/.local/share/benchmark-runtimes/_sources/FPADMET/runadmet.sh（端点编号 → 预测脚本 → 指纹类型）
+  1	Anticommensal Effect on Human Gut Microbiota	predict_anticommensal.R	fptype=PUBCHEM
+  2	Blood-brain-barrier penetration	predict_bbbp.R	fptype=PUBCHEM
+  3	Oral Bioavailability	predict_bioavailability.R	fptype=PUBCHEM
+  4	AMES Mutagenecity	predict_ames.R	fptype=PUBCHEM
+  5	Metabolic Intrinsic Clearance	predict_metabolicstability.R	fptype=FCFP4
+  6	Rat Acute LD50	predict_rattoxicity.R	fptype=PUBCHEM
+  7	Drug-Induced Liver Inhibition	predict_DILI.R	fptype=PUBCHEM
+  8	HERG Cardiotoxicity	predict_hergcardiotox.R	fptype=FCFP6
+  9	Haemolytic Toxicity	predict_hemotox.R	fptype=FCFP6
+ 10	Myelotoxicity	predict_myelotox.R	fptype=FCFP4
+ 11	Urinary Toxicity	predict_urinarytox.R	fptype=FCFP4
+ 12	Human Intestinal Absorption	predict_HIA.R	fptype=MACCS
+ 13	Hepatic Steatosis	predict_steatosis.R	fptype=MACCS
+ 14	Breast Cancer Resistance Protein Inhibition	predict_bcrpinhibition.R	fptype=FCFP4
+ 15	Drug-Induced Choleostasis	predict_choleostasis.R	fptype=MOLPRINT2D
+ 16	Human multidrug and toxin extrusion Inhibition" # MATE1
+        $FPGEN -output $FPOUT -fptype DFS -mol $molfile
+        if [ ! -z "$seed" ]; then
+        	$RSCRIPT $PREDICTIONSCRIPTS"/predict_MATE1.R" $FPOUT $PREDOUT $adan $seed
+        else
+        	$RSCRIPT $PREDICTIONSCRIPTS"/predict_MATE1.R" $FPOUT $PREDOUT $adan
+        fi
+        retcode=$?
+        ;;
+    17) echo "Toxic Myopathy	predict_myopathy.R	fptype=DFS
+ 18	Phospholipidosis	predict_phospholipidosis.R	fptype=FCFP2
+ 19	Human Bile Salt Export Pump Inhibition	predict_BSEP.R	fptype=ECFP4
+ 20	Organic anion transporting polypeptide 1B1 binding	predict_OATP1B1.R	fptype=ECFP6
+ 21	Organic anion transporting polypeptide 1B3 binding	predict_OATP1B3.R	fptype=PUBCHEM
+ 22	Organic anion transporting polypeptide 2B1 binding	predict_OATP2B1.R	fptype=ECFP6
+ 23	Phototoxicity human	predict_phototoxhuman.R	fptype=PUBCHEM
+ 24	Phototoxicity invitro	predict_phototoxinvitro.R	fptype=KR
+ 25	Respiratory Toxicity	predict_respiratorytox.R	fptype=MACCS
+ 26	P-glycoprotein Inhibition	predict_pgpinhibition.R	fptype=PUBCHEM
+ 27	P-glycoprotein Substrate	predict_pgpsubstrate.R	fptype=ASP
+ 28	Mitochondrial Toxicity	predict_mitichondrialtox.R	fptype=PUBCHEM
+ 29	Carcinogenecity	predict_carcinogenecity.R	fptype=PUBCHEM
+ 30	DMSO Solubility	predict_DMSO.R	fptype=ECFP2
+ 31	Human Liver Microsomal Stability	predict_HLMstability.R	fptype=AT2D
+ 32	Human Plasma Protein Binding	predict_PPB.R	fptype=PUBCHEM
+ 33	hERG Liability	predict_hergliability.R	fptype=PUBCHEM
+ 34	Organic Cation Transporter 2 Inhibition	predict_OCT2inhibition.R	fptype=PUBCHEM
+ 35	Drug-induced Ototoxicity	predict_ototoxicity.R	fptype=PUBCHEM
+ 36	Rhabdomyolysis	predict_rhabdomyolysis.R	fptype=MACCS
+ 37	T1/2 Human	predict_thalfhuman.R	fptype=ASP
+ 38	T1/2 Mouse	predict_thalfmouse.R	fptype=ECFP2
+ 39	T1/2 Rat	predict_thalfrat.R	fptype=KR
+ 40	Cytotoxicity HepG2 cell lines	predict_cytotoxicityhepg2.R	fptype=AT2D
+ 41	Cytotoxicity NIH-3T3 cell lines	predict_cytotoxicitynih.R	fptype=PUBCHEM
+ 42	Cytotoxicity HEK 293 cell lines	predict_cytotoxicityhek.R	fptype=PUBCHEM
+ 43	Cytotoxicity CRL-7250 cell lines	predict_cytotoxicitycrl.R	fptype=AT2D
+ 44	Cytotoxicity HaCat cell lines	predict_cytotoxicityhacat.R	fptype=AT2D
+ 45	CYP450 1A2 Inhibition	predict_cyp1a2.R	fptype=PUBCHEM
+ 46	CYP450 2C19 Inhibition	predict_cyp2c19.R	fptype=ECFP4
+ 47	CYP450 2C9 Inhibition	predict_cyp2c9.R	fptype=PUBCHEM
+ 48	CYP450 2D6 Inhibition	predict_cyp2d6.R	fptype=FCFP4
+ 49	CYP450 3A4 Inhibition	predict_cyp3a4.R	fptype=FCFP6
+ 50	pKa dissociation constant	predict_pka.R	fptype=ECFP2
+ 51	logD Distribution coefficient (pH 7.4)	predict_logD.R	fptype=PUBCHEM
+ 52	logS	predict_logS.R	fptype=PUBCHEM
+ 53	Drug affinity to human serum albumin	predict_HSA.R	fptype=AP2D
+ 54	MDCK permeability	predict_MDCKPerm.R	fptype=ECFP4
+ 55	50% hemolytic dose	predict_HD50.R	fptype=ASP
+ 56	Skin penetration	predict_skinpen.R	fptype=PUBCHEM
+ 57	CYP450 2C8 Inhibition	predict_cyp2c8.R	fptype=PUBCHEM
+ 58	Aqueous Solubility (in phosphate saline buffer)	predict_AQSOL.R	fptype=PUBCHEM

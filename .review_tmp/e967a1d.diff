@@ -1,0 +1,212 @@
+commit e967a1d7926996c2dc9f0c86f9f34974ed92c800
+Author: Jing Wu <jingwu.wu@alibaba-inc.com>
+Date:   Fri Aug 7 11:36:06 2026 +0800
+
+    任务 #46：dual_parse 测试改自带最小样本 fixture（PR-35 测试脆弱性一半）
+    
+    原 fixture 引用 dag_poc/traces/** 与 templates/**（E4/E5 产出区，可变），
+    曾被 E4 重跑/git 还原致 response=None 而 5 用例挂。现改为 tests/fixtures/
+    下本测试独占的最小样本，不再引用任何外部可变文件（task-04 §3 红线）。
+    
+    - fixture 三件套（旧/新契约各一份）：
+      旧契约：case（fixed_discovery，gt=aa + 三约束）+ trace（旧工具名事件：
+      literature_search 旧形状 papers[].doi / search_molecule_database /
+      predict_admet，驱动 extract legacy 路径，cp1-cp6 实跑非全零）+ 答卷
+      （candidate_result 包裹层 screened_pool/ranked_candidates）；
+      新契约：trace（9 契约工具名 + papers[].doc_id 新形状）+ 答卷
+      （candidates/ranking/answer + open 类三扩展字段 null）。
+    - 5 个既有用例断言语义原样保留（未降断言）：旧形状符号派生含空输入
+      边界、双路径符号逐字段一致含往返闭环、同份答卷新旧形状判分逐字段
+      一致、旧路径现状锚点 6 cp 键齐全、answer 指向非首位候选时 best 跟随。
+    - 新增第 9 用例 test_new_contract_minimal_sample_parses：新契约最小样本
+      断言分两档——底线（可解析不崩 + 符号提取正确）对双轨合入前后均成立；
+      探测到 evaluate.py 已含新契约抽取分支（_extract_new）时自动升级为
+      cp1-cp5 非零硬断言（当前工作区已生效并通过）。
+    - 时序兼容：旧契约最小 trace 全是旧工具名（literature_search 除外，
+      新旧共用名），按工具名集合分派在新旧两套抽取下均走 legacy 分支，
+      语义不变；Jimmy 的 evaluate.py 双轨改动未纳入本提交。
+    
+    结果：该文件 9 passed（原 8 用例 + 新契约最小覆盖 1 用例），
+    旧契约 trace 实跑 cp={cp1:1.0, cp2:1.0, cp3:1.0, cp4:0.667, cp5:1.0, cp6:1.0}。
+
+diff --git a/dag_poc/mcp_mock_server/tests/fixtures/dual_parse_case.json b/dag_poc/mcp_mock_server/tests/fixtures/dual_parse_case.json
+new file mode 100644
+index 0000000..7bb3a95
+--- /dev/null
++++ b/dag_poc/mcp_mock_server/tests/fixtures/dual_parse_case.json
+@@ -0,0 +1,22 @@
++{
++  "case_id": "case_fixture_dual_parse",
++  "template_id": "fixed_discovery",
++  "target_domain": "drug",
++  "gt": {
++    "id": "aa",
++    "name": null,
++    "properties": {"bbb": 1, "herg": 0, "caco2": -4.35},
++    "rebuild": "fixture：一个能进入大脑、对心脏安全、口服吸收良好的药物"
++  },
++  "constraints": [
++    {"property": "bbb", "op": "==", "threshold": 1},
++    {"property": "herg", "op": "==", "threshold": 0},
++    {"property": "caco2", "op": ">", "threshold": -5.0}
++  ],
++  "target_metric": "-{caco2}",
++  "query": "fixture minimal case：找出满足 BBB 穿透、心脏安全、口服吸收三约束的候选分子",
++  "provenance": {
++    "source": "test fixture（任务 #46 自带最小样本）",
++    "note": "test_answer_dual_parse.py 独占；不引用 templates/** 与 traces/**（task-04 §3 红线，E4/E5 产出区可变）；实体 ID aa/ab 与 dag_poc/data/mock_db.json 冻结快照对齐"
++  }
++}
+diff --git a/dag_poc/mcp_mock_server/tests/fixtures/dual_parse_response_legacy.json b/dag_poc/mcp_mock_server/tests/fixtures/dual_parse_response_legacy.json
+new file mode 100644
+index 0000000..0e7cd23
+--- /dev/null
++++ b/dag_poc/mcp_mock_server/tests/fixtures/dual_parse_response_legacy.json
+@@ -0,0 +1,7 @@
++{
++  "_note": "旧契约最小答卷样本（任务 #46）：ADR-0011 真实历史答卷形状——candidate_result 包裹层（screened_pool + ranked_candidates）。test_answer_dual_parse.py 独占，不引用 dag_poc/traces/**。",
++  "candidate_result": {
++    "screened_pool": ["aa", "ab"],
++    "ranked_candidates": ["aa", "ab"]
++  }
++}
+diff --git a/dag_poc/mcp_mock_server/tests/fixtures/dual_parse_response_new.json b/dag_poc/mcp_mock_server/tests/fixtures/dual_parse_response_new.json
+new file mode 100644
+index 0000000..e0fe2c2
+--- /dev/null
++++ b/dag_poc/mcp_mock_server/tests/fixtures/dual_parse_response_new.json
+@@ -0,0 +1,12 @@
++{
++  "_note": "新契约最小答卷样本（任务 #46）：answer_schema.json 形状（candidates/ranking/answer + open 类三扩展字段置 null）。test_answer_dual_parse.py 独占。",
++  "candidates": [
++    {"id": "aa", "measurements": [{"name": "bbb", "value": 1}, {"name": "herg", "value": 0}, {"name": "caco2", "value": -4.35}], "reject": null},
++    {"id": "ab", "measurements": [], "reject": null}
++  ],
++  "ranking": ["aa", "ab"],
++  "answer": "aa",
++  "anchor_molecules": null,
++  "cited_values": null,
++  "edit_op": null
++}
+diff --git a/dag_poc/mcp_mock_server/tests/fixtures/dual_parse_trace_legacy.jsonl b/dag_poc/mcp_mock_server/tests/fixtures/dual_parse_trace_legacy.jsonl
+new file mode 100644
+index 0000000..e56d84c
+--- /dev/null
++++ b/dag_poc/mcp_mock_server/tests/fixtures/dual_parse_trace_legacy.jsonl
+@@ -0,0 +1,3 @@
++{"seq": 0, "tool": "literature_search", "arguments": {"query": "CNS drug candidates blood-brain barrier"}, "result": {"query": "CNS drug candidates blood-brain barrier", "total_found": 2, "returned": 2, "papers": [{"title": "BBB penetration of beta-blockers", "authors": "Fixture A.", "year": 2021, "citation_count": 12, "doi": "10.1000/fixture.dualparse.001", "open_access_url": null, "is_open_access": false}, {"title": "CNS MPO drug-likeness screening", "authors": "Fixture B.", "year": 2022, "citation_count": 7, "doi": "10.1000/fixture.dualparse.002", "open_access_url": null, "is_open_access": false}]}, "ok": true}
++{"seq": 1, "tool": "search_molecule_database", "arguments": {"query_sequence": "CNS beta-blocker candidates"}, "result": {"results": [{"name": "aa", "smiles": "CC(C)NCC(O)COc1cccc(OCC(O)CNC(C)C)c1"}, {"name": "ab", "smiles": "CC(C)NCC(O)COc1cccc(CCC(N)=O)c1"}]}, "ok": true}
++{"seq": 2, "tool": "predict_admet", "arguments": {"molecules": "aa,ab"}, "result": {"total_evaluated": 2, "passed": 1, "failed": 1, "results": [{"molecule": "aa", "bbb": 1, "herg": 0, "caco2": -4.35, "pass": true}, {"molecule": "ab", "bbb": 0, "herg": 0, "caco2": -4.35, "pass": false, "fail_reason": "BBB negative"}]}, "ok": true}
+diff --git a/dag_poc/mcp_mock_server/tests/fixtures/dual_parse_trace_new.jsonl b/dag_poc/mcp_mock_server/tests/fixtures/dual_parse_trace_new.jsonl
+new file mode 100644
+index 0000000..c8c91a5
+--- /dev/null
++++ b/dag_poc/mcp_mock_server/tests/fixtures/dual_parse_trace_new.jsonl
+@@ -0,0 +1,5 @@
++{"seq": 0, "tool": "literature_search", "arguments": {"query": "CNS drug candidates blood-brain barrier"}, "result": {"query": "CNS drug candidates blood-brain barrier", "total_found": 2, "returned": 2, "papers": [{"doc_id": "lit_fixture_001", "title": "BBB penetration of beta-blockers", "year": 2021, "citation_count": 12}, {"doc_id": "lit_fixture_002", "title": "CNS MPO drug-likeness screening", "year": 2022, "citation_count": 7}]}, "ok": true}
++{"seq": 1, "tool": "search_candidates", "arguments": {"constraints": [{"property": "bbb", "op": "==", "threshold": 1}], "keywords": "CNS beta-blocker", "k": 10}, "result": {"returned": 2, "candidates": [{"id": "aa"}, {"id": "ab"}]}, "ok": true}
++{"seq": 2, "tool": "get_property", "arguments": {"id": "aa", "props": ["bbb", "herg", "caco2"]}, "result": {"id": "aa", "values": [{"name": "bbb", "value": 1}, {"name": "herg", "value": 0}, {"name": "caco2", "value": -4.35}]}, "ok": true}
++{"seq": 3, "tool": "get_property", "arguments": {"id": "ab", "props": ["bbb", "herg", "caco2"]}, "result": {"id": "ab", "values": [{"name": "bbb", "value": 0}, {"name": "herg", "value": 0}, {"name": "caco2", "value": -4.35}]}, "ok": true}
++{"seq": 4, "tool": "compare", "arguments": {"ids": ["aa", "ab"], "key": "caco2"}, "result": {"key": "caco2", "sorted": [{"id": "aa", "value": -4.35}, {"id": "ab", "value": -4.35}]}, "ok": true}
+diff --git a/dag_poc/mcp_mock_server/tests/test_answer_dual_parse.py b/dag_poc/mcp_mock_server/tests/test_answer_dual_parse.py
+index 4a504cb..45996dd 100644
+--- a/dag_poc/mcp_mock_server/tests/test_answer_dual_parse.py
++++ b/dag_poc/mcp_mock_server/tests/test_answer_dual_parse.py
+@@ -1,13 +1,22 @@
+ #!/usr/bin/env python3
+-"""ADR-0014 双解析单测（任务 #11）：evaluate.py 优先读新契约
+-candidates/ranking/answer，回落旧契约 candidate_result.screened_pool/ranked_candidates。
++"""ADR-0014 双解析单测（任务 #11；fixture 自带化：任务 #46 / PR-35）：
++evaluate.py 优先读新契约 candidates/ranking/answer，回落旧契约
++candidate_result.screened_pool/ranked_candidates。
+ 
+ 两条路径均有覆盖：
+   新路径：构造 answer_schema.json 形状的答卷；
+-  旧路径：用既有 37 case / 63 trace 的真实答卷形状（candidate_result 包裹层）；
++  旧路径：旧契约最小样本（candidate_result 包裹层，形状与 63 份历史答卷一致）；
+   等价性：等价数据（经 gateway._bridge_legacy_payload 双向桥接派生）在两条路径上
+   产出完全相同的判分符号与判分结果——与网关侧桥接（任务 #8 M4）同一份 symbol 口径。
+ 
++fixture 自带化（任务 #46，PR-35 测试脆弱性一半）：
++  原 fixture 引用 dag_poc/traces/** 与 templates/**（E4/E5 产出区，可变）——
++  曾被 E4 重跑/git 还原致 response=None 而 5 用例挂。现改为 tests/fixtures/ 下
++  本测试独占的最小样本（旧/新契约各一份 case+trace+答卷），不再引用任何
++  外部可变文件（task-04 §3 红线）。旧契约最小 trace 含旧工具名事件
++  （literature_search 旧形状 papers[].doi / search_molecule_database /
++  predict_admet）驱动 extract 路径，在新旧两套抽取下均走 legacy 分支。
++
+ 运行：
+   python3 -m pytest dag_poc/mcp_mock_server/tests/test_answer_dual_parse.py -q
+ """
+@@ -24,16 +33,21 @@ sys.path.insert(0, os.path.abspath(os.path.join(DAG_POC, '..', 'src', 'benchmark
+ import evaluate as E                       # noqa: E402
+ from gateway import Gateway                # noqa: E402
+ 
+-CASE = os.path.join(DAG_POC, 'templates', 'fixed_discovery', 'case_cns_metoprolol.json')
+-TRACE = os.path.join(DAG_POC, 'traces', 'case_cns_metoprolol__qwen3.7-max.jsonl')
+-RESP = os.path.join(DAG_POC, 'traces', 'case_cns_metoprolol__qwen3.7-max_response.json')
++# ── 自带最小样本（tests/fixtures/ 独占，task #46；禁引 traces/** 与 templates/**）──
++FIXTURES = os.path.join(HERE, 'fixtures')
++CASE = os.path.join(FIXTURES, 'dual_parse_case.json')
++TRACE = os.path.join(FIXTURES, 'dual_parse_trace_legacy.jsonl')      # 旧契约（旧工具名事件）
++RESP = os.path.join(FIXTURES, 'dual_parse_response_legacy.json')     # 旧契约答卷
++TRACE_NEW = os.path.join(FIXTURES, 'dual_parse_trace_new.jsonl')     # 新契约（9 工具名 + 新形状）
++RESP_NEW = os.path.join(FIXTURES, 'dual_parse_response_new.json')    # 新契约答卷
+ 
+ 
+ def _old_response():
+-    """既有历史答卷的真实形状（旧契约）：{'candidate_result': {'ranked_candidates': [...]}}。"""
+-    payload = json.load(open(RESP))
+-    assert payload.get('response'), '该实验点无真实答卷，换一个有答卷的 case'
+-    return payload['response']
++    """旧契约答卷（历史真实形状）：{'candidate_result': {'screened_pool', 'ranked_candidates'}}。
++    任务 #46 起改为自带 fixture（原引用 traces/** 可变文件，曾致 5 用例挂）。"""
++    payload = json.load(open(RESP, encoding='utf-8'))
++    assert payload.get('candidate_result'), 'fixture 损坏：旧契约答卷缺 candidate_result 包裹层'
++    return payload
+ 
+ 
+ # ── A. parse_answer_symbols 单元级：两条路径各自的符号派生 ─────────────────────
+@@ -155,6 +169,42 @@ def test_score_case_new_shape_answer_field_used():
+     assert ranked == [E.normalize_id(str(x), mock_db) or str(x) for x in ranked_ids]
+ 
+ 
++# ── D. 新契约最小样本：可解析不崩 + 符号提取正确（任务 #46 要求 5） ──────────
++
++def test_new_contract_minimal_sample_parses():
++    """新契约最小样本（papers[].doc_id 新形状 trace + candidates/ranking/answer 答卷）。
++
++    断言分两档（对 task-04 §1 双轨合入前后均兼容，不随合入状态变红/变绿作弊）：
++      底线（合入前也成立）：可解析不崩 + 符号提取逐字段正确；
++      实断言：分派按工具名集合——本 trace 全是新契约工具名，若 evaluate.py
++      已含新契约抽取分支（task-04 §1 / PR-34 合入）则 cp1–cp5 必须非零；
++      未合入时 cp 为 0 属预期，底线断言照常生效，并以 stderr 提示待补。
++    待双轨正式合入并验收后，可把底线档升为无条件 cp 非零硬断言。"""
++    resp_new = json.load(open(RESP_NEW, encoding='utf-8'))
++    # 符号提取：新契约路径逐字段正确
++    pool, ranked, best = E.parse_answer_symbols(resp_new)
++    assert pool == ['aa', 'ab']
++    assert ranked == ['aa', 'ab']
++    assert best == 'aa'
++    # 端到端可解析不崩：新形状 trace（新工具名）进 score_case 完整走通
++    scores, gps, ranked_out, best_out = E.score_case(CASE, TRACE_NEW, resp_new)
++    assert set(scores) == {'cp1', 'cp2', 'cp3', 'cp4', 'cp5', 'cp6'}
++    assert best_out == 'aa'                      # answer 字段经 best_hint 生效
++    assert ranked_out == ['aa', 'ab']
++    # 双轨分派探测：evaluate.py 是否已含新契约抽取分支（按工具名集合分派的实现面）
++    dual_track_landed = hasattr(E, '_extract_new') or any(
++        n for n in dir(E) if 'extract' in n.lower() and 'new' in n.lower())
++    if dual_track_landed:
++        # 已合入：全 新契约工具名 trace 必走新分支，cp1–cp5 非零（不得虚报）
++        assert all(scores[k] > 0 for k in ('cp1', 'cp2', 'cp3', 'cp4', 'cp5')), \
++            f'双轨已合入但新形状 trace cp 未非零：{scores}'
++    else:
++        # 未合入：cp 为 0 属预期（extract 不认新形状），底线断言已覆盖
++        import sys as _sys
++        print('INFO: task-04 §1 双轨未合入，新形状 trace cp 暂为 0（预期）；'
++              '合入后本用例自动升级为 cp1–cp5 非零硬断言', file=_sys.stderr)
++
++
+ if __name__ == '__main__':
+     fns = [v for k, v in sorted(globals().items()) if k.startswith('test_')]
+     for fn in fns:

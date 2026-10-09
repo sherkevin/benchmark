@@ -1,0 +1,209 @@
+% Standalone planning artifact. NEVER import into the measured-result paper.
+\documentclass[10pt,letterpaper]{article}
+\usepackage[left=54pt,right=54pt,top=49pt,bottom=55pt]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{mathptmx}
+\usepackage{amsmath,amssymb,booktabs,array,caption,xcolor,tikz,eso-pic,fancyhdr,hyperref}
+\hypersetup{pdftitle={Experiment Target Guide - NOT MEASURED RESULTS},pdfsubject={Hypothetical planning targets grounded in recorded evidence},colorlinks=true,urlcolor=blue!60!black}
+\definecolor{GuideBlue}{HTML}{2E5DA1}
+\definecolor{Watermark}{HTML}{DDDDDD}
+\newcommand{\T}[1]{{\color{GuideBlue}#1}}
+\newcommand{\NA}{\textemdash}
+\newcommand{\note}[1]{{\fontsize{8.5}{10.5}\selectfont #1\par}}
+\newcommand{\sectionhead}[1]{\vspace{7pt}{\large\bfseries #1}\par\vspace{3pt}}
+\captionsetup{font=small,labelfont=bf,justification=raggedright,singlelinecheck=false,skip=4pt,hypcap=false}
+\setlength{\parindent}{0pt}\setlength{\parskip}{5pt}
+\pagestyle{fancy}\fancyhf{}
+\fancyhead[L]{\fontsize{8}{9}\selectfont\bfseries\color{GuideBlue}PLANNING TARGETS --- NOT EXPERIMENTAL RESULTS}
+\fancyhead[R]{\fontsize{8}{9}\selectfont Guide v05 / 2026-10-08}
+\fancyfoot[L]{\fontsize{8}{9}\selectfont M = measured anchor\quad T = hypothetical target\quad No target CI or p-value}
+\fancyfoot[R]{\thepage}\renewcommand{\headrulewidth}{.3pt}
+\AddToShipoutPictureBG{\AtPageCenter{\makebox(0,0){\rotatebox{34}{\textcolor{Watermark}{\fontsize{36}{43}\selectfont\bfseries TARGET GUIDE / NOT MEASURED}}}}}
+\newenvironment{clean}{\begin{center}\fontsize{9.5}{11.5}\selectfont\setlength{\tabcolsep}{8pt}\renewcommand{\arraystretch}{1.10}}{\end{center}}
+\begin{document}
+{\LARGE\bfseries Experiment Targets}\par
+{\large Planning guide for \emph{After the Decision}}\par
+These are \textbf{illustrative research goals, not forecasts or observations}. Recorded comparators remain unchanged. Blue T rows show an arithmetically consistent target scenario, normalized to existing denominators. Statistical success and generalization still require real evaluation.
+
+\begin{clean}
+\begin{tabular}{@{}llp{2.13in}p{1.53in}@{}}
+\toprule
+Group & Body output & Research question & Goal checkpoint (T) \\
+\midrule
+E1 & Table 3 / Fig. 3 & Natural gain and delayed recovery & $+1.02$ / $+1.23$ pp$^*$ \\
+E2 & Table 4 & Correct source attribution & Local beats permutation \\
+E3 & Table 5 & Learnable cold-start headroom & $81.86$ / $81.72\%$ \\
+E4 & Table 6 & Value of the update alone & $+1.39$ / $+1.20$ pp$^*$ \\
+E5 & Table 7 & Cost at one call per input & Selection $\leq30/35\,\mu$s \\
+E6 & Table 8 & Refusal at matched coverage & $95.78\%$; $U=-0.0845$ \\
+\bottomrule
+\end{tabular}
+\end{clean}
+\note{$^*$ Natural / controlled gain versus current Relay in E1, current corrected Query in E4. These E-labels match the presentation draft; the active standard's E6 means untouched confirmation.}
+
+\sectionhead{1. Primary selection and delay}
+Four providers; 157 molecules / 124 scaffold clusters; $D\in\{0,1,4\}$. Each method has 4,710 calls across 30 schedules, \emph{not} 4,710 independent molecules. Controlled drift is an evaluator-side label flip after tick 78.
+\par\noindent\begin{minipage}{\linewidth}\captionof{table}{E1 / body Table 3. Recorded anchors and planning target (T).}\end{minipage}\par
+\begin{clean}
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+& \multicolumn{2}{c}{Natural menu} & \multicolumn{2}{c}{Controlled drift} \\
+\cmidrule(lr){2-3}\cmidrule(l){4-5}
+Method / status & Correct & Success (\%) & Correct & Success (\%) \\
+\midrule
+Random (M) & 3,945 & 83.76 & \NA & \NA \\
+Best Fixed (M) & 4,152 & 88.15 & \NA & \NA \\
+Frozen (M) & 4,230 & 89.81 & 3,456 & 73.38 \\
+MIRA-Relative (M) & 4,230 & 89.81 & \NA & \NA \\
+Online SGD (M) & 4,202 & 89.21 & 3,958 & 84.03 \\
+Greedy LinUCB (M) & 4,226 & 89.72 & 3,822 & 81.15 \\
+BayesianRouter (M) & 4,217 & 89.53 & 3,781 & 80.28 \\
+Current MIRA-Relay (M) & 4,230 & 89.81 & 4,124 & 87.56 \\
+Retrospective Best Fixed$^\dagger$ (M) & 4,260 & 90.45 & \NA & \NA \\
+\midrule
+\T{Improved MIRA-Relay (T)} & \T{4,278} & \T{90.83} & \T{4,182} & \T{88.79} \\
+
+\bottomrule
+\end{tabular}
+\end{clean}
+\note{$\dagger$ Retrospective Best Fixed chooses one fixed provider with evaluator truth; it is not an upper bound on contextual selection. The natural per-molecule oracle is 150/157 = 95.54\%, or 4,500 recorded decisions. T adds 48 correct natural decisions: 17.8\% of Frozen's 270 recoverable decisions.}
+
+\par\noindent\begin{minipage}{\linewidth}\captionof{table}{E1 / body Figure 3 data. Gains over Frozen, in pp; T is illustrative.}\end{minipage}\par
+\begin{clean}
+\begin{tabular}{@{}rrrrr@{}}
+\toprule
+& \multicolumn{2}{c}{Natural menu} & \multicolumn{2}{c}{Controlled drift} \\
+\cmidrule(lr){2-3}\cmidrule(l){4-5}
+Delay & Current (M) & Target (T) & Current (M) & Target (T) \\
+\midrule
+0 & $-0.13$ & \T{$+1.15$} & $+13.63$ & \T{$+15.67$} \\
+1 & $-0.13$ & \T{$+1.02$} & $+14.52$ & \T{$+15.41$} \\
+4 & $+0.25$ & \T{$+0.89$} & $+14.39$ & \T{$+15.16$} \\
+
+\bottomrule
+\end{tabular}
+\end{clean}
+\note{Each delay has 1,570 calls. T correct counts: natural 1,428/1,426/1,424; controlled 1,398/1,394/1,390. Their sums reproduce Table 1. A compatible aggregate rescue/harm scenario is 110/62 (natural) and 818/92 (controlled), giving net 48 and 726 versus Frozen. This is not a predicted event trace.}
+\textbf{Decision test.} Seek a practically meaningful natural gain and retain controlled recovery; require prospectively specified paired scaffold uncertainty against the strongest legal matched control. Target totals alone cannot demonstrate significance. Delay points are goals, not a fitted law.
+
+\newpage
+\sectionhead{2. Mechanism and learnable headroom}
+E2 preserves initial scores, source residual computation, budget and release clock; only the credit destination changes. Its scaffold-equal estimand differs from E1's pooled point estimates.
+\par\noindent\begin{minipage}{\linewidth}\captionof{table}{E2 / body Table 4. Source-credit contrasts (pp); goals are dependent.}\end{minipage}\par
+\begin{clean}
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+& \multicolumn{2}{c}{Natural} & \multicolumn{2}{c}{Controlled} \\
+\cmidrule(lr){2-3}\cmidrule(l){4-5}
+Contrast & Current (M) & Target (T) & Current (M) & Target (T) \\
+\midrule
+Local $-$ Frozen & $+0.10$ & \T{$+1.10$} & $+14.40$ & \T{$+15.50$} \\
+Permutation $-$ Frozen & $+0.41$ & \T{$+0.10$} & $-1.27$ & \T{$-1.00$} \\
+Local $-$ permutation & $-0.30$ & \T{$+1.00$} & $+15.67$ & \T{$+16.50$} \\
+
+\bottomrule
+\end{tabular}
+\end{clean}
+\note{For T: $1.10-0.10=1.00$ and $15.50-(-1.00)=16.50$. The three contrasts are not independent successes. Measured contrasts use unrounded values before subtraction. Actual paired intervals must support the attribution claim; do not derive intervals from these target means.}
+
+\par\noindent\begin{minipage}{\linewidth}\captionof{table}{E3 / body Table 5. Static cold-start targets on 722 development molecules.}\end{minipage}\par
+\begin{clean}
+\begin{tabular}{@{}lrr@{}}
+\toprule
+Selector / status & Correct / 722 & Accuracy (\%) \\
+\midrule
+Best Fixed (M) & 572 & 79.22 \\
+Raw Frozen (M) & 573 & 79.36 \\
+Corrected Frozen (M) & 579 & 80.19 \\
+BCE + CLS (M) & 567 / 570 & 78.53 / 78.95 \\
+BT + CLS (M) & 569 / 565 & 78.81 / 78.25 \\
+\midrule
+\T{Improved prior (T)} & \T{591 / 590} & \T{81.86 / 81.72} \\
+Per-molecule oracle$^\dagger$ (M) & 618 & 85.60 \\
+
+\bottomrule
+\end{tabular}
+\end{clean}
+\note{Paired seeds 0/1 use the same molecules; `$/$' separates seed results. The oracle is evaluator-only. Of 722 molecules, 471 have all providers correct, 147 are mixed and 104 are all wrong. T captures 12/11 of the 39 remaining selection opportunities (30.8/28.2\%). It needs a better ranking representation or training rule; current learned priors have not demonstrated this effect.}
+\textbf{Decision test.} Both seeds should exceed the corrected Frozen by at least 1 pp, without negative leave-one-fold-out contrasts. Static ranking success alone does not prove online adaptation.
+
+\sectionhead{3. Isolate the update}
+\par\noindent\begin{minipage}{\linewidth}\captionof{table}{E4 / body Table 6. Score $\times$ update diagnostic; 2,166 calls per cell.}\end{minipage}\par
+\begin{clean}
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+& \multicolumn{2}{c}{Natural} & \multicolumn{2}{c}{Controlled} \\
+\cmidrule(lr){2-3}\cmidrule(l){4-5}
+Score / update / status & Correct & Accuracy (\%) & Correct & Accuracy (\%) \\
+\midrule
+Raw / Frozen (M) & 1,719 & 79.36 & 1,497 & 69.11 \\
+Raw / Marginal (M) & 1,715 & 79.18 & 1,674 & 77.29 \\
+Raw / Query (M) & 1,700 & 78.49 & 1,645 & 75.95 \\
+\midrule
+Corrected / Frozen (M) & 1,737 & 80.19 & 1,371 & 63.30 \\
+Corrected / Marginal (M) & 1,729 & 79.82 & 1,696 & 78.30 \\
+Corrected / Query (M) & 1,740 & 80.33 & 1,704 & 78.67 \\
+\midrule
+\T{Corrected / improved update (T)} & \T{1,770} & \T{81.72} & \T{1,730} & \T{79.87} \\
+
+\bottomrule
+\end{tabular}
+\end{clean}
+\note{The T update keeps the \emph{same corrected prior as measured E4}; it does not use the E3 target prior. T gains over Query are +30/+26 correct calls (+1.39/+1.20 pp); gains over Marginal are +41/+34 (+1.89/+1.57 pp). Natural T stays below the fixed-menu oracle cap of $618\times3=1,854$. Each policy generates its own selected-feedback history.}
+\textbf{Decision test.} Require the 1 pp development resource line and nonnegative leave-one-fold-out contrasts within each fixed score scale. Cross-scale differences also change intervention exposure; they cannot isolate the update's benefit.
+
+\newpage
+\sectionhead{4. Retain efficiency while adding useful capacity}
+E5 caps preserve room for an improved mechanism. They are engineering budgets, not predictions that every latency will decrease.
+\par\noindent\begin{minipage}{\linewidth}\captionof{table}{E5 / body Table 7. Mean of stream-level p95s ($\mu$s); T rows are caps.}\end{minipage}\par
+\begin{clean}
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+& \multicolumn{2}{c}{Natural} & \multicolumn{2}{c}{Controlled} \\
+\cmidrule(lr){2-3}\cmidrule(l){4-5}
+Method / status & Selection & Update & Selection & Update \\
+\midrule
+Frozen (M) & 15.89 & 1.31 & 17.88 & 1.50 \\
+Online SGD (M) & 14.08 & 19.37 & 14.29 & 20.02 \\
+Greedy LinUCB (M) & 128.63 & 90.90 & 128.36 & 92.32 \\
+BayesianRouter (M) & 133.65 & 88.96 & 137.34 & 92.55 \\
+Current MIRA-Relay (M) & 27.21 & 2.81 & 32.47 & 3.46 \\
+\midrule
+\T{Improved module (T; caps)} & \T{$\leq30$} & \T{$\leq5$} & \T{$\leq35$} & \T{$\leq5$} \\
+
+\bottomrule
+\end{tabular}
+\end{clean}
+\note{macOS arm64; mean of 30 stream p95s, not pooled p95. Excludes encoding, provider forward, I/O and bookkeeping; one call/input. If the update cap is met, at least $19.37/5=3.87\times$ is the speedup over current natural SGD \emph{for this kernel metric only}. Live memory and full-stack latency remain unmeasured.}
+\textbf{Decision test.} Meet efficacy and kernel budgets jointly. Measure encoding, queues/history, memory and recovery before deployment claims; keep label/call permissions matched.
+
+\sectionhead{5. Reduce accepted errors without reducing coverage}
+E6 is a secondary analysis of the inspected cohort: five fit-only policies, each applied to 157 molecules ($N=C=785$ records/calls per policy). It is not new untouched confirmation.
+\par\noindent\begin{minipage}{\linewidth}\captionof{table}{E6 / body Table 8. Matched-count refusal target; T is not an observed policy.}\end{minipage}\par
+\begin{clean}
+\setlength{\tabcolsep}{6.5pt}
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+Policy / status & Accepted & Wrong & Refused & Coverage & Acc.$^*$ & Utility \\
+\midrule
+Always accept (M) & 785 & 93 & 0 & 100.00 & 88.15 & $-0.1285$ \\
+Confidence refuse (M) & 663 & 36 & 122 & 84.46 & 94.57 & $-0.0947$ \\
+Always refuse (M) & 0 & 0 & 785 & 0.00 & \NA & $-0.2600$ \\
+Same-coverage random$^\dagger$ (M) & 663 & 75 & 122 & 84.46 & 88.69 & $-0.1444$ \\
+\midrule
+\T{Improved ranking (T)} & \T{663} & \T{28} & \T{122} & \T{84.46} & \T{95.78} & \T{$-0.0845$} \\
+
+\bottomrule
+\end{tabular}
+\end{clean}
+\note{$^*$ Accepted accuracy; coverage and accuracy in \%. $\dagger$ Evaluator-only conditional random null. $U=-(W+0.25R+0.01C)/N$, where $W$ is accepted errors and $R$ refusals. Always-refuse accuracy is undefined, not zero. T implies 635 correct accepted outputs and $U=-(28+0.25\times122+0.01\times785)/785=-0.0845$.}
+\textbf{Decision test.} Freeze a fit-only ranking; report risk--coverage and cost sensitivity. T swaps eight accepted errors for eight correct outputs; the unchanged threshold cannot do this. Exact coverage is analytical, not guaranteed prospectively. Utility gains: +0.0102 over current confidence refusal; +0.0440 over always accept.
+
+\sectionhead{6. What would turn these goals into evidence?}
+\begin{enumerate}\setlength{\itemsep}{1pt}
+\item Close the natural-selection and attribution gaps first. Isolate E3 prior and E4 update effects, then combine them under a matched budget to establish one coherent method.
+\item Freeze the candidate, comparators and statistical plan before new evaluation. The inspected 157 molecules are not untouched confirmation; transfer target rates, not old counts.
+\item Retain negative results and independent recovery. Endpoint, lifecycle and agent extensions need separate evidence. The full scientific gate remains \textbf{HOLD}.
+\end{enumerate}
+\note{\textbf{Sources (paths/hashes in target\_spec.json):} E1/E5 fresh natural/stress; E2 mechanism v2; E3 headroom/learned-prior; E4 calibration v1; E6 corrected post-call audit v3. Real-paper tables remain unchanged.}
+\end{document}

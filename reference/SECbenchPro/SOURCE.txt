@@ -1,0 +1,5 @@
+arXiv:2605.26548
+abs: https://arxiv.org/abs/2605.26548
+pdf: https://arxiv.org/pdf/2605.26548
+topic: 长程安全任务
+pulled: 2026-08-09 via arxiv MCP (arxiv_get_metadata / arxiv_read_paper)

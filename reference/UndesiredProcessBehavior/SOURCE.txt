@@ -1,0 +1,6 @@
+arXiv:2505.22041
+abs: https://arxiv.org/abs/2505.22041
+pdf: https://arxiv.org/pdf/2505.22041
+topic: 【反例】BPM Forum 2025, 用RAG替代流程模型检测不良流程行为
+pulled: 2026-08-09 反向证伪搜索(主动找反例)
+see: research/差异点证伪复核-20260809.md

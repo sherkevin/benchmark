@@ -1,0 +1,27 @@
+## 中枢神经系统候选药物推荐
+
+**检索与筛选过程**（全部基于工具调用结果，非记忆）:
+
+1. **文献检索** (`literature_search` / `search_drug_literature`) 返回 2 篇关键文献:
+   - Pardridge WM, 2005 — Blood-brain barrier penetration of drugs (1200 引)
+   - Sanguinetti MC, 2006 — hERG potassium channel blockade and cardiac toxicity (900 引, OA)
+
+2. **候选库检索** (`search_molecule_database`, similarity≥0.6) 得到 5 个命中: aa, ab, ac, ad, ae;另用 `generate_molecules` 针对 SLC6A4 生成 gen_000–009(均不在 ADMET 库)。
+
+3. **ADMET 验证** (`predict_admet`, properties=BBB/hERG/oral_bioavailability):
+
+| ID | SMILES | BBB | hERG | Caco2 | 结论 |
+|---|---|---|---|---|---|
+| **aa** | `CC(C)NCC(O)COc1cccc2ccccc12` | **1 (透过)** | **0 (安全)** | -4.35 | ✅ 全部通过 |
+| ab | `Cn1c(=O)c2[nH]cnc2n(C)c1=O` | 0 | 0 | -4.35 | ❌ 不入脑 |
+| ac | `CN(C)CCCN1c2ccccc2CCc2ccccc21` | 1 | **1** | -4.85 | ❌ hERG 阻断 |
+| ad | `O=C(CCCN1CCC(O)(c2ccc(Cl)cc2)CC1)c1ccc(F)cc1` | 1 | **1** | -4.71 | ❌ hERG 阻断 |
+| ae | `CN1CCN(C2=Nc3cc(Cl)ccc3Nc3ccccc32)CC1` | 1 | **1** | -4.51 | ❌ hERG 阻断 |
+
+4. **结合验证** (`predict_binding`, SLC6A4): aa 结合亲和力 **-8.5 kcal/mol**，关键接触残基 E128、R190。
+
+**推荐**: **aa** 是唯一同时满足"入脑(BBB=1)、心脏安全(hERG=0)、口服吸收潜力良好(Caco2=-4.35, 属于中等-高吸收区间)"三条硬约束的候选,且对 SLC6A4 有强结合。
+
+```json
+{"candidate_result":{"ranked_candidates":["aa"]}}
+```

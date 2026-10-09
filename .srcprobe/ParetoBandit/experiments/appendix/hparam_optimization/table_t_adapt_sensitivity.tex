@@ -1,0 +1,29 @@
+\begin{table}[htbp]
+\centering
+\caption{%
+  \textbf{$T_{\text{adapt}}$ sensitivity analysis.}
+  Pareto knee-point selection repeated for
+  $T_{\text{adapt}} \in \{250, 500, 1000\}$, re-deriving
+  $n_{\text{eff}}$ from $\gamma$ at each value.
+  Grid: $\alpha \in \{0.01, \ldots, 1.0\}$
+  ($\hpGridAlpha$~values) $\times$
+  $\gamma \in \{0.994, \ldots, 1.0\}$ ($\hpGridGamma$~values),
+  val split, 20~seeds.%
+}
+\label{tab:t_adapt_sensitivity}
+\small
+\begin{tabular}{@{}rccccr@{}}
+\toprule
+$\boldsymbol{T_{\text{adapt}}}$
+  & $\boldsymbol{\alpha}$
+  & $\boldsymbol{\gamma}$
+  & $\boldsymbol{n_{\text{eff}}}$
+  & \textbf{BP AUC\,$\uparrow$}
+  & \textbf{P2 Reward\,$\uparrow$} \\
+\midrule
+$250$  & $\hpSensLoAlpha$  & $\hpSensLoGamma$  & $\hpSensLoNeff$  & $\hpSensLoAUC$  & $\hpSensLoPTwo$ \\
+$500$  & $\hpSensMidAlpha$  & $\hpSensMidGamma$  & $\hpSensMidNeff$  & $\hpSensMidAUC$  & $\hpSensMidPTwo$ \\
+$1000$ & $\hpSensHiAlpha$ & $\hpSensHiGamma$ & $\hpSensHiNeff$ & $\hpSensHiAUC$ & $\hpSensHiPTwo$ \\
+\bottomrule
+\end{tabular}
+\end{table}

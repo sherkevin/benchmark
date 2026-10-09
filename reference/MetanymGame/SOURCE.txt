@@ -1,0 +1,5 @@
+arXiv:2606.21008
+abs: https://arxiv.org/abs/2606.21008
+pdf: https://arxiv.org/pdf/2606.21008
+topic: 构造性抗污染
+pulled: 2026-08-09 via arxiv MCP (arxiv_get_metadata / arxiv_read_paper)

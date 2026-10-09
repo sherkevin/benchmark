@@ -1,0 +1,6 @@
+conference: ICLR 2026
+title: The Illusion of Diminishing Returns: Measuring Long Horizon Execution in LLMs
+arxiv_id: 2509.09677v3
+arxiv_abs: http://arxiv.org/abs/2509.09677v3
+pdf_url: https://arxiv.org/pdf/2509.09677v3
+matched_arxiv_title: The Illusion of Diminishing Returns: Measuring Long Horizon Execution in LLMs

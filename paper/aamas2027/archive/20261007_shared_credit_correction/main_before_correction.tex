@@ -1,0 +1,413 @@
+% AAMAS 2027 research paper draft.
+% The official AAMAS 2027 class and layout are used without modification.
+\documentclass[sigconf,anonymous]{aamas}
+
+\graphicspath{{reference/template/}}
+\usepackage{balance}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{xspace}
+\usepackage{enumitem}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+\makeatletter
+\gdef\@copyrightpermission{
+  \begin{minipage}{0.2\columnwidth}
+   \href{https://creativecommons.org/licenses/by/4.0/}{\includegraphics[width=0.90\textwidth]{by}}
+  \end{minipage}\hfill
+  \begin{minipage}{0.8\columnwidth}
+   \href{https://creativecommons.org/licenses/by/4.0/}{This work is licensed under a Creative Commons Attribution International 4.0 License.}
+  \end{minipage}
+  \vspace{5pt}
+}
+\makeatother
+
+\setcopyright{ifaamas}
+\acmConference[AAMAS 2027]{Proc.\@ of the 26th International Conference on Autonomous Agents and Multiagent Systems (AAMAS 2027)}{3--7 May 2027}{Hanoi, Vietnam}{M.~Baldoni, F.~Fang, W.~Yeoh, N.~Yorke-Smith (eds.)}
+\copyrightyear{2027}
+\acmYear{2027}
+\acmDOI{}
+\acmISBN{}
+\acmSubmissionID{}
+\submissionType{Research Paper Track}
+
+\title{After the Decision: Learning to Adapt from Delayed Outcomes}
+\author{Anonymous Authors}
+
+\begin{abstract}
+Scientific agents often choose among several tools that return plausible but conflicting answers. The challenge is not only selecting a provider before its output is visible: correctness feedback is produced after termination, may be delayed, and must update later choices without inventing labels for unselected tools. We present MIRA-Relay, an outcome-aware routing loop that combines a frozen discriminative provider surface with a lightweight provider-local residual adapter and an explicit release ledger. At cold start the adapter is exactly the frozen selector; after a selected result is released, it updates only that provider's residual reliability and can move the next action. We evaluate a one-call BBB routing contract with public truth, four checkpoint-bound fresh providers, scaffold-disjoint confirmation molecules, selected-only feedback, and delays $D\in\{0,1,4\}$. On the natural fresh holdout, MIRA-Relay matches Frozen at 89.81\% selected correctness; under a preregistered controlled evaluator-side label flip applied when the fit-best provider is selected, it reaches 87.56\% versus 73.38\% for Frozen, a +14.18-point paired gain with a 95\% scaffold bootstrap interval of [+9.61,+19.03] points. The result isolates the claim: delayed selected-only feedback supports recovery from the declared drift, while a stationary fresh menu does not justify a generic online gain.
+\end{abstract}
+
+\ccsdesc[500]{Computing methodologies~Multi-agent planning}
+\ccsdesc[300]{Computing methodologies~Reinforcement learning}
+\ccsdesc[200]{Computing methodologies~Machine learning}
+\keywords{tool selection, online learning, delayed feedback, scientific agents, molecular property prediction}
+
+\newcommand{\mira}{MIRA-Relay\xspace}
+% The reading draft uses the reviewed AI architecture. The submission build
+% selects its non-generative source explicitly under the AAMAS image policy.
+\newcommand{\MIRAOverviewAsset}{figures/generated/figure1/v09_ai.png}
+\ifdefined\MIRASubmissionFigures
+  \renewcommand{\MIRAOverviewAsset}{figures/figure1/v08/figure1_v08.png}
+\fi
+\begin{document}
+\maketitle
+
+\section{Introduction}
+A scientific agent must decide which tool's prediction to use when several providers estimate the same property. That choice matters even when every call completes: execution success establishes that an answer was returned, while usefulness depends on whether the answer is correct for the input. Molecular property prediction makes this distinction measurable because provider outputs can be checked against independently recorded endpoint labels.
+
+Valid responses can disagree on the same molecule. In our frozen BBB development panel, molecule \texttt{z000282} has benchmark label $1$: \texttt{admet\_ai\_1\_4\_0} returns $0$, while \texttt{b3clf\_dtree\_common} returns $1$, both with successful runtime status. The example establishes a selection problem; it does not establish which provider is best on the next molecule. During evaluation, the agent sees neither unselected outputs nor the current correctness label before choosing.
+
+Outcome feedback creates two obstacles: sparse coverage and delayed release. A fixed policy cannot use new evidence. A selected-only learner sees feedback only from chosen providers, leaving alternatives sparsely observed; delay postpones when feedback is usable. These constraints motivate our adaptation hypothesis but do not prove that any bandit fails. We therefore compare matched online controls and test whether released provider-local evidence changes later decisions.
+
+We hypothesize that a released outcome can inform later choices through a shared released state. Each provider keeps its own residual, so the update need not assume that providers are independent or interchangeable. An immutable fit-time reference anchors the comparison. The claim requires a change in later exploitation under identical observations.
+
+MIRA-Relay is the concrete method studied here. Its cold-start surface is frozen, while a selected-only reliability ledger adds a provider-specific residual only after the corresponding outcome is released. The residual is centered on that provider's fit-time success rate, so the adapter starts exactly at the frozen policy and changes only when released evidence is strong enough to move a later ranking. Runtime failure, unknown truth, and chemical error remain separate ledger fields; post-call verification and refusal are outside the primary one-call result.
+
+Our contributions are threefold:
+\begin{itemize}[leftmargin=*,itemsep=1pt,topsep=2pt]
+    \item We formulate scientific provider selection with independently recorded endpoint labels and delayed, selected-only feedback, separating correct answers from successful execution.
+    \item We develop MIRA-Relay, which starts exactly at a frozen contextual selector and updates provider-specific residuals using two counters per provider. Its score-margin condition makes the effect of released evidence on later choices explicit.
+    \item We evaluate the method against fixed, contextual-bandit, posterior, and gradient-update controls. On the stationary fresh panel it matches Frozen; under controlled correctness drift it improves success by 14.18 percentage points. Paired error counts and development interventions distinguish this recovery from general online improvement.
+\end{itemize}
+The experiments test both whether feedback changes a later choice and whether that change improves correctness. Development diagnostics then examine the score scale, residual centering, and offline objective that determine the starting point for adaptation.
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=\textwidth]{\MIRAOverviewAsset}
+  \caption{MIRA-Relay closes the loop from a pre-call choice to a later decision. Molecule, endpoint, eligible menu, and released state enter a frozen provider surface plus a provider-local residual ledger. One selected call produces a terminal record; the frozen endpoint judge supplies chemical correctness only after termination, while runtime failure follows its own ledger. The selected outcome waits until $\tau_t=t+1+D$ and then updates the released state; decisions continue while feedback is pending.}
+  \Description{A compact full-width architecture. Molecule and endpoint feed a frozen feature representation and scorer. The base score vector and the provider-specific residual vector from released counters add componentwise; an eligible menu constrains selection of one provider. The selected call returns output and status; a valid return enters the frozen judge before producing chemical feedback, while an error enters a separate runtime ledger. Selected chemical feedback waits in a queue until tau equals t plus one plus D, then updates only that provider's counters. The existing residual and score computation carries the update into later decisions.}
+  \label{fig:overview}
+\end{figure*}
+
+\section{Related Work}
+Tool-using agents learn to call external APIs and execute actions, but their training objectives generally do not impose a selected-only correctness clock~\cite{schick2023toolformer,yao2023react}. Our task instead treats the provider call as an online decision whose outcome may be delayed and whose correctness is tied to an independently auditable scientific endpoint.
+
+Contextual bandits provide the natural language for choosing an action from a context before observing its reward. LinUCB~\cite{li2010contextual} and contextual Thompson sampling~\cite{agrawal2013thompson} are canonical controls, while warm-start methods study how prior data can reduce the cost of early exploration~\cite{oetomo2023warmstart}. Delayed-feedback analyses show that the release clock changes online learning even when the action space is unchanged~\cite{joulani2013online}. MIRA-Relay adapts these ideas to scientific correctness by binding a provider-local residual to selected-only released outcomes and an explicit release clock; the same contract is applied to every comparator so that later actions have a common information boundary.
+
+Recent model-routing work studies static or online selection among language models, including budget-aware adaptive routing~\cite{panda2025pilot}, graph-based selection~\cite{feng2025graphrouter}, dual-contrastive routing~\cite{chen2024routerdc}, and benchmark frameworks for multi-model routing~\cite{hu2024routerbench}. Those systems provide useful modern comparators, but their usual feedback is a preference or task score for the selected response and their provider panels are language-model panels. We retain adapted versions only when their input features, prior, feedback, and budget can be audited under the pharmaceutical contract; GraphRouter is audit-only if its graph input semantics cannot be preserved.
+
+Finally, molecular benchmark work emphasizes public task definitions and reproducible datasets~\cite{huang2021tdc,wu2018moleculenet}. Pharmaceutical providers are correlated predictors with different training lineages; we therefore treat family sensitivity and training-membership as validity limits rather than treating every cached model as an independent truth source.
+
+\section{Problem Setting}
+We study one agent making a sequence of tool calls. Figures~\ref{fig:overview} and~\ref{fig:lifecycle} show the same contract at two scales: the first separates the learned relay from execution and evaluation, while the second fixes the event order that determines when feedback can affect a later action. The contract is defined at the granularity of a concrete provider, not a provider family or a post-hoc majority vote.
+
+\subsection{Episode, menu, and feedback}
+At decision tick $t$, the agent receives a molecule $x_t$, an endpoint $e_t$, and an available menu $A_t$ of concrete provider identifiers. It chooses one provider $a_t\in A_t$ before reading the current output panel. The benchmark stores an independent endpoint truth $y_t\in\{0,1\}$ for evaluation. The selected call returns an output $o_t$, a runtime status $s_t\in\{\mathrm{ok},\mathrm{error}\}$, and, when available, a confidence value $c_t$. We keep the labels that drive the method separate:
+$$
+\begin{aligned}
+ r_t^{\mathrm{run}}&=\mathbf{1}[s_t=\mathrm{ok}],\\
+ r_t^{\mathrm{chem}}&=\begin{cases}\mathbf{1}[o_t=y_t],&s_t=\mathrm{ok},\\ \mathrm{null},&s_t=\mathrm{error},\end{cases}\\
+ r_t^{\mathrm{sys}}&=\mathbf{1}[s_t=\mathrm{ok}\land o_t=y_t].
+\end{aligned}
+$$
+The studied correctness head uses only non-null $r^{\mathrm{chem}}$. Runtime status is recorded separately; the reported fresh panel contains valid scored returns, so chemical and system correctness coincide there. We do not train a runtime prediction head in this experiment.
+
+After termination, a replay judge records the selected outcome. The outcome becomes visible only at its registered release tick $\tau_t$. The legal history at tick $t$ is
+$$
+H_t=\{(x_s,e_s,a_s,r_s^{\mathrm{chem}},r_s^{\mathrm{run}},\tau_s):s<t,\ \tau_s\leq t\}.
+$$
+For example, for molecule \texttt{z000282}, the benchmark truth is $1$. The call to \texttt{admet\_ai\_1\_4\_0} returns $0$ with status `ok`. The call to \texttt{b3clf\_dtree\_common} returns $1$ with status `ok`. Both calls have $r^{\mathrm{run}}=1$, but their chemical labels differ. A decision at tick 2 cannot read either unselected output, the current truth, or any future terminal record.
+
+Provider parameters use a registry $\mathcal P$ fixed at initialization; $A_t\subseteq\mathcal P$ is the current candidate menu. Removing a challenger leaves its stored state intact. For the historical BBB replay, $|\mathcal P|=33$ throughout the stream. The queue orders releases by due tick and breaks ties by enqueue order; each feedback is consumed once and receipts record the release order explicitly.
+
+For the fixed-delay replay, a decision at tick $t$ terminates, enqueues its feedback, and releases it at
+$$
+\tau_t=t+1+D,\qquad D\in\{0,1,4\}.
+$$
+Only after this release may the event enter $H_{t'}$ and affect a later decision. For $D=0$, the release is processed before the next decision tick and never changes the action that caused the event. Unknown truth creates no correctness label and stops the current scoring stream; a refusal creates no selected-provider label. Both remain explicit in the episode ledger.
+
+\subsection{Released state and legal decisions}
+The online learner maintains a serializable post-release state $S_t$. At tick $t$, the release phase first applies exactly the events due at that tick; the selector then reads the resulting state:
+$$
+\begin{aligned}
+S_t&=U\left(S_{t-1},\right.\\[-2pt]
+&\qquad\left.\{(x_s,e_s,a_s,r_s^{\mathrm{chem}},r_s^{\mathrm{run}},\tau_s):s<t,\ \tau_s=t\}\right),\\
+a_t&=\pi_{\mathrm{sel}}(x_t,e_t,A_t,H_t,S_t).
+\end{aligned}
+$$
+With no due event, $U$ is the identity. Thus a $D=0$ event from tick $t$ enters $S_{t+1}$ and can affect action $t+1$, but never action $t$.
+No correctness-residual update is allowed for an unselected provider, an unreleased event, an unknown label, or a refusal. A terminal unknown or refusal may still update runtime/availability bookkeeping; every selected scored provider, including the fit-best provider, receives only its own released residual update. This contract lets a receipt verifier check the visible read set, action, release queue, recorded state fields, and schema/counts. Complete metric recomputation is left to the E5 transition replayer; this receipt check does not by itself recompute scores, propensities, or the update.
+
+\subsection{Estimands and costs}
+The primary estimand is prequential system success: a selected call must return a valid and correct answer. We also report conditional correctness, rescued and harmed decisions, failures, and update costs. The extension interface additionally accounts for escalation, refusal, and unknown truth; those utilities are outside the reported one-call result. Static full-panel accuracy and an evaluator-only retrospective best-fixed control measure task headroom separately from online effects.
+
+\section{MIRA-Relay}
+MIRA-Relay combines a frozen contextual score with a provider-specific correction from released outcomes.
+
+\subsection{Cold-start scores and the immutable reference}
+Let $\phi(x)\in\mathbb{R}^{d}$ be a frozen molecule representation and let $K=|\mathcal P|$ be the number of concrete providers. For each provider $a$, a logistic correctness head $w_a^0$ is fitted once on the fit partition. Its cold-start score is
+$$
+q_a^0(x)=\sigma\!\left((w_a^0)^\top\phi(x)\right).
+$$
+The current menu only masks which coordinates can act; no current output is read before the action. For the fresh BBB confirmation, $d=65$: 64 Morgan bits plus an intercept. The fit-only Best Fixed provider is the provider with the highest fit-partition correctness. The frozen base scores are immutable throughout evaluation, and every provider switch is still counted even when it is wrong.
+
+The running case is concrete. For molecule \texttt{z000282}, $\phi(x)$ is the frozen 65-dimensional vector built from its canonical SMILES and the intercept; the fit heads assign separate scores to the four fresh providers. At cold start, MIRA-Relay and Frozen therefore choose the same provider for the same menu. Providers outside the sealed checkpoint manifest are out of scope.
+
+\subsection{Context-relative reliability adapter}
+For provider $a$, let $\bar r_a$ be its fit-partition correctness rate and let $n_{a,t}$ and $s_{a,t}$ be, respectively, the number of its selected outcomes released by tick $t$ and the number that were correct. With a fixed prior count $n_0=20$, the released posterior rate and residual are
+$$
+\widehat r_{a,t}=\frac{n_0\bar r_a+s_{a,t}}{n_0+n_{a,t}},\qquad
+\Delta_{a,t}=\widehat r_{a,t}-\bar r_a.
+$$
+The action score is
+$$
+q_{a,t}(x)=q_a^0(x)+\Delta_{a,t},
+\qquad
+ a_t=\arg\max_{a\in A_t}q_{a,t}(x_t).
+$$
+At cold start, $n_{a,0}=s_{a,0}=0$ and therefore $\Delta_{a,0}=0$: the adapter is exactly Frozen. When a selected outcome becomes visible, only that provider's counters change; an unselected provider never receives a synthetic label. A runtime error is recorded as an execution failure and is not inserted into the chemical-correctness count. This provider-local residual is added to the $x$-conditioned frozen score. Here ``context-relative'' refers to the current provider ranking and released evidence state, not to a second $x$-conditioned head; the fit-time representation itself never changes.
+
+The case makes the update concrete. If the selected provider for \texttt{z000282} is correct, $s_{a,t}$ and $n_{a,t}$ each increase by one at its release tick. If it is wrong, only $n_{a,t}$ increases. The next score changes by the corresponding residual; all unselected providers keep their previous residuals. The update is $O(1)$ per released event and scoring is $O(Kd)$, while the online ledger stores $2K$ counters and the fixed heads remain outside the online state.
+
+\subsection{Release ledger and delayed update}
+The online state is the selected-only ledger $S_t=\{(n_{a,t},s_{a,t}) : a\in\mathcal P\}$. At tick $t$, the release queue first applies every event with due time $\tau=t$; the selector then reads the resulting state. Releases follow the delay rule in Section~3: feedback from tick $t$ is visible from $t+1+D$. The released event prefix determines the counter updates and the next score.
+
+The update touches only the selected provider. For a scored terminal record $s$ released at tick $t=\tau_s$, with chemical label $r_s^{\mathrm{chem}}\in\{0,1\}$,
+$$
+ n_{a_s,t}^{+}=n_{a_s,t}^{-}+1,\qquad
+ s_{a_s,t}^{+}=s_{a_s,t}^{-}+r_s^{\mathrm{chem}},
+$$
+where $-$ and $+$ denote the state immediately before and after the queue applies that release; all other provider counters are unchanged. If the call fails, $r^{\mathrm{chem}}$ is null and the runtime-failure ledger records the event separately. Unknown truth and refusal do not update correctness counters. This separation is the central information boundary: the learner receives exactly the selected outcome after release, never the current truth or an unselected provider's output.
+
+The update is $O(1)$ per released event and scoring all $K$ providers costs $O(Kd)$. The online state uses $2K$ counters plus masks and the release queue. For \texttt{z000282}, a released result changes one provider residual, so the next action can switch according to the evidence.
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=\textwidth]{figures/figure2/v13/figure2_v13.png}
+  \caption{The terminal feedback contract. At decision tick $t$, the selector sees $S_t$ and $A_t$ and chooses one provider before any current output is observed. The terminal record is split into output and runtime status; the frozen endpoint judge then yields chemical correctness only after termination. Runtime failure and chemical correctness form the selected terminal outcome, which waits in a selected-only queue until $\tau_t=t+1+D$. The relay update is visible to the first action at or after release; for $D=0$, this is the next action.}
+  \Description{A full-width event flow from state and menu to selector, one selected provider, call, terminal record, frozen endpoint judge, chemical correctness, runtime failure, and terminal outcome. The selected outcome enters a selected-only queue, remains hidden until tau equals t plus one plus D, then updates the relay and released state before the next action. An eye-slash marks unselected output as unobserved.}
+  \label{fig:lifecycle}
+\end{figure*}
+
+\subsection{Action rule and falsification}
+The primary one-call runner uses the highest current score in the eligible menu. There is no result-dependent probe in the reported fresh confirmation, so every method receives the same one-call budget and the same selected-only feedback clock. The controlled stress flips the selected label of the fit-best provider after the preregistered midpoint; it does not reveal any unselected output or alter the input features.
+
+The implementation preserves five invariants: (i) no current truth or unselected output is read before action, (ii) only released selected events update state, (iii) the fit surface is immutable, (iv) runtime failure and chemical correctness remain separate, and (v) the released event prefix determines the next action. The receipt records a learned-state snapshot, release queue, action, and event schema; an independent receipt checker validates the exact event identities and order, selected correctness, release clocks, and opaque state-hash/version continuity. The older receipt does not contain enough state bytes to rehash a learned policy independently.
+
+The adaptive claim is rejected if the residual cannot change a later action under the declared drift, if contract/replay checks find a mismatch, or if the gain disappears against the same-schedule Frozen and matched Online-SGD controls. Action changes alone are not treated as utility; the evaluation reports rescued and harmed decisions, scaffold-cluster intervals, calls, and update latency.
+
+\section{Experiments}
+\subsection{Two-layer benchmark contract}
+The benchmark has a public truth layer and a provider-routing layer. The truth layer uses the Therapeutics Data Commons (TDC) BBB endpoint, fixed label semantics, and its split archive~\cite{huang2021tdc}. The development manifest contains 722 labeled molecules; 716 have complete outputs from the 33-provider Task36 panel. Conflict groups are excluded under the project decision, with raw receipts retained for audit. Because the old panel overlaps the official BBB test (147 canonical molecules; 235 scaffolds), it is not an untouched confirmation set.
+
+The routing layer turns cached outputs into sequential decisions with a fixed registry, eligible-menu mask, selected-only feedback, delayed release, and explicit failures. It is a project protocol grounded in public truth. The fresh study keeps four checkpoint-bound providers; the wider 33-provider pool is development evidence, not a model-fresh claim. Unknown truth stops a single-call stream, while verification, refusal, provider arrival, hERG, and AMES use separate extension contracts.
+
+\subsection{Baselines and fairness}
+Table~\ref{tab:baselines} groups the deployable comparators by the role they play in the routing question. Every method receives the same molecule, endpoint, menu, fit-only initialization, selected-only feedback, delay, and one-call budget. Full-panel labels are used only for fit warm starts or evaluator-only controls. Greedy LinUCB~\cite{poon2026multillm} is adapted to a single-step horizon; BayesianRouter~\cite{wu2026rewardrouting} uses a task-specific prior and reward interface.
+
+MIRA-Relative is a stopped negative control: it multiplies each provider's frozen score by a molecule-independent (x-independent) factor, rather than adding the provider-local residual used by MIRA-Relay. Its natural run therefore tests whether selected-only multiplicative factors can change later rankings. It is retained as an ablation, not as a second proposed method.
+
+We also include MIRA-Shared, a matched wrong-credit control that pools released selected rewards into one posterior while retaining provider fit-rate anchors. It receives the same delayed feedback but cannot assign the outcome to the provider that produced it.
+
+\begin{table}[t]
+\caption{Comparator groups under the common routing contract.}
+\label{tab:baselines}
+\footnotesize
+\begin{tabular}{@{}P{0.22\linewidth}P{0.34\linewidth}P{0.34\linewidth}@{}}
+\toprule
+Role & Methods & Purpose \\
+\midrule
+Anchors & Random; Best Fixed; Retrospective Best Fixed$^{\dagger}$ & blind, fit-only and evaluator-only references \\
+Frozen / matched updates & Frozen; MIRA-Relative; MIRA-Shared; Online SGD & isolate the value of a released update \\
+Modern online controls & Greedy LinUCB; BayesianRouter & current contextual and posterior controls \\
+Proposed & MIRA-Relay & selected-only provider residual under delay \\
+\bottomrule
+\end{tabular}
+\begin{flushleft}
+\footnotesize $^{\dagger}$Evaluator-only retrospective control; it is not a deployable baseline.
+\end{flushleft}
+\end{table}
+
+Recent routers with incompatible input or feedback semantics remain audit-only. PILOT, GraphRouter, RouterDC, and RouterBench need a separate wrapper and leakage audit; our result covers the sealed four-provider menu, not 33-provider or model-fresh generalization.
+
+\subsection{Evaluation protocol}
+We use a public BBB truth layer and a sealed four-provider fresh menu. The fit partition is scaffold-disjoint from 157 confirmation molecules; each policy sees only the molecule features, endpoint, eligible menu, and released selected outcomes. We evaluate five folds, two seeds, and delays $D\in\{0,1,4\}$ under a one-call budget. The matrix and intervention were frozen before confirmation runs; the full event contract and hyperparameters are in the artifact. Table~\ref{tab:matrix} is the experimental map.
+
+\begin{table*}[t]
+\caption{Experimental map. Each row answers one question; all online rows use the same 157-molecule fresh menu and selected-only release clock unless stated otherwise.}
+\label{tab:matrix}
+\footnotesize
+{\setlength{\tabcolsep}{2pt}
+\begin{tabular}{@{}P{0.15\linewidth}P{0.25\linewidth}P{0.34\linewidth}P{0.14\linewidth}@{}}
+\toprule
+Question & Data / intervention & Compared methods & Primary metric \\
+\midrule
+Headroom & 722 BBB development molecules; scaffold-fold fit/validation & Best Fixed, Frozen, matched BCE/BT & OOF selected correctness and headroom \\
+Natural adaptation & 157 fresh molecules; $D\in\{0,1,4\}$; no label flip & Frozen, MIRA-Relative, MIRA-Shared, MIRA-Relay, Online SGD, Greedy LinUCB, BayesianRouter & prequential correctness, paired scaffold CI, latency \\
+Drift recovery & Same fresh menu; selected fit-best label flips after tick 78 & Frozen, MIRA-Shared, Online SGD, Greedy LinUCB, BayesianRouter, MIRA-Relay & recovery correctness, rescued/harmed switches \\
+Static diagnostics & 722 BBB development molecules; five scaffold folds; no confirmation reuse & corrected/raw Frozen, marginal/query residual, BCE+CLS, BT+CLS & OOF/stream accuracy, selection headroom \\
+Cost / validity & 270 natural + 150 stress streams; one call/molecule & All deployable one-call methods & policy update p95, calls, receipt pass rate \\
+\bottomrule
+\end{tabular}}
+\end{table*}
+
+Rows 1--4 test headroom, stationary adaptation, a midpoint label flip, and static diagnostics. The last row checks measured policy cost and receipt validity under the same release clock. Verification, refusal, lifecycle, hERG, and AMES are separate extensions.
+
+\subsection{Natural and controlled outcomes}
+The primary confirmation contains 270 natural streams and 150 controlled-drift streams. Every stream has 157 decisions and one provider call per decision; all reported intervals are scaffold-cluster bootstrap intervals.
+
+\begin{table}[H]
+\vspace{-6pt}
+\caption{Natural fresh-menu confirmation across 157 scaffold-disjoint molecules. Success is the mean over 4,710 paired calls; intervals resample Bemis--Murcko scaffold clusters after aggregating repeated schedules. Update p95 is CPU policy-operation overhead on macOS arm64, excluding I/O and provider inference.}
+\label{tab:main-results}
+\footnotesize
+{\setlength{\tabcolsep}{2.0pt}
+\begin{tabular}{@{}P{0.24\linewidth}P{0.13\linewidth}P{0.38\linewidth}P{0.15\linewidth}@{}}
+\toprule
+Method & Success & $\Delta$ vs Frozen (95\% CI) & Update p95 \\
+\midrule
+Random & 83.76\% & -6.05 pp [-9.93,-2.26] & $5.44\,\mu\mathrm{s}$ \\
+Best Fixed & 88.15\% & -1.66 pp [-3.97,+0.51] & $0.68\,\mu\mathrm{s}$ \\
+Frozen & 89.81\% & 0 & $1.31\,\mu\mathrm{s}$ \\
+MIRA-Relative & 89.81\% & 0.00 pp [0.00,0.00] & $73.30\,\mu\mathrm{s}$ \\
+MIRA-Shared & 89.55\% & -0.25 pp [-1.65,+2.90] & $2.12\,\mu\mathrm{s}$ \\
+MIRA-Relay & 89.81\% & 0.00 pp [-1.24,+1.40] & $2.81\,\mu\mathrm{s}$ \\
+Online SGD & 89.21\% & -0.59 pp [-1.80,+0.52] & $19.37\,\mu\mathrm{s}$ \\
+Greedy LinUCB & 89.72\% & -0.08 pp [-0.58,+0.41] & $90.90\,\mu\mathrm{s}$ \\
+BayesianRouter & 89.53\% & -0.28 pp [-1.75,+0.97] & $88.96\,\mu\mathrm{s}$ \\
+Retrospective Best Fixed$^{\dagger}$ & 90.45\% & +0.64 pp [-2.86,+4.07] & $0.54\,\mu\mathrm{s}$ \\
+\bottomrule
+\end{tabular}}
+\begin{flushleft}
+\footnotesize $^{\dagger}$Evaluator-only fixed provider chosen after observing confirmation labels; it is a headroom reference, not an oracle or deployable policy.
+\end{flushleft}
+\end{table}
+
+\paragraph{Natural fresh menu.} We ask whether released selected outcomes improve a stationary fresh menu. Table~\ref{tab:main-results} shows that Frozen is within 0.64 points of the retrospective best-fixed reference. MIRA-Relay changes 1,656 actions, rescuing and harming 82 decisions each, so its 89.81\% accuracy is identical to Frozen (paired $\Delta=0.00$ points, 95\% CI $[-1.24,+1.40]$). MIRA-Shared is slightly lower and its interval also spans zero. The BayesianRouter, Greedy LinUCB, and matched SGD controls likewise show no stationary gain. This is a stability check, not evidence for a generic online improvement.
+
+\begin{table}[H]
+\vspace{-6pt}
+\caption{Controlled correctness-drift stress. Success is pooled over 4,710 paired calls. Changes count post-release action changes relative to Frozen; rescued/harmed counts are relative to the same-receipt Frozen action. Paired intervals resample scaffold clusters.}
+\label{tab:mechanism-results}
+\footnotesize
+{\setlength{\tabcolsep}{1.0pt}
+\begin{tabular}{@{}P{0.21\linewidth}P{0.15\linewidth}P{0.15\linewidth}P{0.19\linewidth}P{0.27\linewidth}@{}}
+\toprule
+Method & Success & Changes & Rescued / harmed & $\Delta$ vs Frozen (95\% CI) \\
+\midrule
+Frozen & 73.38\% & 0 & -- & 0.00 (ref.) \\
+Matched SGD & 84.03\% & 2566 & 720 / 218 & +10.66 pp [+6.05,+15.45] \\
+Greedy LinUCB & 81.15\% & 874 & 414 / 48 & +7.77 pp [+5.08,+10.72] \\
+BayesianRouter & 80.28\% & 1654 & 492 / 167 & +6.90 pp [+3.50,+10.41] \\
+MIRA-Shared & 80.51\% & 1662 & 486 / 150 & +7.13 pp [+4.42,+11.48] \\
+MIRA-Relay & 87.56\% & 1884 & 780 / 112 & +14.18 pp [+9.61,+19.03] \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\paragraph{Controlled drift recovery.} In the preregistered stress, the evaluator flips the selected fit-best provider's label after tick 78 without changing features, menus, or feedback visibility. Table~\ref{tab:mechanism-results} shows that MIRA-Relay reaches 87.56\% versus 73.38\% for Frozen, a +14.18-point paired gain (95\% CI $[+9.61,+19.03]$). MIRA-Shared recovers by +7.13 points, while matched SGD, Greedy LinUCB, and BayesianRouter recover by +10.66, +7.77, and +6.90 points. The direct Local--Shared contrast is +7.05 points (scaffold CI $[+3.11,+9.98]$), supporting selected-provider credit assignment. Across $D=0,1,4$, the MIRA-Relay gain over Frozen is $+13.63,+14.52,+14.39$ points; the natural differences are $-0.13,-0.13,+0.25$ points. This is a response to the declared drift, not a claim about natural provider nonstationarity. The original 420 streams pass contract/replay verification, and every mechanism-ablation stream uses one provider call per molecule.
+
+\subsection{Decision changes and costs}
+We report errors by provider, scaffold group, runtime status, and feedback visibility. A wrong terminal prediction, a provider execution failure, an unknown truth, and an intentional refusal are different events and remain in separate denominators. The current fresh receipt reports selected correctness, rescued/harmed switches, calls, and update timing. This separation is necessary because a small pooled accuracy change can hide a large number of harmful switches.
+
+The receipt reports calls, state size, replay checks, and update p95. Timing measures policy computation; it excludes file I/O, provider inference, evaluator scoring, and service latency. Across the 270 natural streams, MIRA-Relay update p95 is $2.813\,\mu\mathrm{s}$; in the 150-stream stress it is $3.464\,\mu\mathrm{s}$ under the same policy-operation timer. Every stream has 157 calls, and all 270/270 natural and 150/150 stress receipts pass the contract/replay checks. These are policy costs, not end-to-end service latency.
+
+\subsection{What does the residual correct?}
+The two fresh-menu results separate two questions that are often conflated in online routing. The first is whether a provider-specific adapter can change its action after observing a selected result. The second is whether the current provider panel contains a predictable opportunity for that change to improve accuracy. MIRA-Relay changes actions in the stationary confirmation, but the 82 rescued and 82 harmed decisions cancel at the aggregate level. The aggregate equality therefore masks changes in individual decisions: it establishes neither a gain nor a guarantee that each adaptation is harmless.
+
+The controlled stress answers the first question directly. At the midpoint, the evaluator flips the returned label only when the fit-best provider is selected. The selector is not told the flip time, the affected provider, or the counterfactual outputs of alternatives. After the delay, released incorrect outcomes accumulate against that provider's residual, and later actions move to providers whose frozen scores are lower but whose observed evidence is now relatively better. Frozen cannot respond because its score surface is immutable. Matched Online-SGD, Greedy LinUCB, and BayesianRouter also respond, which is why they are reported as positive controls rather than straw baselines; MIRA-Relay's larger recovery is measured under common inputs and a common feedback clock; the adapted priors remain method-specific.
+
+The shared-credit control receives the same feedback but pools it across providers. Its smaller recovery, together with the direct Local--Shared contrast, isolates selected-provider credit assignment from the mere presence of an online signal. The four fresh providers are singleton families, so this result does not identify family-shared versus independent residuals.
+
+The residual adjusts the frozen score using only released outcomes of the selected provider. Fit-rate centering makes this correction exactly zero at initialization. Subsequently, a ranking changes only when the difference between two provider residuals crosses their frozen score margin; a common additive correction cannot change that ranking. This explains why provider-specific state can affect the next action. It does not identify fit-rate centering as the unique cause of recovery: selected molecules may differ in difficulty from the fit population, and the residual can reflect that change as well as provider deterioration.
+
+\paragraph{Development diagnostic.}
+Summing only over released selections of provider $a$, the residual decomposes exactly as
+\begin{equation}
+\Delta_{a,t}=\frac{\sum(r_s-q_a^0(x_s))}{n_0+n_{a,t}}
+            +\frac{\sum(q_a^0(x_s)-\bar r_a)}{n_0+n_{a,t}}.
+\end{equation}
+Independent reconstruction of 2,166 development decisions across five folds and three delays agrees with recorded scores within $2.23\times10^{-16}$. Omitting the second term on the unchanged selected histories changes 401 shadow actions (18.51\%). This measures sensitivity, not the accuracy of an alternative policy. Class-balanced training also means that frozen sigmoid scores need not be calibrated correctness probabilities; the two terms cannot be identified solely with true drift and selection bias.
+
+We therefore ran a development factorial separating the score scale from the update rule (Table~\ref{tab:centering-diagnostic}). Inverse class-weight correction adds $\operatorname{logit}(\bar r_a)$ to each frozen logit; query centering replaces $\bar r_a$ in the released residual by the score saved at that decision. Each variant follows its own selected-feedback history and has a matched Frozen control. The correction lowers OOF Brier error from 0.235 to 0.173, but corrected query centering adds only 0.14 percentage points over its Frozen control on the natural stream. Its gains over corrected marginal centering are 0.51 and 0.37 points, below the predeclared one-point development threshold. Better score scaling alone therefore does not establish a substantial online benefit.
+
+\begin{table}[t]
+\caption{Development mechanism diagnostic: 722 molecules, five folds and three delays. Accuracy (\%) is descriptive; each cell has 2,166 decisions. Marginal is the original residual; query subtracts the saved frozen score. These results do not reuse confirmation molecules.}
+\label{tab:centering-diagnostic}
+\centering
+\small
+\begin{tabular}{@{}llrr@{}}
+\toprule
+Score & Update & Natural & Controlled flip \\
+\midrule
+Raw & Frozen & 79.36 & 69.11 \\
+Raw & Marginal & 79.18 & 77.29 \\
+Raw & Query & 78.49 & 75.95 \\
+\midrule
+Corrected & Frozen & 80.19 & 63.30 \\
+Corrected & Marginal & 79.82 & 78.30 \\
+Corrected & Query & 80.33 & 78.67 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Corrected Frozen selects the stress target on 56.91\% of post-change calls, versus 34.81\% for raw Frozen. Cross-score recovery increments thus also reflect different exposure to the intervention; they cannot isolate the update mechanism. The original method and confirmation results remain fixed throughout this diagnosis.
+
+
+\paragraph{Where can better initial selection help?}
+The four-provider development panel separates shared errors from selection errors. Of 722 molecules, all four providers are correct on 471, disagree in correctness on 147, and are all wrong on 104. A per-molecule evaluator oracle therefore reaches 618/722 (85.60\%), while corrected Frozen reaches 579/722 (80.19\%). The remaining 39 recoverable errors define selection headroom under this menu; the 104 shared errors cannot be repaired by choosing another member of it. This oracle uses unselected outputs solely for diagnosis and differs from the retrospective best-fixed reference in the confirmation table. These counts motivate improving the conditional ranking without claiming that every available alternative is predictable before a call.
+
+\paragraph{Does changing the offline objective improve initial selection?}
+We test two offline objectives on this four-provider development panel (Table~\ref{tab:learned-prior}). Both use normalized Morgan64 inputs, a 64-unit ReLU encoder, and identical score and auxiliary heads. The control minimizes score BCE plus 0.2 auxiliary BCE; the alternative uses the BayesianRouter-style correct--wrong Bradley--Terry objective plus the same auxiliary loss. Each of 20 fits runs 200 full-batch AdamW steps from paired initial weights. Checkpoints maximize validation selection accuracy, with earliest ties. Neither objective improves on corrected Frozen in either seed. All five leave-one-fold-out differences are negative for each comparison. Under this representation and training recipe, replacing the score objective does not recover the remaining routing headroom.
+
+\begin{table}[t]
+\caption{Static development selected correctness (\%). Each seed covers the same 722 molecules through five scaffold folds. The first three rows are deterministic; BCE/BT share architecture, initialization and validation selection.}
+\label{tab:learned-prior}
+\centering
+\small
+\begin{tabular}{@{}lrr@{}}
+\toprule
+Selector & Seed 0 & Seed 1 \\
+\midrule
+Fit-only Best Fixed & 79.22 & 79.22 \\
+Raw Frozen & 79.36 & 79.36 \\
+Corrected Frozen & 80.19 & 80.19 \\
+BCE + auxiliary CLS & 78.53 & 78.95 \\
+BT + auxiliary CLS & 78.81 & 78.25 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Discussion and Limitations}
+The benchmark separates public answer semantics from the project routing protocol. This makes the provider-selection question replayable, but it does not make the routing layer a community benchmark by itself. The principal development endpoint is BBB; hERG and AMES remain extensions until their assay semantics, coverage, conflicts, and provider training lineage are closed. The current provider panel also contains related model families, so provider-count improvements cannot be interpreted as independent evidence without family-balanced analysis.
+
+The proposed method is scoped to feedback-adaptive selection. A delayed selected-only replay does not by itself demonstrate natural provider arrival, retirement, version drift, or broad nonstationarity. Those events are controlled stress unless an independent deployment trace supports a stronger claim. The immutable frozen base is a reference and guardrail, not a theorem that no switch can be harmful.
+
+The method may fail when selected feedback is too sparse, when a residual update is too small to change the next choice, or when a provider error transfers to a later decision. These alternatives motivate exposure, score-margin, and rescued/harmed analyses. These failure modes require separate tests: an action switch identifies a response to feedback, whereas rescued and harmed decisions identify its value.
+
+\subsection{Validity and reproducibility}
+The confirmation is separated from the development diagnostic at three points. First, provider checkpoints are sealed before the candidate molecules are scored; the four fresh models are bound to their source commit, checkpoint hash, and native prediction code. The 157 confirmation molecules are scaffold-disjoint from the development fit and validation partitions. The truth label is used only by the evaluator after a selected provider returns, never by the selector at decision time.
+
+Second, every stream is recorded as a receipt rather than as an aggregate score. A decision record contains the molecule identifier, menu, feature hash, released-state version, chosen provider, and action score; it contains neither the current truth nor an unselected output. A terminal record binds the chosen provider to its returned output and runtime status. The release queue records the due tick and consumption order. The serialized learned state, including provider counters and prior count, is hashed after the corresponding selected feedback is released. An independent checker validates the receipt contract and detects event, clock, binding, or commitment-chain inconsistencies; it does not infer missing state bytes from the hash.
+
+Third, uncertainty is clustered by molecule scaffold. The natural result pools 5 folds, 2 seeds, and 3 delays over the same 157 confirmation molecules, while the controlled stress uses the same schedule and changes only the selected label of the fit-best provider after tick 78. The reported intervals are bootstrap intervals over Bemis--Murcko scaffold clusters; they are not intervals over individual event rows. We report both rescued and harmed switches because a positive aggregate can hide unsafe substitutions. Contract/replay checks found 270/270 natural streams and 150/150 stress streams replayable with no forbidden decision fields or action mismatches.
+
+This design also fixes what the result cannot establish. The natural fresh menu is a stationary checkpoint panel, so its null online gain is evidence against a generic online improvement claim, not evidence against adaptation under every kind of drift. The stress is a mechanism test with a declared evaluator-side label flip, not a deployment trace. Post-call verification, refusal utility, provider arrival, and the hERG/AMES extensions use separate contracts and are not silently folded into the one-call estimate.
+
+The event ledger makes premature feedback use detectable: every decision must bind to exactly one terminal outcome and one legal release. Methods share the molecule order and delay schedule. For the six-cell development diagnostic, complete counter and pending-score states are also recorded; an independent replayer reconstructs all 77,976 events, their choices, and paired aggregates. This stronger development check does not fill missing state bytes in the older confirmation receipts.
+
+
+
+\subsection{Artifact scope}
+The released artifact is organized around the routing contract rather than around a single aggregate table. The public truth manifest records canonical molecule identifiers, endpoint labels, split membership, and the hash of the input file. The provider manifest records each fresh checkpoint, its source commit, native feature code, and the validation receipt used to bind the model to a provider identifier. The routing runner then consumes only the molecule features and the current released state; evaluator truth and provider outputs are written to terminal records after the action.
+
+
+
+A reproduction has three separate checks. A schema checker verifies that every decision has a legal visible read set and that no decision record contains truth or an unselected output. A transition replayer reconstructs the release queue and next action from the fit prior and the selected event prefix. An aggregation script joins terminal records to the frozen confirmation manifest and computes the paired scaffold-cluster estimates, confidence intervals, rescued/harmed counts, and timing summaries. Reproduction requires these checks before accepting an aggregate; a valid summary alone cannot establish that its event stream followed the protocol.
+
+The static learned-prior diagnostic additionally includes 30 initialization and best-checkpoint files, all 4,000 epoch records, and 2,888 held-out predictions. An independent NumPy implementation recovers both output heads, their selected providers, the paired aggregates, and the validation-based checkpoint choice recorded in the logs. Maximum GPU-to-NumPy logit error is $1.93\times10^{-7}$. This verifies the saved models and selection record, without re-executing every optimization step.
+
+Finally, the artifact preserves the distinctions needed for later extensions. A runtime error has a status but no chemical-correctness label; an unknown truth ends the scored stream; and a refusal is a policy action with no selected-provider reward. These cases belong to the extension contract: the sealed fresh receipt accepts scored outcomes only and contains no such events. Verification or lifecycle experiments will require a new schema and separate validation for accept, call, refuse, or menu-change actions, while preserving the historical one-call receipts.
+
+For tool-using agents, this separation gives a concrete design rule. The initial selector ranks eligible providers from the molecule and endpoint; the relay stores only released evidence from the provider that produced it. A terminal result without a release time is not part of the legal decision history. This keeps provider-specific evidence, execution status, and chemical correctness auditable, while leaving verification and refusal to their own utility denominators.
+
+\section{Conclusion}
+Adapting scientific tool use requires connecting a released outcome to a better subsequent decision. MIRA-Relay makes that connection testable through a frozen provider surface, a selected-only provider residual, and an explicit release clock. On a natural fresh menu it matches the frozen selector; under the declared correctness drift it recovers more accurately than the matched controls. The remaining evidence-extension and lifecycle claims are intentionally outside this paper.
+
+\clearpage
+\balance
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{references}
+\end{document}

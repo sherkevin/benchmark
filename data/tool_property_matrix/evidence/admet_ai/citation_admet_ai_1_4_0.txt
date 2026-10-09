@@ -1,0 +1,4 @@
+# 出处：/Users/jingwu/.local/share/benchmark-runtimes/admet_ai_1_4_0/lib/python3.10/site-packages/admet_ai-1.4.0.dist-info/METADATA
+Name: admet_ai
+Version: 1.4.0
+[ADMET-AI: A machine learning ADMET platform for evaluation of large-scale chemical libraries](https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/btae416/7698030?utm_source=authortollfreelink&utm_campaign=bioinformatics&utm_medium=email&guestAccessKey=<REDACTED>)

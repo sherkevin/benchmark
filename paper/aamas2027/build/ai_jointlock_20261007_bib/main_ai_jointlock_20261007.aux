@@ -1,0 +1,82 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\@writefile{toc}{\contentsline {section}{Abstract}{1}{section*.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces MIRA-Relay closes the loop from a pre-call choice to a later decision. Molecule, endpoint, eligible menu, and released state enter a frozen provider surface plus a provider-local residual ledger. One selected call produces a terminal record; the frozen endpoint judge supplies chemical correctness only after termination, while runtime failure follows its own ledger. The selected outcome waits until $\tau _t=t+1+D$ and then updates the released state; decisions continue while feedback is pending.}}{2}{figure.caption.5}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{fig:overview}{{1}{2}{MIRA-Relay closes the loop from a pre-call choice to a later decision. Molecule, endpoint, eligible menu, and released state enter a frozen provider surface plus a provider-local residual ledger. One selected call produces a terminal record; the frozen endpoint judge supplies chemical correctness only after termination, while runtime failure follows its own ledger. The selected outcome waits until $\tau _t=t+1+D$ and then updates the released state; decisions continue while feedback is pending}{figure.caption.5}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Problem and Task Contract}{2}{section.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Episode, menu, and feedback}{2}{subsection.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Selection and verification interfaces}{2}{subsection.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Estimands and costs}{3}{subsection.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3}MIRA-Relay: Proposed Method Specification}{3}{section.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Cold-start scores and the immutable reference}{3}{subsection.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Context-relative reliability adapter}{3}{subsection.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Bounded evidence interface}{3}{subsection.3.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Release ledger and delayed update}{3}{subsection.3.4}\protected@file@percent }
+\citation{huang2021tdc}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.5}Action rule and falsification}{4}{subsection.3.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4}Benchmark and Baselines}{4}{section.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Two-layer benchmark contract}{4}{subsection.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Baselines and fairness}{4}{subsection.4.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Comparator groups under the common routing contract.}}{4}{table.caption.7}\protected@file@percent }
+\newlabel{tab:baselines}{{1}{4}{Comparator groups under the common routing contract}{table.caption.7}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Experiments}{4}{section.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6}Results}{4}{section.6}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Natural fresh-menu confirmation across 157 scaffold-disjoint molecules. Success is the mean over 4,710 paired calls; intervals resample Bemis--Murcko scaffold clusters after aggregating repeated schedules. Update p95 is CPU policy-operation overhead on macOS arm64, excluding I/O and provider inference.}}{4}{table.caption.9}\protected@file@percent }
+\newlabel{tab:main-results}{{3}{4}{Natural fresh-menu confirmation across 157 scaffold-disjoint molecules. Success is the mean over 4,710 paired calls; intervals resample Bemis--Murcko scaffold clusters after aggregating repeated schedules. Update p95 is CPU policy-operation overhead on macOS arm64, excluding I/O and provider inference}{table.caption.9}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces The terminal feedback contract. At decision tick $t$, the selector sees $S_t$ and $A_t$ and chooses one provider before any current output is observed. The terminal record is split into output and runtime status; the frozen endpoint judge then yields chemical correctness only after termination. Runtime failure and chemical correctness form the selected terminal outcome, which waits in a selected-only queue until $\tau _t=t+1+D$. The relay update is visible to the first action at or after release; for $D=0$, this is the next action.}}{5}{figure.caption.6}\protected@file@percent }
+\newlabel{fig:lifecycle}{{2}{5}{The terminal feedback contract. At decision tick $t$, the selector sees $S_t$ and $A_t$ and chooses one provider before any current output is observed. The terminal record is split into output and runtime status; the frozen endpoint judge then yields chemical correctness only after termination. Runtime failure and chemical correctness form the selected terminal outcome, which waits in a selected-only queue until $\tau _t=t+1+D$. The relay update is visible to the first action at or after release; for $D=0$, this is the next action}{figure.caption.6}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Experimental map. Each row answers one question; all online rows use the same 157-molecule fresh menu and selected-only release clock unless stated otherwise.}}{5}{table.caption.8}\protected@file@percent }
+\newlabel{tab:matrix}{{2}{5}{Experimental map. Each row answers one question; all online rows use the same 157-molecule fresh menu and selected-only release clock unless stated otherwise}{table.caption.8}{}}
+\@writefile{toc}{\contentsline {paragraph}{Natural fresh menu.}{5}{section*.10}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Controlled correctness-drift stress. Success is pooled over 4,710 paired calls. Changes count post-release action changes relative to Frozen; rescued/harmed counts are relative to the same-receipt Frozen action. Paired intervals resample scaffold clusters.}}{5}{table.caption.11}\protected@file@percent }
+\newlabel{tab:mechanism-results}{{4}{5}{Controlled correctness-drift stress. Success is pooled over 4,710 paired calls. Changes count post-release action changes relative to Frozen; rescued/harmed counts are relative to the same-receipt Frozen action. Paired intervals resample scaffold clusters}{table.caption.11}{}}
+\@writefile{toc}{\contentsline {paragraph}{Controlled drift recovery.}{5}{section*.12}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7}Error and Cost Analysis}{6}{section.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {8}Mechanism Interpretation}{6}{section.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {9}Limitations and Discussion}{6}{section.9}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {10}Validity and Reproducibility Checks}{6}{section.10}\protected@file@percent }
+\citation{schick2023toolformer,yao2023react}
+\citation{li2010contextual}
+\citation{agrawal2013thompson}
+\citation{oetomo2023warmstart}
+\citation{joulani2013online}
+\citation{panda2025pilot}
+\citation{feng2025graphrouter}
+\citation{chen2024routerdc}
+\citation{hu2024routerbench}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Receipt-bound evidence views for the three-figure confirmation. Panel (a) reports paired success changes relative to Frozen under natural fresh feedback and the controlled label-flip stress across release delays. Panel (b) counts rescued and harmed actions against the same-receipt Frozen action. Panel (c) shows policy-update p95 against serialized online state for Frozen, MIRA-Relay, and matched baselines.}}{7}{figure.caption.13}\protected@file@percent }
+\newlabel{fig:evidence}{{3}{7}{Receipt-bound evidence views for the three-figure confirmation. Panel (a) reports paired success changes relative to Frozen under natural fresh feedback and the controlled label-flip stress across release delays. Panel (b) counts rescued and harmed actions against the same-receipt Frozen action. Panel (c) shows policy-update p95 against serialized online state for Frozen, MIRA-Relay, and matched baselines}{figure.caption.13}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {11}Related Work}{7}{section.11}\protected@file@percent }
+\citation{huang2021tdc,wu2018moleculenet}
+\@writefile{toc}{\contentsline {section}{\numberline {12}Artifact Scope}{8}{section.12}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {13}Conclusion}{8}{section.13}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Audit contract used before aggregation. Each receipt is checked at its own boundary; a stream with a failed check contributes no score.}}{9}{table.caption.14}\protected@file@percent }
+\newlabel{tab:audit-contract}{{5}{9}{Audit contract used before aggregation. Each receipt is checked at its own boundary; a stream with a failed check contributes no score}{table.caption.14}{}}
+\bibstyle{ACM-Reference-Format}
+\bibdata{references}
+\bibcite{agrawal2013thompson}{{1}{2013}{{Agrawal and Goyal}}{{}}}
+\bibcite{chen2024routerdc}{{2}{2024}{{Chen et~al\mbox  {.}}}{{}}}
+\bibcite{feng2025graphrouter}{{3}{2025}{{Feng et~al\mbox  {.}}}{{}}}
+\bibcite{hu2024routerbench}{{4}{2024}{{Hu et~al\mbox  {.}}}{{}}}
+\bibcite{huang2021tdc}{{5}{2021}{{Huang et~al\mbox  {.}}}{{}}}
+\bibcite{joulani2013online}{{6}{2013}{{Joulani et~al\mbox  {.}}}{{}}}
+\bibcite{li2010contextual}{{7}{2010}{{Li et~al\mbox  {.}}}{{}}}
+\bibcite{oetomo2023warmstart}{{8}{2023}{{Oetomo et~al\mbox  {.}}}{{}}}
+\bibcite{panda2025pilot}{{9}{2025}{{Panda et~al\mbox  {.}}}{{}}}
+\bibcite{schick2023toolformer}{{10}{2023}{{Schick et~al\mbox  {.}}}{{}}}
+\bibcite{wu2018moleculenet}{{11}{2018}{{Wu et~al\mbox  {.}}}{{}}}
+\bibcite{yao2023react}{{12}{2023}{{Yao et~al\mbox  {.}}}{{}}}
+\newlabel{tocindent-1}{0pt}
+\newlabel{tocindent0}{0pt}
+\newlabel{tocindent1}{8.37pt}
+\newlabel{tocindent2}{10.34999pt}
+\newlabel{tocindent3}{0pt}
+\newlabel{tocindent4}{0pt}
+\newlabel{tocindent5}{0pt}
+\@writefile{toc}{\contentsline {section}{References}{10}{section*.16}\protected@file@percent }
+\newlabel{TotPages}{{10}{10}{}{page.10}{}}
+\gdef \@abspage@last{10}

@@ -1,0 +1,148 @@
+ICLR 2024 Outstanding Paper Awards – ICLR Blog
+Skip to content
+Menu
+Search
+2026 Conference
+Close Menu
+May
+6
+2024
+ICLR 2024 Outstanding Paper Awards
+Yisong Yue
+ICLR 2024
+Awards Committee: Eunsol Choi, Katja Hofmann, Ming-Yu Liu, Nan Jiang, Stephan Günnemann, Suvrit Sra, Thomas Kipf, Volkan Cevher
+(This post is written by the Awards Committee, lightly edited by the Program Chairs.)
+Selection Process
+The ICLR 2024 Outstanding Paper Committee went through the following selection process to identify a collection of outstanding papers and honorable mentions that showcase excellent research presented at this conference.
+The committee began with an initial pool of 44 papers provided by the program chairs. During phase 1, each member of the committee ranked these papers based on how comfortable they would be reviewing the papers based on their expertise, while avoiding conflicts of interest. Then, each paper was assigned two committee members, and each in turn received about a dozen papers to review. Then, each member was encouraged to submit up to three nominations in their batch through an anonymous form. This process generated ~20 shortlisted papers. During Phase 2, all members of the committee familiarized themselves with those papers. The second reviewer (who did not submit a nomination for the paper) was also encouraged to share their thoughts. During the final phase, the committee discussed the nominated papers together and decided on outstanding paper / honorable mentions. The committee also aimed to highlight a wide range of research contributions, from theoretical insights, practical impacts, exceptional writing, and experimental rigor. Throughout the process, the committee reached out to external experts when appropriate and would like to thank all those who contributed to this process.
+In total there are 5 Outstanding Paper winners, and 11 Honorable Mentions.  Congratulations to all the authors for their exceptional contributions to ICLR!
+Award Winners
+Generalization in diffusion models arises from geometry-adaptive harmonic representations
+Zahra Kadkhodaie, Florentin Guth, Eero P Simoncelli, Stéphane Mallat
+https://openreview.net/forum?id=ANvmVS2Yr0
+https://iclr.cc/virtual/2024/oral/19783
+This paper provides an important in-depth analysis on generalization and memorization aspects of image diffusion models. The authors empirically study when an image generative model switches from memorizing the input to a generalization regime and they further provide an explanation of this phenomenon in terms of architectural inductive biases by making a connection to ideas from harmonic analysis via “geometry-adaptive harmonic representations”. The paper covers a critical missing piece of our understanding of visual generative models and will likely inspire future important theory work in this area.
+Learning Interactive Real-World Simulators
+Sherry Yang, Yilun Du, Seyed Kamyar Seyed Ghasemipour, Jonathan Tompson, Leslie Pack Kaelbling, Dale Schuurmans, Pieter Abbeel
+https://openreview.net/forum?id=sFyTZEqmUY
+https://iclr.cc/virtual/2024/oral/19722
+Aggregating data across multiple sources to train foundation models for robotics is a long-term ambitious goal. It poses significant challenges due to different robots having different sensory-motor interfaces which hinder training across large-scale datasets. This work, UniSim, is a significant step in this direction and an engineering feat, aggregating data using a unified interface based on visual perceptions and text descriptions of controls, and training a robotics simulator from the data by leveraging latest developments in vision and language domains.
+Never Train from Scratch: Fair Comparison of Long-Sequence Models Requires Data-Driven Priors
+Ido Amos, Jonathan Berant, Ankit Gupta
+https://openreview.net/forum?id=PdaPky8MUn
+https://iclr.cc/virtual/2024/oral/19761
+This paper dives deep into understanding the ability of recently proposed state-space models and transformer architectures to model long-term sequential dependencies. Surprisingly, the authors find that training transformer models from scratch leads to an under-estimation of their performance and demonstrates dramatic gains can be achieved with a pre-training and fine-tuning setup. The paper is exceptionally well executed and exemplary in its focus on simplicity and systematic insights.
+Protein Discovery with Discrete Walk-Jump Sampling
+Nathan C. Frey, Dan Berenberg, Karina Zadorozhny, Joseph Kleinhenz, Julien Lafrance-Vanasse, Isidro Hotzel, Yan Wu, Stephen Ra, Richard Bonneau, Kyunghyun Cho, Andreas Loukas, Vladimir Gligorijevic, Saeed Saremi
+https://openreview.net/forum?id=zMPHKOmQNb
+https://iclr.cc/virtual/2024/oral/19713
+This paper addresses the problem of sequence-based antibody design, a timely and important application for generative models of protein sequences. To this end, the authors introduce an innovative and effective new modeling approach specifically tailored to the problem of handling discrete protein sequence data. In addition to validating the method
+in silico
+, the authors perform extensive wet lab experiments to measure antibody binding affinity
+in vitro
+, demonstrating the effectiveness of their generative method.
+Vision Transformers Need Registers
+Timothée Darcet, Maxime Oquab, Julien Mairal, Piotr Bojanowski
+https://openreview.net/forum?id=2dnO3LLiJ1
+https://iclr.cc/virtual/2024/oral/19794
+This paper identifies artifacts in feature maps of vision transformer networks, characterized by high-norm tokens in low-informative background areas. The authors provide key hypotheses for why this is happening and provide a simple yet elegant solution to address these artifacts using additional register tokens, enhancing model performance on various tasks. The insights gained from this work can also impact other application areas. The paper is very well-written and provides a great example of conducting research – identifying an issue, understanding why it is happening, and then providing a solution.
+Honorable mentions
+Amortizing intractable inference in large language models
+Edward J Hu, Moksh Jain, Eric Elmoznino, Younesse Kaddar, Guillaume Lajoie, Yoshua Bengio, Nikolay Malkin
+https://openreview.net/forum?id=Ouj6p4ca60
+https://iclr.cc/virtual/2024/oral/19763
+The paper proposes a promising alternative to autoregressive decoding in LLMs from a Bayesian inference perspective that can inspire follow-up studies.
+Approximating Nash Equilibria in Normal-Form Games via Stochastic Optimization
+Ian Gemp, Luke Marris, Georgios Piliouras
+https://openreview.net/forum?id=cc8h3I3V4E
+https://iclr.cc/virtual/2024/oral/19744
+An exceptionally clearly written paper, making progress on the important problem of developing efficient and scalable Nash solvers.
+Beyond Weisfeiler-Lehman: A Quantitative Framework for GNN Expressiveness
+Bohang Zhang, Jingchu Gai, Yiheng Du, Qiwei Ye, Di He, Liwei Wang
+https://openreview.net/forum?id=HSKaGOi7Ar
+https://iclr.cc/virtual/2024/oral/19773
+Expressivity of GNNs is an important topic for which current solutions, such as the Weisfeiler-Lehman test, still come with significant limitations. The authors propose a new “expressivity theory” based on homomorphism counts.
+Flow Matching on General Geometries
+Ricky T. Q. Chen, Yaron Lipman
+https://openreview.net/forum?id=g7ohDlTITL
+https://iclr.cc/virtual/2024/oral/19740
+This paper tackles the challenging yet important problem of generative modeling on general geometric manifolds, for which it proposes a practical and efficient algorithm. The paper is presented exceptionally well and features a comprehensive experimental validation on a wide range of tasks.
+Is ImageNet worth 1 video? Learning strong image encoders from 1 long unlabelled video
+Shashanka Venkataramanan, Mamshad Nayeem Rizve, Joao Carreira, Yuki M Asano, Yannis Avrithis
+https://openreview.net/forum?id=Yen1lGns2o
+https://iclr.cc/virtual/2024/oral/19752
+The paper proposes a novel path to self-supervised image pre-training, by learning from continuous videos. The paper contributes both new types of data and a method to learn from novel data.
+Meta Continual Learning Revisited: Implicitly Enhancing Online Hessian Approximation via Variance Reduction
+Yichen Wu, Long-Kai Huang, Renzhen Wang, Deyu Meng, Ying Wei
+https://openreview.net/forum?id=TpD2aG1h0D
+https://iclr.cc/virtual/2024/oral/19759
+The authors propose a new variance reduction approach to meta continuous learning. The approach is presented well and has not only practical impact but is also backed up with regret analysis.
+Model Tells You What to Discard: Adaptive KV Cache Compression for LLMs
+Suyu Ge, Yunan Zhang, Liyuan Liu, Minjia Zhang, Jiawei Han, Jianfeng Gao
+https://openreview.net/forum?id=uNrFpDPMyo
+https://iclr.cc/virtual/2024/oral/19718
+The paper targets the critical KV cache compression problem with great impact on transformer based LLMs, reducing the memory with a simple idea that can be deployed without resource intensive fine-tuning or re-training. The approach is quite simple and yet is shown to be quite effective.
+Proving Test Set Contamination in Black-Box Language Models
+Yonatan Oren, Nicole Meister, Niladri S. Chatterji, Faisal Ladhak, Tatsunori Hashimoto
+https://openreview.net/forum?id=KS8mIvetg2
+https://iclr.cc/virtual/2024/oral/19769
+A simple yet elegant method to test whether a supervised-learning dataset has been included in LLM training.
+Robust agents learn causal world models
+Jonathan Richens, Tom Everitt
+https://openreview.net/forum?id=pOoKI3ouv1
+https://iclr.cc/virtual/2024/oral/19724
+This paper makes progress on laying theoretical foundations towards understanding the role of causal reasoning in agents’ ability to generalize to new domains and has potential implications for a range of related fields.
+The mechanistic basis of data dependence and abrupt learning in an in-context classification task
+Gautam Reddy
+https://openreview.net/forum?id=aN4Jf6Cx69
+https://iclr.cc/virtual/2024/oral/19749
+A timely and exceptionally systematic study of the mechanics that underlie in-context vs. in-weight learning at a point where we are only starting to understand these phenomena.
+Towards a statistical theory of data selection under weak supervision
+Germain Kolossov, Andrea Montanari, Pulkit Tandon
+https://openreview.net/forum?id=HhfcNgQn6p
+https://iclr.cc/virtual/2024/oral/19772
+The paper establishes statistical foundations for data subset selection and identifies the shortcomings of popular data selection methods.
+Code of Ethics Cases at ICLR 2024
+ICLR 2024 Test of Time Award
+Related Posts
+ICLR 2024
+Code of Ethics Cases at ICLR 2024
+ICLR 2024
+ICLR 2024 Mentoring Chats
+ICLR 2024
+Hugging Face Demo Site
+Recent Posts
+Making Google’s Paper Assistant Tool (PAT) available to ICLR submitters
+September 10, 2026
+Submission policies for ICLR 2027
+September 2, 2026
+Announcing the ICLR 2026 Outstanding Papers
+April 23, 2026
+Announcing the Test of Time Awards from ICLR 2016
+April 22, 2026
+Announcing the ICLR 2026 keynotes
+April 17, 2026
+A Retrospective on the ICLR 2026 Review Process
+March 31, 2026
+Workshops at ICLR 2026
+January 13, 2026
+ICLR’s Commitment to OpenReview
+December 17, 2025
+ICLR 2026 Response to Security Incident
+December 3, 2025
+ICLR 2026 Response to LLM-Generated Papers and Reviews
+November 19, 2025
+Policies on Large Language Model Usage at ICLR 2026
+August 26, 2025
+ICLR 2025 Mentoring Chats
+April 23, 2025
+Recent Comments
+Back To Top
+ICLR Blog
+©
+ICLR Blog
+2026
+Powered by
+WordPress
+•
+Themify WordPress Themes

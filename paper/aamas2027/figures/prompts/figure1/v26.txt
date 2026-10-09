@@ -1,0 +1,23 @@
+Use case: infographic-diagram. Create a new Figure 1 method architecture for the MIRA-Relay paper. Use the attached Figure 1 v17 only as a visual starting point; redraw the graph cleanly and preserve its compact v07-like style. Correct both routing constraints exactly: (i) the eligible-tools menu is a candidate input to the Selector only and must never point to the released-state register; (ii) the Update module writes only into the highlighted released-state row and its arrowhead must land inside the row cells.
+
+FIGURE ROLE
+This is the method architecture. It answers: how does frozen scoring plus released selected-only state choose one tool, and how does one valid result return through delayed release to update that state? Show internal computation and the single write path. Do not turn this into a temporal timeline or a prose chart.
+
+TEXT RULES
+No standalone provider letters “A”, “B”, or “C”; no provider names; no row letters. Use only short labels: “Inputs”, “MIRA-Relay”, “Execution”, “Molecule + Endpoint”, “Eligible tools”, “Features”, “Frozen scorer”, “base score”, “released state”, “residual”, “score”, “Selector”, “Selected tool”, “Call”, “Return”, “Judge”, “Chemical feedback”, “Runtime ledger”, “selected-only queue”, “Release”, “Update”. Equations allowed only: q=q⁰+Δ and τ_t=t+1+D. Keep under 65 English words.
+
+LAYOUT
+White landscape 2.7:1, compact, flat vector, three pale regions and a lower feedback strip.
+LEFT INPUTS: Molecule + Endpoint icons at upper left. Below them, a dashed Eligible tools card with neutral tool icons. Draw exactly one clear thin arrow from the right side of the Eligible tools card across the gap to the LEFT EDGE OF THE SELECTOR CARD. This arrow must not touch, cross, terminate at, or point toward the released-state register, residual, plus operator, or score vector. The released-state register is not an input menu.
+CENTER MIRA-RELAY: Features grid → locked Frozen scorer → slim q⁰ vector. Below, a small released-state register with three unlabeled rows and two columns n and s; only the middle row is highlighted blue. Register → slim residual vector Δ. q⁰ and Δ → one circular plus → slim score vector q=q⁰+Δ → Selector → one Selected tool token. Keep this central computation compact and readable.
+RIGHT EXECUTION: Selected tool → Call → Return record. Valid return → frozen endpoint Judge → amber Chemical feedback r∈{0,1}. Runtime error from Return → gray Runtime ledger dead-end. Runtime error must not enter feedback, queue, or state.
+LOWER FEEDBACK: Chemical feedback → one purple selected-only queue → one purple dashed waiting edge → purple Release clock labelled τ_t=t+1+D → one blue Update module. Place the Update module at the SAME HEIGHT as the highlighted middle row, preferably immediately to its right or left. Draw exactly one short solid blue horizontal arrow from Update directly into the INTERIOR CENTER of the highlighted middle row cells. The arrowhead must be visible inside the row, not on the register border, not below the register, and not in whitespace. This is the sole write path. No Release→register bypass, no U-shaped detour, no second update route. The released-state register then feeds residual for later decisions.
+
+ARROW AUDIT
+The only edge entering the released-state register from outside is Update→highlighted row. The only edge leaving Eligible tools goes to Selector. Keep these two edges visibly separate and use different vertical levels. Every arrowhead docks on the node or cell it changes. Do not route either edge along the same horizontal line as the other.
+
+STYLE
+Use v07/v16 visual language: navy text and outlines, pale blue method panels, gray frozen records, amber judge/feedback, muted purple pending/release, white background, simple molecule/document/lock/gear/clock icons, concrete grids and vector cells, thin uniform arrows. No grid background, swimlanes, giant ribbons, crossed-out cards, robots, 3-D, gradients, watermark, performance numbers, or duplicate outcome chains.
+
+FINAL CHECK
+Zero A/B/C provider letters. No family residual, provider bias, extra call, fallback, verifier/refusal, current output, unselected output, or Figure 2 timeline. There must be exactly one visible candidate-menu arrow to Selector and exactly one visible Update arrow whose tip is inside the highlighted released-state row.

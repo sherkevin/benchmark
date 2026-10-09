@@ -1,0 +1,65 @@
+--- a/skills/drug_discovery/tools/public_databases.py
++++ b/skills/drug_discovery/tools/public_databases.py
+@@ -53,9 +53,9 @@
+     async def request(client: httpx.AsyncClient) -> httpx.Response:
+         return await client.get(url, params=params)
+ 
+     try:
+-        resp = await _request_with_optional_env_proxy(request, timeout, _json_headers())
++        resp = await _request_with_optional_env_proxy(request, timeout, _json_headers(url))
+         resp.raise_for_status()
+         return resp.json()
+     except httpx.HTTPStatusError as exc:
+         raise PublicDatabaseError(
+@@ -75,9 +75,9 @@
+     try:
+         resp = await _request_with_optional_env_proxy(
+             request,
+             timeout,
+-            {"Accept": "*/*", "User-Agent": USER_AGENT},
++            _ua_headers(url, "*/*"),
+         )
+         resp.raise_for_status()
+         return resp.text
+     except httpx.HTTPStatusError as exc:
+@@ -93,9 +93,9 @@
+     async def request(client: httpx.AsyncClient) -> httpx.Response:
+         return await client.post(url, json=payload)
+ 
+     try:
+-        resp = await _request_with_optional_env_proxy(request, timeout, _json_headers())
++        resp = await _request_with_optional_env_proxy(request, timeout, _json_headers(url))
+         resp.raise_for_status()
+         return resp.json()
+     except httpx.HTTPStatusError as exc:
+         raise PublicDatabaseError(
+@@ -128,10 +128,27 @@
+             return False
+     return True
+ 
+ 
+-def _json_headers() -> dict[str, str]:
+-    return {"Accept": "application/json", "User-Agent": USER_AGENT}
++# 这些站点的 WAF 会校验 TLS 指纹与 User-Agent 是否自洽：httpx 的指纹配上一个
++# 「不像 httpx」的自定义 UA 会被判成伪装而直接 403。实测（2026-08-14，同一 URL
++# GET /api/v2/studies?query.term=...）：
++#   curl 任意 UA -> 200；urllib 带本模块 UA -> 200
++#   httpx 带本模块 UA -> 403（稳定 3/3）；httpx 带浏览器 UA -> 403
++#   httpx 不下发自定义 UA（用其默认 python-httpx/x.y.z）-> 200（稳定 5/5）
++# 故对这些 host 不下发自定义 UA，交由 httpx 用默认值，保持指纹与 UA 自洽。
++_UA_SENSITIVE_HOSTS = frozenset({"clinicaltrials.gov"})
++
++
++def _ua_headers(url: str, accept: str) -> dict[str, str]:
++    headers = {"Accept": accept}
++    if urlparse(url).hostname not in _UA_SENSITIVE_HOSTS:
++        headers["User-Agent"] = USER_AGENT
++    return headers
++
++
++def _json_headers(url: str = "") -> dict[str, str]:
++    return _ua_headers(url, "application/json")
+ 
+ 
+ def _limit(value: int, maximum: int, param_name: str = "max_results") -> int:
+     if isinstance(value, bool):

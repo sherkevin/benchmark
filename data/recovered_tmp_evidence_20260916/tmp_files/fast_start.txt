@@ -1,0 +1,18 @@
+event: tree_start
+data: {"thread_id": "tree-b3919df9-b44507", "goal": "MgB2超导"}
+
+event: tree_hypotheses
+data: {"hypotheses": [{"node_id": "d1_n0", "hypothesis": "MgB2中引入纳米级缺陷（如中子辐照）可以产生各向同性的钉扎中心，大幅提高磁通钉扎力，从而在低温高场下实现高临界电流密度。", "objective": "对MgB2超导体进行中子辐照，表征缺陷结构，测量临界电流密度随磁场的依赖关系。"}, {"node_id": "d1_n1", "hypothesis": "通过化学掺杂3d过渡金属（如Fe、Co）取代Mg位，可以调制π带费米能级，改变双带超导特性，可能提高上临界场Hc2。", "objective": "合成Mg1-xTxB2 (T=Fe, Co) 多晶样品，测量其电阻率在磁场下的转变，提取Hc2并分析能带填充效应。"}, {"node_id": "d1_n2", "hypothesis": "利用MgB2与SiC纳米线复合，可以在晶界处形成有效的磁通钉扎，同时不显著降低Tc，从而在20K至30K温区获得高工程临界电流密度。", "objective": "通过原位粉末装管法(PIT)制备MgB2/SiC纳米线复合材料，进行微观结构表征与超导性能测试。"}, {"node_id": "d1_n3", "hypothesis": "MgB2超导体在太赫兹频率下可能表现出非常规的动力学电感非线性，可应用于超导单光子探测器，其响应速度受双能隙弛豫时间控制。", "objective": "制备高质量的MgB2薄膜制成微桥结构，测量其太赫兹波段的光响应和动力学电感，研究能隙动力学。"}, {"node_id": "d1_n4", "hypothesis": "通过原子层沉积(ALD)方法在MgB2晶粒表面包覆Al2O3薄层，可以抑制Mg挥发和氧化，同时引入界面应变，从而稳定Tc并提高空气稳定性。", "objective": "利用ALD对MgB2粉末进行表面涂层，烧结后测试超导转变温度和长期稳定性，分析界面结构。"}]}
+
+event: tree_branch_done
+data: {"node_id": "d1_n2", "hypothesis": "利用MgB2与SiC纳米线复合，可以在晶界处形成有效的磁通钉扎，同时不显著降低Tc，从而在20K至30K温区获得高工程临界电流密度。", "status": "succeeded", "score": 0.815}
+
+event: tree_branch_done
+data: {"node_id": "d1_n1", "hypothesis": "通过化学掺杂3d过渡金属（如Fe、Co）取代Mg位，可以调制π带费米能级，改变双带超导特性，可能提高上临界场Hc2。", "status": "succeeded", "score": 0.0}
+
+event: tree_branch_done
+data: {"node_id": "d1_n0", "hypothesis": "MgB2中引入纳米级缺陷（如中子辐照）可以产生各向同性的钉扎中心，大幅提高磁通钉扎力，从而在低温高场下实现高临界电流密度。", "status": "succeeded", "score": 0.0}
+
+event: tree_interrupt
+data: {"type": "research_tree_evaluate", "depth": 1, "goal": "MgB2超导", "branches": [{"node_id": "d1_n0", "hypothesis": "MgB2中引入纳米级缺陷（如中子辐照）可以产生各向同性的钉扎中心，大幅提高磁通钉扎力，从而在低温高场下实现高临界电流密度。", "status": "succeeded", "score": 0.0, "recommended": "unknown", "summary": "# 研究分支调查：MgB₂中子辐照诱导各向同性钉扎中心\n\n## 文献检索策略\n使用学术数据库检索以下关键词组合：\n- `\"MgB2\" AND \"neutron irradiation\" AND \"flux pinning\" AND \"critical current density\"`\n- `\"MgB2\" AND \"irradiation defects\" AND \"isotropic pinni", "failure_reason": ""}, {"node_id": "d1_n1", "hypothesis": "通过化学掺杂3d过渡金属（如Fe、Co）取代Mg位，可以调制π带费米能级，改变双带超导特性，可能提高上临界场Hc2。", "status": "succeeded", "score": 0.0, "recommended": "unknown", "summary": "## Branch Summary\n本分支探索通过3d过渡金属（Fe、Co）部分取代MgB₂中Mg位，以调制π带费米能级，从而改变双带超导特性并提高上临界场Hc₂。文献调研和初步实验证据表明，Fe在Mg位的溶解度极低（x<0.05），并伴随Tc的快速下降，Hc₂在低掺杂量下有微弱提升，但其机制更可能源于无序散射增强而非预期的能带填充效应。Co掺杂则几乎无法进入Mg位，常见形成CoB杂质相，导致超导", "failure_reason": ""}, {"node_id": "d1_n2", "hypothesis": "利用MgB2与SiC纳米线复合，可以在晶界处形成有效的磁通钉扎，同时不显著降低Tc，从而在20K至30K温区获得高工程临界电流密度。", "status": "succeeded", "score": 0.815, "recommended": "unknown", "summary": "## Branch Summary\n本分支针对MgB₂超导体在20–30 K、中等磁场（1–5 T）下工程临界电流密度不足的问题，提出利用SiC纳米线作为晶界钉扎中心。通过原位粉末装管法（in-situ PIT）将Mg、B粉与少量SiC纳米线混合，经拉拔、热处理制备线材。初步文献调查和若干实验证据表明，SiC纳米线能引入高密度晶格缺陷和纳米级第二相，有效增强磁通钉扎，但存在Tc下降、线材均匀性差、", "failure_reason": ""}], "thread_id": "tree-b3919df9-b44507"}
+

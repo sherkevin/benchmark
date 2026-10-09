@@ -1,0 +1,5 @@
+arXiv:2608.06931
+abs: https://arxiv.org/abs/2608.06931
+pdf: https://arxiv.org/pdf/2608.06931
+topic: 化学生物材料多模态
+pulled: 2026-08-09 via arxiv MCP (arxiv_get_metadata / arxiv_read_paper)

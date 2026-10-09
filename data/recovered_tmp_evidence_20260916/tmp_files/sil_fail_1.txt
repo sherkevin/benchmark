@@ -1,0 +1,5 @@
+e_bad    failure  None  ValueError: filter-it returned 0 rows for one molecule: Open Babel Error  in ReadMolecule not_a_smiles_at_all contained a character '_' which is invalid in SMILES
+e_ok     success  {'LOGP': -0.499, 'LOGS': -0.519}  None
+e_ws     failure  None  ValueError: canonical_smiles contains whitespace, which the official .smi input format reads as a title delimiter.
+e_val    success  {'LOGP': 2.393, 'LOGS': -2.175}  None
+e_ok2    success  {'LOGP': 1.885, 'LOGS': -2.011}  None

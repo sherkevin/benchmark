@@ -1,0 +1,269 @@
+Published as a conference paper at ICLR 2024
+
+
+
+
+C ONTEXT IS E NVIRONMENT
+ Sharut Gupta                  Stefanie Jegelka            David Lopez-Paz, Kartik Ahuja
+ Meta AI, MIT CSAIL            MIT CSAIL                   Meta AI
+ sharut@mit.edu                stefje@mit.edu              {dlp,kartikahuja}@meta.com
+
+
+
+                                            A BSTRACT
+         Two lines of work are taking center stage in AI research. On the one hand, the
+         community is making increasing efforts to build models that discard spurious
+         correlations and generalize better in novel test environments. Unfortunately, a
+         hard lesson so far is that no proposal convincingly outperforms a simple empirical
+         risk minimization baseline. On the other hand, large language models (LLMs)
+         have erupted as algorithms able to learn in-context, generalizing on-the-fly to
+         the eclectic contextual circumstances that users enforce by prompting. We argue
+         that context is environment, and posit that in-context learning holds the key to
+         better domain generalization. Via extensive theory and experiments, we show
+         that paying attention to context—unlabeled examples as they arrive—allows our
+         proposed In-Context Risk Minimization (ICRM) algorithm to zoom-in on the test
+         environment risk minimizer, leading to significant out-of-distribution performance
+         improvements. Furthermore, training with context helps the model learn a better
+         featurizer. From all of this, two messages are worth taking home: researchers
+         in domain generalization should consider environment as context, and harness
+         the adaptive power of in-context learning. Researchers in LLMs should consider
+         context as environment, to better structure data towards generalization. Code is
+         available at https://github.com/facebookresearch/ICRM.
+
+
+1   I NTRODUCTION
+One key problem in AI research is to build systems that generalize across a wide range of test envi-
+ronments. In principle, these algorithms should discard spurious correlations present only in certain
+training environments, and capture invariant patterns appearing across conditions. For example, we
+would like to build self-driving systems that, while trained on certain weather conditions, levels of
+traffic, and driving rules, can perform satisfactorily in new circumstances. Unfortunately, this has
+proven challenging—for instance, these models often fail to drive in unseen weather conditions (Lech-
+ner et al., 2022), creating immediate hazards. Despite its importance, how to perform well beyond the
+distribution of the training data remains a burning question. In fact, major international conferences
+offer well-attended workshops dedicated to the issue (Wald et al., 2023), and news articles remind us
+of the profound societal impact of the failures of ML systems (Angwin et al., 2016).
+Research efforts have so far led to domain generalization algorithms that fall into two broad categories.
+On the one hand, invariance proposals (Ganin et al., 2016; Peters et al., 2016; Arjovsky et al., 2019),
+illustrated in Figure 1a, discard all environment-specific information, thus removing excessive signal
+about the problem. On the other hand, marginal transfer proposals (Blanchard et al., 2011; Li et al.,
+2016a; Zhang et al., 2020; Bao and Karaletsos, 2023), illustrated in Figure 1b, summarize observed
+inputs in each environment as a coarse embedding, thus diluting important signal at the example
+level. So far, the bitter lesson is that no algorithm geared towards out-of-distribution generalization
+convincingly outperforms a simple empirical risk minimization (ERM) baseline, which pools the data
+from environments, when evaluated across standard real-world benchmarks (Gulrajani and Lopez-Paz,
+2020; Gagnon-Audet et al., 2023; Yao et al., 2022). Has the generalization project hit a dead end?
+In parallel, large language models (OpenAI, 2023; Touvron et al., 2023, LLMs) are taking the world
+by storm. LLMs are next-token predictors built with transformers (Vaswani et al., 2017) and trained
+on enormous amounts of natural language. One impressive capability of LLM systems is their ability
+to learn in-context, that is, to generalize on-the-fly to the eclectic circumstances that users enforce
+by prompting (Brown et al., 2020). For example, a trained LLM would complete the sequence
+
+
+                                                   1
+Published as a conference paper at ICLR 2024
+
+
+
+
+                                                                             y^ie
+
+                                                   classifier
+
+                                                    e
+                                                    i
+                             y^ie                                                                             y^ie
+                                                  i−1
+                                             1
+                                                         (xej )
+                                                  P
+            classifier                      i−1
+                                                  j=1                                       transformer
+
+  xe1      ···    xei−1      xei      xe1         ···             xei−1      xei    xe1     ···     xei−1     xei
+
+        (a) Invariance DG.             (b) Marginal transfer DG.                      (c) In-context DG (ours).
+
+Figure 1: Three frameworks for domain generalization (DG), predicting the target yie from the input
+xei in test environment e. Depicted in blue, the last example xei 1 contains relevant features for the
+current prediction. (a) Invariance DG discards all of the previously observed information from the
+test environment, removing too much predictive signal. (b) Marginal transfer DG summarizes all
+of the previously observed test inputs as a coarse embedding, diluting predictive signal found at the
+example level. (b) Our in-context DG directly observes all of the previous test inputs, allowing the
+search of “needle-in-the-haystack” signals, such as the relevant one, i.e., xei 1 .
+
+
+“France-Paris Italy-Rome Spain-” with the sequence “Madrid,” effectively learning, from the input
+itself, that the user is demanding a capital prediction task. When interacting with LLMs, one feels
+closer towards solving the puzzle of out-of-distribution (OOD) generalization. Could LLMs hold a
+key piece to the OOD puzzle?
+This paper suggests a positive answer, establishing a strong parallel between the concept of en-
+vironment in domain generalization, and the concept of context in next-token prediction. In fact,
+different environments describe varying contextual circumstances such as time, location, experimental
+intervention, and other background conditions. On the one hand, describing environments as context
+opens the door to using powerful next-token predictors off-the-shelf, with their adaptability to learn
+in-context, to address domain generalization problems. This allows us to move from coarse domain
+indices to fine and compositional contextual descriptions, helpful to amortize learning across similar
+environments. On the other hand, using context as environment can help LLM researchers to use
+various domain generalization methods such as distributionally robust optimization (Sagawa et al.,
+2019; Xie et al., 2023, DRO) across varying contexts.
+Based on these insights, we propose a natural algorithm, In-Context Risk Minimization (ICRM),
+illustrated in Figure 1c. Given examples (xei ; yie ) from environment e, we propose to address out-of-
+distribution prediction as in-distribution context-based prediction, training a machine:
+                                    yie ≈ h(xei ; xe1 ; : : : ; xei 1 ):                                          (1)
+                                                  |        {z       }
+                                                        environment       context
+
+While the requested prediction yie concerns only the input xei , the machine can now pay attention to
+the test experience so far, extracting relevant environment information from instance and distributional
+features. Our theoretical results show that such in-context learners can utilize context to zoom-in
+on the empirical risk minimizer of the test environment, achieving competitive out-of-distribution
+performance. Further, we show that the extended input-context feature space in ICRM can reveal
+invariances that ERM-based algorithms ignore. A standout feature of ICRM is its capability to
+improve feature learning through context-based training enabling ICRM to outperform counterparts
+even in the absence of context. Our extensive experiments demonstrate the efficacy of ICRM, and
+extensive ablations dissect and deepen our understanding of it.
+We organize the rest of the exposition as follows. Section 2 reviews the fundamentals of domain
+generalization, centered around the concept of environment. Section 3 explains the basics of next-
+token prediction, with an emphasis on learning from context. Section 4 knits these threads together
+to propose ICRM, a framework to learn from contexts from multiple environments, supported by a
+
+
+                                                           2
+Published as a conference paper at ICLR 2024
+
+
+
+
+host of theory. Section 6 showcases the efficacy of our ideas in a variety of domain generalization
+benchmarks, and Section 7 closes the exposition with some topics for future discussion.
+
+
+2    T HE PROBLEM OF DOMAIN GENERALIZATION
+
+The goal of domain generalization (DG) is to learn a predictor that performs well across a set
+of domains or environments E (Muandet et al., 2013). Environment indices e ∈ E list different
+versions of the data collection process—variations that may occur due to time, location, experimental
+interventions, changes in background conditions, and other contextual circumstances leading to
+distribution shifts (Arjovsky et al., 2019).
+During training we have access to a collection of triplets D = {(xi ; yi ; ei )}ni=1 . Each triplet contains
+a vector of features xi , a target label yi , and the index of the corresponding training environment
+ei ∈ Etr ⊂ E. Each example (xi ; yi ) is sampled independently from a joint distribution P e (X; Y ).
+Using the dataset D, we learn a predictor h that maps features to labels, while minimizing the worst
+risk across the set of all environments E:
+
+                                       h = arg min max Re (h);                                          (2)
+                                                 h          e2E
+
+
+where Re (h) = E(X;Y ) P e [‘(h(X); Y )] is the risk of the predictor h in environment e, as measured
+by the expectation of the loss function ‘ with respect to the environment distribution P e .
+As one example, we could train a self-driving model h to classify images xi into a label yi indicating
+the presence of a pedestrian. Each training example (xi ; yi ) is hereby collected from one of the
+training cities ei ∈ Etr , with its own weather conditions. The goal of Equation (2) is to obtain a
+predictor that correctly classifies x in new cities e ∈ Ete observed during test time. This has proved to
+be challenging (Lechner et al., 2022), as predictors often exhibit penurious performance in unseen
+weather conditions.
+Domain generalization is challenging because we do not have access to test environments during
+training time, rendering Equation (2) challenging to estimate. Therefore, to address the DG problem
+in practice, researchers have proposed various algorithms that make different assumptions about
+the invariances shared between Etr and Ete . In broad strokes, domain generalization algorithms
+fall in one of the two following categories. In the first category, domain generalization algorithms
+based on invariance (Muandet et al., 2013; Ganin et al., 2016; Peters et al., 2016; Arjovsky et al.,
+2019), illustrated in Figure 1a, regularize predictors h(xei ) to not contain any information about
+the environment e. This however results in removing a lot of signal about the prediction task. In
+the second category, domain generalization algorithms based on marginal transfer (Blanchard et al.,
+2011; Li et al., 2016a; Zhang et al., 2020; Bao and Karaletsos, 2023) extract environment-specific
+                                                                                   Pi 1
+information. These methods implement predictors h(xei ; ei ), where ei = i 1 1 j=1 (xej ) coarsely
+summarizes the environment e in terms of previously observed instances. Different choices for
+include kernel functions (Blanchard et al., 2011, MTL), convolutional neural networks (Zhang et al.,
+2020, ARM), and patch embeddings (Bao and Karaletsos, 2023, Context-ViT). Alas, all of these
+alternatives in the second category dilute relevant features found in individual examples. For example,
+the size of the representation would have to grow linearly with the size of the training data to
+describe aspects corresponding to a small group of examples, such as extreme value statistics.
+As a result, and despite all efforts, no proposal so far convincingly outperforms a simple empirical risk
+minimization baseline (Vapnik, 1998, ERM) across standard benchmarks (Gulrajani and Lopez-Paz,
+2020; Gagnon-Audet et al., 2023; Yao et al., 2022). Effectively, ERM simply pools all training data
+together and seeks the global empirical risk minimizer:
+                                                X
+                                 hy = arg min           P (E = e) · Re (h):                             (3)
+                                           h    e2Etr
+
+
+Does the efficacy of ERM suggest that environmental information is useless? We argue that this is
+not the case. The key to our answer resides in a recently discovered emergent ability of next-token
+predictors, namely, in-context learning.
+
+
+                                                        3
+Published as a conference paper at ICLR 2024
+
+
+
+
+    paradigm      training data          testing data                      estimates
+                                          e0
+    ERM           x; y                   x                                 P (Y | X)
+                                            0
+    IRM           x; y; e                xe                                P (Y | inv (X))
+    LLM           z                      zt and context zj<t               P (Zt+1 | Zt ; : : : ; Z1 )
+                                            0               0      0                              0
+    ICRM          x; y; e                xet and context cet = (xej )j<t   P (Y |X; C) ⇝ P e (Y | X)
+
+Table 1: Different learning paradigms discussed in this work, together with their training data and
+testing data formats, as well as the estimated predictors. In our ICRM, we amortize the current
+        0                  0
+input xe and its context ce , containing previously experienced unlabeled examples from the same
+               0
+environment e , and “zoom-in” (⇝) to the appropriate local risk minimizer.
+
+
+3    N EXT- TOKEN PREDICTORS AND IN - CONTEXT LEARNING
+
+In next-token prediction, we aim to learn the conditional distribution
+
+                               P (Zt+1 = zt+1 | Zt = zt ; : : : Z1 = z1 );                               (4)
+
+describing the probability of observing the token zt+1 after having observed the sequence of tokens
+(z1 ; : : : ; zt ). The quintessential next-token prediction task is language modeling (Bengio et al.,
+2000), where the sequence of tokens represents a snippet of natural language text. Most LLMs
+estimate Equation (4) via a transformer zt+1 ≈ h(zt ; zt 1 ; : : : ; z1 ) (Vaswani et al., 2017).
+LLMs exhibit a certain ability, termed in-context learning (ICL), relevant to our interests. ICL is the
+ability to describe and learn about a learning problem from the sequence of tokens (typically labeled
+(x; y) pairs) itself, called the context or prompt. As an example, trained LLM would complete the
+sequence “France-Paris Italy-Rome Spain-” with the sequence “Madrid,” demonstrating its ability to
+infer from a few input-output pairs that the user is demanding a capital prediction task. To illustrate
+this ability for contexts without labels, consider the two following sequences:
+
+                    “You are talking to a teenager. Write a poem on gravitational fields.”
+                    |             {z             } |                {z                   }
+                                 context c1                                x1
+           “You are talking to a Physics graduate. Write a poem on gravitational fields.”
+           |                 {z                  } |               {z                   }
+                            context c2                                     x2
+
+As widely observed, LLMs answer differently to these two sequences, producing two poems, say
+y1 and y2 , each adapted to the assumed audience. While nothing unexpected is happening here
+at the sequence level—the model simply produces a high-likelihood continuation to each of the
+two prompts—we observe a degree of compositional generalization, because the LLM can provide
+different but correct answers to the same question x1 = x2 when presented under two contexts
+c1 and c2 . By addressing the general task of in-distribution language modeling, LLMs can attain
+significant out-of-distribution abilities in a multitude of specific tasks—such as writing poems. ICL is
+reminiscent of meta-learning (Schmidhuber, 1987; Finn et al., 2017), yet it seamlessly accommodates
+to contexts without labels, and does not require updating the parameters of the model. ICL is also
+similar in spirit to test-time adaptation (Wang et al., 2020, TTA); however, TTA often requires
+updating model parameters with an externally hand-crafted objective.
+Notably, ICL emerges without supervision. The training corpus does not contain any explicit division
+between questions and their context beyond the natural order of the words within each snippet
+of language in the training data. However, since we train the machine to produce an enormous
+amount of completions, some of which start with partially overlapping contexts, the predictor has the
+opportunity to amortize learning to a significant degree i.e. use the trained model to generalize across
+unseen distributions rather than explicitly optimizing a separate model for each distribution. While
+the machine may have never observed the context c~1 = “You are now speaking to a teenager,” its
+semantic similarity to c1 above—plus other similar contexts where the word speaking appears— may
+endow OOD generalization. This is the desired ability to generalize over environments described in
+the previous section, which remained out of reach when using coarse domain indices.
+
+
+                                                        4
+

@@ -1,0 +1,18 @@
+event: tree_start
+data: {"thread_id": "tree-20b27c96-c2c988", "goal": "MgB2超导机制"}
+
+event: tree_hypotheses
+data: {"hypotheses": [{"node_id": "d1_n0", "hypothesis": "MgB2的双能隙超导电性源于σ带和π带电子-声子耦合强度的差异，其中σ带强耦合主导高Tc，而π带弱耦合导致较低的能隙，两者通过带间散射相互影响。", "objective": "通过第一性原理计算定量分析σ带和π带的电子-声子耦合参数及带间散射矩阵元，验证双能隙的形成机制及其对Tc的贡献。"}, {"node_id": "d1_n1", "hypothesis": "MgB2中硼同位素效应显著且与能隙结构相关，σ带和π带可能表现出不同的同位素指数，从而揭示声子媒介配对的具体角色。", "objective": "合成不同^10B/^11B比例的MgB2单晶，测量其超导转变温度和各向异性能隙的位移，计算各带的同位素效应系数。"}, {"node_id": "d1_n2", "hypothesis": "MgB2的超导配对对称性为s波，但晶格缺陷或掺杂可能诱导局域时间反演对称性破缺态，产生非常规的超导序参量。", "objective": "利用准粒子干涉扫描隧道谱和精密磁力矩测量，探测MgB2在缺陷附近的局域态密度，寻找s波配对背景下可能出现的时间反演对称性破缺信号。"}, {"node_id": "d1_n3", "hypothesis": "E2g声子模的软化是MgB2高Tc的关键，通过施加化学压力或外部压力调控该声子频率，可系统改变超导转变温度。", "objective": "在高压下对MgB2单晶进行拉曼散射和非弹性X射线散射测量，同步测量电输运性质，建立E2g声子频率与Tc之间的定量关系。"}, {"node_id": "d1_n4", "hypothesis": "在多晶MgB2中，晶界和弱连接不会根本破坏超导电性，但会改变有效双能隙的表现和临界电流密度，其行为可用有效介质模型描述。", "objective": "制备不同晶粒尺寸和晶界角度的多晶MgB2样品，通过比热、隧道谱和输运测量，提取双能隙特征参数，构建晶界影响的唯象模型。"}]}
+
+event: tree_branch_done
+data: {"node_id": "d1_n0", "hypothesis": "MgB2的双能隙超导电性源于σ带和π带电子-声子耦合强度的差异，其中σ带强耦合主导高Tc，而π带弱耦合导致较低的能隙，两者通过带间散射相互影响。", "status": "succeeded", "score": 0.0, "session_id": "69dee1dc"}
+
+event: tree_branch_done
+data: {"node_id": "d1_n1", "hypothesis": "MgB2中硼同位素效应显著且与能隙结构相关，σ带和π带可能表现出不同的同位素指数，从而揭示声子媒介配对的具体角色。", "status": "succeeded", "score": 0.0, "session_id": "da28d0db"}
+
+event: tree_branch_done
+data: {"node_id": "d1_n2", "hypothesis": "MgB2的超导配对对称性为s波，但晶格缺陷或掺杂可能诱导局域时间反演对称性破缺态，产生非常规的超导序参量。", "status": "succeeded", "score": 0.63, "session_id": "8bb5929e"}
+
+event: tree_interrupt
+data: {"type": "research_tree_evaluate", "depth": 1, "goal": "MgB2超导机制", "branches": [{"node_id": "d1_n0", "hypothesis": "MgB2的双能隙超导电性源于σ带和π带电子-声子耦合强度的差异，其中σ带强耦合主导高Tc，而π带弱耦合导致较低的能隙，两者通过带间散射相互影响。", "status": "succeeded", "score": 0.0, "recommended": "unknown", "summary": "## Branch Summary\n本分支基于第一性原理计算，确认了MgB₂中σ带与π带电子-声子耦合强度的显著差异：σ带强耦合（λ_σ≈0.9）主导了高Tc（~39 K），而π带弱耦合（λ_π≈0.4）对应较小的能隙。带间散射矩阵元V_σπ虽然非零，但对总Tc的贡献较弱，主要修正双能隙的比值和温度依赖性。已定量提取Eliashberg函数α²F(ω)的分带投影，证明双能隙机制的核心是电子态在费米", "failure_reason": ""}, {"node_id": "d1_n1", "hypothesis": "MgB2中硼同位素效应显著且与能隙结构相关，σ带和π带可能表现出不同的同位素指数，从而揭示声子媒介配对的具体角色。", "status": "succeeded", "score": 0.0, "recommended": "unknown", "summary": "## Branch Summary\n本分支探索MgB₂中硼同位素效应与双带超导能隙结构的关联，假说认为σ带和π带应表现出不同的同位素指数，从而直接揭示硼声子对两个能带配对的差异贡献。目标是通过合成不同¹⁰B/¹¹B比例的单晶，测量各向异性能隙的位移并计算带分辨同位素系数。调查发现，尽管理论预测强烈且粉末样品间接证据支持带依赖同位素效应，但单晶合成在实验上遭遇巨大障碍，导致本分支目前无法按原定路线推", "failure_reason": ""}, {"node_id": "d1_n2", "hypothesis": "MgB2的超导配对对称性为s波，但晶格缺陷或掺杂可能诱导局域时间反演对称性破缺态，产生非常规的超导序参量。", "status": "succeeded", "score": 0.63, "recommended": "prune", "summary": "## Branch Summary\n本分支假设 MgB₂ 的超导配对对称性以 s 波为主，但晶格缺陷或化学掺杂可能诱导局域时间反演对称性破缺（TRSB），产生非常规超导序分量。通过梳理现有准粒子干涉扫描隧道谱（QPI-STM）和精密磁力矩测量数据，未发现 MgB₂ 中明确支持局域 TRSB 的证据。QPI 实验显示散射幅值极度各向异性，但并未出现时间反演破缺所要求的非互易散射特征；磁力矩测量在纯净", "failure_reason": ""}], "thread_id": "tree-20b27c96-c2c988"}
+

@@ -1,0 +1,51 @@
+== 胍基 raw 命中（未过钝化过滤）: 0
+== 脒基 raw 命中: 0
+
+== N-oxide 被排除数: 14 [('z002027', 'O=C1CN=C(c2ccccc2Cl)c2cc([N+](=O)[O-])ccc2N1'), ('z002133', 'CN1C(=O)CN=C(c2ccccc2F)c2cc([N+](=O)[O-])ccc21'), ('z002683', 'Cc1ccc(C(=O)c2cc(O)c(O)c([N+](=O)[O-])c2)cc1'), ('z015358', 'Cc1ncc([N+](=O)[O-])n1CC(O)CCl'), ('z015439', 'CCOC(=O)C1=C(C)NC(C)=C(C(=O)OC)C1c1cccc([N+](=O)[O-])c1')]
+== 形式正电 N（Tier A）行数: 12 原子数: 12
+   其中芳香 N+（吡啶鎓类）原子数: 2
+
+== 四工具全错（action_correct 全 False）分布：错几个工具 -> 行数
+    {0: 318, 1: 262, 2: 82, 3: 56, 4: 12}
+   730 上四工具全错行数: 12
+      z002742 0 terminal_no_conflict CC(C)COCC(CN(Cc1ccccc1)c1ccccc1)N1CCCC1
+      z002750 0 terminal_no_conflict CCOc1ccc(NC(C)=O)cc1
+      z002958 0 terminal_no_conflict CCCCC1C(=O)N(c2ccccc2)N(c2ccccc2)C1=O
+      z002997 0 terminal_no_conflict O=c1[nH]c2ccccc2n1CCCN1CCC(n2c(=O)[nH]c3cc(Cl)ccc32)CC1
+      z012532 1 terminal_no_conflict CO/N=C(\C(=O)N[C@@H]1C(=O)N2C(C(=O)O)=C(CSc3nc(=O)c(=O)[nH]n
+      z013208 1 terminal_no_conflict CO/N=C(\C(=O)N[C@@H]1C(=O)N2C(C(=O)O)=C(COC(N)=O)CS[C@H]12)c
+      z013853 0 terminal_no_conflict CC(C)(C)c1ccc(C(=O)CCCN2CCC(OC(c3ccccc3)c3ccccc3)CC2)cc1
+      z034577 0 terminal_no_conflict O=C1Nc2ccc(Cl)cc2[C@@](C#CC2CC2)(C(F)(F)F)O1
+      z034653 0 terminal_no_conflict CN(C)C(=O)C(CCN1CCC(O)(c2ccc(Cl)cc2)CC1)(c1ccccc1)c1ccccc1
+      z070783 0 terminal_no_conflict NC(N)=NCC1COC2(CCCCC2)O1
+      z070888 0 terminal_no_conflict CC[N+](C)(C)Cc1ccccc1Br
+      z070909 1 terminal_no_conflict Cn1nnnc1SCC1=C(C(=O)O)N2C(=O)[C@@H](NC(=O)[C@H](O)c3ccccc3)[
+   400 冲突行内四工具全错: 0
+
+== InChIKey 完全相同的组:
+   key: HXHWSAZORRCQMX-UHFFFAOYSA-N
+       z002909 | truth= 1 | state= terminal_reproducible_cross_family_conflict | preds= {'admet_ai_1_4_0': 1, 'deeppurpose_bbb_molnet_cnn': 0, 'deeppurpose_bbb_molnet_morgan': 1, 'deeppurpose_bbb_molnet_mpnn': 1} | CCCSc1ccc2nc(NC(=O)OC)[nH]c2c1
+       z015780 | truth= 1 | state= terminal_reproducible_cross_family_conflict | preds= {'admet_ai_1_4_0': 1, 'deeppurpose_bbb_molnet_cnn': 0, 'deeppurpose_bbb_molnet_morgan': 1, 'deeppurpose_bbb_molnet_mpnn': 1} | CCCSc1ccc2[nH]c(NC(=O)OC)nc2c1
+
+== 骨架层(前14位)重复组明细:
+   skeleton: IAKHMKGGTNLKSZ
+       z000364 | IAKHMKGGTNLKSZ-INIZCTEOSA-N | truth= 0 | state= terminal_reproducible_cross_family_conflict | COc1cc2c(c(OC)c1OC)-c1ccc(OC)c(=O)cc1[C@@H](NC(C)=O)CC2
+       z021608 | IAKHMKGGTNLKSZ-UHFFFAOYSA-N | truth= 1 | state= terminal_reproducible_cross_family_conflict | COc1cc2c(c(OC)c1OC)-c1ccc(OC)c(=O)cc1C(NC(C)=O)CC2
+   skeleton: KWTSXDURSIMDCE
+       z002162 | KWTSXDURSIMDCE-QMMMGPOBSA-N | truth= 1 | state= terminal_no_conflict | C[C@H](N)Cc1ccccc1
+       z020714 | KWTSXDURSIMDCE-UHFFFAOYSA-N | truth= 1 | state= terminal_no_conflict | CC(N)Cc1ccccc1
+   skeleton: HXHWSAZORRCQMX
+       z002909 | HXHWSAZORRCQMX-UHFFFAOYSA-N | truth= 1 | state= terminal_reproducible_cross_family_conflict | CCCSc1ccc2nc(NC(=O)OC)[nH]c2c1
+       z015780 | HXHWSAZORRCQMX-UHFFFAOYSA-N | truth= 1 | state= terminal_reproducible_cross_family_conflict | CCCSc1ccc2[nH]c(NC(=O)OC)nc2c1
+   skeleton: UCTWMZQNUQWSLP
+       z002936 | UCTWMZQNUQWSLP-VIFPVBQESA-N | truth= 0 | state= terminal_no_conflict | CNC[C@H](O)c1ccc(O)c(O)c1
+       z063416 | UCTWMZQNUQWSLP-UHFFFAOYSA-N | truth= 0 | state= terminal_no_conflict | CNCC(O)c1ccc(O)c(O)c1
+   skeleton: GSDSWSVVBLHKDQ
+       z015738 | GSDSWSVVBLHKDQ-UHFFFAOYSA-N | truth= 1 | state= terminal_reproducible_cross_family_conflict | CC1COc2c(N3CCN(C)CC3)c(F)cc3c(=O)c(C(=O)O)cn1c23
+       z034775 | GSDSWSVVBLHKDQ-JTQLQIEISA-N | truth= 1 | state= terminal_reproducible_cross_family_conflict | C[C@H]1COc2c(N3CCN(C)CC3)c(F)cc3c(=O)c(C(=O)O)cn1c23
+   skeleton: JAQUASYNZVUNQP
+       z020806 | JAQUASYNZVUNQP-PVAVHDDUSA-N | truth= 1 | state= terminal_reproducible_cross_family_conflict | CN1CC[C@@]23CCCC[C@@H]2[C@@H]1Cc1ccc(O)cc13
+       z034662 | JAQUASYNZVUNQP-USXIJHARSA-N | truth= 1 | state= terminal_reproducible_cross_family_conflict | CN1CC[C@]23CCCC[C@H]2[C@H]1Cc1ccc(O)cc13
+   skeleton: ODQWQRRAPPTVAG
+       z034777 | ODQWQRRAPPTVAG-UHFFFAOYSA-N | truth= 1 | state= terminal_no_conflict | CN(C)CCC=C1c2ccccc2COc2ccccc21
+       z070883 | ODQWQRRAPPTVAG-BOPFTXTBSA-N | truth= 1 | state= terminal_no_conflict | CN(C)CC/C=C1/c2ccccc2COc2ccccc21

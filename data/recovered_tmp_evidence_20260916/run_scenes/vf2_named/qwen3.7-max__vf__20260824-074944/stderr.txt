@@ -1,0 +1,1 @@
+/mnt/ai4sci_develop_fast/mingzeli/.local/bin/claude: 3: exec: /mnt/ai4sci_develop_fast/mingzeli/.local/node/lib/node_modules/@anthropic-ai/claude-code/bin/claude.exe: not found

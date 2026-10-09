@@ -1,0 +1,5 @@
+arXiv:2503.11926
+abs: https://arxiv.org/abs/2503.11926
+pdf: https://arxiv.org/pdf/2503.11926
+topic: CoT监控reward_hacking
+pulled: 2026-08-09 via arxiv MCP (arxiv_get_metadata / arxiv_read_paper)

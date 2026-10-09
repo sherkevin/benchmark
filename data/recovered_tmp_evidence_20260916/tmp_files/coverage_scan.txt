@@ -1,0 +1,2 @@
+fixed_basic_tools/case_sc_satisfy_02/judge.py  F1=True
+    L108: return round(len(ids & EXCLUDED) / len(EXCLUDED), 4)

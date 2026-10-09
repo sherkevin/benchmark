@@ -1,0 +1,3 @@
+event: tree_start
+data: {"thread_id": "tree-263bf9a7-f6261c", "goal": "MgB2超导"}
+

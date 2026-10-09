@@ -1,0 +1,6 @@
+arXiv:2606.05241
+abs: https://arxiv.org/abs/2606.05241
+pdf: https://arxiv.org/pdf/2606.05241
+topic: 【反例】定义三级污染含Explicit Answer Leakage, 明确倡导isolated sandboxes
+pulled: 2026-08-09 反向证伪搜索(主动找反例)
+see: research/差异点证伪复核-20260809.md

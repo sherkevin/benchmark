@@ -1,0 +1,74 @@
+You are a materials scientist. Solve this FOUR-STEP task. Each step's output feeds
+the next step, so an early mistake propagates.
+
+SEED MATERIAL: O6.080Ca1Cu2Ba2Hg1
+DEFINITION: a material is 'high' if Tc >= 90 K, otherwise 'low'.
+
+STEP A - Series peak:
+  The seed belongs to a homologous doping series (same element set, varying oxygen).
+  Measure the series members and report the composition with the MAXIMUM Tc.
+  Call that maximum T*.
+
+STEP B - Filter family B (materials that contains Hg and has exactly 4 elements):
+  threshold1 = T* - 32. Report ALL family-B members with Tc >= threshold1 (set Q1).
+
+STEP C - EXTRAPOLATE to unmeasurable materials:
+  The materials listed under UNMEASURABLE below cannot be measured - the instrument
+  returns 'not probed yet' for them. You must INDUCE the rule that separates high from
+  low Tc using the materials you CAN measure, then PREDICT high/low for each
+  unmeasurable material. Warning: one-factor rules (e.g. 'contains Hg' or
+  'has 5 elements') are wrong on several of them - the governing rule is an interaction.
+
+STEP D - Final pick:
+  Among the unmeasurable materials you predicted 'high' in step C, return the one with
+  the FEWEST elements (break ties by higher expected Tc).
+
+BUDGET: up to 45 get_property calls (enough to measure every measurable material).
+
+MEASURABLE MATERIALS (use identifiers verbatim):
+  O6.080Ca1Cu2Ba2Hg1
+  O6.100Ca1Cu2Ba2Hg1
+  O6.130Ca1Cu2Ba2Hg1
+  O6.140Ca1Cu2Ba2Hg1
+  O6.160Ca1Cu2Ba2Hg1
+  O6.190Ca1Cu2Ba2Hg1
+  O6.210Ca1Cu2Ba2Hg1
+  O6.220Ca1Cu2Ba2Hg1
+  O6.240Ca1Cu2Ba2Hg1
+  O6.270Ca1Cu2Ba2Hg1
+  O6.300Ca1Cu2Ba2Hg1
+  O6.310Ca1Cu2Ba2Hg1
+  O4.081Cu1Ba2Hg1
+  O4.162Cu1Ba2Hg1
+  O4.150Cu1Ba2Hg1
+  O4.220Cu1Ba2Hg1
+  O4.096Cu1Ba2Hg1
+  O4.097Cu1Ba2Hg1
+  O4.180Cu1Ba2Hg1
+  O4.047Cu1Ba2Hg1
+  O4.200Cu1Ba2Hg1
+  O4.101Cu1Ba2Hg1
+  O4.103Cu1Ba2Hg1
+  O4.085Cu1Ba2Hg1
+  O6Cu1Ba2Hg1Tl1
+  O10Ca2Cu3Ba2Tl2
+  O6Cu1Cd0.250Ba2Tl1.750
+  O7Cu3Ba2La1
+  O7Cu3Y0.200Ba2La0.800
+
+UNMEASURABLE MATERIALS (step C targets - you must predict these):
+  O6.160Ca1Cu2Ba2Hg1
+  O6.270Ca1Cu2Ba2Hg1
+  O4.180Cu1Ba2Hg1
+  O4.047Cu1Ba2Hg1
+  O4.066Cu1Ba2Hg1
+  O4.160Cu1Ba2Hg1
+  O8Ca0.850Cu2.200Ba2Tl1.800
+  O7Ca1Cu2Sr2Tl0.500Pb0.500
+  O8Cu3Y1Ba1.900La0.100
+  O8Cu4Y1Ba1.870La0.130
+
+When done, call submit_answer with: peak, peak_tc (T*), threshold (threshold1),
+qualifying (Q1 list), predictions (map EVERY unmeasurable composition to "high"/"low"),
+final (step D answer), and rule (the rule you induced).
+Every measured value you cite must come from an actual get_property call.

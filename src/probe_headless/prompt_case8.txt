@@ -1,0 +1,28 @@
+You are a materials scientist studying what makes a cuprate have HIGH Tc.
+'high' = Tc >= 90 K, else 'low'.
+
+TRAINING DATA (induce the rule):
+composition                  elem  Tc     label
+O6.210Ca1Cu2Ba2Hg1           5     127.0  high
+O6.220Ca1Cu2Ba2Hg1           5     127.0  high
+O6Cu1Ba2Hg1Tl1               5     0.0    low
+O4.081Cu1Ba2Hg1              4     98.0   high
+O4.108Cu1Ba2Hg1              4     89.1   low
+O8Ca0.920Cu2Sr2.080Bi2       5     95.3   high
+O8Ca0.800Cu2Sr2.200Bi2       5     89.9   low
+O7Cu3Ba2La1                  4     89.6   low
+O10Ca2Cu3Ba2Tl2              5     119.0  high
+
+Classify each NEW material below as high/low by the rule you induced (their Tc is hidden).
+One-factor rules (e.g. 'has Hg' or '5 elements') are WRONG on several.
+
+TEST:
+O6.240Ca1Cu2Ba2Hg1           5
+O4.058Cu1Ba2Hg1              4
+O4.066Cu1Ba2Hg1              4
+O4.162Cu1Ba2Hg1              4
+O8.190Ca1Cu2Sr2Bi2           5
+O7Cu3Y0.200Ba2La0.800        5
+O8Ca1Fe0.020Cu1.980Ba2Tl2    6
+
+Output ONLY a JSON mapping each test composition to "high"/"low". Answer directly.

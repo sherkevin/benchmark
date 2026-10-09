@@ -1,0 +1,6 @@
+conference: ICLR 2026
+title: RLVMR: Reinforcement Learning with Verifiable Meta-Reasoning Rewards for Robust Long-Horizon Agents
+arxiv_id: 2507.22844v1
+arxiv_abs: http://arxiv.org/abs/2507.22844v1
+pdf_url: https://arxiv.org/pdf/2507.22844v1
+matched_arxiv_title: RLVMR: Reinforcement Learning with Verifiable Meta-Reasoning Rewards for Robust Long-Horizon Agents

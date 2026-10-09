@@ -1,0 +1,14 @@
+HTTP/1.1 301 Moved Permanently
+Server: nginx
+Date: Tue, 08 Sep 2026 10:35:26 GMT
+Content-Type: text/html
+Content-Length: 162
+Connection: keep-alive
+Location: https://cypcomp.ca/
+
+HTTP/2 502 
+server: nginx
+date: Tue, 08 Sep 2026 10:35:28 GMT
+content-type: text/html
+content-length: 150
+

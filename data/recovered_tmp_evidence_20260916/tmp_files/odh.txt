@@ -1,0 +1,11 @@
+HTTP/2 301 
+location: https://onedrive.live.com/redir?resid=CE68682A8D14174E!93425&migratedtospo=true&redeem=aHR0cHM6Ly8xZHJ2Lm1zL3UvcyFBazRYRkkwcWFHak9oZGx4QzNtR24wTEMxTkZkNmc
+x-msnserver: PH2PPF2752B1955
+strict-transport-security: max-age=31536000; includeSubDomains
+ms-cv: A9dOHJ1lrEmnBOr7U54UuQ.0
+x-asmversion: UNKNOWN; 19.1989.820.1012
+x-cache: CONFIG_NOCACHE
+x-msedge-ref: Ref A: B3F76CDDBA584AB0AAFCAEBA58A4EFE6 Ref B: SG2AA1070306054 Ref C: 2026-09-08T10:27:04Z
+date: Tue, 08 Sep 2026 10:27:04 GMT
+content-length: 0
+

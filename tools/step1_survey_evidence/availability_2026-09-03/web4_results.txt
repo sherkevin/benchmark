@@ -1,0 +1,13 @@
+200	https://qvina.github.io	12491B	QVina.github.io | The code for the QuickVina homepage.
+000	https://sourceforge.net/projects/smina/	12491B	QVina.github.io | The code for the QuickVina homepage.
+200	https://predherg.labmol.com.br/	53403B	LabMol
+404	https://www-cohsoftware.ch.cam.ac.uk/camsolmethod.html	290B	404 Not Found
+200	https://services.healthtech.dtu.dk/services/NetMHCpan-4.1/	122594B	NetMHCpan 4.1 - DTU Health Tech - Bioinformatic Services
+200	https://services.healthtech.dtu.dk/services/NetMHCpan-4.2/	384738B	NetMHCpan 4.2 - DTU Health Tech - Bioinformatic Services
+000	https://www.vcclab.org/lab/alogps	384738B	NetMHCpan 4.2 - DTU Health Tech - Bioinformatic Services
+200	https://lazar.in-silico.ch/	1318B	lazar
+000	https://gitlab.com/cheminfIBB/pafnucy	1318B	lazar
+000	https://sourceforge.net/projects/toxtree/	1318B	lazar
+404	https://github.com/CBTC/eTOXlab	266202B	Page not found · GitHub · GitHub
+200	https://www-vendruscolo.ch.cam.ac.uk/camsolmethod.html	12989B	The CamSol method for protein solubility prediction
+200	https://www-vendruscolo.ch.cam.ac.uk/	19915B	The Vendruscolo Laboratory

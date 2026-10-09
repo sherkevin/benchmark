@@ -1,0 +1,48 @@
+Research Paper Track
+
+References
+[1] Shipra Agrawal and Navin Goyal. 2013. Thompson Sampling for Contextual
+Bandits with Linear Payoffs. In Proceedings of the 30th International Conference
+on Machine Learning. 127–135.
+[2] Shuhao Chen, Weisen Jiang, Baijiong Lin, James T. Kwok, and Yu Zhang. 2024.
+RouterDC: Query-Based Router by Dual Contrastive Learning for Assembling
+Large Language Models. In Advances in Neural Information Processing Systems.
+[3] Tao Feng, Yanzhen Shen, and Jiaxuan You. 2025. GraphRouter: A Graph-based
+Router for LLM Selections. In International Conference on Learning Representations.
+[4] Qitian Jason Hu, Jacob Bieker, Xiuyu Li, Nan Jiang, Benjamin Keigwin, Gaurav
+Ranganath, Kurt Keutzer, and Shriyash Kaustubh Upadhyay. 2024. RouterBench:
+A Benchmark for Multi-LLM Routing System. arXiv preprint arXiv:2403.12031
+(2024).
+[5] Kexin Huang, Ting Fu, Lucas M. Glass, Marinka Zitnik, Cao Xiao, and Jimeng Sun.
+2021. Therapeutics Data Commons: Machine Learning Datasets and Tasks for
+Drug Discovery and Development. In Advances in Neural Information Processing
+Systems, Datasets and Benchmarks Track.
+[6] Pooria Joulani, Andras Gyorgy, and Csaba Szepesvari. 2013. Online Learning
+under Delayed Feedback. In Proceedings of the 30th International Conference on
+Machine Learning. 1453–1461.
+
+AAMAS 2027, 3–7 May 2027, Hanoi, Vietnam
+
+[7] Lihong Li, Wei Chu, John Langford, and Robert E. Schapire. 2010. A ContextualBandit Approach to Personalized News Article Recommendation. In Proceedings
+of the 19th International Conference on World Wide Web. 661–670. doi:10.1145/
+1772690.1772758
+[8] Bastian Oetomo, R. Malinga Perera, Renata Borovica-Gajic, and Benjamin I. P.
+Rubinstein. 2023. Cutting to the Chase with Warm-Start Contextual Bandits.
+Knowledge and Information Systems 65, 9 (2023), 3533–3565.
+[9] Pranoy Panda, Raghav Magazine, Chaitanya Devaguptapu, Sho Takemori, and
+Vishal Sharma. 2025. Adaptive LLM Routing under Budget Constraints. In
+Findings of the Association for Computational Linguistics: EMNLP 2025. 23934–
+23949. doi:10.18653/v1/2025.findings-emnlp.1301
+[10] Timo Schick, Jane Dwivedi-Yu, Roberto Dessi, Roberta Raileanu, Maria Lomeli,
+Luke Zettlemoyer, Nicola Cancedda, and Thomas Scialom. 2023. Toolformer:
+Language Models Can Teach Themselves to Use Tools. In Advances in Neural
+Information Processing Systems.
+[11] Zhenqin Wu, Bharath Ramsundar, Evan N. Feinberg, Nathan Gomes, Caleb
+Geniesse, Aneesh S. Pappu, Adele Leswing, and Vijay Pande. 2018. MoleculeNet:
+A Benchmark for Molecular Machine Learning. Chemical Science 9, 2 (2018),
+513–530. doi:10.1039/C7SC02664A
+[12] Shunyu Yao, Jeffrey Zhao, Dian Yu, Nan Du, Izhak Shafran, Karthik Narasimhan,
+and Yuan Cao. 2023. ReAct: Synergizing Reasoning and Acting in Language
+Models. In International Conference on Learning Representations.
+
+

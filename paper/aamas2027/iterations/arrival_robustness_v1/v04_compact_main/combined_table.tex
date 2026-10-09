@@ -1,0 +1,37 @@
+% Compact replacement for the original main-results float AND arrival-results float.
+% Observed values only. Root owns final audit disposition and PDF integration.
+% Requires existing MiraTableFont (9 pt), tnote (8.5 pt), booktabs, and notrun.
+\begin{table*}[t]
+\caption{Selected correctness (\%) in the original manifest order and averaged
+over 128 uniform random orders of the same previously inspected cohort.
+Each order averages the same 30 fixed prior/seed/delay configurations.}
+\label{tab:main-results}\label{tab:mechanism-results}\label{tab:arrival-robustness}
+\begingroup\centering\MiraTableFont
+\setlength{\tabcolsep}{9pt}\renewcommand{\arraystretch}{1.08}
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+& \multicolumn{2}{c}{Natural} & \multicolumn{2}{c}{Controlled drift} \\
+\cmidrule(lr){2-3}\cmidrule(l){4-5}
+Method & Original & 128-order mean & Original & 128-order mean \\
+\midrule
+Random & 83.76 & 86.47 & \notrun & \notrun \\
+Best Fixed & 88.15 & 88.15 & \notrun & \notrun \\
+Frozen & 89.81 & 89.81 & 73.38 & 75.75 \\
+MIRA-Relative & 89.81 & 89.80 & \notrun & \notrun \\
+\midrule
+Online SGD & 89.21 & 89.05 & 84.03 & 82.22 \\
+Greedy LinUCB & 89.72 & 89.70 & 81.15 & 76.90 \\
+BayesianRouter & 89.53 & 89.72 & 80.28 & 79.60 \\
+MIRA-Relay & 89.81 & 89.52 & 87.56 & 86.96 \\
+\midrule
+Fixed-permutation credit & \notrun & 89.86 & \notrun & 71.40 \\
+\midrule
+Retrospective Best Fixed$^{\dagger}$ & 90.45 & 90.45 & \notrun & \notrun \\
+\bottomrule
+\end{tabular}\par
+\tnote{\notrun: absent from that order study's condition-specific main roster,
+not a failed or missing run. $\dagger$ Evaluator-only provider, fixed from the
+original natural cohort. The 128-order mean excludes the original manifest
+order; priors and policy seeds remain fixed.}
+\endgroup
+\end{table*}

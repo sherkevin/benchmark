@@ -1,0 +1,1322 @@
+                                         T RUTHFUL R EVERSE AUCTIONS FOR A DAPTIVE S ELECTION VIA
+                                                   C ONTEXTUAL M ULTI -A RMED BANDITS∗
+
+
+                                                                     Pronoy Patra                                         Sankarshan Damle
+                                                         International Institute of Information                         Microsoft Research India
+                                                         Technology (IIIT), Hyderabad, India                        t-sandamle@microsoft.com
+                                                     pronoy.patra@research.iiit.ac.in
+
+
+
+
+arXiv:2602.14476v1 [cs.GT] 16 Feb 2026
+                                                                  Manisha Padala                                              Sujit Gujar
+                                                           Indian Institute of Technology,                       International Institute of Information
+                                                                 Gandhinagar, India                              Technology (IIIT), Hyderabad, India
+                                                        manisha.padala@iitgn.ac.in                                 sujit.gujar@iiit.ac.in
+
+
+
+
+                                                                                                A BSTRACT
+                                                    We study the problem of selecting large language models (LLMs) for user queries in settings where
+                                                    multiple LLM providers submit the cost of solving a query. From the user’s perspective, choosing
+                                                    an optimal model is a sequential, query-dependent decision problem: high-capacity models offer
+                                                    more reliable outputs but are costlier, while lightweight models are faster and cheaper. We formalize
+                                                    this interaction as a reverse auction design problem with contextual online learning, where the
+                                                    user adaptively discovers which model performs best while eliciting costs from competing LLM
+                                                    providers. Existing multi-armed bandit (MAB) mechanisms focus on forward auctions and social
+                                                    welfare, leaving open the challenges of reverse auctions, provider-optimal outcomes, and contextual
+                                                    adaptation. We address these gaps by designing a resampling-based procedure that generalizes
+                                                    truthful forward MAB mechanisms to reverse auctions and prove that any monotone allocation rule
+                                                    with this procedure is truthful. Using this, we propose a contextual MAB algorithm that learns
+                                                    query-dependent model quality with sublinear regret. Our framework unifies mechanism design and
+                                                    adaptive learning, enabling efficient, truthful, and query-aware LLM selection.
+
+                                         Keywords Contextual MAB, Auction Design, Optimal Auction, Learning
+
+                                         1       Introduction
+                                         Large Language Models (LLMs) [20] increasingly shape the way individuals and organizations make decisions,
+                                         collaborate, and innovate, reflecting their growing role as general-purpose AI systems [21, 23, 22, 24]. Beyond
+                                         single-turn tasks, recent work deploys LLMs as agentic systems that plan, act, and interact with tools or other LLMs to
+                                         complete complex objectives [1, 2]. In both single-agent and multi-agent settings, LLM Providers (e.g., OpenAI [25] or
+                                         Anthropic [26]) accelerate adoption by releasing multiple model variants that explicitly trade off capability, latency, and
+                                         cost [4, 3]. Concretely, modern LLM deployments have established the problem of selecting an appropriate model for a
+                                         given query. For example, GPT-5 employs a real-time router that dynamically allocates queries between a fast base
+                                         model and a deeper reasoning model, leveraging signals such as task complexity, tool requirements, and explicit user
+                                         intent [3]. However, these routing scenarios focus on internal model orchestration within a single provider, where the
+                                         user may or may not have control over model selection or cost optimization.
+                                         Our Goal. From the perspective of a user, this trade-off remains central: the user derives utility from the model’s
+                                         performance while incurring a cost for using it. Intuitively, high-capacity models offer more accurate or reliable outputs
+                                         but are more expensive, whereas lightweight models are faster and cheaper but may underperform on complex tasks.
+                                             ∗
+                                            Appears as a Full Paper in the Proceedings of the 25th International Conference on Autonomous Agents and Multiagent Systems
+                                         (AAMAS 2026).
+               Truthful Reverse Auctions for Adaptive Selection via Contextual Multi-Armed Bandits
+
+
+By framing the problem from the user’s perspective, we aim to study how a user trades off the quality of a model’s
+output against its usage cost. At the same time, we account for the LLM provider’s ability to elicit the cost of solving a
+query. This formulation provides a foundation for analyzing optimal model selection strategies for the user and the
+design of mechanisms by the provider.
+To formalize this, we focus on two complementary challenges: elicitation and learning. When the expected performance
+of available LLMs for a given query is known, the user faces an elicitation problem. Researchers model this as a
+reverse auction where providers submit costs for processing the query. In mechanism design, the objective may be
+to maximize social welfare or the buyer’s (user’s) utility, the latter corresponding to optimal auction design [9]. If
+model performance were known deterministically, designing a user-optimal reverse auction would be straightforward.
+However, model performance is stochastic and context-dependent; the user must learn it over time. This introduces
+a complementary learning challenge, formalized as a (contextual) sequential optimization problem, where the user
+adaptively identifies which provider performs best for each query. Together, these perspectives unify provider-side cost
+elicitation with user-side adaptive selection, forming the basis for truthful and efficient LLM allocation mechanisms.
+Challenges. Addressing the combined elicitation and learning problem poses several challenges. Generally, researchers
+use multi-armed bandit (MAB) methods [15] as a standard framework for adaptive or sequential optimization problems.
+In the context of mechanism design, existing work on MAB mechanisms primarily focuses on traditional forward
+auctions that measure efficiency in terms of social welfares [11, 12]. These approaches leave two important gaps: (i) no
+prior work studies MAB mechanisms for reverse auctions, where the user acts as a buyer and multiple LLM providers
+bid to solve a query, and (ii) no prior work studies MAB mechanisms for optimal auctions that aim to maximize provider
+utility rather than social welfare. Moreover, to our knowledge, except for [19], no prior work incorporates contextual
+information into these mechanisms. Our work addresses these gaps by designing a mechanism that is both truthful and
+optimal from the LLM provider’s perspective, while enabling users to adaptively learn which model solves a query
+most effectively via a contextual MAB framework.
+Our Approach. Babaioff et al. [11] and Devanur and Kakade [32] showed that any deterministic auction that directly
+embeds a MAB algorithm to learn stochastic parameters suffers substantially higher regret compared to its non-
+strategic counterpart. To address this, Babaioff et al. [11] introduced a randomized resampling procedure that preserves
+truthfulness while retaining the regret guarantees of the underlying MAB algorithm. The key idea is to randomize
+bids in a manner consistent with Bayesian incentive compatibility (BIC), provided that the MAB algorithm itself
+is monotone in allocations. However, this framework is limited to forward auctions optimizing social welfare. In
+contrast, we develop an analogous randomized adjustment procedure tailored to reverse auctions, where the objective is
+user-optimal (cost-minimizing) rather than welfare-maximizing. Once such a truthful reverse procedure is available,
+the remaining challenge lies in designing a contextual MAB algorithm that preserves monotonicity: ensuring that
+lowering the reported cost does not reduce allocation probability. To this end, we propose √TRCM-UCBOPT : a truthful,
+provider-optimal, reverse contextual MAB algorithm that achieves truthfulness and an O( T ) regret bound in reverse,
+stochastic settings.
+Our Contributions. First, we formalize the problem of selecting among competing LLM providers as a optimal
+reverse contextual MAB mechanism, where the user solicits costs from providers and adaptively learns which model best
+solves each query. Second, we adapt the theory of optimal auctions to this reverse setting, showing how provider-side
+incentives can be aligned with user-side selection in our context. Third, we design a novel resampling procedure
+(Algorithm 3), inspired by Babaioff et al. [12] but tailored to reverse, provider-optimal settings rather than forward,
+social welfare–maximizing ones. Fourth, we prove that any monotone allocation rule, combined with our resampling
+procedure, yields a truthful reverse MAB auction (Theorem 3). Last, we instantiate this result with √ TRCM-UCBOPT
+(Algorithm 2) that leverages contextual information to learn model quality over time, achieving O( T ) regret across T
+queries. Together, these results establish the first truthful, reverse, contextual MAB auction for adaptive LLM model
+selection.
+
+
+
+2   Related Work
+
+Here, we review prior work on mechanism design and MABs.
+Multi-Armed Bandits (MABs) The multi-armed bandit (MAB) problem [16, 15] is a fundamental framework for
+sequential decision-making under uncertainty. A lot of variants of Multi-Armed bandits have been made recently, viz,
+combinatorial [48, 47, 46], budgeted [42], sleeping [43], volatile [40], etc. Contextual bandits [17, 18] further extend
+this paradigm by modeling reward distributions as functions of observed contextual information. Applications of MABs
+span diverse domains such as federated learning, tariff design [41], and constrained subset selection [44].
+
+
+                                                            2
+               Truthful Reverse Auctions for Adaptive Selection via Contextual Multi-Armed Bandits
+
+
+A wide range of solution strategies has been developed, most notably Upper Confidence Bound (UCB) methods and
+Thompson Sampling.
+Reverse Auctions We model the LLM provider–user interaction as a reverse auction, building on the classic theory of
+optimal auctions and mechanism design [9, 10]. In a procurement or reverse auction, the buyer (the user, in our setting)
+seeks to minimize cost while ensuring truthful reporting by the sellers (the LLM providers). Several works extend
+Myerson’s framework [9] to procurement settings [13] and to budget-feasible mechanisms [14]. However, contrary to
+our setup, these mechanisms generally assume deterministic valuations.
+LLMs and Multi-Armed Bandits Recent advances in LLMs motivate the need for model routing and selection,
+where a user or system dynamically decides which model to invoke for a given query. Early work focused on static
+model choice based on latency and cost trade-offs [5, 6], while recent methods use dynamic routers that predict query
+complexity and select among heterogeneous models [3, 4, 1, 8]. A new line of research also studies the intersection
+of LLMs with MABs [7, 27, 28]. Dai et al. [7] formulate the multi-LLM selection problem as a cost-aware MAB,
+optimizing performance–cost trade-offs across heterogeneous LLMs under diverse reward models. Poon et al. [28]
+introduces the first contextual bandit framework for adaptive LLM selection under unstructured, dynamically evolving
+prompts, achieving sublinear regret while balancing accuracy and cost. Our formulation complements this line of work
+by introducing an incentive-aware framework: rather than training a router to minimize latency or maximize accuracy,
+we design a mechanism that elicits truthful costs from LLM providers.
+MABs and Mechanism Design In many real-world decision-making scenarios, mechanism design and online learning
+intersect when agents’ private information influences the outcome of a learning process. Specifically, in multi-armed
+bandit (MAB) settings with strategic agents the learner must balance exploration and exploitation while eliciting
+truthful information about privately known parameters that impact reward estimation or allocation. However, since
+these parameters are self-reported, agents may strategically misrepresent them to manipulate the learning process or
+improve their expected payoffs. To ensure truthful participation while maintaining efficient learning, MAB-based
+mechanism design integrates incentive-compatible auction mechanisms into the learning framework [11, 12, 32].
+Classical formulations consider forward auctions, where an auctioneer repeatedly allocates resources to agents with
+private values, aiming to maximize social welfare. Babaioff et al. [11] introduced a resampling-based procedure to
+achieve Bayesian incentive compatibility (BIC) in stochastic MAB environments, a result later extended and refined
+in [12, 32, 38]. Subsequent work has explored combining bandit learning with auction design across domains such as
+crowdsourcing [49], smart grids [35], sponsored search auctions [36], and bidding strategy optimization for displaying
+ads [37], multi-unit procurement [50]. However, these mechanisms primarily optimize social welfare and operate in
+forward auction settings. To our knowledge, only Abhishek et al. [19] incorporate contextual information into MAB
+mechanisms, still within a welfare-maximizing framework. In contrast, our work introduces the first reverse optimal
+MAB mechanism, aligning provider-side incentives with user-side adaptive learning while ensuring truthfulness and
+individual rationality. In summary, no prior work studies reverse, contextual MAB mechanisms, where the user acts as
+a buyer eliciting private costs from multiple LLM providers acting as sellers.
+
+
+3     Preliminaries
+
+We now present the necessary background for our model, and cover the key components of reverse auctions and
+multi-armed bandit (MAB) mechanisms that underpin our approach. Table 1 tabulates the notations used in this paper.
+
+
+3.1   Model
+
+Setup We consider a user U who submits a sequence of queries over rounds t = 1, 2, . . . , T . At each round t, the
+user issues a query qt , and a set of strategic LLM providers, denoted by [M ] = {1, 2, . . . , M }, compete to process it.
+Each provider may differ in capability, latency, and cost, reflecting heterogeneous model architectures or inference
+configurations [4, 3].
+Provider Costs and Bids Each provider i ∈ [M ] has a true private cost ζi per token, representing its internal
+computation cost. For a query qt , provider i would required ni,qt ∈ N tokens, the actual computation or latency cost
+incurred by provider i is ci,t = ζi · ni,qt .
+The strategic provider submits a bid bi,t indicating the price to process the query (the provider submits bids per token,
+it can be easily converted to bid for the query). The goal for the provider would be to earn as much as possible. In
+general, the desirable goal in mechanism (or auction) design is to propose (i) an allocation and (ii) a payment rule that
+incentivizes providers to bid bi,t = ci,t .
+
+
+                                                            3
+                Truthful Reverse Auctions for Adaptive Selection via Contextual Multi-Armed Bandits
+
+
+
+                                                     Table 1: Notations
+                           Symbol           Description
+                           T                Total number of rounds
+                           t                Round index, t ∈ {1, . . . , T }
+                           M                Number of LLM providers
+                           i                Provider index, i ∈ [M ]
+                           qt               Query from the user at round t
+                           xt ∈ Rd          Context vector associated with query qt
+                           ci               True private cost of provider i
+                           c                Cost vector (c1 , . . . , cM )
+                           bi               Bid submitted by provider i
+                           Fi (·), fi (·)   CDF and PDF of i’s cost distribution
+                           θi ∈ Rd          Unknown parameter vector for provider i
+                           ri,t             Realized stochastic reward from provider i at round t
+                           vi,t             True expected reward: θi⊤ xt
+                           v̂i,t            Estimated valuation for provider i at round t
+                           Ai,t (c)         Allocation; 1 if i is chosen at t, else 0
+                           pi,t (c)         Payment to provider i at round t
+                           ui,t (c)         Utility: pi,t (c) − ci · Ai,t (c)
+                           Ψi (ci )         Virtual cost: ci + Ffii(c(ci )
+                                                                       i)
+                           zi (c−i )        Critical cost threshold for i given c−i
+                           ht−1             History up to the start of round t
+                           It               Provider selected at round t by the mechanism
+                           i∗t              Oracle-optimal provider at round t
+                           RT (ALG)         Cumulative regret up to horizon T
+
+
+Allocation (A) and Payments (P) At any round t ∈ [T ], the mechanism determines an allocation At (bt )
+                                                                     X
+                        At (bt ) = {A1,t (bt ), . . . , AM,t (bt )},    Ai,t (bt ) ≤ 1,
+                                                                                   i∈[M ]
+
+where Ai,t (bt ) ∈ {0, 1} where 1 denotes that bidder/LLM i is selected given reported bids bt = (b1,t , . . . , bM,t ). If
+provider i is selected, the user makes a payment pi,t (bt ) to i and others do not receive any payments. Let Pt : pt (bt ) =
+(p1,t (bt ), . . . , pM,t (bt )) capture the payment rule.
+Query Context and User Valuation At round t, query qt is associated with observable features xt ∈ Rd , which may
+include query embeddings or user-specific attributes (e.g., OpenAI’s saved memory feature [31]). Henceforth, we
+identify query qt with xt . For provider i, the expected value to the user of receiving a satisfactory response is modeled
+as
+                                               vi,t = E[ri,t | xt ] = θi⊤ xt ,
+where θi ∈ Rd denotes a parameter vector specific to provider i, and ri,t denotes the realized response quality for query
+xt .
+Utilities Let the user’s total utility at round t be,
+                                                        X                                  
+                                            u0,t :=            Ai,t (bt ) · vi − pi,t (bt ) .
+                                                      i∈[M ]
+
+The utility of provider i is given by                                      
+                                              ui,t :=     pi,t (bt ) − ci,t · Ai,t (bt )                                  (1)
+Note If θi s are known, U’s objective at round t is designing an optimal reverse auction. For completeness, we show how
+it can be done in the next subsection. For ease of exposition: (i) we assume ni,qt to be same for all queries. That is,
+ni = ni,qt ∀qt . Note that, as explained later, the results can be trivially extended for the case when ni,qt s are different.
+With this assumption, ci,t has the same support for all t, say [ci , ci ] with probability density function being fi and
+cummulative distribution function being Fi . Additionally, bi,t s become same for all slots and hence we can represent it
+as bi . (ii) As we would be focusing on a single round, we omit the notation t from the discussion on Optimal Reverse
+Auction.
+
+
+                                                                    4
+                 Truthful Reverse Auctions for Adaptive Selection via Contextual Multi-Armed Bandits
+
+
+3.2   Optimal Reverse Auction
+
+Auctions are typically of two types: (i) forward auction, wherein the auctioneer is a seller, and (ii) reverse auction,
+where the auctioneer is a buyer. The seminal work by Myerson [9] showed how to design an optimal forward auction;
+that is, an auction that maximizes the expected revenue. Researchers also extend these results for different reverse
+auction setups (e.g., Iyengar and Kumar [33]). Here, we show for our settings what an optimal reverse auction is.
+As the bids of other LLM providers are random variables for an arbitrary LLM provider i, we work with expected
+allocations and payments where expectation is w.r.t. the bids of other providers.
+Expected Allocation and Payments We have,
+                                Ai (bi ) = Eb−i [ Ai (bi , b−i ) ] ,             pi (bi ) = Eb−i [ pi (bi , b−i ) ] ,
+where the expectation is taken over the bid profile of all other providers, b−i = (b1 , b2 , . . . , bi−1 , bi+1 , . . . , bm ). The
+expected utility of provider i with true cost ci is therefore
+                                                Ui (bi |ci ) = −ci · Ai (bi ) + pi (bi ).                                       (2)
+
+That is, the provider incurs a cost ci to respond to the query irrespective of its bid bi .
+Mechanism Design Objective The user seeks to maximize her utility u0 subject to ensuring that providers are
+incentivized to truthfully reveal their private costs ci . This requirement of incentive compatibility lies at the heart of
+mechanism design. Additionally, A, P should ensure that no provider incurs loss.
+Definition 1 (Bayesian Incentive Compatible [34]). An LLM selection mechanism is Bayesian Incentive Compatible
+(BIC) if for every provider i ∈ [M ],:
+                                             Ui (ci |ci ) ≥ Ui (bi |ci ), ∀i ∈ [M ]
+Definition 2 (Ex Post Individual Rationality (EPIR) [34]). The LLM selection mechanism satisfies Ex-post Individual
+Rationality (EPIR) if, for every provider i ∈ [M ] and for every possible vector of true costs c = (c1 , . . . , cM ) drawn
+from the support of the cost distributions, the utility of provider i is non-negative:
+                                       ui (c) = pi (c) − ci · Ai (c) ≥ 0,             ∀i ∈ [M ], ∀c ∈ C
+             Q
+where C =       i [ci , ci ].
+
+The overall problem may thus be viewed as designing an optimal reverse auction mechanism for allocating queries to
+providers. It is basically designing A, P that maximize U’s expected utility and satisfy the above two properties.
+With these definitions in place, we state Myerson’s classical characterization of BIC mechanisms for the reverse auction
+setting.
+Theorem 1 (Myerson’s Characterization Theorem for Reverse Auction [9]). A mechanism (A, P) is BIC iff it satisfies
+the following two conditions:
+      1. Ai (·) is non-increasing for all i = 1, . . . , n.
+      2. The utility takes the form:
+                                                                Z ci
+                                        Ui (ci ) = Ui (ci ) +          Ai (s) ds        ∀ci ∈ Ci ; ∀i = 1, . . . , n.
+                                                                 ci
+
+Building on this characterization, the optimal reverse auction can be derived. As, these steps are analogous to the
+original Myerson’s design, we directly state the results. We begin by defining virtual cost for a provider i.
+                                                                                  Fi (ci )
+                                                        Ψi (ci ) = ci +                    ,                                    (3)
+                                                                                  fi (ci )
+and assume a regularity condition that Ψi (·) is strictly increasing in ci [ Myerson [9]]. Under regularity condition, an
+optimal reverse auction’s allocation rule selects the provider that maximizes the positive virtual surplus vi − Ψi (ci ), i.e.,
+selects
+                                     i∗ ∈ arg max{vi − Ψi (ci ) | vi − Ψi (ci ) ≥ 0}
+                                                        i
+Here, we assume {i : vi − Ψi (ci ) ≥ 0} is non-empty. Else, the query cannot be assigned to any provider. The payment
+rule becomes:                                              Z                 ci
+                                               pi (c) = Ai (c) ci +               Ai (c−i , si ) dsi
+                                                                            ci
+
+
+                                                                        5
+               Truthful Reverse Auctions for Adaptive Selection via Contextual Multi-Armed Bandits
+
+
+Regularity implies a threshold form for the allocation: for fixed c−i there exists a critical value zi (c−i ) such that
+Ai (c−i , si ) = 1{si ≤ zi (c−i )}. Hence the integral reduces to max{zi (c−i ) − ci , 0} and, if i wins, the payment
+becomes the critical threshold pi (c) = zi (c−i ). The mechanism is therefore BIC, individually rational and maximizes
+U’s utility. In summary,
+Theorem 2 (Optimal Reverse Auction). Under the regularity assumption that each virtual cost Ψi (ci ) = ci +
+Fi (ci )/fi (ci ) is strictly increasing in ci , a mechanism where
+
+      1. A: selects LLM provider i∗ such that:
+                                         i∗ ∈ arg max{vi − Ψi (ci ) | vi − Ψi (ci ) ≥ 0},
+                                                    i
+
+      2. P: pays the winner
+                        pi∗ (c) = zi∗ (c−i∗ ), zi∗ (c−i∗ ) = sup{s : vi∗ − Ψi∗ (s) ≥ max
+                                                                                       ∗
+                                                                                         {vj − Ψj (cj )}}
+                                                                                     j̸=i
+
+         and pays all others zero,
+
+is an optimal auction for the user to procure LLM service.
+
+Different ni,qt for different Queries Note that, if ni,qt are different for each query, which is very natural, Ψi ’s would
+depend upon query. In that case, we would have to replace Ψi as Ψi,t which in turn depend upon ni,qt . The overall
+notation would become clumsy and hence, we prefer to skip these technicalities for ease of exposition. Furthermore,
+to introduce an optimal reverse auction, we assumed vi,t = E[ri,t |xt ] = θi⊤ xt to be known. However, in our LLM
+provider-user setup, θi s are unknown but can be learnt.
+
+3.3   Stochastic and Unknown Rewards
+
+History and Learning In practical settings, the reward obtained from selecting a provider is stochastic. The user U is
+interested in its mean vi,t ≜ E[ri,t |xt ] = θi⊤ xt where θi ∈ Rd is unknown to U and xt ∈ Rd captures the context of the
+query at round t. Let rIt ,t denote the realized reward from provider It ∈ [M ] at round t ∈ [T ]. Here It ∈ [M ] denotes
+the provider selected for query xt in round t. U can estimate (learn) θi from historical observations. Let ht capture the
+history till round t.
+                                          ht = ht−1 ∪ {xt , It , rIt ,t }, h0 = ∅,
+We model the interaction as a contextual multi-armed bandit (MAB) problem [39], in particular, the above settings is
+also referred to as linear contextual MAB. Let ALG be the algorithm that learns θi s and assigns a new query xt to one
+of the providers based on xt and ht−1 .
+The quality of a contextual bandit algorithm ALG is typically measured by its regret, defined as the difference between
+the cumulative expected reward of an oracle that always selects the optimal provider (given full knowledge of θi ’s), and
+that of the learning algorithm. Formally, if i∗t ∈ arg maxi θi⊤ xt denotes the optimal provider at round t, the cumulative
+regret up to horizon T is
+                                          T h
+                                          X                                            i
+                           RT (ALG) =         θi⊤∗t xt − ψi∗t bi∗t − θI⊤t xt − ψIt (bIt ) ,                            (4)
+                                          t=1
+
+where It is the provider chosen by the learning algorithm ALG at round t. The objective is to design allocation
+mechanisms that achieve sublinear regret (lower the better), i.e., R(T ) = o(T ), ensuring asymptotic convergence to the
+optimal allocation. With appropriately defining rewards, one can easily adapt LinUCB [17] or SupLinUCB [29] for our
+settings. LinUCB-based algorithm
+                          √       would incur Ω(T ) regret, though practically can perform better. SUP-LinUCB-based
+algorithm would incur O( T ) regret. The challenge in the SUP-LinUCB is, when the costs are private, the providers
+can manipulate the learning algorithm. Thus, there is need to carefully design MAB algorithm and payments [32, 11].
+Such auction design is called MAB Mechanism Design.
+MAB Mechanism Design Babaioff et al. [11], Devanur and Kakade [32] address this challenge by first showing that
+any deterministic truthful MAB mechanism must be exploration-separated, and inevitably suffer a regret in the order
+of Ω(T 2/3 ). That is, there exists a fundamental trade-off between truthfulness and learning efficiency. To overcome
+this limitation, Babaioff et al. [12] propose a randomization via random resampling of bids, and demonstrate that it is
+possible to retain regret guarantees of a monotone learning algorithm in the presence of the strategic providers. However,
+their resampling procedure is designed for forward auctions and aims to optimize social welfare. Contrarily, our goal is
+to optimize the user’s utility, i.e., design an optimal reverse auction.
+
+
+                                                             6
+                Truthful Reverse Auctions for Adaptive Selection via Contextual Multi-Armed Bandits
+
+
+4     Our Approach
+In a nutshell, to design an optimal reverse auction with learnable rewards, we require a monotone allocation rule for
+contextual MAB with appropriately defined reward function and a resampling procedure. Towards this, we begin by
+defining monotonicity of the allocation rule. Then, in Section 4.2, we propose two algorithms: REV-BASE L IN UCB-S
+and REV-S UP L IN UCB-S-OPT adapted from SupLinCUB [29] to ensure monotonicity. Section 4.3 introduces our
+resampling procedure, ROSA, and proves that any monotone allocation rule through a contextual MAB algorithm
+(ALG) combined with ROSA ensures truthful reporting of the costs by the providers while retaining regret guarantees
+of ALG.
+
+4.1   Ex-Post Monotonicity
+
+The ex-post monotonicity condition ensures that the allocation rule respects the economic intuition that bidding more
+competitively (i.e., lowering one’s declared cost) should not disadvantage a provider in terms of allocation opportunities.
+More formally,
+Definition 3 (Ex Post Monotone). An allocation rule A is ex-post monotone for a reverse auction if, for every possible
+sequence of context arrivals (x1 , x2 , . . . , xT ) and reward realizations, for each provider i ∈ [M ], for all bids b−i of
+other providers, and for any two possible bids of provider i, b′i ≤ bi , we have:
+                                            Ai (b′i , t) ≥ Ai (bi , t)   for all rounds t.
+Here, Ai (b, t) denotes the total number of times provider i is allocated in the first t rounds when the bid vector is b.
+
+This property is in establishing the truthfulness of mechanisms within our stochastic reverse auction setting. Let ALG
+be a monotone allocation rule.
+
+4.2   Monotone MAB Algorithms
+
+In the literature, two of the most popular MAB algorithms for contextual bandits are, LinUCB [17] and SupLinUCB [29].
+We can leverage these algorithms using net rewards as, vi,t −Ψi (bi ); Ψi (bi ) is subtracted as U’s goal is to deploy optimal
+reverse auction, which selects a provider having the highest vi,t − Ψi (bi ). However, with just this update, the allocation
+won’t be monotone. To this extent, we propose REV-BASE L IN UCB-S (Algorithm 1) and REV-S UP L IN UCB-S-OPT
+(Algorithm 2) that provide monotone allocations.
+Difference between REV-S UP L IN UCB-S-OPT and SupLinUCB Broadly, REV-S UP L IN UCB-S-OPT works
+similarly to SupLinUCB. I.e., it works in stages. Each stage consists of twice the previous number of rounds, thus a
+total O(log T ) stages. In each stage, the algorithm maintains an active set of providers. As the stage progresses, the
+active set keeps eliminating the suboptimal providers. However, unlike SupLinUCB, which considers a common θ, that
+is θi s are same, the context for each provider is different. As such, REV-S UP L IN UCB-S-OPT has independent θi s to
+be learned for each provider i.
+To make SupLinUCB monotone, we decouple learning from the auction by limiting the learning only by the round
+robin method. Compared to SupLinUCB, we select a provider from the active set one by one (refer to Line 7 of
+Algorithm 2). Also, we add an exploitation condition, Lines 25-27, wherein we exploit within the current stage. We
+consider the reward with the confidence subtracted by the virtual cost to match it with the optimal reverse auction
+                                                                                  s                s
+setting (as described in Section 3.2). I.e., the selection is done using v̂i,t + wi,t − Ψi (bi ); wi,t is the confidence term in
+UCB. We defer the proof of the monotonicity of REV-S UP L IN UCB-S-OPT to Section 5.
+
+4.3   ROSA: Resampling Procedure
+
+To avoid exploration-separated mechanisms that incur higher regret for truthful implementation, we need randomization
+in the mechanism. Towards this, we randomly update the bids of the providers through a resampling procedure.
+Motivated from [12, Definition 4.3], we formally define it for our setting next.
+Definition 4 (Reverse Self-Resampling Procedure). Let I be a nonempty interval in R. A reverse self-resampling
+procedure with support I and resampling probability µ ∈ (0, 1) is a randomized algorithm with input bi ∈ I, random
+seed rsi , and output bei (bi ; rsi ) ∈ I, that satisfies the following properties:
+
+      1. For every fixed rsi , bei (bi ; rsi ) is non-decreasing in bi .
+
+      2. With probability 1 − µ, we have bei (bi ; rsi ) = bi . Otherwise, bei (bi ; rsi ) > bi .
+
+
+                                                                   7
+                 Truthful Reverse Auctions for Adaptive Selection via Contextual Multi-Armed Bandits
+
+
+Algorithm 1 REV-BASE L IN UCB-S
+ 1: Input: Parameter α ∈ R+ , History sets {Hi,t }i∈[M ] , where Λi,t ⊆ {1, 2, . . . , t − 1}
+ 2: Observe context vector xt ∈ Rd
+                     i ∈ [M ] do
+ 3: for each providerP
+ 4:     Ai,t ← Id + τ ∈Hi,t xτ xTτ
+               P
+ 5:     gi,t ← τ ∈Hi,t ri,τ xτ
+ 6:    θ̂i,t ← A−1i,t gi,t
+ 7:    // Calculate value estimate and confidence width
+         s       ⊤
+ 8:    v̂i,t ← θ̂i,t x
+                   qt
+ 9:       s
+       wi,t  ← α xTt A−1   i,t xt
+10: end for
+                s                 s
+11: Return: {v̂i,t }i∈[M ] and {wi,t }i∈[M ]
+
+  R EV-GTM: Generic Reverse Transformation Mechanism
+   1: Input: Bid vector b = (b1 , b2 , . . . , bM )
+   2: Output: Allocation and payment (A, P)
+   3: for each provider i ∈ [M ] do
+   4:     Obtain bei = ROSA(bi , µ, ci , rsi )
+   5: end for
+   6: Construct modified bid vector e  b = (be1 , be2 , . . . , bf
+                                                                 M)
+   7: Allocation: Allocate according to monotone rule ALG(e         b)
+   8: Payment:
+   9: for each provider i ∈ [M ] do
+  10:     if ξi = 1 then
+  11:          Set pi ← bi · Ai (x)
+  12:     else
+                                         1
+  13:           Set pi ← bi · Ai (x) +     · Ai (x) · (ci − bi )
+                                         µ
+  14:    end if
+  15: end for
+
+
+
+        3. Consider the two-variable function
+                                   F (ai , bi ) = Pr[ bei (bi ; rsi ) < ai | bei (bi ; rsi ) > bi ], ∀ ai > bi
+           which is called as the distribution function of the reverse self-resampling procedure. For each bi , the function
+           F (·, bi ) must be differentiable and strictly increasing on the interval I ∩ (bi , ci ).
+
+Algorithm 3 presents a construction for a reverse auction with the self-sampling procedure from Definition 4.
+Proposition 1. ROSA is a reverse self-resampling procedure with support R+ and resampling probability µ. The
+                                                               −bi
+distribution function for this procedure is F (ai , bi ) = acii−bi
+                                                                   .
+
+Proof. Properties 1 and 2 in Definition 4 for ROSA follow immediately from the description of Algorithm 3. For
+Property 3, by conditioning on the event bei (bi ; rsi ) > bi , we see that the distribution of bei (bi ; rsi ) is uniform in
+[bi , ai ].
+
+Note that, typically, for each provider we need to use different random seed rsi . Hence, for each provider, the resampling
+procedure is treated as rpi . Let RP be ensemble of these procedure.
+We now illustrate that with a monotone MAB algorithm ALG, one can design a truthful reverse auction using ROSA.
+Suppose we are given a monotone allocation rule ALG and a vector RP of reverse self-resampling procedures of each
+provider i ∈ [M ] that has a resmapling probability µ ∈ (0, 1), support Ti , and output value bei (bi ; rsi ). Based on the
+resampling procedure, we propose a generic transformation that combines ALG, µ, RP into a randomized mechanism
+M = R EV-GTM(ALG, µ, RP). Next, we introduce a couple of desirable properties of any randomized mechanism.
+
+
+                                                                   8
+               Truthful Reverse Auctions for Adaptive Selection via Contextual Multi-Armed Bandits
+
+
+Algorithm 2 REV-SupLinUCB-S-OPT
+ 1: Input: Virtual costs Ψ(b) = (Ψ1 (b1 ), . . . , Ψn (bn ))
+ 2: Initialization:
+ 3: Smax ← ⌈ln T ⌉
+ 4: Λsi,t ← ∅ for all i ∈ [M ], t ∈ [T ], s ∈ [Smax ]
+ 5: for t = 1, 2, . . . , T do
+ 6:      s ← 1 and Â1 ← [M ]
+ 7:      j ← 1 + (t mod n)
+ 8:      repeat
+ 9:         Use REV-BaseLinUCB-S with index sets {Λsi,t }i∈[M ] and context xt to get (v̂i,t
+                                                                                         s
+                                                                                             )i∈Âs and
+               s
+            (wi,t )i∈Âs .
+10:                          s
+            if j ∈ Âs and wj,t  > 2−s then
+11:              // Forced exploration
+12:              Select It = j
+                                                    ′
+13:                         ( ′sets for all stages s ∈ [Smax ]:
+                 Update history
+                    ′        Λsi,t ∪ {t} if s = s′
+                 Λsi,t+1 ←      ′
+                             Λsi,t       otherwise
+14:                    s
+            else if wi,t  ≤ √1T ∀ i ∈ Âs then
+15:             // Pure exploitation (final phase)
+                                               s      s
+16:             Select It = arg maxi∈Âs (v̂i,t     + wi,t ) − Ψi (bi )
+17:             Update index sets for It at all stages:
+                   ′             ′
+                ΛsIt ,t+1 ← ΛsIt ,t ∀s′ ∈ [S]
+18:             Λ0 ← Λ0 ∪ {t}
+19:                    s
+            else if wi,t  ≤ 2−s ∀ i ∈ Âs then
+20:             // Stage advancement
+                           
+21:             Âs+1 ← i ∈ Âs |
+                       s     s
+22:                (v̂i,t + wi,t ) − Ψi (bi ) ≥
+                           s         s
+23:                 max (v̂a,t + wa,t    ) − Ψa (ba ) − 2 · 21−s
+                   a∈Âs
+24:            s←s+1
+25:        else
+26:            // Exploitation within the 
+                                          current stage
+                                              s      s
+27:            Select It = arg maxi∈Âs (v̂i,t  + wi,t  ) − Ψi (bi )
+                  s       s
+28:            Λest ← Λest ∪ {t}
+29:        end if
+30:    until It is selected
+31: end for
+
+
+Definition 5 (Truthfulness in Expectation (Ex-post Incentive Compatibility, EPIC)). For every provider i ∈ [M ] and
+for every realization of other provider’ bids b−i , truthful reporting of its cost bi = ci maximizes the provider’s expected
+utility over the mechanism’s internal randomness. That is, ∀i ∈ M, ∀t
+                                    ui,t (ci , b−i |ci ) ≥ ui,t (bi , b−i |ci )∀bi , ∀b−i , ∀ht−1
+Definition 6 (Universal Ex-post Individual Rationality (EPIR)). For every realization of the mechanism’s randomness,
+each provider’s realized utility is non-negative when bidding truthfully, i.e., ∀i ∈ [M ], ∀t, ∀ht−1
+                                                      ui,t (ci , b−i |ci ) ≥ 0.
+
+Now, we state important result of this section.
+Theorem 3. Consider an arbitrary single-parameter reverse auction domain, and let ALG be a monotone allocation
+rule. Suppose we are given an ensemble RP of self-resampling procedures, where each procedure has resampling
+probability µ ∈ (0, 1). Let the mechanism M = (A, P) = R EV-GTM(ALG, µ, RP) be the mechanism constructed
+from ALG via the self-resampling transformation. Then the mechanism M satisfies the following properties:
+
+      1. EPIC, EPIR
+
+
+                                                                 9
+               Truthful Reverse Auctions for Adaptive Selection via Contextual Multi-Armed Bandits
+
+
+Algorithm 3 ROSA: Reverse OneShot Adjustment, A Non-Recursive Self-Resampling Procedure for Reverse Auction
+Require: Bid bi ∈ [0, ∞), resampling parameter µ ∈ [0, 1], upper cost bound ci , random seed rsi
+ 1: Sample a random variable γi uniformly from [0, 1]
+ 2: Set resampling factor               
+                                        1                      with probability 1 − µ
+                                   ξi =                  ci
+                                        1 + γi             −1    with probability µ
+                                                         bi
+ 3: Construct and return the modified bid bei (bi , rsi ) = ξi bi
+
+
+      2. For m providers and any bid vector b (and any fixed random seed of nature), allocations A(b) and ALG(b)
+         are identical with probability at least 1 − M µ.
+      3. If T = RM
+                 + (all types are positive), and each RPi is the reverse self-resampling procedure, then mechanism
+         M is ex-post no-positive-transfers, and never pays any provider i more than
+                                                                                  
+                                                                                  1
+                                         bi · ALG i (b) + (ci − bi ) · ALG i (b)
+                                                     e                        e      .
+                                                                                  µ
+
+Proof. We begin by stating a theorem which helps to estimate integrals via random sampling.
+Theorem 4 (Theorem 4.2 from [12]). Let I be an non-empty open interval in R and F : I → [0, 1] be any strictly
+increasing function that is differentiable and satisfies
+                                          inf F (z) = 0      and           sup F (z) = 1.
+                                          z∈I                              z∈I
+
+If Y is a random variable with cumulative distribution function F , then
+                                             Z                        
+                                                               g(Y )
+                                                g(z) dz = E ′            .
+                                              I                F (Y )
+
+Part (1) The argument follows the structure of [12]. To establish truthfulness, it suffices to show: (i) the allocation rule
+A is monotone, and (ii) the payment rule satisfies Myerson’s characterization.
+Monotonicity of A follows from the monotonicity of ALG and Property 1 of the reverse self-resampling procedure,
+which ensures that increasing a bid cannot reduce the probability of allocation.
+Note when we write A, we consider the expected allocation over the rs used to alter the bids.
+We have from Myerson’s Characterization.
+                                                                   Z ci
+                                         p̃i (b) = ci Ai (bi ) +            Ai (b−i , u)du
+                                                                      ci
+
+The payment in the mechanism M is:
+                                        pi (b) = bi ALG i (eb) + Ri , where
+                                                 (
+                                                    1
+                                                      ALG i (eb) (ci − ci ) if ξ > 1
+                                           Ri = µ
+                                                    0                       if ξ = 1
+
+We have to show that the expected payment of our mechanism matches Myerson’s Characterization.
+
+                                           E[pi (b)] = E[bi ALG i (eb)] + E[Ri ]
+We have:
+                                                 E[bi ALG i (eb)] = bi Ai (b)
+We need to show that,
+                                                           Z ci
+                                                E[Ri ] =          Ai (b−i , u) du
+                                                            ci
+
+
+
+                                                                 10
+                Truthful Reverse Auctions for Adaptive Selection via Contextual Multi-Armed Bandits
+
+
+Using Theorem 4 with random variable X = bei and function g(u) = Ai (b−i , u), we get
+                         Z ci                     "                                             #
+                                                    Ai (b−i , bei (bi ; rsi ))
+                              Ai (b−i , u) du = E                                 ci > bei > bi
+                          bi                         F ′ (bei (bi ; rsi ), bi )
+                                                  "                                  #
+                                                    ALG i (eb)
+                                              =E                     ci > bi > bi
+                                                                             e
+                                                    F ′ (bei , bi )
+                                                  h                                          i
+                                              = E (ci − bi )ALG i (x) ci > bei > bi
+                                                     h                          i
+                                              = µ · E Ri ci > bei > bi
+                                                   = µ · E [Ri ]
+
+
+The last line follows from the fact that Ri is non-zero only when the bid is resampled.
+Part (2) We can observe from the algorithm that the bids are resampled only with probability µ. So, the allocations
+won’t alter if none of the bids are altered. And the probability of this event would be 1 − M µ
+Part(3) One can observe from the payment structure that the reverse self-resampling procedure satisfies ex-post
+no-positive-transfer.
+
+TRCM-UCBOPT
+
+We propose that the user U deploys the auction as follows: First, it collects the bids from all the LLM providers and
+updates them through ROSA. Second, with updated bids, for every new query, it selects the provider recommended
+by REV-S UP L IN UCB-S-OPT and the payments are computed as given R EV-GTM. We refer to such an auction as
+TRCM-UCBOPT . In summary, TRCM-UCBOPT = R EV-GTM(REV-S UP L IN UCB-S-OPT, µ, RP).
+
+5     TRCM-UCBOPT : Theoretical Analysis
+We now prove that REV-S UP L IN UCB-S-OPT is monotone and hence from Theorem 3, TRCM-UCBOPT is truthful
+reverse contextual MAB auction that optimizes the user’s utility.
+
+5.1   Monotonicity of TRCM-UCBOPT
+
+Theorem 5. The allocation rule induced by REV-S UP L IN UCB-S-OPT is ex-post monotone.
+
+Proof. We consider two bid vectors,
+                                           b = (bi , b−i )   and    b− = (b−
+                                                                           i , b−i ),
+
+where b−                                                                                                           T
+        i < bi and all other bids b−i are fixed. The analysis assumes a fixed, arbitrary sequence of contexts {xt }t=1
+and their corresponding reward realizations.
+                                                               k                            k
+Claim 1 (Bid-Independence of Learning). The value estimates v̂j,t and confidence widths wj,t   computed by the
+REV-S UP L IN UCB-S-OPT for any provider j at any round t and stage k are independent of the bid vector.
+
+Proof. REV-S UP L IN UCB-S-OPT computes its outputs using only the index sets Λsj,t , the sequence of contexts xτ ,
+and rewards rj,τ for τ ∈ Λsj,t . In the main REV-SupLinUCB-S-OPT algorithm, the index sets are updated (i.e., learning
+occurs) only when a provider i is selected during the forced exploration phase (Line [10]) or after an exploitation choice
+(Line [14]). The forced exploration selection is based on a bid-independent round-robin schedule j ← 1 + (t mod n).
+
+
+Claim 2 (Monotonicity of Active Sets). For any two bid vectors b and b− as defined above, for all rounds t ∈ {1, . . . , T }
+and all stages k ∈ {1, . . . , Kmax }, the active sets satisfy the subset property:
+                                                    Âk (b, t) ⊆ Âk (b− , t).
+This claim states that a provider is always active under a more competitive (lower) bid if it is active under a less
+competitive (higher) bid.
+
+
+                                                               11
+                 Truthful Reverse Auctions for Adaptive Selection via Contextual Multi-Armed Bandits
+
+
+Proof by Induction. Base Case (t = 1): At the beginning of round t = 1, the algorithm initializes.
+For the first stage:
+                                           Â1 (b, 1) = M         and         Â1 (b− , 1) = M.
+Thus, Â1 (b, 1) ⊆ Â1 (b− , 1) holds trivially.
+For subsequent stages k > 1 at t = 1, the active sets are determined by elimination steps, following the same logic as
+the inductive step. Hence, the base case holds.
+
+Inductive Hypothesis: Assume the claim holds for all rounds up to τ − 1, i.e.,
+                                          ∀ t′ < τ, ∀ k :         Âk (b, t′ ) ⊆ Âk (b− , t′ ).
+
+
+Inductive Step: Prove for round t = τ : We prove by nested induction on stage k that
+                                                   ∀k :     Âk (b, τ ) ⊆ Âk (b− , τ ).
+
+
+Inner Base Case (k = 1): At the start of round τ ,
+
+                                                Â1 (b, τ ) = N,         Â1 (b− , τ ) = N.
+
+
+Inner Inductive Hypothesis: Assume Âk (b, τ ) ⊆ Âk (b− , τ ) for some stage k.
+
+Inner Inductive Step (Prove for stage k + 1):
+
+Let j ∈ Âk+1 (b, τ ). By definition of the elimination rule (Line 16), this implies:
+1. j ∈ Âk (b, τ )
+2. j satisfies the survival condition:
+                            k      k                                            k      k
+                                                                                           ) − Ψa (ba ) − 21−k .
+                                                                         
+                         (v̂j,τ + wj,τ ) − Ψj (bj ) ≥       max              (v̂a,τ + wa,τ
+                                                          a∈Âk (b,τ )
+
+
+From the inner inductive hypothesis, j ∈ Âk (b− , τ ) as well. Now we show that j satisfies the survival condition under
+b− .
+
+Learning Independence: The history sets Λkj,τ are identical under b and b− due to the bid-independent forced
+exploration rule. Thus,
+                               k
+                             v̂j,τ      k
+                                   and wj,τ are identical under both b and b− .
+
+
+Virtual Cost Regularity:
+
+        • For all j ̸= i: Ψj (b−
+                               j ) = Ψj (bj )
+
+                                                  −
+        • For j = i: since b−
+                            i < bi , we have Ψi (bi ) < Ψi (bi )
+
+Define:
+                                                           k      k
+                                           OVSa (ba ) = (v̂a,τ + wa,τ ) − Ψa (ba ).
+
+The survival condition becomes:
+                                         OVSj (b−
+                                                j )≥           max            OVSa (b−
+                                                                                     a)−2
+                                                                                          1−k
+                                                                                              .
+                                                           a∈Âk (b− ,τ )
+
+
+We compare the two sides:
+
+
+                                                                    12
+                Truthful Reverse Auctions for Adaptive Selection via Contextual Multi-Armed Bandits
+
+
+LHS: Since Ψj (b−
+                j ) ≤ Ψj (bj ), we have
+                                                   OVSj (b−
+                                                          j ) ≥ OVSj (bj ).
+
+RHS: The set Âk (b, τ ) ⊆ Âk (b− , τ ) and OVSa (b−
+                                                    a ) ≥ OVSa (ba ) for all a. Therefore,
+
+                                        max           OVSa (b−
+                                                             a)≥             max          OVSa (ba ).
+                                     a∈Âk (b− ,τ )                        a∈Âk (b,τ )
+
+
+Hence,
+                              OVSj (b−
+                                     j ) ≥ OVSj (bj )
+
+                                           ≥     max          OVSa (ba ) − 21−k
+                                               a∈Âk (b,τ )
+
+                                           ⇒ OVSj (b−
+                                                    j )≥                   max         OVSa (b−
+                                                                                              a)−2
+                                                                                                   1−k
+                                                                                                       .
+                                                                      a∈Âk (b− ,τ )
+
+
+Thus, j ∈ Âk+1 (b− , τ ), proving the inner inductive step.
+
+By induction on both t and stage k, we conclude that
+                                             ∀ t, ∀ k :        Âk (b, t) ⊆ Âk (b− , t).
+
+
+Claim 3 (Monotonicity of Selection for provider i). In any round t and stage k where an exploitation choice is made,
+provider i’s optimistic virtual surplus is strictly higher with bid b−
+                                                                     i than with bid bi , making it a more attractive
+candidate for selection.
+
+Proof. The selection rule during exploitation is
+                                                       arg max OVSa (ba ).
+                                                              a∈Âk
+
+                          k
+From Claim 1, the terms v̂i,t      k
+                              and wi,t are independent of the bid. From Regularity condition, we have, Ψi (b−
+                                                                                                            i ) < Ψi (bi ).
+Therefore,
+                                                  OVSi (b−i ) > OVSi (bi ).
+Since the optimistic virtual surplus for all other providers j ̸= i remains unchanged, provider i is weakly more likely to
+be the argmax with the lower bid b−  i .
+
+
+The Claim 2 and Claim 3 prove that by submitting a lower bid b− i , provider i ensures it will remain in the active set for
+at least as many rounds and stages as it would have with the higher bid bi .
+During any exploitation step, the provider with the highest optimistic virtual surplus (OVS) is chosen. As OVSi (b−
+                                                                                                                  i )>
+OVSi (bi ) while OVSj for j ̸= i remains unchanged, provider i is strictly more competitive when it lowers its bid.
+Since a lower bid guarantees that an provider remains eligible for selection for at least as long and makes it a more
+competitive choice in every selection round, the total number of allocations Ai (b−
+                                                                                  i , T ) must be greater than or equal to
+Ai (bi , T ). This completes the proof.
+
+
+
+5.2   Regret analysis of REV-S UP L IN UCB-S-OPT
+                                                                                        √
+In this subsection, we prove that REV-S UP L IN UCB-S-OPT incurs the regret O( T ). The proof is similar to
+SupLinUCB as our algorithm is derived from it. However, it has certain differences as we need to ensure monotonicity.
+Still, the regret dependency on T remains the same, albeit, constant factors increase (for
+                                                                                        √ REV-S UP L IN UCB-S-OPT,
+dependency on number of providers is quadratic in M , whereas for SupLinUCB, it is M ).
+The difference in the final regret proof is due to (i) rewards are also bid dependent, which is not the case with [29]. (ii)
+We need monotonicity, and hence, our active sets retain the providers in the active set for more rounds than that in
+SupLinUCB. (iii) We need to have an optimal reverse auction (iv) To claim the regret guarantees, we need the following
+lemma.
+
+
+                                                                      13
+                 Truthful Reverse Auctions for Adaptive Selection via Contextual Multi-Armed Bandits
+
+
+Lemma 1. With probability at least 1 − κ, for any round t ∈ [T ] and any stage s ∈ [Smax ], the following hold:
+
+      1. For all i ∈ [M ],
+                                   (v̂ si,t + wi,t
+                                               s
+                                                   ) − Ψi (bi ) ≥ vi,t − Ψi (bi ) ≥ (v̂ si,t − wi,t
+                                                                                                s
+                                                                                                    ) − Ψi (bi ).
+
+      2. The optimal provider is never eliminated: i∗t ∈ Âs .
+
+      3. For any i ∈ Âs ,
+                                                 vi∗t ,t − Ψi∗t (bi∗t ) − vi,t − Ψi (bi ) ≤ 23−s .
+                                                                                        
+
+We begin my stating some lemmas from other papers, that trivially follow for REV-S UP L IN UCB-S-OPT.
+We begin with the following lemma from the seminal paper of UCB.
+Lemma 2 (Lemma 15, [30]). For any t and any stage s,
+                                            ucbsi,t − 2 · wi,t
+                                                           s
+                                                               ≤ vi,t ≤ ucbsi,t       for any i
+where, ucbsi,t = v̂i,t
+                   s      s
+                       + wi,t
+
+The following lemmas from Chu et al. [29] for SupLinUCB are valid of REV-S UP L IN UCB-S-OPT.
+Lemma 3 (Lemma 2, [29]). For each s ∈ [S] and i ∈ N , suppose Λsi,t+1 = Λsi,t ∪ {t}. Then, eigenvalues of Ai,t can
+be arranged so that λji,t ≤ λji,t+1 , for all j and
+                                                                  d
+                                                                  X λji,t+1 − λji,t
+                                                     s2i,t ≤ 10                        .
+                                                                  j=1       λji,t
+
+Lemma 4 (Lemma 3, [29]). Using notation in BaseLinUCB-S and assuming |Λsi,T +1 | ≥ 2, we have
+                                   X              q
+                                          si,t ≤ 5 d|Λsi,T +1 | ln |Λsi,T +1 |.
+                                             t∈Λsi,T +1
+
+Lemma 5 (Lemma 4, [29]). For each s ∈ [S], each t ∈ [T ], and any fixed sequence of feature vectors xt , with t ∈ ΛsIt ,t ,
+the corresponding rewards vIt ,t are independent random variables such that E[vIt ,t ] = θi⊤ xt .
+Lemma 6 (Lemma 6, [29]). For all s ∈ [S] and i ∈ N ,
+                                                                            q
+                                              |Λsi,T +1 | ≤ 5 · 2s (1 + α2 ) d|Λsi,t+1 |.
+
+Proof. Part 1:
+From 2, we have
+                                         s      s          s              s      s
+                                       v̂i,t + wi,t − 2 · wi,t ≤ vi,t ≤ v̂i,t + wi,t        for any i
+
+Subtracting Ψi (bi ), i.e.,
+                      s      s          s                                    s      s
+                    v̂i,t + wi,t − 2 · wi,t − Ψi (bi ) ≤ vi,t − Ψi (bi ) ≤ v̂i,t + wi,t − Ψi (bi )       for any i
+
+
+                              (v̂ si,t + wi,t
+                                          s
+                                              ) − Ψi (bi ) ≥ vi,t − Ψi (bi ) ≥ (v̂ si,t − wi,t
+                                                                                           s
+                                                                                               ) − Ψi (bi ).
+
+
+Part 2: The lemma trivially holds for s = 1. For s > 1, we have Âs ⊆ Âs−1 , and from the algorithm as it advances
+from stage s − 1 to s, it is clear that
+                                            s
+                                           wi,t ≤ 2−(s−1)         and    wis∗t (xt ),t ≤ 2−(s−1) .
+
+From part 1 of the the lemma we have
+                                         (v̂ s−1
+                                             i∗
+                                              t
+                                                 + wis−1
+                                                      ∗
+                                                      t
+                                                         ) − Ψi∗t (bi∗t ) ≥ vi∗t − Ψi∗t (bi∗t ).
+
+
+                                                                    14
+                Truthful Reverse Auctions for Adaptive Selection via Contextual Multi-Armed Bandits
+
+
+                                                                        s
+and for any j ∈ Âs , using Part 1 of the lemma and the upper bound on wi,t , we have
+
+               vi,t − Ψi (bi ) ≥ (v̂ si,t + wi,t
+                                             s                       s
+                                                 ) − Ψi (bi ) − 2 · wi,t . ≥ (v̂ si,t + wi,t
+                                                                                         s
+                                                                                             ) − Ψi (bi ) − 2 · 21−s
+From the definition,
+                                             vis∗t (xt ),t − Ψi∗t (bi∗t ) ≥ v si,t − Ψi (bi ).
+Using this and the above inequalities, we get:
+                                                                 s        s
+                         (v̂ si∗t + wis∗t ) − Ψi∗t (bi∗t ) ≥ max (v̂a,t + wa,t ) − Ψa (ba ) − 2 · 21−s
+                                                          a∈Âs
+
+which is the Line[21] from the Algorithm 2.
+Hence, the provider i∗t (xt ) will belong to Âs for all s (i.e., it will never be eliminated for context xt ) due to the rule
+defined in Line[21], Algorithm 2.
+
+Part 3: From Line[21] of Algorithm 2, we have
+                                  s      s
+                               (v̂i,t + wi,t ) − Ψi (bi ) ≥ (v̂ si∗t + wis∗t ) − Ψi∗t (bi∗t ) − 2 · 21−s
+
+Using part 1 of the lemma, for provider i we have:
+                                           (v̂ si,t − wi,t
+                                                       s
+                                                           ) − Ψi (bi ) ≤ vi,t − Ψi (bi ).
+            s
+Adding 2 · wi,t to each side
+                                     (v̂ si,t + wi,t
+                                                 s                                         s
+                                                     ) − Ψi (bi ) ≤ vi,t − Ψi (bi ) + 2 · wi,t .
+Using part 1 of the lemma, for optimal provider i∗t we have:
+                                        (v̂ si∗t + wis∗t ) − Ψi∗t (bi∗t ) ≥ vi∗t − Ψi∗t (bi∗t ).
+
+Substituting these values,
+                                                          s
+                                   vi,t − Ψi (bi ) + 2 · wi,t ≥ vi∗t − Ψi∗t (bi∗t ) − 2 · 21−s
+
+Rearranging the terms, we get:
+                                 (vi∗t − Ψi∗t (bi∗t )) − (vi,t − Ψi (bi )) ≤ 2 · 21−s + 2 · wi,t
+                                                                                             s
+
+
+
+We can simplify the RHS as follows:
+                                            2 · 21−s + 2 · wi,t
+                                                            s
+                                                                = 22−s + 2 · 21−s
+                                                                     = 2 · 22−k
+                                                                     = 23−k
+
+Hence,
+                                         (vi∗t − Ψi∗t (bi∗t )) − (vi,t − Ψi (bi )) ≤ 23−k
+
+
+
+We restrict the learning during round-robin ordering only (Lines 10-13, Algorithm 2), to which we add an additional
+decision rule for provider selection (Line 27). Note that, this additional rule was not used in Chu et al. [29]. Hence, the
+main challenge is to bound the number of rounds of provider selection, which is done using this decision rule. (We refer
+to it as Λsest in our analysis.) To this extent, we introduce some notations also mentioned in the algorithm:
+                                                                                                                 s
+Let Λ0 be the set of rounds in which the provider in pure exploitation phase was selected (Lines [14-17]). Let
+                                                                                                             S Λsest be
+                                                                                                       s
+the set of rounds the provider was selected in exploitation in current phase (Lines [25-27]), and let ΛT +1 = i Λi,T +1 .
+The expression in Claim 4 will be useful to bound the regret.
+Claim 4. At each stage s, |Λsest | ≤ (n − 1) · |ΛsT +1 |.
+
+
+                                                                   15
+               Truthful Reverse Auctions for Adaptive Selection via Contextual Multi-Armed Bandits
+
+
+Proof. Let’s consider M consecutive rounds for any stage s. Assume selection of the provider is done as per Lines[25-
+27] for each of the M rounds. Note that provider selection in this decision block is done if and only if there exists a
+                                                                                     s
+provider j such that j ̸= k (where k is the designated provider for the round), and wj,t > 2−s . After M consecutive
+rounds, each provider has received its designated round (as in Line[7]).
+                                s
+Hence, if for some provider k, wk,t > 2−s , then this provider k should be selected on its designated round.
+Assuming selection in Lines [25–27] occurs for M consecutive rounds leads to a contradiction. Thus, at least one
+provider must be selected in its designated round within these M rounds. Hence, the provider is selected in Lines [25–27]
+for at most M − 1 rounds. Until the condition in Line [14] is satisfied, the claim holds at every stage s.
+
+                                                  √       
+Theorem 6. REV-S UP L IN UCB-S-OPT has regret O M 2 dT ln T with probability at least 1 − κ, if it is run with
+    q
+α = 12 ln 2TκM .
+
+                  √
+Proof. As 2−S ≤ 1/ T , we have                                            [
+                                            {1, . . . , T } = Λ0 ∪            ΛsT +1 ∪ Λsest .
+                                                                          s
+
+
+Now, the total regret can be written as
+                                                T h
+                                                X                                       i
+                             RT (ALG) =             θi⊤∗t xt − ψ bi∗t − θI⊤t xt − ψ (bIt ) ,
+                                                t=1
+
+Rearranging the summation by partitioning into Λ0 , ΛsT +1 , and Λsest , we get:
+                                   X h                                        i
+                    RT (ALG) =            θi⊤∗t xt − ψ bi∗t − θI⊤t xt − ψ (bIt )
+                                     t∈Λ0
+                                                                                                                  
+                                          S           X h
+                                          X                                                                    i
+                                                                  θi⊤∗t xt − ψ bi∗t        − θI⊤t xt − ψ (bIt ) 
+                                                                                                               
+                                     +          
+                                          s=1       t∈ΛsT +1
+                                           X h                                                   i
+                                     +                 θi⊤∗t xt − ψ bi∗t        − θI⊤t xt − ψ (bIt ) .
+                                          t∈Λsest
+
+
+Using the Claim and Lemma results, we get
+                                     S
+                           2        X       X h                                     i
+                     RT ≤ √ |Λ0 | +     M        θi⊤∗t xt − ψ bi∗t − θI⊤t xt − ψ (bIt )
+                            T       s=1   t∈Λs             T +1
+
+                                                S X
+                                                  M
+                             2                  X
+                          ≤ √ |Λ0 | + M         8 · 2−s · |Λsi,T +1 |
+                              T         s=1 i=1
+                                          M X S
+                             2          X                                q
+                          ≤ √ |Λ0 | + M           40 · (1 + ln(2T M/κ)) · d |Λsi,T +1 |
+                              T          i=1 s=1
+                             2                                      √
+                          ≤ √ |Λ0 | + M 2 · 40 · (1 + ln(2T M/κ)) · ST d.
+                              T
+Hence,                                   √                            √
+                                   RT ≤ 2 T + 40M 2 (1 + ln(2T M/κ)) · ST d.
+
+
+From Theorems 2, 3, 5, and 6, the reward structure used for arms in REV-S UP L IN UCB-S-OPT and the definition of
+TRCM-UCBOPT , we conclude,
+                                                                                                              √
+Corollary 1. TRCM-UCBOPT , is EPIC, EPIR, optimal reverse auction that learns θi s with regret guarantee of O( T ).
+
+
+                                                                     16
+                Truthful Reverse Auctions for Adaptive Selection via Contextual Multi-Armed Bandits
+
+
+6   Experimental Analysis
+
+Simulation environment Our experimental study instantiates TRCM-UCBOPT . For each query qt , t ∈ [T ], we sample
+a d = 5 dimensional Gaussian context xt ∼ N (0, Σ), where Σ blends a diagonal scale of 0.2 with off-diagonal
+correlations of 0.05. Four strategic providers submit bids drawn from provider-specific log-normal virtual-value models:
+for provider i, the latent parameters (µi , σi ) depend affinely on xt through a learned context matrix and a scale factor of
+0.15.
+The Gaussian reward model induces light-tailed, mean-zero perturbations around the linear signal ⟨θi , xt ⟩, keeping
+deviations symmetric and controlled at the σi scale. To stress our mechanism with asymmetric noise, we also study an
+exponential sampling scheme that first maps the linear score through
+
+                                                 λi,t = softplus(⟨θi , xt ⟩)
+
+to ensure positivity, and then draws
+                                                    Ri,t ∼ Exp(λi,t ).
+
+Here, the reward’s mean is λ−1                     −2
+                             i,t and its variance λi,t , yielding strictly non-negative observations punctuated by rare,
+high-magnitude outcomes. Contrasting regret and revenue under these two noise regimes, therefore, probes how
+S UP L IN UCB-S-OPT copes with centered, light-tailed fluctuations versus skewed, heavy-tailed shocks that better
+emulate sporadic windfall bids.
+We fix the exploration parameter of REV-S UP L IN UCB-S-OPT at α = 0.75 and regularize the Gram matrices with
+λ = 1.0. Unless noted otherwise, we operate at horizon T = 100K, and also verify scalability up to T = 106 courtesy
+of incremental Sherman–Morrison updates that sustain per-stage Gram matrices in O(d2 ) time per round.
+Protocol and metrics To obtain statistically stable estimates, we repeat each configuration over (N = 40) independent
+random seeds. For run n, we generate fresh pseudo-random draws for contexts and bids while keeping the structural
+parameters
+ √          fixed. We summarize performance by plotting the averaged cumulative realized regret alongside a scaled
+( T ) reference curve, which highlights the sublinear growth rate and the steady decline of per-round regret. We also
+measure the realized regret in each round, illustrating its convergence toward zero and the reduced dispersion once
+forced exploration subsides. Finally, we chart the cumulative actual revenue next to the clairvoyant benchmark, showing
+how the learned policy progressively narrows the optimality gap while sustaining upside in later rounds.
+Implementation details The simulator is implemented in Python 3.13 with numpy, pandas, and matplotlib. All
+experiments execute on a single workstation (Windows 11, 32 GB RAM); a 40-run sweep at T = 10K completes in
+roughly 45s thanks to the cached Gram inverses.
+
+
+
+
+(a) Averaged cumulative
+                √        realized re- (b) Realized regret per round showing (c) Cumulative actual revenue vs. clair-
+gret with scaled T reference.         convergence toward zero.              voyant benchmark.
+          Figure 1: Regret and revenue curve for TRCM-UCBOPT averaged across N = 40 random seeds.
+
+
+Results We evaluate TRCM-UCBOPT over N = 40 independent random seeds and summarize               √ the averaged trajectories
+in Figure 1. In the figure, Panel (a) plots the cumulative realized regret together with a scaled t guide curve, illustrating
+the expected sublinear growth and confirming that the algorithm steadily reduces the gap relative to the clairvoyant
+benchmark. Panel (b) reports the per-round realized regret, which contracts toward zero once the forced-exploration
+stages conclude, indicating rapid convergence to high-quality selections. Panel (c) compares the cumulative actual
+revenue with the clairvoyant revenue; the two curves tighten over time, showing that the policy captures most of the
+attainable surplus while retaining upside during the later exploitation rounds.
+Figure 2 plots the results for Exponential distribution, and we identical trends vis-a-vis the Gaussian distribution.
+
+
+                                                             17
+               Truthful Reverse Auctions for Adaptive Selection via Contextual Multi-Armed Bandits
+
+
+
+
+(a) Averaged cumulative
+                √        realized re- (b) Realized regret per round showing (c) Cumulative actual revenue vs. clair-
+gret with scaled T reference.         convergence toward zero.              voyant benchmark.
+          Figure 2: Regret and revenue curve for TRCM-UCBOPT averaged across N = 40 random seeds.
+
+
+7   Conclusion
+We introduced the first truthful optimal reverse contextual MAB mechanism for adaptive LLM model selection,
+integrating provider-side cost elicitation with user-side learning. Our randomized resampling procedure, ROSA,
+extends prior forward-auction frameworks to reverse, cost-minimizing settings while preserving truthfulness and
+sublinear regret.
+            √ The resulting TRCM-UCBOPT mechanism aligns incentives between users and LLM providers and
+achieves O( T ) regret. More broadly, our work establishes a foundation for mechanism design in multi-model AI
+ecosystems, where learning and economic incentives must co-evolve.
+Future Work Future extensions could incorporate minimum thresholds on the costs reported by LLM providers. Another
+promising direction is to handle uncertainty in query token requirements and user-side budget limits. Incorporating such
+practical and external constraints would enhance the applicability of our reverse optimal contextual MAB framework to
+real LLM marketplaces.
+
+References
+ [1] Joon Sung Park, Joseph O’Brien, Carrie Jun Cai, Meredith Ringel Morris, Percy Liang, and Michael S. Bernstein.
+     Generative agents: Interactive simulacra of human behavior. Proceedings of the 36th Annual ACM Symposium on
+     User Interface Software and Technology, pages 1–22, 2023.
+ [2] Pengyu Zhao, Zijian Jin, and Ning Cheng. Depth. arXiv preprint arXiv:2309.14365, 2023.
+ [3] OpenAI. GPT-5 System Card. 2025. URL https://cdn.openai.com/gpt-5-system-card.pdf .
+ [4] Anthropic. Claude Opus 4 & Claude Sonnet 4 System Card. 2025. URL https://www.anthropic.com/
+     claude-4-system-card .
+ [5] Qitian Jason Hu, Jacob Bieker, Xiuyu Li, Nan Jiang, Benjamin Keigwin, Gaurav Ranganath, Kurt Keutzer,
+     and Shriyash Kaustubh Upadhyay. Routerbench: A benchmark for multi-LLM routing system. arXiv preprint
+     arXiv:2403.12031, 2024.
+ [6] Jiayi Yuan, Yifan Lu, Rixin Liu, Yu-Neng Chuang, Hongyi Liu, Shaochen Zhong, Yang Sui, Guanchu Wang,
+     Jiarong Xing, and Xia Hu. Who routes the router: Rethinking the evaluation of LLM routing systems. NeurIPS
+     2025 Workshop on Evaluating the Evolving LLM Lifecycle: Benchmarks, Emergent Abilities, and Scaling, 2025.
+     URL https://openreview.net/forum?id=EEPostHMtF .
+ [7] Xiangxiang Dai, Jin Li, Xutong Liu, Anqi Yu, and John Lui. Cost-effective online multi-LLM selection with
+     versatile reward models. arXiv preprint arXiv:2405.16587, 2024.
+ [8] Tao Feng, Yanzhen Shen, and Jiaxuan You. Graphrouter: A graph-based router for LLM selections. arXiv preprint
+     arXiv:2410.03834, 2024.
+ [9] Roger B. Myerson. Optimal auction design. Mathematics of Operations Research, 6(1):58–73, 1981. Publisher:
+     INFORMS.
+[10] Eric Maskin and John Riley. Monopoly with incomplete information. The RAND Journal of Economics,
+     15(2):171–196, 1984. Publisher: JSTOR.
+[11] Moshe Babaioff, Yogeshwer Sharma, and Aleksandrs Slivkins. Characterizing truthful multi-armed bandit
+     mechanisms. Proceedings of the 10th ACM Conference on Electronic Commerce, pages 79–88, 2009.
+[12] Moshe Babaioff, Robert D. Kleinberg, and Aleksandrs Slivkins. Truthful mechanisms with implicit payment
+     computation. Journal of the ACM, 62(2):1–37, 2015. Publisher: ACM.
+
+
+                                                          18
+              Truthful Reverse Auctions for Adaptive Selection via Contextual Multi-Armed Bandits
+
+
+[13] Matthew Cary, Abraham D. Flaxman, Jason D. Hartline, and Anna R. Karlin. Auctions for structured procurement.
+     Proceedings of SODA, 2008, pages 304–313.
+[14] Yaron Singer. Budget feasible mechanisms. 2010 IEEE 51st Annual Symposium on Foundations of Computer
+     Science, pages 765–774, 2010.
+[15] Sébastien Bubeck and Nicolo Cesa-Bianchi. Regret analysis of stochastic and nonstochastic multi-armed bandit
+     problems. Foundations and Trends in Machine Learning, 5(1):1–122, 2012. Publisher: Now Publishers.
+[16] Herbert Robbins. Some aspects of the sequential design of experiments. 1952.
+[17] Lihong Li, Wei Chu, John Langford, and Robert E. Schapire. A contextual-bandit approach to personalized news
+     article recommendation. Proceedings of the 19th International Conference on World Wide Web, pages 661–670,
+     2010.
+[18] Yasin Abbasi-Yadkori, Dávid Pál, and Csaba Szepesvári. Improved algorithms for linear stochastic bandits.
+     Advances in Neural Information Processing Systems, 24, 2011.
+[19] Kumar Abhishek, Shweta Jain, and Sujit Gujar. Designing truthful contextual multi-armed bandits based sponsored
+     search auctions. Proceedings of the 19th International Conference on Autonomous Agents and MultiAgent Systems,
+     pages 1732–1734, 2020.
+[20] Josh Achiam et al. GPT-4 technical report. arXiv preprint arXiv:2303.08774, 2023.
+[21] Guohao Li, Hasan Hammoud, Hani Itani, Dmitrii Khizbullin, and Bernard Ghanem. CAMEL: Communicative
+     agents for “mind” exploration of large language model society. NeurIPS, 36:51991–52008, 2023.
+[22] Yury Pinsky. Google Bard: New Features Update (September 2023). 2023. URL https://blog.google/
+     products/gemini/google-bard-new-features-update-sept-2023/ .
+[23] Microsoft.     Introducing  Microsoft  365  Copilot –   your  copilot for work.
+     2023.                   URL       https://blogs.microsoft.com/blog/2023/03/16/
+     introducing-microsoft-365-copilot-your-copilot-for-work/ .
+[24] Yu Su, Diyi Yang, Shunyu Yao, and Tao Yu. Language agents: Foundations, prospects, and risks. EMNLP:
+     Tutorial Abstracts, pages 17–24, 2024.
+[25] OpenAI. OpenAI language models. 2025. URL https://openai.com .
+[26] Anthropic. Anthropic Claude models. 2025. URL https://www.anthropic.com .
+[27] Jiahang Sun, Zhiyong Wang, Runhan Yang, Chenjun Xiao, John C. S. Lui, and Zhongxiang Dai. Large language
+     model-enhanced multi-armed bandits. Workshop on Reasoning and Planning for Large Language Models, 2025.
+     URL https://openreview.net/forum?id=aUpWZ3B734 .
+[28] Manhin Poon, XiangXiang Dai, Xutong Liu, Fang Kong, John Lui, and Jinhang Zuo. Online multi-LLM selection
+     via contextual bandits under unstructured context evolution. arXiv preprint arXiv:2506.17670, 2025.
+[29] Wei Chu, Lihong Li, Lev Reyzin, and Robert Schapire. Contextual bandits with linear payoff functions. Proceed-
+     ings of the Fourteenth International Conference on Artificial Intelligence and Statistics, pages 208–214, 2011.
+     Publisher: PMLR.
+[30] Peter Auer. Using confidence bounds for exploitation-exploration trade-offs. Journal of Machine Learning
+     Research, 3:397–422, 2003.
+[31] OpenAI. Memory and new controls for ChatGPT.               2024.   URL https://openai.com/index/
+     memory-and-new-controls-for-chatgpt/ .
+[32] Nikhil R. Devanur and Sham M. Kakade. The price of truthfulness for pay-per-click auctions. Proceedings of
+     the 10th ACM Conference on Electronic Commerce, pages 99–106, 2009. doi:10.1145/1566374.1566388. URL
+     https://doi.org/10.1145/1566374.1566388 .
+[33] Garud Iyengar and Anuj Kumar. Optimal procurement mechanisms for divisible goods with capacitated suppliers.
+     Review of Economic Design, 12(2):129–154, 2008. doi:https://doi.org/10.1007/s10058-008-0046-7 . URL
+     https://doi.org/10.1007/s10058-008-0046-7 .
+[34] Noam Nisan, Tim Roughgarden, Éva Tardos, and Vijay V. Vazirani. Algorithmic game theory. Cambridge
+     University Press, Cambridge, 2007.
+[35] Shweta Jain and Sujit Gujar. A multiarmed bandit based incentive mechanism for a subset selection of customers
+     for demand response in smart grids. Proceedings of the AAAI Conference on Artificial Intelligence, 34(02):2046–
+     2053, 2020.
+
+
+                                                        19
+              Truthful Reverse Auctions for Adaptive Selection via Contextual Multi-Armed Bandits
+
+
+[36] Guoju Gao, He Huang, Mingjun Xiao, Jie Wu, Yu-E Sun, and Sheng Zhang. Auction-based combinatorial
+     multi-armed bandit mechanisms with strategic arms. IEEE INFOCOM 2021 - IEEE Conference on Computer
+     Communications, pages 1–10, 2021.
+[37] Mengzhuo Guo, Wuqi Zhang, Congde Yuan, Binfeng Jia, Guoqing Song, Hua Hua, Shuangyang Wang, and
+     Qingpeng Zhang. A Bayesian multi-armed bandit algorithm for bid shading in online display advertising.
+     Proceedings of the 33rd ACM International Conference on Information and Knowledge Management, pages
+     4506–4513, 2024.
+[38] Shweta Jain, Sujit Gujar, Satyanath Bhat, Onno Zoeter, and Y. Narahari. A quality assuring, cost optimal
+     multi-armed bandit mechanism for expertsourcing. Artificial Intelligence, 254:44–63, 2018. ISSN 0004-3702.
+     doi:https://doi.org/10.1016/j.artint.2017.10.001 . URL https://www.sciencedirect.com/science/
+     article/pii/S000437021730125X .
+[39] Tyler Lu, David Pal, and Martin Pal. Contextual multi-armed bandits. Proceedings of the Thirteenth International
+     Conference on Artificial Intelligence and Statistics, pages 485–492, 2010. Publisher: PMLR. URL https:
+     //proceedings.mlr.press/v9/lu10a.html .
+[40] Abhishek Kumar, Andra Siva Sai Teja, Ganesh Ghalme, Sujit Gujar, and Y. Narahari. Regret guarantees for a
+     UCB-based algorithm for volatile combinatorial bandits. Proceedings of the 24th International Conference on
+     Autonomous Agents and Multiagent Systems, pages 2762–2764, 2025.
+[41] Sanjay Chandlekar, Easwar Subramanian, and Sujit Gujar. Multi-armed bandit based tariff generation strategy for
+     multi-agent smart grid systems. Engineering Multi-Agent Systems, pages 113–129, 2023. Publisher: Springer
+     Nature Switzerland, Cham.
+[42] Debojit Das, Shweta Jain, and Sujit Gujar. Budgeted combinatorial multi-armed bandits. Proceedings of the 21st
+     International Conference on Autonomous Agents and Multiagent Systems, pages 345–353, 2022.
+[43] Kumar Abhishek, Ganesh Ghalme, Sujit Gujar, and Yadati Narahari. Sleeping combinatorial bandits. arXiv
+     preprint arXiv:2106.01624, 2021. URL https://arxiv.org/abs/2106.01624 .
+[44] Ayush Deva, Kumar Abhishek, and Sujit Gujar. A multi-arm bandit approach to subset selection under constraints.
+     Proceedings of the 20th International Conference on Autonomous Agents and MultiAgent Systems, pages 1492–
+     1494, 2021.
+[45] Kumar Abhishek, Shweta Jain, and Sujit Gujar. Designing truthful contextual multi-armed bandits based sponsored
+     search auctions. Proceedings of the 19th International Conference on Autonomous Agents and MultiAgent Systems,
+     pages 1732–1734, 2020.
+[46] Sambhav Solanki, Samhita Kanaparthy, Sankarshan Damle, and Sujit Gujar. Differentially private federated
+     combinatorial bandits with constraints. Machine Learning and Knowledge Discovery in Databases, pages 620–637,
+     2023. Publisher: Springer Nature Switzerland, Cham.
+[47] Sambhav Solanki, Sujit Gujar, and Shweta Jain. Fairness and privacy guarantees in federated contextual bandits.
+     Proceedings of the 23rd International Conference on Autonomous Agents and Multiagent Systems, pages 2471–
+     2473, 2024.
+[48] Wei Chen, Yajun Wang, and Yang Yuan. Combinatorial multi-armed bandit: General framework and applications.
+     Proceedings of the 30th International Conference on Machine Learning, pages 151–159, 2013. Publisher: PMLR.
+     URL https://proceedings.mlr.press/v28/chen13a.html .
+[49] Shweta Jain, Ganesh Ghalme, Satyanath Bhat, Sujit Gujar, and Y. Narahari. A deterministic MAB mechanism
+     for crowdsourcing with logarithmic regret and immediate payments. Proceedings of the 2016 International
+     Conference on Autonomous Agents and Multiagent Systems (AAMAS), pages 86–94, 2016. Publisher: International
+     Foundation for Autonomous Agents and Multiagent Systems. Location: Singapore.
+[50] Satyanath Bhat, Shweta Jain, Sujit Gujar, and Y. Narahari. An optimal bidimensional multi-armed bandit
+     auction for multi-unit procurement. Annals of Mathematics and Artificial Intelligence, 85(1):1–19, 2019. DOI:
+     https://doi.org/10.1007/s10472-018-9611-0.
+
+
+
+
+                                                        20
+

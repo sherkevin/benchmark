@@ -1,0 +1,1 @@
+cypstrate: wrote 54 rows, 54 ok, output /mnt/ai4sci_develop_fast/jingwu/benchmark/.bench_runs/drug_prediction/drug_tools_20260908/runs/cypstrate/smoke/20260910T145502Z-0b35d009/adapter_output.csv

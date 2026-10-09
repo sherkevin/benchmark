@@ -1,0 +1,13 @@
+Use v20 as the primary visual reference. Keep its compact cropped landscape composition, four phase tabs, flat-vector editorial style, white background, navy/gray/amber/purple semantic colors, simple icons, medium rounded cards, and short labels. Make one topology correction only.
+
+The exact upper chain is: S_t + A_t → selector → one selected provider → call → terminal record → frozen endpoint judge → chemical correctness. Runtime status goes to gray system failure. System failure and chemical correctness converge into one amber terminal outcome.
+
+The exact lower chain is: terminal outcome → selected outcome → selected-only queue labelled τ_t = t + 1 + D → released outcome → relay update labelled family residual + provider bias → state S_τt → first action at or after τ_t.
+
+CRITICAL ARROW RULES: terminal outcome must have exactly one outgoing arrow, a short elbow going down-left to selected outcome. Delete and do not draw any vertical arrow from terminal outcome to released outcome. Delete any line from terminal outcome to the queue, released outcome, relay update, state, or first action. The selected-only queue is the only source of released outcome and has exactly one incoming arrow from selected outcome. Keep the queue between the two blue outcome cards, visibly blocking any shortcut.
+
+Place t+1 … τ_t−1 and hidden until τ_t above the purple queue. Place the local future state circular arrow above S_τt and D=0: visible before next action below it. Keep the small gray unselected output / not observed badge under the input state without a cross-out mark. Use the four tabs DECIDE, EXECUTE + JUDGE, DELAYED FEEDBACK, UPDATE.
+
+No grid, no table, no swimlane, no long bottom loop, no global feedback arrow, no gradients, no 3-D, no shadows, no verifier, refusal, fallback ledger, diagnostic ledger, second call, extra paragraphs, extra modules, or watermark.
+
+Negative prompt: any terminal outcome to released outcome arrow, terminal outcome to queue arrow, terminal outcome to relay arrow, terminal outcome to state arrow, queue bypass, selected outcome disconnected, queue with two incoming arrows, reverse arrows, upward failure arrow, scattered modules, large empty margins, extra prose, crossed-out card, current truth before action, same-action feedback, instant learning, duplicated state.

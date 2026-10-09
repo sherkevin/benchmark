@@ -1,0 +1,72 @@
+## Arithmetic check (all verified by hand)
+
+### Descriptor trends (per C, ΔC=1) — confirm m05 sits on them
+alogp: C2=1.445, C3=1.835 (Δ+0.390), C4=2.225 (+0.390), C5=2.615 (+0.390), C6=3.005 (+0.390).
+  slope = 0.390, intercept(C=0) = 1.445-2*0.390 = 0.665.  C11 = 0.665+0.390*11 = 0.665+4.290 = 4.955.  m05 alogp=4.956 ✓ (rounding)
+mw: C2=179.22,C3=193.25(+14.03),C4=207.27(+14.02),C5=221.30(+14.03),C6=235.33(+14.03).
+  slope≈14.026, intercept=179.22-2*14.026=151.168.  C11=151.168+14.026*11=151.168+154.286=305.454.  m05 mw=305.46 ✓
+rotb: C2=3,C3=4,C4=5,C5=6,C6=7 → rotb=C+1.  C11=12.  m05 rotb=12 ✓
+=> m05's free descriptors are EXACTLY the linear extrapolation of the C2-C6 trends. Good.
+
+### QED measured points
+C2 m15 0.7621 ; C3 m24 0.7919 ; C4 m28 0.7518 ; C5 m17 0.7498 ; C6 m22 0.7377
+
+### Fit 1: linear on the declining run C3-C6 (upper bound)
+points (3,0.7919)(4,0.7518)(5,0.7498)(6,0.7377)
+slope = covariance/variance:
+ mean C=4.5, mean Q=(0.7919+0.7518+0.7498+0.7377)/4 = 3.0312/4 = 0.75780
+ Sxy = (3-4.5)(0.7919-0.7578)+(4-4.5)(0.7518-0.7578)+(5-4.5)(0.7498-0.7578)+(6-4.5)(0.7377-0.7578)
+     = (-1.5)(0.0341)+(-0.5)(-0.0060)+(0.5)(-0.0080)+(1.5)(-0.0201)
+     = -0.05115 +0.00300 -0.00400 -0.03015 = -0.08230
+ Sxx = (-1.5)^2+(-0.5)^2+(0.5)^2+(1.5)^2 = 2.25+0.25+0.25+2.25 = 5.00
+ slope = -0.08230/5.00 = -0.01646 ; intercept = 0.75780-(-0.01646)(4.5)=0.75780+0.07407=0.83187
+ C11 = 0.83187 + (-0.01646)(11) = 0.83187 - 0.18106 = 0.6508  ≈ 0.651  (UPPER bound)
+
+### Fit 2: linear on all C2-C6
+ mean C=4, mean Q=(0.7621+0.7919+0.7518+0.7498+0.7377)/5 = 3.7933/5 = 0.75866
+ Sxy = (2-4)(0.7621-0.75866)+(3-4)(0.7919-0.75866)+(4-4)(...)+(5-4)(0.7498-0.75866)+(6-4)(0.7377-0.75866)
+     = (-2)(0.00344)+(-1)(0.03324)+(0)(-0.00686)+(1)(-0.00886)+(2)(-0.02096)
+     = -0.00688 -0.03324 +0 -0.00886 -0.04192 = -0.09090
+ Sxx = 4+1+0+1+4 = 10
+ slope = -0.09090/10 = -0.00909 ; intercept = 0.75866-(-0.00909)(4)=0.75866+0.03636=0.79502
+ C11 = 0.79502 -0.00909*11 = 0.79502 -0.09999 = 0.6950  ≈ 0.695 (UPPER bound, smeared)
+
+### Fit 3: quadratic QED = a + b*u + c*u^2, u = C-4  (so C2..C6 -> u=-2..2)
+points: u=-2 Q=0.7621; u=-1 Q=0.7919; u=0 Q=0.7518; u=1 Q=0.7498; u=2 Q=0.7377
+Sum u=0, so b = Σ(u*Q)/Σ(u^2).
+ Σ(u*Q) = (-2)(0.7621)+(-1)(0.7919)+(0)(0.7518)+(1)(0.7498)+(2)(0.7377)
+        = -1.5242 -0.7919 +0 +0.7498 +1.4754 = -0.0909
+ Σ(u^2) = 4+1+0+1+4 = 10
+ b = -0.0909/10 = -0.00909
+ a (intercept, = value at u=0=C4): a = mean(Q) only if symmetric... but with c≠0 need normal eqns.
+For quadratic through 5 symmetric points (u=-2..2), the OLS solution:
+ a = [ΣQ - c Σu^2]/5 ; b as above ; c from Σ(u^2 Q) etc.
+Let me solve c.  Σ(u^2) = 10, Σ(u^4) = 16+1+0+1+16 = 34, Σ(u^2 Q) = (4)(0.7621)+(1)(0.7919)+0+(1)(0.7498)+(4)(0.7377)
+ = 3.0484 +0.7919 +0 +0.7498 +2.9508 = 7.5409
+Normal equations (Σu=0, Σu^3=0): a*Σ(u^2)+c*Σ(u^4) = Σ(u^2 Q)  →  10a + 34c = 7.5409
+ And a*5 + c*Σ(u^2) = ΣQ = 3.7933 → 5a + 10c = 3.7933 → a = 0.75866 - 2c
+Substitute: 10(0.75866-2c) + 34c = 7.5409 → 7.5866 -20c +34c = 7.5409 → 14c = 7.5409-7.5866 = -0.0457
+ c = -0.0457/14 = -0.003264 ; a = 0.75866 -2(-0.003264)=0.75866+0.006528=0.76519
+ b = -0.00909
+ So Q(u) = 0.76519 - 0.00909 u - 0.003264 u^2
+ At C11, u = 11-4 = 7: Q = 0.76519 -0.00909*7 -0.003264*49
+   = 0.76519 -0.06363 -0.15994 = 0.54162  ≈ 0.542 (LOWER bound)
+
+### Quadratic extrapolation sanity vs data
+ Q(u=0)=0.76519 vs actual C4=0.7518 (fit over-shoots middle — quadratic rises through peak, ok).
+ Q(u=2)=0.76519-0.01818-0.013056=0.73395 vs actual C6=0.7377 (close ✓)
+ The C2 point 0.7621 fits Q(-2)=0.76519+0.01818-0.013056=0.77031 (a bit high; C2 slightly below fit).
+ => quadratic is a reasonable concave-down (c<0) fit. Extrapolates to 0.54 at C11.
+
+### Desirability ratio check (geometric-mean QED_max)
+R^(1/8) where R = dMW(305)/dMW(235) · dLP(4.96)/dLP(3.01) · dROTB(12)/dROTB(7)
+If R=0.20 → R^(1/8)=exp(ln0.20/8)=exp(-1.6094/8)=exp(-0.20118)=0.8178 → 0.8178*0.7377=0.6034
+If R=0.25 → R^(1/8)=exp(-1.3863/8)=exp(-0.17329)=0.8410 → *0.7377=0.6204
+If R=0.15 → exp(-1.8971/8)=exp(-0.23714)=0.7889 → *0.7377=0.5820
+So R in [0.15,0.25] → QED in [0.582,0.620], midpoint ≈ 0.60.  Consistent.
+
+### Final pick: 0.59
+- Quadratic fit: 0.542 (lower bound, overfits short flat-decline)
+- Desirability ratio: 0.58–0.62 (principled, my preferred anchor)
+- Linear (decline-only): 0.651 (upper bound, ignores logP-penalty acceleration)
+Central, principled estimate: 0.59.

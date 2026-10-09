@@ -1,0 +1,4 @@
+请比较 data/demo_pipeline/ 下 MgB2.cif 和 Nb3Sn.cif 两种超导材料：
+1. 预测 MgB2.cif 的超导临界温度 Tc 和形成能；
+2. 预测 Nb3Sn.cif 的超导临界温度 Tc 和形成能；
+3. 对比两者的超导性质与热力学稳定性，给出明确的对比结论。

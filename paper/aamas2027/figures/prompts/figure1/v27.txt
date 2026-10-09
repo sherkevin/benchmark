@@ -1,0 +1,25 @@
+Use case: infographic-diagram. Draw a clean, compact Figure 1 method architecture for the MIRA-Relay paper. Use the attached Figure 1 v16 only for its visual density and palette, but redraw the graph. The goal is a paper-ready architecture with one unambiguous state write path and no provider-letter clutter.
+
+FIGURE ROLE
+Explain the method structure: input molecule/endpoint, frozen base scoring, released selected-only state, score synthesis, one tool selector, execution and judging, delayed selected-only release, and the update back to the selected state row. This is not the temporal companion figure.
+
+TEXT
+Never write standalone provider letters “A”, “B”, or “C”, provider names, or arbitrary row identifiers. Use short labels only: Inputs, MIRA-Relay, Execution, Molecule + Endpoint, Features, Frozen scorer, base score, released state, residual, score, Eligible tools, Selector, Selected tool, Call, Return, Judge, Chemical feedback, Runtime ledger, selected-only queue, Release, Update. Equations only q=q⁰+Δ and τ_t=t+1+D. Fewer than 65 English words. No prose sentences.
+
+LAYOUT
+White landscape 2.7:1, flat vector, pale blue central method panel, pale cream execution panel, muted purple lower feedback strip. Use thin navy arrows and distinct icons.
+
+1. INPUTS: left narrow panel contains molecule and endpoint icons labelled “Molecule + Endpoint”. Do not draw an outgoing line from this panel to the released-state register.
+2. METHOD: large center panel. At upper left, Features grid → locked Frozen scorer → slim three-cell base score q⁰. At lower left, a small released-state register has three unlabeled rows and two columns labelled n and s; its middle row is highlighted blue. Register → slim residual vector Δ. q⁰ and Δ → one circular plus → slim score vector q=q⁰+Δ.
+3. SELECTION: immediately to the right of the score vector, draw one compact blue Selector card. Inside or directly attached to the LEFT side of the Selector card, include a small neutral “Eligible tools” tray with three simple tool icons. The tray is part of the Selector input and must not be connected to the released-state register, residual, plus, or score. The score vector has one short arrow into Selector. Selector emits exactly one blue Selected tool token. Do not draw a separate long candidate-menu line across the panel.
+4. EXECUTION: Selected tool → Call → Return record. A valid return → small frozen endpoint Judge → amber Chemical feedback r∈{0,1}. Runtime error from Return → gray Runtime ledger dead-end, with no edge to feedback or state.
+5. FEEDBACK: Chemical feedback → one purple selected-only queue → one purple dashed waiting edge → purple Release clock labelled τ_t=t+1+D → one blue Update box. Place Update at the same vertical height as the highlighted middle row of the released-state register. Draw one short solid blue horizontal arrow from Update into the INTERIOR CENTER of that highlighted row cells. Its arrowhead must be visibly inside the row, never on the outer border, bottom edge, or whitespace. This is the only external edge entering released state. No Release→register bypass, no U-shaped route, no second blue path. The updated row feeds residual and the next score.
+
+GRAPH AUDIT
+There is exactly one path from score to Selector and exactly one selected tool output. There is exactly one path queue→Release→Update→highlighted released-state row. There is no path from Eligible tools to released state. Runtime error stops at Runtime ledger. Every arrowhead visibly lands on the receiving card or cell.
+
+STYLE
+Use the compact visual language of Figure 1 v07/v16: concrete grids, vector cells, one plus operator, document/lock/gear/clock icons, navy text, blue method/update, gray frozen records, amber terminal feedback, muted purple pending/release, white background. No full-canvas grid, swimlane, giant ribbons, crossed-out objects, robots, glossy 3-D, gradients, watermark, or performance numbers. Keep modules dense enough for a seven-inch paper figure.
+
+FINAL NEGATIVE CHECK
+No A/B/C, no family residual, provider bias, extra call, fallback, verifier/refusal, current output, unselected output, duplicate architecture, or temporal timeline. The Eligible tools tray is local to Selector; Update arrow tip is inside the highlighted state row.

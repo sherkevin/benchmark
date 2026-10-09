@@ -1,0 +1,36 @@
+CARDIOLOGY ASSESSMENT NOTE
+Patient: 60-year-old male (DOB 1963-10-03), MRN9838448928
+Date: 2023-12-28
+
+## Findings
+- Aortic root dimension: 5.2 cm on CTA (severely dilated; normal <4.0 cm).
+- Ascending aorta: 4.3 cm on CTA (moderately dilated).
+- Coronary artery calcium (CAC) score: 759 — markedly elevated, >99th percentile for
+  age/sex. Initial chest CTA showed mixed atherosclerotic disease with suspected
+  >50% mid-LAD stenosis.
+- LVEF: 62.4% (preserved). Mild aortic regurgitation noted.
+- Lipid panel: LDL 79 mg/dL on current rosuvastatin 20 mg daily.
+  (Prior LDL was 153 mg/dL; demonstrates good treatment response.)
+
+## Assessment & Plan
+1. Aortic pathology: Aortic root 5.2 cm is approaching but below the surgical
+   threshold of 5.5 cm for a trileaflet valve. Per ACC/AHA guidelines, this
+   warrants close surveillance and referral to the aortic specialty/cardiology
+   surgical group for further evaluation. Heritable aortopathy workup also
+   indicated given the dilatation pattern without obvious secondary cause.
+
+2. Coronary artery disease: With CAC 759 (>99th percentile) and suspected
+   mid-LAD stenosis on initial imaging, dedicated coronary CT angiography is
+   indicated for definitive evaluation. The patient is currently asymptomatic
+   with a non-ischemic stress test, but the high CAC and suspected stenosis
+   justify proceeding with coronary CTA.
+
+3. Lipid management: Continue rosuvastatin 20 mg daily; LDL response is good.
+
+## Orders
+- Coronary CT angiography (CPT 75574)  — for definitive coronary evaluation.
+- Referral: Aortic specialty / cardiology group — for aneurysm evaluation.
+
+Urgency: Routine outpatient follow-up; no acute findings.
+
+— Dr. Steven Grant

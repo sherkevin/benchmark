@@ -1,0 +1,20 @@
+=== encoder/config.json ===
+17910618765037288853  oss://ai4sci-develop-storage/jingwu/benchmark/task49/laya-1c5edc17/encoder/config.json
+
+0.100735(s) elapsed
+=== model.safetensors ===
+9521678683775112186  oss://ai4sci-develop-storage/jingwu/benchmark/task49/laya-1c5edc17/model.safetensors
+
+0.103297(s) elapsed
+=== rl_agent_config.json ===
+4990953942551711953  oss://ai4sci-develop-storage/jingwu/benchmark/task49/laya-1c5edc17/rl_agent_config.json
+
+0.116417(s) elapsed
+=== tokenizer/tokenizer.json ===
+2306272427653560882  oss://ai4sci-develop-storage/jingwu/benchmark/task49/laya-1c5edc17/tokenizer/tokenizer.json
+
+0.100038(s) elapsed
+=== tokenizer/tokenizer_config.json ===
+667310818116431552  oss://ai4sci-develop-storage/jingwu/benchmark/task49/laya-1c5edc17/tokenizer/tokenizer_config.json
+
+0.112458(s) elapsed

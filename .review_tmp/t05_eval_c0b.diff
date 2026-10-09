@@ -1,0 +1,361 @@
+commit c0b41a39cb9830550ab1c5ea486ae6bcddd5e968
+Author: Jing Wu <jingwu.wu@alibaba-inc.com>
+Date:   Fri Aug 7 15:13:06 2026 +0800
+
+    task-05 §2（任务 #53）：grounding 条件③改组成多重集比对（保留 dummy 规范化）
+    
+    四条裁定口径逐字落地：
+    1. edit_op 遵 ADR-0018 §5 H6 升版：算子集 {+n e, −n e}，detail 扩为
+       <token>|<token>*<n> 可携带计数 n；answer_schema 0.2.0→0.3.0 登记
+       （operator enum 5 元收敛 add_atom/remove_atom，工具面 5 元集不变）。
+    2. occupancy 小数计数固定容差 ε=0.02 写死（COMPOSITION_EPSILON，
+       0.019 过 / 0.021 拒边界用例在场）。
+    3. 保留前置：trace 须有 edit_molecule applied=True 行且三元组相符，
+       组成比对在其之上叠加（现有负例语义保持）。
+    4. 跳数 = 编辑序列累计算子总数 ≤2（COMPOSITION_HOP_LIMIT；网关侧
+       edit_molecule 无跳数口径，无冲突）。
+    
+    实现：
+    - evaluate.py 新增纯函数组（#54 E5 质量门复用接口）：composition_of
+      （四形态解析：式串/材料键前段/实体 ID/SMILES，分子侧 SMILES 载体
+      口径剥隐式 H）、apply_composition_edit、composition_equal、
+      parse_edit_detail、_edit_op_hops；条件③身份判据从结构 canonical
+      相等改组成多重集相等，details 落 composition 诊断。
+    - b_partition.json 新增 case_fixture_isolation_v2（组成自洽金标准
+      fixture：aa+F 实跑产物），金标准测试切 v2；v1 与隔离组零改动。
+    - 新增 test_grounding_composition_task05.py（composition_ 组 11 用例：
+      四形态解析/detail 文法/变换正确性/ε 边界/正例/同分异构判相等 H8/
+      差一原子拒/缺 applied 拒/跳数 2 过 3 拒/材料域正例与容差边界）。
+    - 实跑证据 rehearsal_logs/task-05_condition3_composition_realdata.log
+      （分子域 aa+F 真实网关实跑 + 材料域真实晶体键 occupancy 小数）。
+    
+    回归：176 passed + 1 skipped；唯一失败 test_material_key_recompute
+    系他人材料侧在途数据改动（key 列 5,771→17,252），保持 #52 对照口径不动。
+
+diff --git a/src/benchmark/evaluate.py b/src/benchmark/evaluate.py
+index 4e104af..ca916a0 100644
+--- a/src/benchmark/evaluate.py
++++ b/src/benchmark/evaluate.py
+@@ -11,7 +11,7 @@
+   （时刻相等/缺证据）→ 降级为既有行为并给出警告，不改变既有 case 得分。
+   网关录像（gateway.py 输出）走严格模式：相等/缺证据同样判不通过。
+ """
+-import json, logging, os, sys
++import json, logging, os, re, sys
+ 
+ # 任务 #41 Major4：材料侧身份键通道异常一次性告警标志（不重复刷屏）。
+ _material_channel_warned = False
+@@ -554,6 +554,225 @@ def hit_gb(answer, case_id, reader=None):
+     return key in gb_set, gb_set, placeholder
+ 
+ 
++# ── 组成层面 grounding 纯函数（task-05 §2 / task #53，ADR-0018 §5 H6-H9）──────
++# 条件③判法改组成多重集比对：anchor 元素计数按 edit_op（{+n e, −n e} 封闭算子集）
++# 变换后与提交分子式逐元素 |差|≤ε。四条用户裁定口径写死（不得自行变更）：
++#   ① edit_op 算子集 = {add_atom(+n e), remove_atom(−n e)}，detail 可携带计数 n；
++#   ② occupancy 小数计数（材料侧，如 [20*]1.98）用固定容差 COMPOSITION_EPSILON；
++#   ③ 保留前置：trace 须有 edit_molecule applied=True 行且三元组相符（防跳过工具
++#      直编 edit_op 绕 trace grounding）；
++#   ④ 跳数 = 编辑序列累计算子总数（detail 计数 n 之和）≤ COMPOSITION_HOP_LIMIT。
++# composition_of / apply_composition_edit / composition_equal 为稳定复用接口，
++# #54（E5 质量门 composition_grounding_gate）直接调用，签名与行为勿轻动。
++COMPOSITION_EPSILON = 0.02     # 组成多重集相等固定容差（裁定 2，写死）
++COMPOSITION_HOP_LIMIT = 2      # 编辑序列累计算子总数上限（裁定 4，写死）
++# 匿名式 token：[label*]计数——计数可为 occupancy 小数，可省略（省略=1，
++# 与 E1 reduced_formula 口径一致，如材料键前段 [20*]99[32*]50[42*][48*]100）。
++_ANON_FORMULA_TOKEN_RE = re.compile(r'\[(\d+)\*\]([0-9]+(?:\.[0-9]+)?)?')
++_ANON_FORMULA_FULL_RE = re.compile(
++    r'^(?:\[\d+\*\](?:[0-9]+(?:\.[0-9]+)?)?)+$')
++# detail 文法（ADR-0018 §5 H6 / answer_schema 升版登记）：<token> 或 <token>*<n>；
++# token = 真实元素符号（'F'，judge 侧经 E1-03 映射表反查 label）或匿名 label
++# （'42' 或 '[42*]'）；n 为正整数计数，缺省 1（旧 detail='F' 形态向后兼容）。
++_EDIT_DETAIL_RE = re.compile(
++    r'^(?P<tok>\[\d+\*\]|[A-Za-z]{1,2}|\d+)(?:\*(?P<n>[1-9]\d*))?$')
++
++
++def _parse_anon_formula(text):
++    """匿名式片段 '[16*]15[19*]25[22*]3[81*]1' → {label: count}（材料侧计数可为
++    occupancy 小数；计数省略=1）。空串/无 token → None。"""
++    if not isinstance(text, str) or not text.strip():
++        return None
++    comp = {}
++    for m in _ANON_FORMULA_TOKEN_RE.finditer(text):
++        label = int(m.group(1))
++        count = float(m.group(2)) if m.group(2) is not None else 1
++        comp[label] = comp.get(label, 0) + count
++    return comp or None
++
++
++def parse_edit_detail(detail):
++    """edit_op.detail 文法解析（{+n e, −n e} 组成算子参数）。
++
++    文法：<token> 或 <token>*<n>——token = 真实元素符号（'F'/'Cl'，大小写不敏感，
++    归一为首字母大写规范形）或匿名 label（'42' / '[42*]'）；n = 正整数计数，缺省 1。
++    返回 (kind, value, n)：kind∈{'element','label'}，value=元素符号 str 或 int label；
++    非法（非串/空/不合文法）→ None。"""
++    if not isinstance(detail, str):
++        return None
++    m = _EDIT_DETAIL_RE.match(detail.strip())
++    if not m:
++        return None
++    tok, n = m.group('tok'), int(m.group('n') or 1)
++    if tok.startswith('['):
++        return ('label', int(tok[1:-2]), n)
++    if tok.isdigit():
++        return ('label', int(tok), n)
++    return ('element', tok.capitalize(), n)
++
++
++def _element_to_label_map():
++    """judge 侧 E1-03 匿名映射表 element_to_label 读取（映射表只服务 judge 侧
++    评分反查，ADR-0017；走 gateway._load_anon_mapping 既有容错接缝，只读不自建）。
++    缺失 → {}。"""
++    gwmod = _import_gateway()
++    mapping = gwmod._load_anon_mapping() if gwmod is not None else None
++    return (mapping or {}).get('element_to_label') or {}
++
++
++def _smiles_composition(smiles):
++    """dummy atom SMILES → {label: count}：isotope 非 0 原子按 isotope=label 计数
++    （ADR-0017 载体记法 [N*]）；isotope 0 原子（如 edit 添加的真实元素原子）经
++    judge 侧映射表 element_to_label 反查 label。RDKit 缺席/解析失败/映射表缺该
++    元素 → None（不静默降级）。隐式 H 不入组成（RDKit 不计隐式氢）——分子侧
++    组成口径天然不含 H，与 formula 字段的隐式 H 口径差异由调用侧剥离处理。"""
++    try:
++        from rdkit import Chem
++    except ImportError:
++        return None
++    if not isinstance(smiles, str) or not smiles.strip():
++        return None
++    mol = Chem.MolFromSmiles(smiles)
++    if mol is None:
++        return None
++    comp, e2l = {}, None
++    for atom in mol.GetAtoms():
++        iso = atom.GetIsotope()
++        if iso:
++            comp[iso] = comp.get(iso, 0) + 1
++            continue
++        if e2l is None:
++            e2l = _element_to_label_map()
++        sym = atom.GetSymbol()
++        if sym not in e2l:
++            return None
++        comp[e2l[sym]] = comp.get(e2l[sym], 0) + 1
++    return comp or None
++
++
++def composition_of(x, gw=None):
++    """组成（元素计数多重集）统一解析器——task-05 §2（task #53）落码，
++    #54 E5 质量门 composition_grounding_gate 复用接口（签名与行为冻结）。
++
++    签名：composition_of(x, gw=None) -> dict | None
++      x（str）受理四种形态，按序自动判别：
++        ① 纯匿名式串：'[16*]15[19*]25[22*]3[81*]1' 全串匹配（计数可为 occupancy
++           小数如 '[20*]1.98，可省略=1）；
++        ② 材料身份键 '<reduced_formula>_SG<n>'：取 '_SG' 前段按 ① 解析；
++        ③ 实体 ID（需 gw）：查 A 侧身份档 get_entity_A.jsonl——分子实体优先取
++           smiles_map 的 dummy SMILES 走 RDKit 同位素计数（formula 字段含隐式 H
++           而 SMILES 载体不含显式 H，两口径不一致，分子侧以 SMILES 为准），
++           SMILES 缺失回落 formula 字段；晶体实体取 formula 字段按 ① 解析；
++        ④ dummy atom SMILES（需 gw）：走 _smiles_composition。
++      gw = Gateway 实例（judge 侧，持有 _a_identity 身份档）；仅 ①② 两形态可
++      离线（gw=None）解析。
++      返回 {label: count}（材料侧可为小数）；不可解析/查无 → None。
++      本函数返原始组成，**不做隐式 H 剥离**——剥离是分子域比对口径，由调用侧
++      按载体域处置（evaluate_grounding 条件③ / #54 质量门）。"""
++    if not isinstance(x, str) or not x.strip():
++        return None
++    s = x.strip()
++    if _ANON_FORMULA_FULL_RE.match(s):
++        return _parse_anon_formula(s)
++    if '_SG' in s:
++        return _parse_anon_formula(s.split('_SG', 1)[0])
++    identity = getattr(gw, '_a_identity', None) if gw is not None else None
++    if identity and identity[0] and s in identity[0]:
++        rec = identity[0][s]
++        if rec.get('entity_type') == 'crystal':
++            return _parse_anon_formula(rec.get('formula'))
++        smi = (identity[1] or {}).get(s)
++        if smi:
++            comp = _smiles_composition(smi)
++            if comp is not None:
++                return comp
++        return _parse_anon_formula(rec.get('formula'))
++    if gw is not None and ('[' in s or '(' in s or '=' in s or '#' in s):
++        return _smiles_composition(s)
++    return None
++
++
++def apply_composition_edit(comp, operator, detail):
++    """对组成字典施加 {+n e, −n e} 组成算子（ADR-0018 §5 H6 封闭集）。
++
++    入参：comp {label: count} | None；operator ∈ {'add_atom'(+n e),
++    'remove_atom'(−n e)}（封闭集外一律拒绝）；detail 按 parse_edit_detail 文法
++    （<token>|<token>*<n>；元素符号 token 经 judge 侧映射表反查 label）。
++    返回变换后的**新**字典（纯函数，不改入参）；comp 为 None / 算子出集 /
++    detail 非法 / 映射表缺元素 / remove 超出现有计数（容差内视为剥零）→ None。"""
++    if not isinstance(comp, dict) or operator not in ('add_atom', 'remove_atom'):
++        return None
++    parsed = parse_edit_detail(detail)
++    if parsed is None:
++        return None
++    kind, value, n = parsed
++    if kind == 'element':
++        e2l = _element_to_label_map()
++        if value not in e2l:
++            return None
++        label = e2l[value]
++    else:
++        label = value
++    out = dict(comp)
++    if operator == 'add_atom':
++        out[label] = out.get(label, 0) + n
++        return out
++    cur = out.get(label, 0)
++    if cur + COMPOSITION_EPSILON < n:      # 移除超出存量（容差外）→ 非法
++        return None
++    new = cur - n
++    if new <= COMPOSITION_EPSILON:         # 容差内剥零（如 occupancy 1.98 移除 2）
++        out.pop(label, None)
++    else:
++        out[label] = new
++    return out
++
++
++def composition_equal(a, b, epsilon=COMPOSITION_EPSILON):
++    """组成多重集相等：逐元素 |计数差| ≤ ε（裁定 2：occupancy 小数固定容差 0.02）。
++    任一输入 None/非 dict → False。浮点比较附 1e-9 护卫位（2.0-1.98 的浮点
++    残差不得把恰在 ε 边界的判定挤出界）。"""
++    if not isinstance(a, dict) or not isinstance(b, dict):
++        return False
++    for k in set(a) | set(b):
++        if abs(float(a.get(k, 0)) - float(b.get(k, 0))) > epsilon + 1e-9:
++            return False
++    return True
++
++
++def _edit_op_hops(events):
++    """编辑序列累计算子总数（裁定 4 跳数定义）：trace 中全部 edit_molecule
++    applied=True 行的 detail 计数 n 之和（detail 缺省/不可解析计 1）。"""
++    hops = 0
++    for e in events or []:
++        if e.get('tool') != 'edit_molecule':
++            continue
++        args, ret = _event_args_ret(e)
++        if not (isinstance(ret, dict) and 'error_code' not in ret
++                and ret.get('applied') is True):
++            continue
++        parsed = parse_edit_detail(args.get('detail'))
++        hops += parsed[2] if parsed is not None else 1
++    return hops
++
++
++def _anchor_carrier_domain(anchor, judge):
++    """锚点载体域判别（隐式 H 剥离口径）：分子实体/SMILES 载体 → 'molecule'；
++    晶体实体/材料身份键/纯式串 → 'material'；不可判 → None（保守不剥离）。"""
++    if not isinstance(anchor, str) or not anchor.strip():
++        return None
++    s = anchor.strip()
++    identity = getattr(judge, '_a_identity', None) if judge is not None else None
++    if identity and identity[0] and s in identity[0]:
++        return 'material' if identity[0][s].get('entity_type') == 'crystal' \
++            else 'molecule'
++    if '_SG' in s or _ANON_FORMULA_FULL_RE.match(s):
++        return 'material'
++    if '[' in s or '(' in s or '=' in s or '#' in s:
++        return 'molecule'
++    return None
++
++
+ def evaluate_grounding(payload, events, gw=None):
+     """open 类 grounding 三判据（answer_schema.open_grounding_checks 逐条实现）。
+ 
+@@ -562,10 +781,12 @@ def evaluate_grounding(payload, events, gw=None):
+        杜绝判分侧双口径）；
+     ② anchor_in_A：anchor_molecules 非空且每个锚点 ∈ A（实体 ID 全集，或真实
+        SMILES 的 canonical 属 A 分子全集）；
+-    ③ edit_op_reproduces_answer：录像中存在 edit_op 同三元组的 edit_molecule
+-       成功行（applied=True，修复五后为真实判断）且其 result_id 与 answer 同
+-       canonical 形式——离线回放不依赖活体网关会话态（_edit_products 不可用），
+-       以录像成功行为证据源（修复五交接口径）。
++    ③ edit_op_reproduces_answer（task-05 §2 组成口径，ADR-0018 §5 H6/H7）：
++       前置保留——录像中存在 edit_op 同三元组的 edit_molecule 成功行（applied=True，
++       修复五后为真实判断）；身份判据改为组成多重集相等——anchor 元素计数按
++       edit_op（+n e/−n e）变换后与 answer 组成逐元素 |差|≤0.02（同分异构判相等
++       是预期行为，H8）；叠加编辑序列累计算子总数 ≤2 跳数校验（H6）。离线回放
++       不依赖活体网关会话态，以录像成功行为证据源（修复五交接口径）。
+     返回 dict：grounding_pass + 三判据 bool + details 诊断明细。
+     """
+     gw = gw or _import_gateway()
+@@ -639,10 +860,17 @@ def evaluate_grounding(payload, events, gw=None):
+         and not bad_anchor
+     out['details']['anchors_not_in_A'] = bad_anchor
+ 
+-    # ③ normalize(edit_op) == answer：录像成功行为证（applied=True 行）
++    # ③ edit_op(anchor) 组成 == answer 组成（task-05 §2，ADR-0018 §5 H6/H7）：
++    #    前置保留（裁定 3）——录像存在 edit_molecule applied=True 行且三元组相符
++    #    （防 agent 跳过工具直编 edit_op 绕 trace grounding）；身份判据从
++    #    result_id==answer 结构 canonical 相等改为组成多重集相等——anchor 组成
++    #    按 edit_op（+n e/−n e）变换后与 answer 组成逐元素 |差|≤ε（裁定 2）；
++    #    叠加编辑序列累计算子总数 ≤ COMPOSITION_HOP_LIMIT（裁定 4）。
+     eo = payload.get('edit_op')
+     answer = payload.get('answer')
+     ok3 = False
++    comp_diag = {'epsilon': COMPOSITION_EPSILON,
++                 'hop_limit': COMPOSITION_HOP_LIMIT, 'hops_total': 0}
+     if isinstance(eo, dict) and isinstance(answer, str) and answer:
+         edits = []
+         for e in events or []:
+@@ -653,28 +881,31 @@ def evaluate_grounding(payload, events, gw=None):
+                     and ret.get('applied') is True):
+                 continue
+             edits.append((args.get('anchor_id'), args.get('operator'),
+-                          args.get('detail'), ret.get('result_id')))
++                          args.get('detail')))
++        comp_diag['hops_total'] = _edit_op_hops(events or [])
+         claimed = (eo.get('anchor'), eo.get('operator'), eo.get('detail'))
+-        answer_canon = None
+-        try:
+-            answer_canon = gw.canonical_chemical(answer)
+-        except Exception:
+-            answer_canon = None
+-        answer_key = answer_canon if answer_canon is not None \
+-            else gw.canonical_structure(answer)
+-        for anchor, op, detail, rid in edits:
+-            if (anchor, op, detail) == claimed and isinstance(rid, str):
+-                rid_canon = None
+-                try:
+-                    rid_canon = gw.canonical_chemical(rid)
+-                except Exception:
+-                    rid_canon = None
+-                rid_key = rid_canon if rid_canon is not None \
+-                    else gw.canonical_structure(rid)
+-                if rid_key == answer_key:
+-                    ok3 = True
+-                    break
++        if comp_diag['hops_total'] <= COMPOSITION_HOP_LIMIT \
++                and claimed in edits:
++            anchor_comp = composition_of(claimed[0], judge)
++            transformed = apply_composition_edit(
++                anchor_comp, claimed[1], claimed[2])
++            answer_comp = composition_of(answer, judge)
++            if _anchor_carrier_domain(claimed[0], judge) == 'molecule':
++                # 分子侧 dummy SMILES 载体无显式 H 而 formula 字段含隐式 H——
++                # 两侧剥 H 后再比（H label 取自映射表，不在场则保守不剥）。
++                h_label = _element_to_label_map().get('H')
++                if h_label is not None:
++                    if isinstance(transformed, dict):
++                        transformed = {k: v for k, v in transformed.items()
++                                       if k != h_label}
++                    if isinstance(answer_comp, dict):
++                        answer_comp = {k: v for k, v in answer_comp.items()
++                                       if k != h_label}
++            ok3 = transformed is not None and answer_comp is not None \
++                and composition_equal(transformed, answer_comp)
++            comp_diag['composition_match'] = ok3
+     out['edit_op_reproduces_answer'] = ok3
++    out['details']['composition'] = comp_diag
+     out['grounding_pass'] = out['cited_values_match_trace'] \
+         and out['anchor_in_A'] and out['edit_op_reproduces_answer']
+     return out

@@ -1,0 +1,6 @@
+conference: ICLR 2026
+title: AstaBench: Rigorous Benchmarking of AI Agents with a Scientific Research Suite
+arxiv_id: 2510.21652v2
+arxiv_abs: http://arxiv.org/abs/2510.21652v2
+pdf_url: https://arxiv.org/pdf/2510.21652v2
+matched_arxiv_title: AstaBench: Rigorous Benchmarking of AI Agents with a Scientific Research Suite

@@ -1,0 +1,16 @@
+Traceback (most recent call last):
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/runpy.py", line 197, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/runpy.py", line 87, in _run_code
+    exec(code, run_globals)
+  File "/Users/jingwu/work/benchmark/src/probe_headless/verify_mira_family_guard_replay_v1.py", line 297, in <module>
+    main()
+  File "/Users/jingwu/work/benchmark/src/probe_headless/verify_mira_family_guard_replay_v1.py", line 291, in main
+    result = verify(args.run, args.control_events, args.manifest, args.verification, args.inputs, args.registry, args.repo.resolve())
+  File "/Users/jingwu/work/benchmark/src/probe_headless/verify_mira_family_guard_replay_v1.py", line 245, in verify
+    if semantic_decision(ds[i]) != semantic_decision(cds[i]): fail(f"prefix decision {stream}/{i}")
+  File "/Users/jingwu/work/benchmark/src/probe_headless/verify_mira_family_guard_replay_v1.py", line 27, in fail
+    raise AssertionError(message)
+AssertionError: prefix decision family_guard_replay:persistent_failure:family_guard:fold4:seed0:delay0/5
+
+exit_status=1

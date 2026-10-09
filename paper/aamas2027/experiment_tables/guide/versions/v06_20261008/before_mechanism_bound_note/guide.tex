@@ -1,0 +1,268 @@
+% Existing-data reference + conditional design budgets. NEVER import into main.
+\documentclass[10pt,letterpaper]{article}
+\usepackage[left=50pt,right=50pt,top=49pt,bottom=53pt]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{mathptmx}
+\usepackage{amsmath,amssymb,booktabs,array,caption,xcolor,tikz,eso-pic,fancyhdr,hyperref}
+\definecolor{GuideBlue}{HTML}{2E5DA1}
+\definecolor{Watermark}{HTML}{E4E4E4}
+\hypersetup{pdftitle={Distribution Guide v06 - NOT MEASURED TARGETS},pdfsubject={Observed joint error reference and conditional requirements; not a performance forecast},colorlinks=true,urlcolor=GuideBlue}
+\newcommand{\B}[1]{{\color{GuideBlue}#1}}
+\newcommand{\NA}{\textemdash}
+\newcommand{\note}[1]{{\fontsize{8.5}{10.5}\selectfont #1\par}}
+\newcommand{\sect}[1]{\vspace{5pt}{\large\bfseries #1}\par\vspace{2pt}}
+\captionsetup{font=small,labelfont=bf,justification=raggedright,singlelinecheck=false,skip=3pt,hypcap=false}
+\setlength{\parindent}{0pt}\setlength{\parskip}{4pt}
+\pagestyle{fancy}\fancyhf{}
+\fancyhead[L]{\fontsize{8}{9}\selectfont\bfseries\color{GuideBlue}DESIGN GUIDE --- CONDITIONAL TARGETS ARE NOT RESULTS}
+\fancyhead[R]{\fontsize{8}{9}\selectfont v06 / 2026-10-08}
+\fancyfoot[L]{\fontsize{8}{9}\selectfont M: measured\quad B: conditional budget\quad T: research objective; no future CI}
+\fancyfoot[R]{\thepage}\renewcommand{\headrulewidth}{.3pt}
+\AddToShipoutPictureBG{\AtPageCenter{\makebox(0,0){\rotatebox{34}{\textcolor{Watermark}{\fontsize{34}{40}\selectfont\bfseries TARGET GUIDE / NOT MEASURED}}}}}
+\newenvironment{clean}{\begin{center}\fontsize{9.5}{11.5}\selectfont\setlength{\tabcolsep}{6pt}\renewcommand{\arraystretch}{1.06}}{\end{center}}
+\begin{document}
+{\LARGE\bfseries Targets with an Error Model}\par
+{\large Joint distributions, paired errors, and conditional requirements}\par
+\textbf{M}: observations. Blue \textbf{B}: conditional error requirements. \textbf{T}: goals.
+B is evaluator-side accounting, not a deployable strategy or future forecast.
+
+\sect{E1 / body Table 3: measured comparison and spread}
+Each supported cell contains 4,710 records from \textbf{157 unique molecules}, five fitted priors,
+two seed labels, and three delays. SD is the spread of five fit-fold means; the same cohort and arrival order recur.
+\par\noindent\begin{minipage}{\linewidth}\captionof{table}{E1. Accuracy (\%), descriptive fit SD (pp), and error counts. SD is not a standard error.}\end{minipage}\par
+\begin{clean}\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+& \multicolumn{3}{c}{Natural} & \multicolumn{3}{c}{Controlled} \\ \cmidrule(lr){2-4}\cmidrule(l){5-7} Method & Acc. & SD & Errors & Acc. & SD & Errors \\
+\midrule
+Random M & 83.76 & 0.00 & 765 & \NA & \NA & \NA \\
+Fit-only Best Fixed M & 88.15 & 0.57 & 558 & \NA & \NA & \NA \\
+Frozen M & 89.81 & 1.19 & 480 & 73.38 & 5.83 & 1254 \\
+Online SGD M & 89.21 & 1.01 & 508 & 84.03 & 5.98 & 752 \\
+LinUCB M & 89.72 & 1.11 & 484 & 81.15 & 5.25 & 888 \\
+BayesianRouter M & 89.53 & 0.84 & 493 & 80.28 & 2.64 & 929 \\
+Marginal reliability M & 89.81 & 1.19 & 480 & \NA & \NA & \NA \\
+MIRA-Relay M & 89.81 & 0.21 & 480 & 87.56 & 1.86 & 586 \\
+Retrospective Best Fixed M & 90.45 & 0.00 & 450 & \NA & \NA & \NA \\
+\bottomrule\end{tabular}\end{clean}
+\note{MIRA, Frozen, SGD and LinUCB seed 0/1 vectors are identical. Random's zero fit SD reflects reused decisions, not zero uncertainty. The fixed-provider control is not the per-molecule oracle.}
+\par\noindent\begin{minipage}{\linewidth}\captionof{table}{E1. Paired error changes relative to the same Frozen decisions (M).}\end{minipage}\par
+\begin{clean}\begin{tabular}{@{}llrrrr@{}}
+\toprule
+Condition & Method & Rescued & Harmed & Both wrong & Net (pp) \\
+\midrule
+Natural & Online SGD & 84 & 112 & 396 & -0.59 \\
+Natural & LinUCB & 24 & 28 & 456 & -0.08 \\
+Natural & BayesianRouter & 92 & 105 & 388 & -0.28 \\
+Natural & MIRA-Relay & 82 & 82 & 398 & +0.00 \\
+Controlled & Online SGD & 720 & 218 & 534 & +10.66 \\
+Controlled & LinUCB & 414 & 48 & 840 & +7.77 \\
+Controlled & BayesianRouter & 492 & 167 & 762 & +6.90 \\
+Controlled & MIRA-Relay & 780 & 112 & 474 & +14.18 \\
+\bottomrule\end{tabular}\end{clean}
+\note{Rescued = method correct / Frozen wrong; harmed = method wrong / Frozen correct. Natural Relay's 82 rescues and 82 harms cancel. Controlled Relay's 780 rescues exceed its 112 harms. Neutral action changes are not rescues.}
+\sect{Joint provider difficulty: preserve the actual dependence}
+\par\noindent\begin{minipage}{\linewidth}\captionof{table}{Native joint correctness vectors (M): one bit per provider, 1 = correct.}\end{minipage}\par
+\begin{clean}\begin{tabular}{@{}lrrlrrlrrlrr@{}}
+\toprule
+Bits & Dev. & Fresh & Bits & Dev. & Fresh & Bits & Dev. & Fresh & Bits & Dev. & Fresh \\
+\midrule
+0000 & 104 & 7 & 0100 & 3 & 1 & 1000 & 20 & 3 & 1100 & 13 & 3 \\
+0001 & 8 & 3 & 0101 & 2 & 0 & 1001 & 0 & 0 & 1101 & 1 & 0 \\
+0010 & 1 & 0 & 0110 & 0 & 0 & 1010 & 2 & 1 & 1110 & 65 & 21 \\
+0011 & 15 & 1 & 0111 & 9 & 7 & 1011 & 8 & 0 & 1111 & 471 & 110 \\
+\bottomrule\end{tabular}\end{clean}
+\note{Bit order: logreg / MLP / random forest / graph. Development: 471 all-correct, 147 mixed, 104 all-wrong. Fresh: 110 / 40 / 7. Native oracle: 618/722 and 150/157. Independent provider-error draws would distort this structure. Controlled flips require a separate panel: its recorded oracle is 4572/4710.}
+\newpage
+\sect{E1--E2 / body Table 4 and Figure 3: one shared budget}
+Let $c$ be a recorded Relay correctness bit, $h$ indicate Relay wrong/Frozen correct,
+and $r$ indicate Relay correct/Frozen wrong. A conditional repair budget is
+$$c'=c+\alpha h-\beta r,\qquad 0\leq\alpha,\beta\leq1.$$
+\note{Case: for a harmed decision $(c,h,r)=(0,1,0)$, $\alpha=.6$ gives fractional score .6;
+for a rescued decision $(1,0,1)$, $\beta=.02$ gives .98. These are budget weights, not binary predictions.
+Assumption: the same fractions apply uniformly within every observed error stratum, in both conditions.
+All other records are unchanged. Altered future feedback would require a full causal policy run.}
+\par\noindent\begin{minipage}{\linewidth}\captionof{table}{E1 conditional response surface (B), including null and adverse outcomes.}\end{minipage}\par
+\begin{clean}\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+& & & \multicolumn{2}{c}{Natural} & \multicolumn{2}{c}{Controlled} \\ \cmidrule(lr){4-5}\cmidrule(l){6-7} Scenario & $\alpha$(\%) & $\beta$(\%) & Acc.(\%) & $\Delta$(pp) & Acc.(\%) & $\Delta$(pp) \\
+\midrule
+Observed M & 0.00 & 0.00 & 89.81 & +0.00 & 87.56 & +0.00 \\
+\B{Loss only B} & \B{0.00} & \B{10.00} & \B{89.63} & \B{-0.17} & \B{85.90} & \B{-1.66} \\
+\B{Blunt repair B} & \B{30.00} & \B{10.00} & \B{90.16} & \B{+0.35} & \B{86.62} & \B{-0.94} \\
+\B{Selective repair B} & \B{60.00} & \B{2.00} & \B{90.82} & \B{+1.01} & \B{88.65} & \B{+1.10} \\
+\B{v05 E1 inverse B} & \B{59.67} & \B{1.13} & \B{90.83} & \B{+1.02} & \B{88.79} & \B{+1.23} \\
+\bottomrule\end{tabular}\end{clean}
+\note{Delta is relative to recorded Relay, not Frozen. The v05 inverse solves exactly for its former +48/+58 gains: prevent 59.67\% of harms while losing only 1.13\% of rescues. These demanding selectivity requirements have not been demonstrated. B has no target CI or new seed distribution.}
+\par\noindent\begin{minipage}{\linewidth}\captionof{table}{E1 stratum profiles from the same ledger: M and selective-repair B.}\end{minipage}\par
+\begin{clean}\begin{tabular}{@{}lrrrr@{}}
+\toprule
+& \multicolumn{2}{c}{Natural accuracy (\%)} & \multicolumn{2}{c}{Controlled accuracy (\%)} \\ \cmidrule(lr){2-3}\cmidrule(l){4-5} Stratum & M & B & M & B \\
+\midrule
+delay 0 & 89.68 & \B{90.72} & 87.01 & \B{88.14} \\
+delay 1 & 89.68 & \B{90.79} & 87.90 & \B{89.09} \\
+delay 4 & 90.06 & \B{90.95} & 87.77 & \B{88.74} \\
+fold 0 & 90.02 & \B{91.90} & 89.38 & \B{90.62} \\
+fold 1 & 89.60 & \B{89.83} & 84.93 & \B{86.03} \\
+fold 2 & 89.60 & \B{90.83} & 86.41 & \B{87.32} \\
+fold 3 & 90.02 & \B{90.36} & 88.96 & \B{89.30} \\
+fold 4 & 89.81 & \B{91.16} & 88.11 & \B{90.00} \\
+\bottomrule\end{tabular}\end{clean}
+\note{Fold = fitted-prior condition, not a separate confirmation sample. Delay counts are 1570 each; fold counts are 942 each. Natural delay means are nonmonotone and remain so; no curve was smoothed to imply that shorter delay always helps. Conditional fit SD is a spread of transformed recorded strata, not predictive uncertainty.}
+\par\noindent\begin{minipage}{\linewidth}\captionof{table}{E2 weighting consistency, computed from the E1 molecule ledger.}\end{minipage}\par
+\begin{clean}\begin{tabular}{@{}llrrr@{}}
+\toprule
+Condition & Status & Pooled--F & Scaffold--F & Scaffold--old Perm. \\
+\midrule
+Natural & Recorded M & +0.00 & +0.10 & -0.30 \\
+Natural & v05 E1 inverse B & \B{+1.02} & \B{+0.84} & \B{+0.44} \\
+Controlled & Recorded M & +14.18 & +14.40 & +15.67 \\
+Controlled & v05 E1 inverse B & \B{+15.41} & \B{+15.30} & \B{+16.57} \\
+\bottomrule\end{tabular}\end{clean}
+\note{All contrasts are pp. v05 E1 means imply +0.44pp against the old natural permutation, not its separately chosen +1.00pp. A future attribution result MUST rerun that candidate's own matched permutation; holding the old comparator fixed is only budget accounting, not a causal estimate of the new mechanism.}
+\newpage
+\sect{E3 / body Table 5: cold-start errors, not just a mean}
+The development OOF folds partition 722 distinct molecules. Across the native panel, only mixed molecules
+can change correctness when the provider menu is fixed. For this cohort,
+$$\text{accuracy}=\frac{471+147q}{722},$$
+\note{Case: $q$ is mixed-molecule selection accuracy. Corrected Frozen has $q=108/147=73.47\%$,
+giving 579/722=80.19\%. Fresh has a different equation $(110+40q)/157$; Relay's $q=77.50\%$
+gives 89.81\%. The cohort mix explains much of the level difference, not superior adaptation alone.}
+\par\noindent\begin{minipage}{\linewidth}\captionof{table}{E3 measured error composition by held-out development fold (M).}\end{minipage}\par
+\begin{clean}\begin{tabular}{@{}rrrrrl@{}}
+\toprule
+Fold & Molecules & Correct & All wrong & Avoidable & Mixed correct \\
+\midrule
+0 & 145 & 108 & 28 & 9 & 21/30 \\
+1 & 145 & 111 & 25 & 9 & 25/34 \\
+2 & 144 & 119 & 19 & 6 & 19/25 \\
+3 & 144 & 125 & 12 & 7 & 19/26 \\
+4 & 144 & 116 & 20 & 8 & 24/32 \\
+\bottomrule\end{tabular}\end{clean}
+\note{All-wrong errors cannot be fixed by selection. Corrected has only 39 avoidable unique errors: 9/9/6/7/8. Its remaining rank gaps do not calibrate a probability of rescue.}
+\par\noindent\begin{minipage}{\linewidth}\captionof{table}{E3 comparable prior attempts: actual paired negative results (M).}\end{minipage}\par
+\begin{clean}\begin{tabular}{@{}lrrrl@{}}
+\toprule
+Candidate & Acc.(\%) & Rescued & Harmed & Fold net counts \\
+\midrule
+BCE/seed0 & 78.53 & 16 & 28 & -6, -2, -3, +1, -2 \\
+BCE/seed1 & 78.95 & 17 & 26 & +2, -5, +0, +1, -7 \\
+BT/seed0 & 78.81 & 14 & 24 & -7, +1, -2, -1, -1 \\
+BT/seed1 & 78.25 & 9 & 23 & +1, -6, -1, -1, -7 \\
+\bottomrule\end{tabular}\end{clean}
+\note{All recorded leave-one-fold-out effects are negative. Do not replace these with two tightly spaced winning future seeds. Future training-seed uncertainty is uncalibrated.}
+\sect{E4 / body Table 6: keep prior and update effects separate}
+\par\noindent\begin{minipage}{\linewidth}\captionof{table}{E4 measured prior by update factorial (M), 2166 records per cell.}\end{minipage}\par
+\begin{clean}\begin{tabular}{@{}lrrrr@{}}
+\toprule
+& \multicolumn{2}{c}{Natural} & \multicolumn{2}{c}{Controlled} \\ \cmidrule(lr){2-3}\cmidrule(l){4-5} Prior + update & Acc.(\%) & Errors & Acc.(\%) & Errors \\
+\midrule
+raw + frozen & 79.36 & 447 & 69.11 & 669 \\
+raw + marginal & 79.18 & 451 & 77.29 & 492 \\
+raw + query & 78.49 & 466 & 75.95 & 521 \\
+corrected + frozen & 80.19 & 429 & 63.30 & 795 \\
+corrected + marginal & 79.82 & 437 & 78.30 & 470 \\
+corrected + query & 80.33 & 426 & 78.67 & 462 \\
+\bottomrule\end{tabular}\end{clean}
+\note{Corrected/query vs corrected/frozen: natural rescue/harm=26/23 (net+3), controlled=425/92 (net+333). A better prior cannot count as update benefit. Controlled provider flips change the joint error partition; the native 471/147/104 partition must not be reused there.}
+\par\noindent\begin{minipage}{\linewidth}\captionof{table}{Goals translated into error requirements (T), not candidate forecasts.}\end{minipage}\par
+\begin{clean}\begin{tabular}{@{}llrll@{}}
+\toprule
+Component & Goal & Added correct & Required mixed success & Minimum requirement \\
+\midrule
+\B{E3 prior T} & \B{591/722} & \B{+12} & \B{120/147 = 81.63\%} & \B{12 net rescues from 39} \\
+\B{E4 query T} & \B{1770/2166} & \B{+30} & \B{357/441 = 80.95\%} & \B{30 net rescues from 114} \\
+\bottomrule\end{tabular}\end{clean}
+\note{E3/E4 use different fixed comparators; the two gains cannot be added into one future E1 result. For corrected/query, 109/114 avoidable records already had a released correct-provider receipt. Earlier release alone does not explain +30; conditional use of that information must improve. New prior, own Frozen, new update, and their combination need common features and a common evaluation contract.}
+\newpage
+\sect{E5 / body Table 7: matched cost and feasibility}
+Costs are the mean of 30 recorded stream-level p95 kernel times on macOS arm64.
+They exclude encoding, queue, I/O and end-to-end tool time. They do not describe A800 performance.
+\par\noindent\begin{minipage}{\linewidth}\captionof{table}{E5 measured kernel costs (M) and research caps (T), microseconds.}\end{minipage}\par
+\begin{clean}\begin{tabular}{@{}lrrrr@{}}
+\toprule
+& \multicolumn{2}{c}{Natural} & \multicolumn{2}{c}{Controlled} \\ \cmidrule(lr){2-3}\cmidrule(l){4-5} Method & Select & Update & Select & Update \\
+\midrule
+Frozen M & 15.89 & 1.31 & 17.88 & 1.50 \\
+Online SGD M & 14.08 & 19.37 & 14.29 & 20.02 \\
+LinUCB M & 128.63 & 90.90 & 128.36 & 92.32 \\
+BayesianRouter M & 133.65 & 88.96 & 137.34 & 92.55 \\
+MIRA-Relay M & 27.21 & 2.81 & 32.47 & 3.46 \\
+\B{Candidate cap T} & \B{$\leq30$} & \B{$\leq5$} & \B{$\leq35$} & \B{$\leq5$} \\
+\bottomrule\end{tabular}\end{clean}
+\note{T is a feasibility requirement, not an estimated time. More capacity or a changed representation requires real remeasurement. Live peak memory and end-to-end latency have not been measured; no target SD is imputed.}
+\sect{E6 / body Table 8: coverage must match within each fitted policy}
+\par\noindent\begin{minipage}{\linewidth}\captionof{table}{E6 actual fit-level coverage and available hindsight swaps (M).}\end{minipage}\par
+\begin{clean}\begin{tabular}{@{}rrrrrrr@{}}
+\toprule
+Fit & Accepted & Wrong & Refused & Refused correct & Swap cap & Acc.(\%) \\
+\midrule
+0 & 119 & 5 & 38 & 26 & 5 & 95.80 \\
+1 & 134 & 7 & 23 & 11 & 7 & 94.78 \\
+2 & 137 & 8 & 20 & 9 & 8 & 94.16 \\
+3 & 137 & 8 & 20 & 9 & 8 & 94.16 \\
+4 & 136 & 8 & 21 & 10 & 8 & 94.12 \\
+\bottomrule\end{tabular}\end{clean}
+\note{785 records reuse 157 molecules under five fitted policies. Accepted counts 119/134/137/137/136 must each remain fixed in a matched-coverage comparison. Refused correctness is obtained from the matching always-accept evaluator ledger, not imputed from null answer fields. Swap caps use truth and do not prove a legal gate can rank them.}
+\par\noindent\begin{minipage}{\linewidth}\captionof{table}{E6 same-coverage conditional error and utility budget (B).}\end{minipage}\par
+\begin{clean}\begin{tabular}{@{}lrrr@{}}
+\toprule
+Status & Wrong accepted & Accepted acc.(\%) & Utility \\
+\midrule
+Recorded M & 36 & 94.57 & -0.0947 \\
+\B{4 favorable swaps B} & \B{32} & \B{95.17} & \B{-0.0896} \\
+\B{8 favorable swaps B} & \B{28} & \B{95.78} & \B{-0.0845} \\
+\bottomrule\end{tabular}\end{clean}
+\note{Each favorable swap replaces an accepted-wrong with a refused-correct output within the same fit; adverse swaps subtract from the gain. Eight net swaps are 22.22\% of current accepted errors. Their allocation and ranking quality must be observed, not invented. Utility=-(W+.25R+.01C)/N, with C=N=785. New routing changes these outputs and requires a new gate evaluation.}
+\sect{A joint success criterion}
+A scientifically useful improvement should reduce harmful switches while retaining drift recovery,
+beat its \emph{own} Frozen and matched mechanism controls, and satisfy the kernel budget at the same time.
+E6 remains a separately frozen gate unless its joint routing outputs are evaluated. Six independently improved means do not establish one successful candidate.
+\newpage
+\sect{Distribution checks for the scientist}
+\begin{clean}\begin{tabular}{@{}p{.20\linewidth}p{.39\linewidth}p{.32\linewidth}@{}}
+\toprule
+Check & Reference or expected signature & Failure interpretation \\
+\midrule
+Provider dependence & Preserve joint 4-bit patterns; split all-correct, mixed, all-wrong & Independent provider errors overstate headroom \\
+Paired errors & Report rescue/harm/both-wrong and neutral action changes & A mean gain alone hides offsetting damage \\
+Fitted priors & Use paired five-fit profiles; retain all seed results & Seed duplicates do not add evidence \\
+Delay & No same-action feedback; identical update-only prefix before release & Early improvement suggests leakage or changed prior \\
+Drift phase & Compare pre/post error trajectory and released affected receipts & A aggregate stress gain may hide slow recovery \\
+Mechanism & Candidate vs its own Frozen and its own permutation & A gain against an old comparator is not attribution \\
+Coverage & Match accepted counts in each fit, not only their sum & More refusal or changed cohort confounds accuracy \\
+Uncertainty & Separate fit variation, new arrivals, new scaffolds, random gate draws & Fixed-trace reweighting is not a new trajectory CI \\
+\bottomrule
+\end{tabular}\end{clean}
+\sect{What has high-confidence support, and what still needs evidence}
+\textbf{Verified empirical structure:} recorded denominators, provider-error overlap, paired rescue/harm,
+fit/delay/phase strata, source hashes and table identities. These are finite-cohort facts, not generalization estimates.
+
+\textbf{Exact conditional requirements:} given uniform $\alpha/\beta$ response, E1 pooled,
+scaffold and stratum budgets are calculated from the same recorded molecules. E6 utility follows its
+within-fit swap contract. Conditional validity does not establish attainable selectivity.
+
+\textbf{Unresolved prediction:} no calibrated future outcome distribution, seed SD or predictive CI exists
+for an unspecified new candidate. Null and adverse effects remain plausible; the previous learned
+priors actually underperformed. The table should guide which mechanism to repair, not imply certainty of winning.
+
+\sect{Before filling a prospective result matrix}
+Freeze one candidate: features, prior, parameters, update rule, selected-only feedback, release clock,
+failure semantics and gate. Then match its own Frozen, online baselines and attribution controls.
+New arrival-order uncertainty requires full adaptive trajectories; unseen-scaffold generalization requires
+untouched data. The 157 inspected molecules cannot become a new unseen confirmation cohort.
+Write a calibrated predictive interval only after its model and coverage have been justified.
+
+\sect{Evidence and reproducibility}
+\note{\raggedright Measured reference: \texttt{distribution\_audit\_v1/} contains 16 CSVs, 19 hashed sources,
+and an independent standard-library extractor. Actual E1 records include 65,940 method/configuration/molecule rows;
+E2 includes 28,260. Their Local and Relay terminal vectors match completely.
+All seed dependencies are retained. \texttt{conditional\_requirements.json} stores the response assumptions,
+fractional budget sums, fit/delay profiles, scaffold contrasts, and per-fit swap limits.
+\texttt{build\_distribution\_guide.py} performs no training, policy replay, model inference or random sampling.}
+
+\note{This Guide maps E1--E6 to body Tables 3--8 and Figure 3; the active review standard's E6
+untouched-confirmation gate is a different identifier. v01--v05 remain archived; v05 passed arithmetic/visual
+checks but failed scientific target confidence. Its independently chosen means and smooth delay goals have
+been superseded. The real manuscript and measured-result preview remain separate and unchanged.}
+\end{document}

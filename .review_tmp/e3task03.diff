@@ -1,0 +1,967 @@
+diff --git a/dag_poc/gateway.py b/dag_poc/gateway.py
+index 0a48a8e..bc0b9a9 100644
+--- a/dag_poc/gateway.py
++++ b/dag_poc/gateway.py
+@@ -479,6 +479,154 @@ def default_b_partition_reader(case_id=None, backend_root=None,
+     return BPartitionJsonReader(b_partition_path or DEFAULT_B_PARTITION_PATH)
+ 
+ 
++class AIdentityBackendJsonlReader:
++    """A 侧身份档读取器（任务 #36 / task-03 §1：接 E1 匿名层，ADR-0017）。
++
++    照 BPartitionBackendJsonlReader 同款模式：目录扫描 backend 物理分层布局、
++    只读不写；A 侧读取白名单只许 *_A.jsonl。只装载两库：
++      - get_entity/get_entity_A.jsonl：身份档（formula/masked_structure/
++        atom_count 全部匿名域字段，E1-03 交接说明 §二.1）；
++      - search_candidates/search_candidates_A.jsonl：匿名域 smiles 列。
++
++    映射表纪律（task-03 §1 切换纪律 3）：本读取器与网关一切读路径不得
++    import anonymization_mapping.json（映射表只服务 judge 侧评分反查）；
++    dummy SMILES 规范化靠 RDKit canonical 即可 ==（E1-03 交接 §一.1：匿名域
++    SMILES 满足一步不动点）。"""
++
++    def __init__(self, backend_root=DEFAULT_BACKEND_ROOT):
++        self.backend_root = backend_root
++
++    def _a_file(self, tool, name):
++        """A 侧白名单校验 + 路径探测；文件不在场返 None（回落兼容）。"""
++        if not name.endswith('_A.jsonl'):
++            raise ValueError(
++                f'A 侧读取白名单只允许 *_A.jsonl，拒绝加载：{name}')
++        path = os.path.join(self.backend_root, tool, name)
++        return path if os.path.exists(path) else None
++
++    def load(self):
++        """返 (entity_records, smiles_map)；任一文件不在场返 (None, None)——
++        回落 mock_db 派生口径（过渡期兼容，行为零回退）。"""
++        ent_path = self._a_file('get_entity', 'get_entity_A.jsonl')
++        smi_path = self._a_file('search_candidates', 'search_candidates_A.jsonl')
++        if ent_path is None or smi_path is None:
++            return None, None
++        entities = {}
++        with open(ent_path, encoding='utf-8') as f:
++            for line in f:
++                line = line.strip()
++                if line:
++                    rec = json.loads(line)
++                    entities[rec['id']] = rec
++        smiles = {}
++        with open(smi_path, encoding='utf-8') as f:
++            for line in f:
++                line = line.strip()
++                if not line:
++                    continue
++                rec = json.loads(line)
++                if rec.get('smiles'):
++                    smiles[rec['id']] = rec['smiles']
++        return entities, smiles
++
++
++_A_IDENTITY_CACHE = {}
++
++
++def _load_a_identity(reader):
++    """A 侧身份档装载（模块级懒缓存：8 万行级 jsonl 每个 backend 根只扫一遍，
++    避免每个 Gateway 构造重复全载；测试用临时 backend 根以路径为键互不串扰）。"""
++    if reader is None:
++        return None, None
++    key = reader.backend_root
++    if key not in _A_IDENTITY_CACHE:
++        _A_IDENTITY_CACHE[key] = reader.load()
++    return _A_IDENTITY_CACHE[key]
++
++
++def default_a_identity_reader(backend_root=None):
++    """默认 A 侧身份读取器：backend 布局在场返 JSONL 读取器，否则 None。"""
++    root = backend_root or DEFAULT_BACKEND_ROOT
++    if not os.path.isdir(root):
++        return None
++    return AIdentityBackendJsonlReader(root)
++
++
++# 匿名红线自检（任务 #36，E1-03 交接说明 §一.2 第②条）：agent 可见身份字段
++# 不得匹配真实身份形态——① InChIKey 正则；② 真实元素分子式（元素符号+下标
++# 组成、不含 dummy atom 方括号；匿名域分子式为 [N*]计数 形态必含 '['）。
++# 与 E1 自检脚本 check_agent_visible_anonymity.py 同口径（ADR-0017 影响分工表）。
++_INCHIKEY_RE = re.compile(r'^[A-Z]{14}-[A-Z]{10}-[A-Z0-9]$')
++_REAL_FORMULA_RE = re.compile(r'^(?:[A-Z][a-z]?\d*)+$')
++
++
++def _assert_anon_identity_fields(*fields):
++    """get_entity 返回的身份字段红线断言：出现真实身份形态立即 raise
++    （ADR-0017 §2：匿名域不得携带真实身份，不带病运行）。"""
++    for v in fields:
++        if not isinstance(v, str) or not v:
++            continue
++        if _INCHIKEY_RE.match(v):
++            raise ValueError(
++                f'身份字段疑似真实 InChIKey（ADR-0017 红线）：{v[:24]}…')
++        if '[' not in v and _REAL_FORMULA_RE.match(v):
++            raise ValueError(
++                f'身份字段疑似真实元素分子式（ADR-0017 红线）：{v}')
++
++
++# ── 材料侧身份键（任务 #37 / task-03 §2：接 E1-04 交付，ADR-0017 §4）───────────
++# 键形态 = <匿名域 reduced_formula>_SG<空间群号>（E1-04 交接说明 §2：
++# src/data_build/material_identity.py 纯函数，只读引用不改）。
++# 取用走接口 B（现算，零 IO、无映射表依赖）：入参即 A 侧可见字段
++# （get_entity_A.formula + masked_structure 的 SPACEGROUP 段）。
++# 纪律：键只在 judge/评分侧做 grounding == 比对（交接说明 §4.2/§5），
++# 不进任何工具返回值（agent 可见面零增量，E1-04 §4.3）。
++_SPACEGROUP_RE = re.compile(r'SPACEGROUP:([^;]+)')
++_MATERIAL_KEY_CACHE = {}
++_SG_NUMBER_CACHE = {}
++
++
++def _load_material_identity_fns():
++    """E1-04 接口 B 懒加载接缝：返 (material_identity_key,
++    reduced_formula_anon, sg_symbol_to_number) 三纯函数；import 失败
++    （模块不在场/pymatgen 缺包）返 (None, None, None)（材料侧 grounding
++    路径回落旧行为，不崩不带病）。src.data_build 在仓库根，网关在
++    dag_poc/，按需补仓库根入 sys.path。"""
++    try:
++        import sys
++        root = os.path.dirname(HERE)
++        if root not in sys.path:
++            sys.path.insert(0, root)
++        from src.data_build.material_identity import (
++            material_identity_key, reduced_formula_anon, sg_symbol_to_number)
++        return material_identity_key, reduced_formula_anon, sg_symbol_to_number
++    except Exception:  # noqa: BLE001 接缝容错：缺依赖不得阻断网关装载
++        return None, None, None
++
++
++def material_key_from_record(rec):
++    """晶体身份档 → 材料侧身份键（接口 B 现算，零 IO）：formula（匿名式）+
++    masked_structure 的 SPACEGROUP 段。拼装口径与 E1 material_identity_key
++    逐字一致（<reduced_formula>_SG<空间群号>，交接说明 §2）；空间群号
++    按符号缓存在进程内（去重后仅 135 种，pymatgen SpaceGroup 单次构造
++    ~20ms，不缓存则全量 5,771 次 ~2 分钟——评分路径不可接受）。
++    解析失败/函数不在场 → None；测试以接口 B 直调对照防拼装漂移。"""
++    _, reduced_fn, sg_fn = _load_material_identity_fns()
++    if reduced_fn is None or not isinstance(rec, dict):
++        return None
++    m = _SPACEGROUP_RE.search(rec.get('masked_structure') or '')
++    if not m:
++        return None
++    symbol = m.group(1).strip()
++    try:
++        if symbol not in _SG_NUMBER_CACHE:
++            _SG_NUMBER_CACHE[symbol] = sg_fn(symbol)
++        return '{}_SG{}'.format(reduced_fn(rec.get('formula')),
++                                _SG_NUMBER_CACHE[symbol])
++    except Exception:  # noqa: BLE001 脏行不得穿透评分路径
++        return None
++
++
+ def _load_anon_mapping(path=None):
+     """E1-03 匿名映射表读取接缝（任务 #31，ADR-0017）：容错读
+     dag_poc/data/anonymization_mapping.json——文件不存在/不可读/非法 JSON
+@@ -498,12 +646,19 @@ class Gateway:
+     """取数网关：9 工具调用入口 + 逐调用录像 + 预算 + grounded/evidence_time。"""
+ 
+     def __init__(self, db_path=None, b_partition_path=None, case_id=None,
+-                 b_partition_reader=None,
++                 b_partition_reader=None, a_identity_reader='__default__',
+                  verify_budget=None, search_budget=None,
+                  max_attempts=10, tol=None, evidence_map=None,
+                  tools_schema_path=None, answer_schema_path=None):
+         with open(db_path or DEFAULT_DB_PATH, encoding='utf-8') as f:
+             self.db = json.load(f)  # 冻结快照，只读（判分零联网红线）
++        # 任务 #36（task-03 §1，ADR-0017）：A 侧身份档接 E1 backend 匿名层——
++        # 分子实体的 smiles/formula/masked_structure/atom_count 切 backend
++        # *_A.jsonl 匿名域；性质判分仍走 mock_db（全量切源不在本任务范围）。
++        # backend 不在场回落 mock_db 派生口径（过渡期兼容，行为零回退）。
++        self._a_identity = _load_a_identity(
++            default_a_identity_reader() if a_identity_reader == '__default__'
++            else a_identity_reader)
+         # B 侧成员分区（独立配置，不改 mock_db 内容；E1 交接点见模块 docstring）。
+         # 任务 #13：case_id 非空时按 case 装载该 case 的 members/g_b（per-case 结构）；
+         # 缺省回落顶层 members/g_b，既有调用方零改动。读取经 BPartitionReader
+@@ -780,13 +935,22 @@ class Gateway:
+             return _err('INVALID_ARGUMENT', 'id 必填')
+         if eid in self.db.get('admet', {}):
+             entry = self.db['admet'][eid]
+-            # 修复五（任务 #16，重要 1）：formula/atom_count 由 molecule_search 已有的
+-            # smiles 经 RDKit 派生（零 mock_db 改动）——formula=CalcMolFormula；
+-            # atom_count 口径=重原子数（GetNumHeavyAtoms；SMILES 解析分子无显式 H，
+-            # 与全原子数同值，取重原子口径声明在此）。
+-            # masked_structure 暂无真实来源（E1 身份档交付前保持 None）：匿名域身份
+-            # 档（掩码↔真实结构的可控映射）属 E1 交接物，占位期不得用真实 SMILES
+-            # 直接生成可逆推的伪掩码。
++            # 任务 #36（task-03 §1，ADR-0017）：结构字段切 E1 backend 匿名域——
++            # formula 透传库内匿名式（E1-03 交接 §一.2：不得拿匿名 SMILES 现算
++            # 计数，dummy atom 无隐式 H 会丢氢）；masked_structure/atom_count
++            # 同透传 backend 身份档（原子口径以 E1 落盘为准）。
++            ent_records, _ = self._a_identity
++            rec = ent_records.get(eid) if ent_records is not None else None
++            if rec is not None:
++                formula = rec.get('formula')
++                _assert_anon_identity_fields(formula, rec.get('masked_structure'))
++                return {'id': eid, 'entity_type': 'molecule',
++                        'structure': {'formula': formula,
++                                      'masked_structure': rec.get('masked_structure'),
++                                      'atom_count': rec.get('atom_count')}}
++            # 回落（backend 身份档不在场）：修复五（任务 #16，重要 1）旧口径——
++            # formula/atom_count 由 molecule_search 已有的 smiles 经 RDKit 派生；
++            # masked_structure 暂无真实来源保持 _mask 口径。
+             smiles = self._entity_smiles(eid)
+             _require_rdkit()
+             mol = Chem.MolFromSmiles(smiles) if smiles else None
+@@ -965,10 +1129,11 @@ class Gateway:
+         修复五（任务 #16，致命 5）：applied 改真实可施加性判断，不再恒 True。
+         任务 #32（致命 5 收尾）：ed: 占位直通分支已移除，result_id 不再拼
+         ed: token：
+-          - 锚点为真实 SMILES（含 A 分子 canonical 与本会话编辑产物链式锚点）：
++          - 锚点为 SMILES（含 A 分子 canonical 与本会话编辑产物链式锚点；
++            任务 #36 后 A 分子为 ADR-0017 匿名域 dummy atom SMILES）：
+             RDKit 解析 + 条件②前置校验（canonical 必属 A 分子全集或本会话编辑
+             产物）+ _rdkit_edit 真实施加，失败返 applied=False。
+-          - 锚点为实体 ID（∈ admet）且可解析到真实 SMILES：applied 走 RDKit
++          - 锚点为实体 ID（∈ admet）且可解析到匿名域 SMILES：applied 走 RDKit
+             真实判断；result_id 改用 _rdkit_edit 产物 canonical SMILES，产物
+             入 _edit_products 可作链式锚点（B 钥匙空间迁移至 dummy atom
+             canonical SMILES，任务 #32 ②，ADR-0017）。
+@@ -986,7 +1151,7 @@ class Gateway:
+         if detail is not None and not isinstance(detail, str):
+             return _err('INVALID_ARGUMENT', 'detail 须为字符串或 null')
+ 
+-        # 分支 2：A 实体 ID 锚点。分子侧可解析到真实 SMILES → applied 走 RDKit
++        # 分支 2：A 实体 ID 锚点。分子侧可解析到匿名域 SMILES → applied 走 RDKit
+         # 真实判断；任务 #32（致命 5 收尾）：result_id 改用 _rdkit_edit 产物
+         # canonical SMILES（不再拼 ed: token），产物入 _edit_products 可作链式
+         # 锚点。晶体侧无分子结构，占位口径保留（applied=True、result_id 回显
+@@ -1013,7 +1178,8 @@ class Gateway:
+             return {'result_id': product, 'normalized_structure': product,
+                     'applied': True}
+ 
+-        # 分支 3：真实 SMILES 锚点——RDKit 解析 + 条件②前置校验 + 真实施加。
++        # 分支 3：SMILES 锚点（任务 #36 后为 ADR-0017 匿名域 dummy atom SMILES）——
++        # RDKit 解析 + 条件②前置校验 + 真实施加。
+         _require_rdkit()
+         anchor_s = anchor.strip()
+         # C1 防线（任务 #21）：超长锚点不得喂给 RDKit 原生解析器（SIGSEGV）。
+@@ -1028,7 +1194,7 @@ class Gateway:
+                     and anchor_canon not in self._edit_products)):
+             return _err('ANCHOR_NOT_IN_A',
+                         f'锚点 {anchor} 不属于 A（grounding 条件②前置校验：'
+-                        '真实 SMILES 锚点须为 A 分子的 canonical 形式或本会话编辑产物）')
++                        'SMILES 锚点须为 A 分子的 canonical 形式（匿名域）或本会话编辑产物）')
+         applied, product = _rdkit_edit(mol, op, detail)
+         if not applied:
+             # 施加失败：结构未变，result_id 回落锚点 canonical（不得编造产物）。
+@@ -1062,6 +1228,30 @@ class Gateway:
+ 
+     # ── 内部辅助 ────────────────────────────────────────────────────────────
+ 
++    def _material_key_universe(self):
++        """材料侧身份键全集（任务 #37 / task-03 §2）：{key: entity_id}，供
++        grounding 条件②锚点 == 比对（E1-04 交接 §4.2：grounding 直接 ==）。
++        晶体无 SMILES，分子侧 canonical 通道用不上，键是材料侧唯一身份判据。
++        模块级懒缓存（键=身份档对象 id）：全量 5,771 晶体每个 backend 根只算一遍
++        （pymatgen 空间群解析去重后仅 135 种，warm 后约 2-3s，其后近零）。
++        31 组上游重复录入同键：setdefault 保留首 id，同键判等是正确行为
++        （E1-04 交接 §3：本就是同一材料，造题去重归 E5）。"""
++        ent_records, _ = self._a_identity
++        if not ent_records:
++            return {}
++        cached = _MATERIAL_KEY_CACHE.get(id(ent_records))
++        if cached is not None:
++            return cached
++        keys = {}
++        for eid, rec in ent_records.items():
++            if rec.get('entity_type') != 'crystal':
++                continue
++            k = material_key_from_record(rec)
++            if k is not None:
++                keys.setdefault(k, eid)
++        _MATERIAL_KEY_CACHE[id(ent_records)] = keys
++        return keys
++
+     def _a_universe(self):
+         """A 全集视图：{id: (entity_type, 可查性质投影, structure_hint)}。只含 A 侧内容。
+ 
+@@ -1094,9 +1284,13 @@ class Gateway:
+         return anon
+ 
+     def _entity_smiles(self, eid):
+-        """A 侧分子实体的真实 SMILES（mock_db.molecule_search 已有字段，按 name 对齐
+-        admet 键集）；晶体侧/无记录 → None。修复五：get_entity 派生与 edit_molecule
+-        真实判断共用本入口，零 mock_db.json 改动。"""
++        """A 侧分子实体的 SMILES。任务 #36（task-03 §1，ADR-0017）：切 E1 backend
++        search_candidates_A.jsonl 的匿名域 smiles（dummy atom 载体）；backend 不
++        在场回落 mock_db.molecule_search（过渡期兼容）。晶体侧/无记录 → None。
++        修复五：get_entity 派生与 edit_molecule 真实判断共用本入口。"""
++        _, smiles_map = self._a_identity
++        if smiles_map is not None and eid in smiles_map:
++            return smiles_map[eid]
+         for rec in self.db.get('molecule_search', []):
+             if isinstance(rec, dict) and rec.get('name') == eid:
+                 return rec.get('smiles')
+@@ -1104,15 +1298,24 @@ class Gateway:
+ 
+     def _a_smiles_universe(self):
+         """A 侧分子全集的 canonical SMILES 集合（edit_molecule 分支 3 的条件②前置
+-        校验基准；首次调用后经 RDKit 规范化并缓存）。"""
++        校验基准；首次调用后经 RDKit 规范化并缓存）。任务 #36（task-03 §1，
++        ADR-0017）：切 E1 backend 匿名域 smiles（口径与旧版一致：对齐网关可查
++        admet 键集）；backend 不在场回落 mock_db 真实 SMILES（过渡期兼容）。"""
+         if getattr(self, '_a_smiles_cache', None) is None:
+             _require_rdkit()
+             u = set()
+-            for rec in self.db.get('molecule_search', []):
+-                if isinstance(rec, dict) and rec.get('name') in self.db.get('admet', {}):
+-                    c = canonical_chemical(rec.get('smiles'))
++            _, smiles_map = self._a_identity
++            if smiles_map is not None:
++                for eid in self.db.get('admet', {}):
++                    c = canonical_chemical(smiles_map.get(eid))
+                     if c:
+                         u.add(c)
++            else:
++                for rec in self.db.get('molecule_search', []):
++                    if isinstance(rec, dict) and rec.get('name') in self.db.get('admet', {}):
++                        c = canonical_chemical(rec.get('smiles'))
++                        if c:
++                            u.add(c)
+             self._a_smiles_cache = u
+         return self._a_smiles_cache
+ 
+diff --git a/dag_poc/mcp_mock_server/b_partition.json b/dag_poc/mcp_mock_server/b_partition.json
+index bb51777..fbcc06e 100644
+--- a/dag_poc/mcp_mock_server/b_partition.json
++++ b/dag_poc/mcp_mock_server/b_partition.json
+@@ -1,5 +1,5 @@
+ {
+-  "_note": "B 侧成员分区（per-case 结构，任务 #13 修复三升级；任务 #32 ② B 键迁移）。【隔离证据链声明】隔离验证以 mcp_mock_server/rehearsal_logs（isolation_rehearsal.py 实跑留痕）为准，本文件不构成隔离已验证依据。【E1 交接点（现状）】E1 已落盘 dag_poc/data/backend/ 物理分层布局（《后端库规格契约》v1.1 §2）：A 侧 *_A.jsonl 已填（search_candidates_A 80,712 条等，MANIFEST.md5 冻结），B 侧四个 jsonl（search_candidates_B / get_entity_B / get_property_B / check_molecule_exists_B）为空文件，待各 open case G_B 由 E5 造题冻结后入库。网关层经 BPartitionReader 抽象接缝（dag_poc/gateway.py）读取 B 分区：当前实现 BPartitionJsonReader 读本文件；E1/E5 的 B 侧数据落盘后只需注册新读取器（读 backend/**_B.jsonl），Gateway 接口签名不变。【兼容回落】case_id 缺省（None）或查无该 case 时，回落顶层 members/g_b（既有 37 case 与全部既有调用方零改动）。【键空间（任务 #32 ②，ADR-0017）】ed: 合成串/匿名 ID 已迁出：顶层成员为 edit_molecule 分支 2 产物 canonical SMILES 与映射表构造的 dummy atom canonical SMILES；fixture case 成员为 E1-03 映射表（dag_poc/data/anonymization_mapping.json，ADR-0017 dummy atom 载体 [N*]，同位素编号=label）匿名化构造。目标形态对齐 BPartitionBackendJsonlReader 已就绪的两列索引（InChIKey + canonical SMILES，契约 §3.5）：InChIKey 列待 E5 冻结 G_B 时回填。真实 B 侧内容仍阻塞于 E5 入库（backend B 侧全空占位）——本文件为机制+fixture，不构成真实数据验证。",
++  "_note": "B 侧成员分区（per-case 结构，任务 #13 修复三升级；任务 #32 ② B 键迁移）。【隔离证据链声明】隔离验证以 mcp_mock_server/rehearsal_logs（isolation_rehearsal.py 实跑留痕）为准，本文件不构成隔离已验证依据。【E1 交接点（现状）】E1 已落盘 dag_poc/data/backend/ 物理分层布局（《后端库规格契约》v1.1 §2）：A 侧 *_A.jsonl 已填（search_candidates_A 80,712 条等，MANIFEST.md5 冻结），B 侧四个 jsonl（search_candidates_B / get_entity_B / get_property_B / check_molecule_exists_B）为空文件，待各 open case G_B 由 E5 造题冻结后入库。网关层经 BPartitionReader 抽象接缝（dag_poc/gateway.py）读取 B 分区：当前实现 BPartitionJsonReader 读本文件；E1/E5 的 B 侧数据落盘后只需注册新读取器（读 backend/**_B.jsonl），Gateway 接口签名不变。【兼容回落】case_id 缺省（None）或查无该 case 时，回落顶层 members/g_b（既有 37 case 与全部既有调用方零改动）。【键空间（任务 #32 ②，ADR-0017）】ed: 合成串/匿名 ID 已迁出：顶层成员为 edit_molecule 分支 2 产物 canonical SMILES 与映射表构造的 dummy atom canonical SMILES；fixture case 成员为 E1-03 映射表（dag_poc/data/anonymization_mapping.json，ADR-0017 dummy atom 载体 [N*]，同位素编号=label）匿名化构造。目标形态对齐 BPartitionBackendJsonlReader 已就绪的两列索引（InChIKey + canonical SMILES，契约 §3.5）：InChIKey 列待 E5 冻结 G_B 时回填。真实 B 侧内容仍阻塞于 E5 入库（backend B 侧全空占位）——本文件为机制+fixture，不构成真实数据验证。任务 #36（task-03 §1，ADR-0017）：网关 A 侧身份切 E1 backend 匿名层后，顶层成员 1 更新为匿名域 edit_molecule 分支 2 产物 canonical SMILES（aa 匿名形态 + add_atom F，RDKit 实跑产物，非真实 SMILES）。",
+   "semantics": {
+     "members": "B 成员集合（存在性接口定义域）。exists 严格等价 m ∈ members：A 内分子与库外分子一律 False（goal §2b⑤）。成员记录形状 {id, case_ref, provenance}，字段集对齐 E1《后端库规格契约》§3.2 B 侧。",
+     "g_b": "B 侧合格集 G_B（goal §2b①：终态须命中 G_B 且经 B 侧性质复核，评分由评测机在 B 侧执行，不经存在性接口）。G_B ⊆ members，且 G_B 成员必带 case_ref（契约 §3.4：B 侧 case_ref 必填）。",
+@@ -31,15 +31,17 @@
+           }
+         }
+       ],
+-      "g_b": ["[16*][16*](=[22*])[22*][16*]1:[16*]:[16*]:[16*]:[16*]:[16*]:1[16*]([22*])=[22*]"]
++      "g_b": [
++        "[16*][16*](=[22*])[22*][16*]1:[16*]:[16*]:[16*]:[16*]:[16*]:1[16*]([22*])=[22*]"
++      ]
+     }
+   },
+   "members": [
+-    "COCCc1ccc(OCC(O)CNC(C)CF)cc1",
++    "[16*][16*]([16*])[81*][16*][16*]([22*])[16*][22*][16*]1:[16*]:[16*]:[16*]([16*][16*][22*][16*]F):[16*]:[16*]:1",
+     "[16*][16*]([16*])[16*][16*]1:[16*]:[16*]:[16*]([16*]([16*])[16*]([22*])=[22*]):[16*]:[16*]:1"
+   ],
+   "g_b": [
+-    "COCCc1ccc(OCC(O)CNC(C)CF)cc1"
++    "[16*][16*]([16*])[81*][16*][16*]([22*])[16*][22*][16*]1:[16*]:[16*]:[16*]([16*][16*][22*][16*]F):[16*]:[16*]:1"
+   ],
+   "_top_members_note": "顶层回落键（任务 #32 ②）：成员 1 = edit_molecule 分支 2 真实产物 canonical SMILES（锚点 aa + add_atom F 的 RDKit 产物，contract_exists_semantics 链条：产物 ∈ b_set → exists=True）；成员 2 = 布洛芬 CC(C)Cc1ccc(cc1)C(C)C(=O)O 经 E1-03 映射表匿名化的 dummy atom canonical SMILES（基分子不在 A 全域）。旧键 ed:aa:add_atom:F / bm_placeholder_001 已迁出。"
+ }
+diff --git a/dag_poc/mcp_mock_server/rehearsal_logs/grounding_condition3_realdata.log b/dag_poc/mcp_mock_server/rehearsal_logs/grounding_condition3_realdata.log
+new file mode 100644
+index 0000000..2add80c
+--- /dev/null
++++ b/dag_poc/mcp_mock_server/rehearsal_logs/grounding_condition3_realdata.log
+@@ -0,0 +1,55 @@
++# grounding 条件③真实数据实跑证据（任务 #36 / task-03 §1）
++# 生成时刻: 2026-08-07T01:18:53
++# 生成方式: test_gateway_rdkit_grounding.py::test_grounding_condition3_realdata_entity_id_anchor
++# 锚点形态: 实体 ID 锚点
++# 数据源: E1 backend 匿名层（get_entity_A.jsonl / search_candidates_A.jsonl，ADR-0017）
++
++## 会话序列（Gateway 录像）
++  t=1 tool=get_property ok=True
++    args={"id": "aa", "props": ["bbb"]}
++    ret={"id": "aa", "values": [{"name": "bbb", "value": 1}]}
++  t=2 tool=edit_molecule ok=True
++    args={"anchor_id": "aa", "operator": "add_atom", "detail": "F"}
++    ret={"result_id": "[16*][16*]([16*])[81*][16*][16*]([22*])[16*][22*][16*]1:[16*]:[16*]:[16*]([16*][16*][22*][16*]F):[16*]:[16*]:1", "normalized_structure": "[16*][16*]([16*])[81*][16*][16*]([22*])[16*][22*][16*]1:[16*]:[16*]:[16*]([16*][16*][22*][16*]F):[16*]:[16*]:1", "applied": true}
++
++## 关键口径摘录
++  aa 匿名 formula（backend 透传）: [16*]15[19*]25[22*]3[81*]1
++  aa 匿名 smiles（backend 透传）: [16*][22*][16*][16*][16*]1:[16*]:[16*]:[16*]([22*][16*][16*]([22*])[16*][81*][16*]([16*])[16*]):[16*]:[16*]:1
++  get_property 查证值: {'name': 'bbb', 'value': 1}
++  edit_molecule applied: True
++  edit_molecule result_id（answer）: [16*][16*]([16*])[81*][16*][16*]([22*])[16*][22*][16*]1:[16*]:[16*]:[16*]([16*][16*][22*][16*]F):[16*]:[16*]:1
++
++## open 答卷 payload
++{
++  "cited_values": [
++    {
++      "mol": "aa",
++      "prop": "bbb",
++      "value": 1
++    }
++  ],
++  "anchor_molecules": [
++    "aa"
++  ],
++  "edit_op": {
++    "anchor": "aa",
++    "operator": "add_atom",
++    "detail": "F"
++  },
++  "answer": "[16*][16*]([16*])[81*][16*][16*]([22*])[16*][22*][16*]1:[16*]:[16*]:[16*]([16*][16*][22*][16*]F):[16*]:[16*]:1"
++}
++
++## evaluate_grounding 判分结果
++{
++  "grounding_pass": true,
++  "cited_values_match_trace": true,
++  "anchor_in_A": true,
++  "edit_op_reproduces_answer": true,
++  "details": {
++    "cited_unmatched": [],
++    "anchors_not_in_A": []
++  }
++}
++
++## 结论
++  grounding_pass = True（三判据：cited_values_match_trace=True, anchor_in_A=True, edit_op_reproduces_answer=True）
+diff --git a/dag_poc/mcp_mock_server/rehearsal_logs/isolation_selftest.log b/dag_poc/mcp_mock_server/rehearsal_logs/isolation_selftest.log
+index c829f3b..321afe9 100644
+--- a/dag_poc/mcp_mock_server/rehearsal_logs/isolation_selftest.log
++++ b/dag_poc/mcp_mock_server/rehearsal_logs/isolation_selftest.log
+@@ -1,5 +1,5 @@
+ [rehearsal 自测] 负例注入：与 A 重叠的键必被装载断言拒收
+-[rehearsal 自测] 口径声明：装载闸身份键空间=A 实体 ID 域；A 分子 SMILES 面（如 C=CC1CN2CCC1CC2C(O)c1ccn…）由 AFTER 段穷举实证与 exists 语义覆盖，不在装载闸拒收范围
++[rehearsal 自测] 口径声明：装载闸身份键空间=A 实体 ID 域；A 分子 SMILES 面（如 [14*][16*][16*]([16*])[1…）由 AFTER 段穷举实证与 exists 语义覆盖，不在装载闸拒收范围
+ [rehearsal 自测] 注入重叠键（A 侧实体 ID（admet 首键））aa → 被拒收 ✓
+ [rehearsal 自测] 注入重叠键（A 侧实体 ID（admet 尾键））ej → 被拒收 ✓
+ [rehearsal 自测] 沙箱负向自检：拒收时机=装载构造期（raise，非运行期静默）✓
+diff --git a/dag_poc/mcp_mock_server/rehearsal_logs/material_identity_key_realdata.log b/dag_poc/mcp_mock_server/rehearsal_logs/material_identity_key_realdata.log
+new file mode 100644
+index 0000000..b50ad6b
+--- /dev/null
++++ b/dag_poc/mcp_mock_server/rehearsal_logs/material_identity_key_realdata.log
+@@ -0,0 +1,42 @@
++# 材料侧身份键实跑证据（任务 #37 / task-03 §2）
++# 生成时刻: 2026-08-07T01:36:03
++# 生成方式: test_material_identity_grounding.py::test_material_key_recompute_matches_key_column
++# 接口: B（src/data_build/material_identity.py 纯函数现算，零 IO、无映射表依赖）
++# 入参: A 侧可见字段（get_entity_A.formula + masked_structure 的 SPACEGROUP 段）
++
++## 全量等价复核（E3 侧独立重跑，对应 E1-04 自检 S2）
++  键列规模: 5771 条（接口 A 对照源）
++  接口 B 现算 == 键列: 5771/5771 逐一相同
++  唯一键数: 5740（冲突组 31，全部上游重复录入，同键判等是正确行为）
++
++## 样本摘录（键生成与 == 比对）
++  c00001:
++    formula（匿名式）: [20*]1.98[32*]1[42*]0.02[48*]2
++    SPACEGROUP 段: I 4/m m m
++    现算键: [20*]99[32*]50[42*][48*]100_SG139
++    键列值: [20*]99[32*]50[42*][48*]100_SG139（== True）
++  c04294:
++    formula（匿名式）: [31*]0.12[49*]0.88[54*]0[56*]1
++    SPACEGROUP 段: F m -3 m
++    现算键: [31*]3[49*]22[56*]25_SG225
++    键列值: [31*]3[49*]22[56*]25_SG225（== True）
++  c05146:
++    formula（匿名式）: [22*]2
++    SPACEGROUP 段: C 1 2/m 1
++    现算键: [22*]_SG12
++    键列值: [22*]_SG12（== True）
++  SG64 旧记法样本 c01756: SPACEGROUP 段=C m c a（别名表兜底），现算键=[6*]197[22*]616[39*]202[65*]101_SG64
++
++## grounding 条件②接通实测
++  锚点=材料身份键形态 → anchor_in_A=True（整串 == 口径）
++  伪键（错空间群号）/ 仅 reduced_formula 半串 → anchor_in_A=False
++
++## 判别力评估结论
++  键覆盖率 5,771/5,771（100%）、唯一键 5,740；31 组碰撞全部为 3DSC 上游
++  重复录入（同材料重复登记），不存在"不同晶体同键"——同键判等是正确行为，
++  判别力充分支撑 grounding == 判定（造题去重归 E5）。
++
++## 边界登记
++  材料版 edit_op 算子集未就位（ADR-0017 §4 另定）→ grounding 条件③的
++  edit_op 施加半边暂无算子，材料侧只接通条件②锚点 == 比对；open 材料题
++  在算子集就位前本就不造（E5 约束）。标注不改（task-03 §2 未要求材料侧）。
+diff --git a/dag_poc/mcp_mock_server/tests/gwtest_common.py b/dag_poc/mcp_mock_server/tests/gwtest_common.py
+index d87c70c..9939eb6 100644
+--- a/dag_poc/mcp_mock_server/tests/gwtest_common.py
++++ b/dag_poc/mcp_mock_server/tests/gwtest_common.py
+@@ -41,8 +41,11 @@ EDGES_SHORT = [('cp1', 'cp2'), ('cp2', 'cp3'), ('cp3', 'cp4'), ('cp4', 'cp5'), (
+ FIXTURE_CASE = 'case_fixture_isolation_v1'
+ GB_MEMBER = '[16*][16*](=[22*])[22*][16*]1:[16*]:[16*]:[16*]:[16*]:[16*]:1[16*]([22*])=[22*]'
+ NB_MEMBER = '[7*][16*][16*](=[22*])[22*][16*]1:[16*]:[16*]:[16*]:[16*]:[16*]:1[16*]([22*])=[22*]'
+-# 顶层回落键（任务 #32 ②）：分支 2 真实产物 canonical + 布洛芬匿名形态
+-TOP_EDIT_PRODUCT = 'COCCc1ccc(OCC(O)CNC(C)CF)cc1'
++# 顶层回落键（任务 #32 ②；任务 #36 切匿名层后更新）：分支 2 产物 canonical
++# 现为匿名域 dummy atom SMILES（aa 匿名形态 + add_atom F，RDKit 实跑产物）
++# + 布洛芬匿名形态。
++TOP_EDIT_PRODUCT = ('[16*][16*]([16*])[81*][16*][16*]([22*])[16*][22*][16*]1:'
++                    '[16*]:[16*]:[16*]([16*][16*][22*][16*]F):[16*]:[16*]:1')
+ TOP_ANON = ('[16*][16*]([16*])[16*][16*]1:[16*]:[16*]:[16*]'
+             '([16*]([16*])[16*]([22*])=[22*]):[16*]:[16*]:1')
+ 
+diff --git a/dag_poc/mcp_mock_server/tests/test_backend_jsonl_reader.py b/dag_poc/mcp_mock_server/tests/test_backend_jsonl_reader.py
+index cab3f6c..c664319 100644
+--- a/dag_poc/mcp_mock_server/tests/test_backend_jsonl_reader.py
++++ b/dag_poc/mcp_mock_server/tests/test_backend_jsonl_reader.py
+@@ -43,7 +43,9 @@ from gateway import Gateway  # noqa: E402
+ REAL_BACKEND = os.path.join(DAG_POC, 'data', 'backend')
+ EXISTS_B_ALLOWED = 'check_molecule_exists/check_molecule_exists_B.jsonl'
+ # 任务 #32 ② B 键迁移：顶层 fixture 键空间（分支 2 真实产物 canonical + 布洛芬匿名形态）
+-TOP_EDIT_PRODUCT = 'COCCc1ccc(OCC(O)CNC(C)CF)cc1'
++# 任务 #36（ADR-0017 切匿名层）：产物 canonical 现为匿名域 dummy atom SMILES
++TOP_EDIT_PRODUCT = ('[16*][16*]([16*])[81*][16*][16*]([22*])[16*][22*][16*]1:'
++                    '[16*]:[16*]:[16*]([16*][16*][22*][16*]F):[16*]:[16*]:1')
+ TOP_ANON = ('[16*][16*]([16*])[16*][16*]1:[16*]:[16*]:[16*]'
+             '([16*]([16*])[16*]([22*])=[22*]):[16*]:[16*]:1')
+ 
+diff --git a/dag_poc/mcp_mock_server/tests/test_gateway_rdkit_grounding.py b/dag_poc/mcp_mock_server/tests/test_gateway_rdkit_grounding.py
+index 75c6c4e..028b235 100644
+--- a/dag_poc/mcp_mock_server/tests/test_gateway_rdkit_grounding.py
++++ b/dag_poc/mcp_mock_server/tests/test_gateway_rdkit_grounding.py
+@@ -15,6 +15,7 @@
+   python3 -m pytest dag_poc/mcp_mock_server/tests/test_gateway_rdkit_grounding.py -q
+ """
+ 
++import datetime
+ import json
+ import os
+ import sys
+@@ -22,7 +23,9 @@ import sys
+ HERE = os.path.dirname(os.path.abspath(__file__))
+ DAG_POC = os.path.abspath(os.path.join(HERE, '..', '..'))
+ sys.path.insert(0, DAG_POC)
++sys.path.insert(0, os.path.abspath(os.path.join(DAG_POC, '..', 'src', 'benchmark')))
+ 
++import evaluate as E                              # noqa: E402
+ from gateway import Gateway, canonical_chemical   # noqa: E402
+ import gateway as G                                # noqa: E402
+ 
+@@ -140,9 +143,11 @@ def test_edit_chain_anchor_from_session_product():
+     assert second['applied'] is True and second['result_id'] != first['result_id']
+ 
+ 
+-# 任务 #32 ②：分支 2 实体 ID 锚点的 RDKit 真实产物 canonical（aa + F，
+-# 与 b_partition.json 顶层成员 1 同值——产物 ∈ b_set 语义对齐点）。
+-TOP_EDIT_PRODUCT = 'COCCc1ccc(OCC(O)CNC(C)CF)cc1'
++# 任务 #32 ②：分支 2 实体 ID 锚点的 RDKit 产物 canonical；任务 #36（ADR-0017
++# 切匿名层）后为匿名域 dummy atom SMILES（aa 匿名形态 + add_atom F 实跑产物），
++# 与 b_partition.json 顶层成员 1 同值——产物 ∈ b_set 语义对齐点。
++TOP_EDIT_PRODUCT = ('[16*][16*]([16*])[81*][16*][16*]([22*])[16*][22*][16*]1:'
++                    '[16*]:[16*]:[16*]([16*][16*][22*][16*]F):[16*]:[16*]:1')
+ TOP_ANON = ('[16*][16*]([16*])[16*][16*]1:[16*]:[16*]:[16*]'
+             '([16*]([16*])[16*]([22*])=[22*]):[16*]:[16*]:1')
+ 
+@@ -177,11 +182,11 @@ def test_edit_ed_placeholder_anchor_rejected_after_passthrough_removal():
+ 
+ # ── get_entity：派生字段真实化（重要 1）──────────────────────────────────────
+ 
+-def test_get_entity_derived_fields_match_rdkit():
+-    """全部 40 个 A 侧分子：formula/atom_count 非 None 且与 RDKit 独立计算一致；
+-    masked_structure 保持 None（待 E1 身份档交付，docstring 已声明）。"""
+-    from rdkit import Chem
+-    from rdkit.Chem import rdMolDescriptors
++def test_get_entity_structure_fields_anon_passthrough():
++    """任务 #36（task-03 §1，ADR-0017）：全部 40 个 A 侧分子的结构字段切 E1
++    backend 匿名域透传——formula 为库内匿名式（[N*]计数 形态，E1-03 交接
++    §一.2：不得现算丢氢）、masked_structure/atom_count 透传 backend 身份档；
++    红线自检：无任何真实元素分子式/InChIKey 形态（同 E1 自检脚本口径）。"""
+     gw = Gateway()
+     records = _load_molecule_search()
+     assert len(records) == 40
+@@ -189,11 +194,17 @@ def test_get_entity_derived_fields_match_rdkit():
+         ent = gw.call('get_entity', {'id': rec['name']})
+         assert 'error_code' not in ent and ent['entity_type'] == 'molecule'
+         st = ent['structure']
+-        mol = Chem.MolFromSmiles(rec['smiles'])
+-        assert st['formula'] == rdMolDescriptors.CalcMolFormula(mol), rec['name']
+-        assert st['atom_count'] == mol.GetNumHeavyAtoms(), rec['name']
+         assert st['formula'] is not None and st['atom_count'] is not None
+-        assert st['masked_structure'] is None   # 占位期保持 None（待 E1 身份档）
++        # 匿名域形态：formula 含 dummy atom 方括号，非真实元素分子式
++        assert '[' in st['formula'], f'{rec["name"]}: 疑似真实分子式 {st["formula"]}'
++        assert not G._REAL_FORMULA_RE.match(st['formula']), rec['name']
++        assert not G._INCHIKEY_RE.match(st['masked_structure'] or ''), rec['name']
++        # 与 backend 身份档逐字段同源（透传而非现算）
++        ent_records, _ = gw._a_identity
++        brec = ent_records[rec['name']]
++        assert st['formula'] == brec['formula'], rec['name']
++        assert st['masked_structure'] == brec['masked_structure'], rec['name']
++        assert st['atom_count'] == brec['atom_count'], rec['name']
+ 
+ 
+ def test_get_entity_crystal_side_unchanged():
+@@ -287,3 +298,105 @@ def test_load_anon_mapping_seam_fault_tolerant():
+         assert G._load_anon_mapping(p_bad) is None
+     finally:
+         os.unlink(p_bad)
++
++
++# ── 任务 #36：grounding 条件③真实数据实跑（task-03 §1 诚实条款验收点）────────
++
++GROUNDING_REALDATA_LOG = os.path.join(
++    HERE, '..', 'rehearsal_logs', 'grounding_condition3_realdata.log')
++
++
++def _run_grounding_realdata_session(anchor):
++    """真实数据会话序列（task-03 §1 跑法）：get_property 查证（喂判据①
++    cited_values）→ edit_molecule（anchor, add_atom, F）→ 取 result_id 作
++    answer → 组装 open 答卷 + 录像，返 (payload, events, 中间量)。"""
++    gw = Gateway()
++    prop = gw.call('get_property', {'id': 'aa', 'props': ['bbb']})
++    assert 'error_code' not in prop and prop['values'], prop
++    cited_value = prop['values'][0]['value']
++    edit = gw.call('edit_molecule', {'anchor_id': anchor,
++                                     'operator': 'add_atom', 'detail': 'F'})
++    assert 'error_code' not in edit and edit['applied'] is True, edit
++    payload = {
++        'cited_values': [{'mol': 'aa', 'prop': 'bbb', 'value': cited_value}],
++        'anchor_molecules': [anchor],
++        'edit_op': {'anchor': anchor, 'operator': 'add_atom', 'detail': 'F'},
++        'answer': edit['result_id'],
++    }
++    return gw, payload, gw.history(), prop, edit
++
++
++def test_grounding_condition3_realdata_entity_id_anchor():
++    """条件③真实数据实跑（实体 ID 锚点）：A 实体 aa 取 E1 backend 匿名层
++    （search_candidates_A.jsonl 匿名 smiles），edit_molecule 走 RDKit 实施加，
++    answer=result_id；evaluate_grounding 三判据全 True。证据同步写盘
++    rehearsal_logs/grounding_condition3_realdata.log（证据在先、标注改写在后）。"""
++    gw, payload, events, prop, edit = _run_grounding_realdata_session('aa')
++    result = E.evaluate_grounding(payload, events)
++    assert result['cited_values_match_trace'] is True, result['details']
++    assert result['anchor_in_A'] is True, result['details']
++    assert result['edit_op_reproduces_answer'] is True, result['details']
++    assert result['grounding_pass'] is True
++    _write_grounding_realdata_log('实体 ID 锚点', payload, events, prop, edit,
++                                  result, gw)
++
++
++def test_grounding_condition3_realdata_anon_smiles_anchor():
++    """条件③真实数据实跑（匿名 SMILES 锚点对照）：锚点为 backend 匿名域
++    canonical SMILES——判据②经 canonical ∈ _a_smiles_universe（切换后为匿名
++    全集，条件②前置校验不再拒为 ANCHOR_NOT_IN_A），判据③以录像 applied=True
++    行为证。三判据全 True。"""
++    gw_probe = Gateway()
++    anchor = canonical_chemical(gw_probe._entity_smiles('aa'))
++    assert anchor is not None and '[' in anchor, '锚点须为匿名域 dummy atom SMILES'
++    gw, payload, events, prop, edit = _run_grounding_realdata_session(anchor)
++    result = E.evaluate_grounding(payload, events)
++    assert result['cited_values_match_trace'] is True, result['details']
++    assert result['anchor_in_A'] is True, result['details']
++    assert result['edit_op_reproduces_answer'] is True, result['details']
++    assert result['grounding_pass'] is True
++
++
++def _write_grounding_realdata_log(anchor_kind, payload, events, prop, edit,
++                                  result, gw):
++    """条件③真实数据实跑证据落盘（沿 E1 rehearsal_logs 惯例；每次运行
++    覆写为当次实跑留痕，测试绿即证据新）。"""
++    os.makedirs(os.path.dirname(GROUNDING_REALDATA_LOG), exist_ok=True)
++    ent_records, smiles_map = gw._a_identity
++    lines = [
++        '# grounding 条件③真实数据实跑证据（任务 #36 / task-03 §1）',
++        f'# 生成时刻: {datetime.datetime.now().isoformat(timespec="seconds")}',
++        '# 生成方式: test_gateway_rdkit_grounding.py::test_grounding_condition3_realdata_entity_id_anchor',
++        f'# 锚点形态: {anchor_kind}',
++        '# 数据源: E1 backend 匿名层（get_entity_A.jsonl / search_candidates_A.jsonl，ADR-0017）',
++        '',
++        '## 会话序列（Gateway 录像）',
++    ]
++    for e in events:
++        lines.append(f"  t={e['t']} tool={e['tool']} ok={e['ok']}")
++        lines.append(f'    args={json.dumps(e["args"], ensure_ascii=False)}')
++        lines.append(f'    ret={json.dumps(e["ret"], ensure_ascii=False)}')
++    lines += [
++        '',
++        '## 关键口径摘录',
++        f"  aa 匿名 formula（backend 透传）: {ent_records['aa']['formula']}",
++        f"  aa 匿名 smiles（backend 透传）: {smiles_map['aa']}",
++        f"  get_property 查证值: {prop['values'][0]}",
++        f"  edit_molecule applied: {edit['applied']}",
++        f"  edit_molecule result_id（answer）: {edit['result_id']}",
++        '',
++        '## open 答卷 payload',
++        json.dumps(payload, ensure_ascii=False, indent=2),
++        '',
++        '## evaluate_grounding 判分结果',
++        json.dumps(result, ensure_ascii=False, indent=2),
++        '',
++        '## 结论',
++        f"  grounding_pass = {result['grounding_pass']}（三判据："
++        f"cited_values_match_trace={result['cited_values_match_trace']}, "
++        f"anchor_in_A={result['anchor_in_A']}, "
++        f"edit_op_reproduces_answer={result['edit_op_reproduces_answer']}）",
++        '',
++    ]
++    with open(GROUNDING_REALDATA_LOG, 'w', encoding='utf-8') as f:
++        f.write('\n'.join(lines))
+diff --git a/dag_poc/mcp_mock_server/tests/test_material_identity_grounding.py b/dag_poc/mcp_mock_server/tests/test_material_identity_grounding.py
+new file mode 100644
+index 0000000..fbe3d3b
+--- /dev/null
++++ b/dag_poc/mcp_mock_server/tests/test_material_identity_grounding.py
+@@ -0,0 +1,191 @@
++#!/usr/bin/env python3
++"""test_material_identity_grounding.py —— 任务 #37（task-03 §2）：材料侧身份键
++接入与判别力实跑验证（E1-04 交付，ADR-0017 §4）。
++
++覆盖四块：
++  1. 全量键列等价：gateway 接口 B 现算键（空间群号按符号缓存拼装）与 E1-04
++     judge 侧键列（接口 A，material_identity_keys.jsonl）5,771/5,771 逐一相同，
++     唯一键 5,740、冲突 31 组全部为上游重复录入（同键判等是正确行为）；
++  2. 真实数据样本实跑：get_entity_A.jsonl 晶体记录（A 侧可见字段：匿名
++     formula + masked_structure SPACEGROUP 段）现算键与键列 == 比对，含
++     小数计量/SG64 旧记法别名/零计量/分子单质四类边界样本；
++  3. grounding 条件②接通：anchor_molecules 为材料身份键形态时判
++     anchor_in_A=True（整串 == 口径），伪键拒绝；
++  4. 接缝容错：脏记录/缺 SPACEGROUP 段返 None 不穿透。
++
++证据落盘：rehearsal_logs/material_identity_key_realdata.log（沿 E1 惯例）。
++
++运行：
++  python3 -m pytest dag_poc/mcp_mock_server/tests/test_material_identity_grounding.py -q
++"""
++
++import datetime
++import json
++import os
++import sys
++
++HERE = os.path.dirname(os.path.abspath(__file__))
++DAG_POC = os.path.abspath(os.path.join(HERE, '..', '..'))
++REPO_ROOT = os.path.abspath(os.path.join(DAG_POC, '..'))
++sys.path.insert(0, DAG_POC)
++sys.path.insert(0, os.path.join(REPO_ROOT, 'src', 'benchmark'))
++sys.path.insert(0, REPO_ROOT)
++
++import evaluate as E                              # noqa: E402
++import gateway as G                                # noqa: E402
++
++# E1-04 judge 侧键列（接口 A，只作验证对照；生产判定走接口 B 现算）
++KEY_COLUMN_PATH = os.path.join(
++    REPO_ROOT, 'src', 'data_build', '_build_state', 'material_identity_keys.jsonl')
++MATERIAL_REALDATA_LOG = os.path.join(
++    HERE, '..', 'rehearsal_logs', 'material_identity_key_realdata.log')
++
++
++def _load_key_column():
++    """接口 A 键列：{id: material_identity_key}。"""
++    out = {}
++    with open(KEY_COLUMN_PATH, encoding='utf-8') as f:
++        for line in f:
++            line = line.strip()
++            if line:
++                rec = json.loads(line)
++                out[rec['id']] = rec['material_identity_key']
++    return out
++
++
++def test_material_key_recompute_matches_key_column():
++    """全量等价（E3 侧独立复核，对应 E1-04 自检 S2）：接口 B 现算键与
++    judge 侧键列 5,771/5,771 逐一相同；唯一键 5,740、冲突组 31（全部
++    上游重复录入，同键判等是正确行为，E1-04 交接 §3）。证据同步写盘。"""
++    gw = G.Gateway()
++    ent_records, _ = gw._a_identity
++    key_column = _load_key_column()
++    assert len(key_column) == 5771
++    mismatch = []
++    for cid, expect in key_column.items():
++        rec = ent_records.get(cid)
++        assert rec is not None and rec.get('entity_type') == 'crystal', cid
++        got = G.material_key_from_record(rec)
++        if got != expect:
++            mismatch.append((cid, got, expect))
++    assert not mismatch, f'现算键与键列不一致 {len(mismatch)} 条：{mismatch[:3]}'
++    # 键全集：唯一键 5,740；冲突组 31 全部恰 2 条/组（上游重复录入）
++    universe = gw._material_key_universe()
++    assert len(universe) == 5740
++    from collections import Counter
++    cnt = Counter(G.material_key_from_record(ent_records[c])
++                  for c in key_column)
++    dup_groups = {k: n for k, n in cnt.items() if n > 1}
++    assert len(dup_groups) == 31 and set(dup_groups.values()) == {2}
++    _write_material_realdata_log(key_column, ent_records, universe, dup_groups)
++
++
++def test_material_key_realdata_samples():
++    """真实数据样本实跑：键生成 + == 比对 + 确定性（同输入重算恒等）。
++    样本覆盖四类边界（E1-04 交接 §7.2 已踩坑清单）：
++    小数计量 / SG64 旧记法 'C m c a' / 零计量 c04294 / 分子单质 c05146。"""
++    gw = G.Gateway()
++    ent_records, _ = gw._a_identity
++    key_column = _load_key_column()
++    # 首行样本（交接说明示例）：小数计量归约 1.98/0.02 → 99/1/50/100
++    rec = ent_records['c00001']
++    assert G.material_key_from_record(rec) == '[20*]99[32*]50[42*][48*]100_SG139'
++    assert G.material_key_from_record(rec) == key_column['c00001']
++    # SG64 旧记法别名样本：键列中空间群号 64 的晶体走 'C m c a' 别名表
++    sg64_ids = [cid for cid, k in key_column.items() if k.endswith('_SG64')]
++    assert sg64_ids, '键列应含 SG64（旧记法 C m c a）晶体'
++    for cid in sg64_ids[:3]:
++        assert 'SPACEGROUP:C m c a' in ent_records[cid]['masked_structure']
++        assert G.material_key_from_record(ent_records[cid]) == key_column[cid]
++    # 零计量 / 分子单质定名样本
++    for cid in ('c04294', 'c05146'):
++        assert G.material_key_from_record(ent_records[cid]) == key_column[cid], cid
++    # 确定性：同输入重算恒等（== 比对前提）
++    for cid in ('c00001', 'c04294', 'c05146'):
++        assert (G.material_key_from_record(ent_records[cid])
++                == G.material_key_from_record(ent_records[cid]))
++
++
++def test_grounding_anchor_accepts_material_identity_key():
++    """grounding 条件②接通（任务 #37 落点）：anchor_molecules 为材料身份键
++    形态（<reduced_formula>_SG<号>）时 anchor_in_A=True——晶体无 SMILES，
++    键是材料侧唯一身份判据（整串 == 比对，E1-04 交接 §7.3：不得只比
++    reduced_formula 部分）；伪键/只比半串均拒绝。"""
++    gw = G.Gateway()
++    universe = gw._material_key_universe()
++    real_key = next(iter(universe))
++    # 真键：anchor_in_A=True（cited_values 空列表合法、edit_op 缺省不影响②）
++    payload = {'cited_values': [], 'anchor_molecules': [real_key],
++               'edit_op': None, 'answer': universe[real_key]}
++    result = E.evaluate_grounding(payload, [])
++    assert result['anchor_in_A'] is True, result['details']
++    # 伪键（真公式配错空间群号）：拒绝
++    reduced = real_key.split('_SG')[0]
++    fake = reduced + '_SG999'
++    payload_fake = dict(payload, anchor_molecules=[fake])
++    assert E.evaluate_grounding(payload_fake, [])['anchor_in_A'] is False
++    # 只比半串（仅 reduced_formula）：拒绝（整串比对纪律）
++    payload_half = dict(payload, anchor_molecules=[reduced])
++    assert E.evaluate_grounding(payload_half, [])['anchor_in_A'] is False
++
++
++def test_material_key_seam_fault_tolerant():
++    """接缝容错：脏记录/缺 SPACEGROUP 段/非 dict → None，不穿透评分路径。"""
++    assert G.material_key_from_record(None) is None
++    assert G.material_key_from_record({'formula': '[1*]1'}) is None
++    assert G.material_key_from_record(
++        {'formula': '[1*]1', 'masked_structure': 'FORMULA:[1*]1'}) is None
++    # 非法匿名式（解析失败）→ None（不 raise）
++    assert G.material_key_from_record(
++        {'formula': 'garbage', 'masked_structure': 'SPACEGROUP:P 1'}) is None
++
++
++def _write_material_realdata_log(key_column, ent_records, universe, dup_groups):
++    """材料侧身份键实跑证据落盘（沿 E1 rehearsal_logs 惯例；每次运行覆写
++    为当次实跑留痕，测试绿即证据新）。"""
++    os.makedirs(os.path.dirname(MATERIAL_REALDATA_LOG), exist_ok=True)
++    samples = ['c00001', 'c04294', 'c05146']
++    lines = [
++        '# 材料侧身份键实跑证据（任务 #37 / task-03 §2）',
++        f'# 生成时刻: {datetime.datetime.now().isoformat(timespec="seconds")}',
++        '# 生成方式: test_material_identity_grounding.py::test_material_key_recompute_matches_key_column',
++        '# 接口: B（src/data_build/material_identity.py 纯函数现算，零 IO、无映射表依赖）',
++        '# 入参: A 侧可见字段（get_entity_A.formula + masked_structure 的 SPACEGROUP 段）',
++        '',
++        '## 全量等价复核（E3 侧独立重跑，对应 E1-04 自检 S2）',
++        f'  键列规模: {len(key_column)} 条（接口 A 对照源）',
++        f'  接口 B 现算 == 键列: {len(key_column)}/{len(key_column)} 逐一相同',
++        f'  唯一键数: {len(universe)}（冲突组 {len(dup_groups)}，全部上游重复录入，同键判等是正确行为）',
++        '',
++        '## 样本摘录（键生成与 == 比对）',
++    ]
++    for cid in samples:
++        rec = ent_records[cid]
++        lines.append(f'  {cid}:')
++        lines.append(f"    formula（匿名式）: {rec['formula']}")
++        sg = G._SPACEGROUP_RE.search(rec['masked_structure']).group(1).strip()
++        lines.append(f'    SPACEGROUP 段: {sg}')
++        lines.append(f'    现算键: {G.material_key_from_record(rec)}')
++        lines.append(f"    键列值: {key_column[cid]}（== {G.material_key_from_record(rec) == key_column[cid]}）")
++    sg64 = next(cid for cid, k in key_column.items() if k.endswith('_SG64'))
++    lines.append(f'  SG64 旧记法样本 {sg64}: SPACEGROUP 段=C m c a（别名表兜底）'
++                 f'，现算键={G.material_key_from_record(ent_records[sg64])}')
++    lines += [
++        '',
++        '## grounding 条件②接通实测',
++        '  锚点=材料身份键形态 → anchor_in_A=True（整串 == 口径）',
++        '  伪键（错空间群号）/ 仅 reduced_formula 半串 → anchor_in_A=False',
++        '',
++        '## 判别力评估结论',
++        '  键覆盖率 5,771/5,771（100%）、唯一键 5,740；31 组碰撞全部为 3DSC 上游',
++        '  重复录入（同材料重复登记），不存在"不同晶体同键"——同键判等是正确行为，',
++        '  判别力充分支撑 grounding == 判定（造题去重归 E5）。',
++        '',
++        '## 边界登记',
++        '  材料版 edit_op 算子集未就位（ADR-0017 §4 另定）→ grounding 条件③的',
++        '  edit_op 施加半边暂无算子，材料侧只接通条件②锚点 == 比对；open 材料题',
++        '  在算子集就位前本就不造（E5 约束）。标注不改（task-03 §2 未要求材料侧）。',
++        '',
++    ]
++    with open(MATERIAL_REALDATA_LOG, 'w', encoding='utf-8') as f:
++        f.write('\n'.join(lines))
+diff --git a/dag_poc/mcp_mock_server/tests/test_review_merge_fixes.py b/dag_poc/mcp_mock_server/tests/test_review_merge_fixes.py
+index 033f57e..88f2dab 100644
+--- a/dag_poc/mcp_mock_server/tests/test_review_merge_fixes.py
++++ b/dag_poc/mcp_mock_server/tests/test_review_merge_fixes.py
+@@ -42,7 +42,9 @@ BENZENE_CANON = 'c1ccccc1'
+ # 任务 #32 ② B 键迁移后的新键空间（ADR-0017 dummy atom canonical SMILES）：
+ GB_MEMBER = '[16*][16*](=[22*])[22*][16*]1:[16*]:[16*]:[16*]:[16*]:[16*]:1[16*]([22*])=[22*]'
+ NB_MEMBER = '[7*][16*][16*](=[22*])[22*][16*]1:[16*]:[16*]:[16*]:[16*]:[16*]:1[16*]([22*])=[22*]'
+-TOP_EDIT_PRODUCT = 'COCCc1ccc(OCC(O)CNC(C)CF)cc1'
++# 任务 #36（ADR-0017 切匿名层）：产物 canonical 现为匿名域 dummy atom SMILES
++TOP_EDIT_PRODUCT = ('[16*][16*]([16*])[81*][16*][16*]([22*])[16*][22*][16*]1:'
++                    '[16*]:[16*]:[16*]([16*][16*][22*][16*]F):[16*]:[16*]:1')
+ TOP_ANON = ('[16*][16*]([16*])[16*][16*]1:[16*]:[16*]:[16*]'
+             '([16*]([16*])[16*]([22*])=[22*]):[16*]:[16*]:1')
+ 
+diff --git a/dag_poc/tools_schema.json b/dag_poc/tools_schema.json
+index aa47fe8..8c5d9e8 100644
+--- a/dag_poc/tools_schema.json
++++ b/dag_poc/tools_schema.json
+@@ -7,7 +7,7 @@
+     "version": "0.2.0",
+     "supersedes": "0.1.0-stub",
+     "examples_source": "全部 examples 取自 gateway 冒烟实跑（dag_poc/gateway.py Gateway.call 真实调用，非手写臆造；取数脚本 dag_poc/mcp_mock_server/tests/_tmp_smoke_examples.py，落盘 smoke_examples.json，2026-08-06）。快照基准：dag_poc/data/mock_db.json 冻结集（实体 aa/ab 等）+ b_partition.json 顶层占位 members。",
+-    "placeholder_boundary": "【全局占位口径边界声明（修复五移交，修复六登记，任务 #31/#32 订正）】grounding 条件③（edit_op(anchor) 规范化后 == 提交分子）在 E1 匿名化学引擎接管前为占位口径：① 合法 SMILES（含 ADR-0017 dummy atom 载体）走 RDKit canonical 规范化与真实可施加性判断（已真实化），非法输入（垃圾串/ed: 占位 token）一律 valid=false（任务 #31 收紧，静默 fallback 移除）；② check_molecule_exists 钥匙空间为 ADR-0017 dummy atom canonical SMILES（E1-03 映射表匿名化构造）与真实 SMILES 双轨并存，旧 ed: 匿名编辑 token 已迁出（任务 #32 ②，edit_molecule 占位直通移除后 ed: 键 exists 恒 false），E5 冻结 G_B 入库后收敛为 InChIKey/canonical_smiles 双身份键（b_partition.json _note）；③ edit_molecule 的 replace_substituent/substitute_element/ring_closure 三算子在真实分支恒 applied=false，真实结构变换待 E1 接管。隔离验证以 dag_poc/mcp_mock_server/rehearsal_logs 为准（任务 #32 ①）。各工具逐点标注见相应 behavior_notes。",
++    "placeholder_boundary": "【口径边界声明（修复五移交，修复六登记，任务 #31/#32 订正，任务 #36 更新）】grounding 条件③（edit_op(anchor) 规范化后 == 提交分子）已实现并经真实数据验证（任务 #36 / ADR-0017 匿名层端到端接入；证据：dag_poc/mcp_mock_server/rehearsal_logs/grounding_condition3_realdata.log + 测试 test_grounding_condition3_realdata_entity_id_anchor / test_grounding_condition3_realdata_anon_smiles_anchor，2026-08-07 实跑三判据全 True）。剩余口径边界：① 合法 SMILES（含 ADR-0017 dummy atom 载体）走 RDKit canonical 规范化与真实可施加性判断（已真实化），非法输入（垃圾串/ed: 占位 token）一律 valid=false（任务 #31 收紧，静默 fallback 移除）；② check_molecule_exists 钥匙空间为 ADR-0017 dummy atom canonical SMILES（E1-03 映射表匿名化构造）与真实 SMILES 双轨并存，旧 ed: 匿名编辑 token 已迁出（任务 #32 ②，edit_molecule 占位直通移除后 ed: 键 exists 恒 false），E5 冻结 G_B 入库后收敛为 InChIKey/canonical_smiles 双身份键（b_partition.json _note）；③ edit_molecule 的 replace_substituent/substitute_element/ring_closure 三算子在真实分支恒 applied=false，真实结构变换待 E1 接管。隔离验证以 dag_poc/mcp_mock_server/rehearsal_logs 为准（任务 #32 ①）。各工具逐点标注见相应 behavior_notes。",
+     "goal_alignment": "goal.md §6 步 3（tools 数量敲定与出入参定义、A/B 源划分、check_molecule_exists 定义）；goal.md §2b⑤（存在性接口语义）；ADR-0012 §1 第二类",
+     "tool_count_policy": {
+       "fixed_lower_bound": "fixed 类下限＝每个 checkpoint 至少一个可落地 tool 支撑其产物：cp1 文献检索→literature_search；cp2 候选搜集→search_candidates；cp3 性质查证→get_property；cp4/cp5 筛选排序→get_property + compare；cp6 提交→submit_answer",
+diff --git a/src/benchmark/evaluate.py b/src/benchmark/evaluate.py
+index a64d7a3..c389c89 100644
+--- a/src/benchmark/evaluate.py
++++ b/src/benchmark/evaluate.py
+@@ -492,10 +492,19 @@ def evaluate_grounding(payload, events, gw=None):
+         a_smiles = judge._a_smiles_universe()
+     except Exception:
+         a_smiles = set()
++    # 材料侧身份键通道（任务 #37 / task-03 §2，E1-04 交接 §4.2）：晶体无
++    # SMILES，锚点可为材料身份键形态（<reduced_formula>_SG<号>，接口 B 现算）。
++    # 条件③的 edit_op 材料半边待算子集另定（ADR-0017 §4），此处只接锚点比对。
++    try:
++        a_material_keys = judge._material_key_universe()
++    except Exception:
++        a_material_keys = {}
+     bad_anchor = []
+     if isinstance(anchors, list) and anchors:
+         for a in anchors:
+             if not isinstance(a, str) or a not in a_ids:
++                if isinstance(a, str) and a in a_material_keys:
++                    continue    # 材料侧身份键命中（== 口径，整串比对）
+                 try:
+                     c = gw.canonical_chemical(a)
+                 except Exception:
+diff --git "a/task/E3-tools\346\225\262\345\256\232\344\270\216MCP\347\273\237\344\270\200/tools\345\245\221\347\272\246\350\247\204\350\214\203.md" "b/task/E3-tools\346\225\262\345\256\232\344\270\216MCP\347\273\237\344\270\200/tools\345\245\221\347\272\246\350\247\204\350\214\203.md"
+index d436890..42b36e8 100644
+--- "a/task/E3-tools\346\225\262\345\256\232\344\270\216MCP\347\273\237\344\270\200/tools\345\245\221\347\272\246\350\247\204\350\214\203.md"
++++ "b/task/E3-tools\346\225\262\345\256\232\344\270\216MCP\347\273\237\344\270\200/tools\345\245\221\347\272\246\350\247\204\350\214\203.md"
+@@ -224,7 +224,7 @@
+ 
+ **行为红线**：纯结构计算，不访问 A/B 任何库、不返回任何性质；答卷 `edit_op` 字段的工具侧对应物——grounding 条件③（`edit_op(anchor)` 规范化后 == 提交分子）用本工具录像 + `normalize_structure` 复核。
+ 
+-**【修复五移交登记，占位口径边界】**：① ed: 前缀锚点走占位字符串口径（applied 恒 true）；② 实体 ID 锚点 applied 走 RDKit 真实判断但 result_id 保留 ed: token（隔离测试钥匙空间零破坏）；③ 真实 SMILES 锚点须为 A 分子 canonical 或本会话编辑产物（条件②前置校验），add_atom/remove_atom 真实施加，**replace_substituent/substitute_element/ring_closure 三算子在真实分支恒 applied=false**（RDKit 不能简洁实现，诚实返 False）——真实结构变换由 E1 匿名化学引擎接管（交接点同 b_partition）。
++**【修复五移交登记；任务 #36 更新：grounding 条件③已实现并经真实数据验证】**：grounding 条件③（edit_op(anchor) 规范化后 == 提交分子）在 ADR-0017 匿名层端到端验证通过（证据：dag_poc/mcp_mock_server/rehearsal_logs/grounding_condition3_realdata.log + 测试 test_grounding_condition3_realdata_entity_id_anchor / test_grounding_condition3_realdata_anon_smiles_anchor，2026-08-07 实跑三判据全 True）。本工具各分支现行口径：① ed: 前缀锚点非合法 SMILES → ANCHOR_NOT_IN_A（任务 #32 ③占位直通移除）；② 实体 ID 锚点 applied 走 RDKit 真实判断，result_id 为 RDKit 产物 canonical SMILES（任务 #32 ②，任务 #36 后为匿名域 dummy atom 形态）；③ SMILES 锚点须为 A 分子 canonical（匿名域 dummy atom SMILES）或本会话编辑产物（条件②前置校验），add_atom/remove_atom 真实施加，**replace_substituent/substitute_element/ring_closure 三算子在真实分支恒 applied=false**（RDKit 不能简洁实现，诚实返 False，此口径边界保留）。
+ 
+ ### 1.9 `normalize_structure`（none · free）
+ 
+@@ -248,7 +248,7 @@
+ 
+ **行为红线**：等价匿名变换（ADR-0012 §3）下的同一性判定——性质不变、每个真实分子对应唯一匿名标识；评分侧用同一规范化函数核对 `edit_op(anchor)` == 提交分子。**实现一致性要求**：网关与评分引擎必须调用同一个规范化函数实例（gateway.py `canonical_chemical`，修复四 evaluate_grounding 已复用），否则 grounding 条件③的两侧口径漂移。
+ 
+-**【修复五移交登记，占位口径边界】**：双分支口径中 ed: 前缀占位字符串分支标注“E1 匿名化学引擎接管后替换”（B 占位期钥匙空间不变）；真实分支（RDKit canonical）已真实化，同分子不同写法归一到同一标识（契约同构等价）。
++**【修复五移交登记；任务 #36 更新：grounding 条件③已实现并经真实数据验证】**：grounding 条件③的规范化复核在 ADR-0017 匿名层端到端验证通过（证据：dag_poc/mcp_mock_server/rehearsal_logs/grounding_condition3_realdata.log + 测试 test_grounding_condition3_realdata_entity_id_anchor / test_grounding_condition3_realdata_anon_smiles_anchor，2026-08-07 实跑三判据全 True）。现行口径：ed: 前缀 token 非合法 SMILES → valid=false（任务 #31 收紧，静默 fallback 移除）；真实分支（RDKit canonical，含 ADR-0017 dummy atom 载体）同分子不同写法归一到同一标识（契约同构等价，匿名域一步不动点）。
+ 
+ ---
+ 

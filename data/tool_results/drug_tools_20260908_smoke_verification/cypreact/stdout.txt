@@ -1,0 +1,1 @@
+cypreact: wrote 27 rows, 18 ok, output /mnt/ai4sci_develop_fast/jingwu/benchmark/.bench_runs/drug_prediction/drug_tools_20260908/runs/cypreact/smoke/20260910T145931Z-8adfad45/adapter_output.csv

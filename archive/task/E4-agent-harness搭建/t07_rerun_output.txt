@@ -1,0 +1,18 @@
+[H2] case=case_co_drug_01 kind=fixed cli=claude
+[H2] 前置要求：mock_server(:9000) 已按本 case 启动
+[H2] 启动 CLI（stream → case_co_drug_01__claude_raw_stream.jsonl）@ 16:17:16
+[H2] CLI 结束：returncode=0 实测耗时=422s
+PASS task-07 R7 arguments嵌套深度≤1（与H1同构单层） — 99 条全部单层
+PASS H1 CLI产出tool_call事件>0 — 99 条
+[H2] 全量流工具面实况（如实记录）: ['Bash', 'Glob', 'Monitor', 'Read', 'get_entity', 'get_property', 'literature_search', 'search_candidates', 'submit_answer']
+[H2] 判分投影过滤非契约工具事件 7 条（仅存于 _full 流）
+PASS H2 判分投影均为9契约工具（前缀已剥） — 92 条，过滤 7 条内置工具
+PASS H3 收卷通道 — submission_channel=text_fallback
+PASS H4 判分器能吃（score_case 出分） — best=None task相关分={'cp1': 1.0, 'cp2': 0.0, 'cp3': 0.0, 'cp4': 0}
+[H2] 产物: /Users/jingwu/work/benchmark/task/E4-agent-harness搭建/traces_new/case_co_drug_01__claude.jsonl
+       /Users/jingwu/work/benchmark/task/E4-agent-harness搭建/traces_new/case_co_drug_01__claude_full.jsonl
+       /Users/jingwu/work/benchmark/task/E4-agent-harness搭建/traces_new/case_co_drug_01__claude_response.json
+       raw: /Users/jingwu/work/benchmark/task/E4-agent-harness搭建/traces_new/case_co_drug_01__claude_raw_stream.jsonl
+[H2] 实测耗时 422s（H1/H2 对比请见 report-task-05.md §耗时）
+
+结论：PASS 5 / FAIL 0

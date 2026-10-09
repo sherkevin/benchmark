@@ -1,0 +1,329 @@
+PLANNING TARGETS — NOT EXPERIMENTAL RESULTS                                                                                      Guide v03 / 2026-10-08
+
+
+
+Experiment Targets
+Planning guide for After the Decision
+These are illustrative research goals, not forecasts or observations. Recorded comparators remain unchanged. Blue T rows
+show an arithmetically consistent target scenario, normalized to existing denominators. Statistical success and generalization
+still require real evaluation.
+
+                Group       Body output             Research question                                  Goal checkpoint (T)
+                E1          Table 3 / Fig. 3        Natural gain and delayed recovery                  +1.02 / +1.23 pp∗
+                E2          Table 4                 Correct source attribution                         Local beats permutation
+                E3          Table 5                 Learnable cold-start headroom                      81.86 / 81.72%
+                E4          Table 6                 Value of the update alone                          +1.39 / +1.20 pp∗
+                E5          Table 7                 Cost at one call per input                         Selection ≤ 30/35 µs
+                E6          Table 8                 Refusal at matched coverage                        95.78%; U = −0.0845
+
+
+
+                                                                                                                                            E D
+∗ Natural / controlled gain versus current Relay in E1, current corrected Query in E4. These E-labels match the presentation draft; the active standard’s
+
+E6 means untouched confirmation.
+
+1. Primary selection and delay
+                                                                                                                               U R
+                                                                                                                A S
+Four providers; 157 molecules / 124 scaffold clusters; D ∈ {0, 1, 4}. Each method has 4,710 calls across 30 schedules, not
+4,710 independent molecules. Controlled drift is an evaluator-side label flip after tick 78.
+Table 1: E1 / body Table 3. Recorded anchors and planning target (T).                                         E
+                                                                                                      M
+                                                                                     T
+                                                                           Natural menu               Controlled drift
+
+
+                                                                                   NO
+                          Method / status                          Correct         Success (%)      Correct     Success (%)
+                          Random (M)
+                          Best Fixed (M)
+                                                                      3,945
+                                                                      4,152   /         83.76
+                                                                                        88.15
+                                                                                                        —
+                                                                                                        —
+                                                                                                                          —
+                                                                                                                          —
+                          Frozen (M)
+
+                                                             D E      4,230             89.81        3,456             73.38
+                          MIRA-Relative (M)
+                                              I                       4,230             89.81           —                 —
+
+
+
+                                           GU
+                          Online SGD (M)                              4,202             89.21        3,958             84.03
+                          Greedy LinUCB (M)                           4,226             89.72        3,822             81.15
+                          BayesianRouter (M)                          4,217             89.53        3,781             80.28
+
+
+
+                        E T
+                          Current MIRA-Relay (M)
+                          Retrospective Best Fixed† (M)
+                                                                      4,230
+                                                                      4,260
+                                                                                        89.81
+                                                                                        90.45
+                                                                                                     4,124
+                                                                                                        —
+                                                                                                                       87.56
+                                                                                                                          —
+
+
+
+      R               G   Improved MIRA-Relay (T)                     4,278             90.83        4,182             88.79
+
+
+
+
+   TA
+† Retrospective Best Fixed chooses one fixed provider with evaluator truth; it is not an upper bound on contextual selection. The natural per-molecule
+oracle is 150/157 = 95.54%, or 4,500 recorded decisions. T adds 48 correct natural decisions: 17.8% of Frozen’s 270 recoverable decisions.
+Table 2: E1 / body Figure 3 data. Gains over Frozen, in pp; T is illustrative.
+
+
+                                                          Natural menu                    Controlled drift
+                                     Delay        Current (M)        Target (T)       Current (M)      Target (T)
+                                           0             −0.13             +1.15          +13.63          +15.67
+                                           1             −0.13             +1.02          +14.52          +15.41
+                                           4             +0.25             +0.89          +14.39          +15.16
+
+Each delay has 1,570 calls. T correct counts: natural 1,428/1,426/1,424; controlled 1,398/1,394/1,390. Their sums reproduce Table 1. A compatible
+aggregate rescue/harm scenario is 110/62 (natural) and 818/92 (controlled), giving net 48 and 726 versus Frozen. This is not a predicted event trace.
+Decision test. Seek a practically meaningful natural gain and retain controlled recovery; require prospectively specified paired
+scaffold uncertainty against the strongest legal matched control. Target totals alone cannot demonstrate significance. Delay
+points are goals, not a fitted law.
+
+M = measured anchor    T = hypothetical target   No target CI or p-value                                                                               1
+PLANNING TARGETS — NOT EXPERIMENTAL RESULTS                                                                                       Guide v03 / 2026-10-08
+
+
+
+2. Mechanism and learnable headroom
+E2 preserves initial scores, source residual computation, budget and release clock; only the credit destination changes. Its
+scaffold-equal estimand differs from E1’s pooled point estimates.
+Table 3: E2 / body Table 4. Source-credit contrasts (pp); goals are dependent.
+
+
+                                                                       Natural                       Controlled
+                            Contrast                        Current (M)       Target (T)     Current (M)        Target (T)
+                            Local − Frozen                        +0.10            +1.10          +14.40           +15.50
+                            Permutation − Frozen                  +0.41            +0.10           −1.27            −1.00
+                            Local − permutation                   −0.30            +1.00          +15.67           +16.50
+
+For T: 1.10 − 0.10 = 1.00 and 15.50 − (−1.00) = 16.50. The three contrasts are not independent successes. Measured contrasts use unrounded values
+before subtraction. Actual paired intervals must support the attribution claim; do not derive intervals from these target means.
+Table 4: E3 / body Table 5. Static cold-start targets on 722 development molecules.
+                                                                                                                                            E D
+                                         Selector / status                   Correct / 722      Accuracy (%)
+                                                                                                                              U R
+                                         Best Fixed (M)                                572              79.22
+                                                                                                               A S
+                                                                                                             E
+                                         Raw Frozen (M)                                573              79.36
+                                         Corrected Frozen (M)                          579              80.19
+                                         BCE + CLS (M)                           567 / 570
+                                                                                                    M
+                                                                                                78.53 / 78.95
+                                         BT + CLS (M)
+                                                                                   T
+                                                                                 569 / 565      78.81 / 78.25
+
+
+
+                                                                                 NO
+                                         Improved prior (T)                      591 / 590      81.86 / 81.72
+                                         Per-molecule oracle† (M)                      618              85.60
+
+                                                                             /
+                                                               E
+Paired seeds 0/1 use the same molecules; ‘/’ separates seed results. The oracle is evaluator-only. Of 722 molecules, 471 have all providers correct, 147
+are mixed and 104 are all wrong. T captures 12/11 of the 39 remaining selection opportunities (30.8/28.2%). It needs a better ranking representation
+
+                                                             D
+or training rule; current learned priors have not demonstrated this effect.
+
+                                              I
+                                           GU
+Decision test. Both seeds should exceed the corrected Frozen by at least 1 pp, without negative leave-one-fold-out contrasts.
+Static ranking success alone does not prove online adaptation.
+
+3. Isolate the update
+
+                        E T
+Table 5: E4 / body Table 6. Score × update diagnostic; 2,166 calls per cell.
+
+
+
+      R               G                                                      Natural                      Controlled
+
+
+   TA                  Score / update / status
+                       Raw / Frozen (M)
+                       Raw / Marginal (M)
+                                                                   Correct
+                                                                     1,719
+                                                                     1,715
+                                                                                 Accuracy (%)
+                                                                                        79.36
+                                                                                        79.18
+                                                                                                   Correct
+                                                                                                     1,497
+                                                                                                     1,674
+                                                                                                                Accuracy (%)
+                                                                                                                          69.11
+                                                                                                                          77.29
+                       Raw / Query (M)                               1,700              78.49        1,645                75.95
+                       Corrected / Frozen (M)                        1,737              80.19        1,371                63.30
+                       Corrected / Marginal (M)                      1,729              79.82        1,696                78.30
+                       Corrected / Query (M)                         1,740              80.33        1,704                78.67
+                       Corrected / improved update (T)               1,770              81.72        1,730                79.87
+
+The T update keeps the same corrected prior as measured E4; it does not use the E3 target prior. T gains over Query are +30/+26 correct calls
+(+1.39/+1.20 pp); gains over Marginal are +41/+34 (+1.89/+1.57 pp). Natural T stays below the fixed-menu oracle cap of 618 × 3 = 1, 854. Each
+policy generates its own selected-feedback history.
+Decision test. Require the 1 pp development resource line and nonnegative leave-one-fold-out contrasts within each fixed score
+scale. Cross-scale differences also change intervention exposure; they cannot isolate the update’s benefit.
+
+
+M = measured anchor    T = hypothetical target   No target CI or p-value                                                                              2
+PLANNING TARGETS — NOT EXPERIMENTAL RESULTS                                                                                  Guide v03 / 2026-10-08
+
+
+
+4. Retain efficiency while adding useful capacity
+E5 caps preserve room for an improved mechanism. They are engineering budgets, not predictions that every latency will
+decrease.
+Table 6: E5 / body Table 7. Mean of stream-level p95s (µs); T rows are caps.
+
+
+                                                                             Natural              Controlled
+                               Method / status                        Selection    Update      Selection    Update
+                               Frozen (M)                                  15.89        1.31      17.88         1.50
+                               Online SGD (M)                              14.08       19.37      14.29        20.02
+                               Greedy LinUCB (M)                          128.63       90.90     128.36        92.32
+                               BayesianRouter (M)                         133.65       88.96     137.34        92.55
+                               Current MIRA-Relay (M)                      27.21        2.81      32.47         3.46
+                               Improved module (T; caps)                   ≤ 30         ≤5         ≤ 35         ≤5
+
+                                                                                                                                        E D
+                                                                                                                             R
+Same macOS arm64 measurement scope; mean of 30 stream p95s, not a pooled p95. Excludes provider forward, encoding, I/O and receipt bookkeep-
+
+
+                                                                                                                           U
+ing. One call per input remains fixed. If the 5 µs cap is met, updating would be at least 19.37/5 = 3.87× faster than the current natural SGD anchor
+
+
+                                                                                                               S
+for this kernel metric only. Live learner memory and full-stack latency must be measured; no numerical forecast is justified yet.
+
+
+                                                                                                             A
+Decision test. Meet the efficacy target and these kernel caps jointly. Report encoding, pending/history management, memory
+
+                                                                                                           E
+and recovery separately before making deployment-speed claims. Extra capacity must not silently acquire additional labels or
+tool calls.
+
+5. Reduce accepted errors without reducing coverage                                               M
+                                                                                     T
+                                                                                   NO
+E6 is a secondary analysis of the inspected cohort: five fit-only policies, each applied to 157 molecules (N = C = 785
+records/calls per policy). It is not new untouched confirmation.
+
+                                                                             /
+Table 7: E6 / body Table 8. Matched-count refusal target; T is not an observed policy.
+
+
+
+                                                            D E
+                   Policy / status
+                                             I           Accepted         Wrong    Refused     Coverage     Acc.∗        Utility
+
+
+
+                                          GU
+                   Always accept (M)                            785           93           0     100.00     88.15      −0.1285
+                   Confidence refuse (M)                        663           36         122      84.46     94.57      −0.0947
+                   Always refuse (M)                              0            0         785       0.00        —       −0.2600
+
+                          T
+                   Same-coverage random† (M)
+
+                        E
+                   Improved ranking (T)
+                                                                663
+                                                                663
+                                                                              75
+                                                                              28
+                                                                                         122
+                                                                                         122
+                                                                                                  84.46
+                                                                                                   84.46
+                                                                                                            88.69
+                                                                                                            95.78
+                                                                                                                       −0.1444
+                                                                                                                       −0.0845
+
+
+      R               G
+∗ Accepted accuracy; coverage and accuracy in %. † Evaluator-only conditional random null. U = −(W + 0.25R + 0.01C)/N, where W is accepted
+
+
+
+
+   TA
+errors and R refusals. Always-refuse accuracy is undefined, not zero. T implies 635 correct accepted outputs and U = −(28 + 0.25 × 122 + 0.01 ×
+785)/785 = −0.0845.
+Decision test. The target requires replacing eight accepted wrong predictions with eight correct ones, at 663 accepted outputs;
+the existing unchanged threshold cannot do this. Freeze a revised fit-only ranking and report risk–coverage and cost sensitivity.
+Exact matched coverage is an analytical control, not guaranteed prospective threshold behavior. Utility gain: +0.0102 versus
+current confidence refusal; +0.0440 versus always accept.
+
+6. What would turn these goals into evidence?
+
+   1. Prioritize natural selection gain and mechanism separation. The current natural null is the main missing link; higher
+      controlled scores alone do not close it.
+   2. Keep E3 capacity and E4 update interventions separate, then test their combination with matched budgets. Filling each
+      table independently does not establish one coherent method.
+   3. Freeze candidate, comparators, metric and statistical plan before new evaluation. The inspected 157 molecules cannot be
+      relabeled as untouched confirmation. Target rates transfer as goals; the old counts do not.
+
+M = measured anchor   T = hypothetical target   No target CI or p-value                                                                           3
+PLANNING TARGETS — NOT EXPERIMENTAL RESULTS                                                                                Guide v03 / 2026-10-08
+
+
+
+   4. Preserve negatives, raw events and independent recovery. Broader endpoint, lifecycle and agent claims need their own
+      evidence. The full scientific gate remains HOLD.
+
+Source map. E1/E5: fresh natural/stress summaries, 2026-10-06; E2: mechanism v2, 2026-10-07; E3: headroom and A800 learned-prior verifier;
+E4: calibration/centering v1; E6: corrected post-call analysis audit v3. Exact paths and SHA-256 hashes are in target_spec.json. Real-paper tables
+remain unchanged.
+
+
+
+
+                                                                                                                                      E D
+                                                                                                                         U R
+                                                                                                           A S
+                                                                                                         E
+                                                                                                M
+                                                                                T
+                                                                          /   NO
+                                                            D E
+                                             I
+                                          GU
+                        E T
+      R               G
+   TA
+
+
+
+
+M = measured anchor   T = hypothetical target   No target CI or p-value                                                                         4
+

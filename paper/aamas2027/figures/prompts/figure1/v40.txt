@@ -1,0 +1,58 @@
+Use case: infographic-diagram
+Asset type: Figure 1 method architecture for a top-conference machine-learning paper.
+
+Input images:
+- Image 1: Figure 1 v29, edit target for scientific content and icon language. Replace its two long serial pipelines with a central architecture hub.
+- Image 2: Figure 2 v26, style reference only. Match its white paper canvas, flat vector cards, navy outlines, compact icons, and restrained deep-blue / gray / amber / muted-purple palette. Do not copy its temporal timeline.
+
+Primary request:
+Create a compact, publication-quality Figure 1 for the MIRA-Relay method. This is a method architecture, not a temporal flowchart. Make the visual center a large central selector hub: fixed score and released evidence are fused by a plus operator, producing a score vector and one selected tool. A small local feedback loop beneath the hub shows how the selected result is judged, delayed, and written back into the released evidence register.
+
+Composition:
+Use a wide 2.7:1 landscape white canvas. Arrange three softly tinted, thin-outline regions without making them a single straight pipeline: a small left input card, a dominant central pale-blue method region, and a compact right selected-interaction region. Place the delayed feedback loop directly below the central region, close to the state register. No giant title bars, full-width swimlanes, grid background, or repeated outcome cards.
+
+Left input region:
+- one small molecule icon and endpoint document stacked in a card;
+- one compact eligible-tools tray with three generic tool glyphs, no provider names;
+- one short label “input” only;
+- connect the input card to the central feature grid. Do not show unselected outputs.
+
+Central method region (largest):
+- small feature grid labelled “features”;
+- gray locked weight grid labelled “fixed score”;
+- blue released-evidence register with two rows of four counter cells labelled “released evidence”; highlight one current row;
+- blue residual readout with three cells labelled “residual”;
+- a circular plus operator fusing fixed score and residual;
+- exactly one equation above it: “q=q^0+Δ”;
+- a slim vertical score-vector card labelled “score” leading to a compact blue selector gate labelled “select one”;
+- a small selected-tool token leaving the selector toward the right region;
+- a thin blue local return arrow from the register toward the selector; label it only “next selection” if needed.
+The released-evidence register is the only persistent state store. Do not use “family residual”, “provider bias”, “counter update”, or “A/B/C”.
+
+Right selected-interaction region:
+- selected-tool token enters a small gray gear card labelled “call”;
+- call enters an amber document card labelled “terminal record” containing only “output” and “runtime status”;
+- terminal record enters an amber lock/snowflake card labelled “frozen judge”, then an amber flask card labelled “chemical feedback” with “r∈{0,1}”;
+- a gray branch labelled “runtime error” goes from terminal record to a gray document card labelled “runtime ledger” and ends there; it must not enter the feedback loop.
+Keep this interaction branch compact and visually secondary to the central selector hub.
+
+Bottom delayed feedback loop:
+- chemical feedback drops into one purple stack/clock card labelled “selected-only queue”;
+- one purple dashed arc labelled once “τ_t=t+1+D” goes from queue toward a purple clock card labelled “release”;
+- one solid blue arrow goes from release into a blue circular-arrow card labelled “update”;
+- the update arrow terminates visibly inside the highlighted row of the central released-evidence register, ending on an unlabeled blue write port inside the row;
+- keep this loop local to the register, not as a second horizontal time line.
+
+Text and typography:
+Use only these short labels: “input”, “features”, “fixed score”, “released evidence”, “residual”, “score”, “select one”, “selected tool”, “call”, “terminal record”, “output”, “runtime status”, “frozen judge”, “chemical feedback”, “runtime error”, “runtime ledger”, “selected-only queue”, “release”, “update”, “next selection”. Each label is at most two lines. Use exactly two equations: “q=q^0+Δ” and “τ_t=t+1+D”. Do not add explanatory prose, metrics, title text, legends, or arbitrary symbols.
+
+Visual grammar:
+Flat vector scientific infographic with polished ICLR/ICML/NeurIPS Figure 1 quality. White background, dark navy text, thin uniform outlines, no drop shadows, no gradients, no 3-D. Deep blue #2E5DA1 is the proposed selector/state/update; light gray #DCE3EC is frozen/external/diagnostic; amber #E9A11A is terminal/judge/chemical feedback; muted purple #7650B8 is only pending/release. Use distinct shapes: cards for records, small cell registers for state, a circle for fusion, icons for molecule/document/gear/lock/flask/clock. Keep margins tight and balanced; no large empty zones.
+
+Hard constraints:
+- Do not write any standalone provider letters A, B, or C anywhere.
+- Do not put “MIRA-Relay” inside a module.
+- Do not use Figure 2 temporal labels “decision t”, “selected action”, “later decision”, or a full timeline.
+- Do not duplicate the provider menu across modules, draw crossed-out symbols, or create a second state store.
+- No direct terminal-to-state shortcut; no arrow may stop at a border or float in white space.
+- The image must look like a central method architecture with a local write-back loop, clearly different from Figure 2’s single-event time strip.

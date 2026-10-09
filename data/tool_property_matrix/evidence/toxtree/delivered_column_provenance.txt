@@ -1,0 +1,30 @@
+# 出处：data/tool_results/api_evidence/toxtree/*.txt（原始逐分子输出）
+# 与 data/tool_results/toxtree.csv（交付表）逐行核对得到。
+
+## 交付列「致突变 AMES」 <- 原始列 'No alerts for S. typhimurium mutagenicity'（AMES.txt，730 行）
+取值分布：{'YES': 533, 'NO': 197}
+ALERTSCounter 分布：{'0.0000e+00': 723, '1.0000e+00': 7}
+ALERTSCounter × 判定列交叉：
+    ('0.0000e+00', 'YES') -> 533
+    ('0.0000e+00', 'NO') -> 190
+    ('1.0000e+00', 'NO') -> 7
+
+## 交付列「致癌性」 <- 原始列 'Negative for genotoxic carcinogenicity'（致癌性.txt，730 行）
+取值分布：{'YES': 536, 'NO': 194}
+ALERTSCounter 分布：{'0.0000e+00': 631, '1.0000e+00': 89, '2.0000e+00': 10}
+ALERTSCounter × 判定列交叉：
+    ('0.0000e+00', 'YES') -> 453
+    ('0.0000e+00', 'NO') -> 178
+    ('1.0000e+00', 'YES') -> 73
+    ('1.0000e+00', 'NO') -> 16
+    ('2.0000e+00', 'YES') -> 10
+
+## 交付列「皮肤致敏」 <- 原始列 'No skin sensitisation reactivity domains alerts identified.'（皮肤致敏.txt，730 行）
+取值分布：{'NO': 422, 'YES': 308}
+ALERTSCounter 分布：{'0.0000e+00': 308, '1.0000e+00': 307, '2.0000e+00': 70, '3.0000e+00': 39, '4.0000e+00': 6}
+ALERTSCounter × 判定列交叉：
+    ('0.0000e+00', 'YES') -> 308
+    ('1.0000e+00', 'NO') -> 307
+    ('2.0000e+00', 'NO') -> 70
+    ('3.0000e+00', 'NO') -> 39
+    ('4.0000e+00', 'NO') -> 6

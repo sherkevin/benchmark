@@ -1,0 +1,23 @@
+arXiv:2605.09934
+abs: https://arxiv.org/abs/2605.09934
+pdf: https://arxiv.org/pdf/2605.09934
+topic: 证据溯源TRACE-Bench
+pulled: 2026-08-09 via arxiv MCP (arxiv_get_metadata / arxiv_read_paper)
+
+--- 2026-08-11 补拉全文与真实样例（见 真实例子.md）---
+arxiv_2605.09934v1.html   <- https://arxiv.org/html/2605.09934v1        (200, 291591B; v2 为 404)
+arxiv_2605.09934v1.pdf    <- https://arxiv.org/pdf/2605.09934v1         (200, 2308130B, 10p)
+arxiv_2605.09934v1.txt    <- 上述 HTML 去标签纯文本 (76943 chars)
+figs/x1..x5.png           <- https://arxiv.org/html/2605.09934v1/x{1..5}.png (全部 200)
+  注：图内文字用 pdftotext -layout 从 PDF 矢量文本提取（HTML 位图分辨率不足）
+
+上游数据源 ToolVQA (Yin et al., ICCV 2025, arXiv:2508.03284):
+  repo: https://github.com/Fugtemypt123/ToolVQA-release
+toolvqa_instance_1501.json <- .../opencompass/data/ToolVQA/dataset.json 第 "1501" 项
+  经 jsDelivr 镜像下载全量 16534214B（raw.githubusercontent 太慢/超时）
+  该条即论文 Figure 4 案例研究的源数据（Yamaha / July 10, 1955），全库唯一命中
+figs/coco_000000394002.jpg <- http://images.cocodataset.org/train2017/000000394002.jpg
+  该题真实输入图（ToolVQA 仓库不含图片，按其路径中的 COCO2017/train2017 文件名回补并已核对内容）
+
+未获取：TRACER/TRACE-Bench 无代码与数据发布。PDF 全文仅含 1 个外链
+(https://www.anthropic.com/news/claude-3-5-sonnet，为 Claude 3.5 引用)，无 GitHub / HF / 匿名仓库。

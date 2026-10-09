@@ -1,0 +1,175 @@
+% Generated from experiment_tables/main.tex; edit that standalone source first.
+% Requires booktabs, array, caption, xcolor, amsmath, amssymb.
+\newcommand{\MiraTableFont}{\fontsize{8.5}{10.2}\selectfont}
+\newcommand{\pending}{\textcolor{gray}{\textit{TBD}}}
+\newcommand{\notrun}{\textemdash}
+\newcommand{\tnote}[1]{{\MiraTableFont\raggedright\par\vspace{3pt}#1\par}}
+% E1: main-results
+\newcommand{\MiraMainCaption}{Selected correctness on the four-provider BBB menu. Natural and controlled correctness drift use the same 157 held-out molecules and 30 schedules per method (5 folds, 2 seeds, 3 delays), giving 4,710 calls per method. Paired intervals resample scaffold clusters. The controlled intervention flips the selected fit-best provider's label after tick 78.}
+\newcommand{\MiraMainLabels}{\label{tab:main-results}\label{tab:mechanism-results}}
+\newcommand{\MiraMainBody}{%
+\begingroup\centering\MiraTableFont\renewcommand{\arraystretch}{1.12}
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lrrrr@{}}
+\toprule
+& \multicolumn{2}{c}{Natural menu} & \multicolumn{2}{c}{Controlled drift} \\
+\cmidrule(lr){2-3}\cmidrule(l){4-5}
+Method & Success (\%) & $\Delta$ pp [95\% CI] & Success (\%) & $\Delta$ pp [95\% CI] \\
+\midrule
+Random & 83.76 & $-6.05\;[-9.93,-2.26]$ & \notrun & \notrun \\
+Fit-only Best Fixed & 88.15 & $-1.66\;[-3.97,+0.51]$ & \notrun & \notrun \\
+Frozen & \textbf{89.81} & reference & 73.38 & reference \\
+MIRA-Relative & \textbf{89.81} & $0.00\;[0.00,0.00]$ & \notrun & \notrun \\
+Online SGD & 89.21 & $-0.59\;[-1.80,+0.52]$ & 84.03 & $+10.66\;[+6.05,+15.45]$ \\
+Greedy LinUCB & 89.72 & $-0.08\;[-0.58,+0.41]$ & 81.15 & $+7.77\;[+5.08,+10.72]$ \\
+BayesianRouter & 89.53 & $-0.28\;[-1.75,+0.97]$ & 80.28 & $+6.90\;[+3.50,+10.41]$ \\
+\textbf{MIRA-Relay} & \textbf{89.81} & $0.00\;[-1.24,+1.40]$ & \textbf{87.56} & $+14.18\;[+9.61,+19.03]$ \\
+\midrule
+Retrospective Best Fixed$^{\dagger}$ & 90.45 & $+0.64\;[-2.86,+4.07]$ & \notrun & \notrun \\
+\bottomrule
+\end{tabular*}
+\tnote{$\Delta$ is relative to Frozen. Bold denotes the highest point accuracy among deployable policies within a condition, including ties; it does not denote significance. $\dagger$ Evaluator-only fixed provider chosen using held-out labels, not a per-molecule oracle. \notrun\ means outside the recorded experiment roster, not a missing zero.}
+\vspace{8pt}
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lrrrrrr@{}}
+\toprule
+& \multicolumn{3}{c}{Natural: $\Delta$ vs Frozen (pp)} & \multicolumn{3}{c}{Controlled: $\Delta$ vs Frozen (pp)} \\
+\cmidrule(lr){2-4}\cmidrule(l){5-7}
+Method & $D=0$ & $D=1$ & $D=4$ & $D=0$ & $D=1$ & $D=4$ \\
+\midrule
+Online SGD & $-0.76$ & $-0.89$ & $-0.13$ & $+11.59$ & $+11.21$ & $+9.17$ \\
+Greedy LinUCB & $-0.13$ & $0.00$ & $-0.13$ & $+8.66$ & $+7.01$ & $+7.64$ \\
+BayesianRouter & $-0.25$ & $-0.25$ & $-0.32$ & $+6.82$ & $+6.94$ & $+6.94$ \\
+MIRA-Relay & $-0.13$ & $-0.13$ & $+0.25$ & $+13.63$ & $+14.52$ & $+14.39$ \\
+\bottomrule
+\end{tabular*}
+\tnote{Delay strata are descriptive: 1,570 calls per method and delay, reusing the same 157 molecules. The paired aggregate intervals above remain the primary estimates.}
+\endgroup}
+\begin{table*}[t]
+\caption{\MiraMainCaption}\MiraMainLabels
+\MiraMainBody
+\end{table*}
+
+% E2: credit-ablation
+\newcommand{\MiraCreditCaption}{Does feedback need to reach its source provider? Frozen, Local (MIRA-Relay), and fixed cyclic permutation share cold-start scores, menu, and release clock. Each condition has 90 sealed-receipt replay streams: 5 folds, 2 deterministic replicas, 3 delays, 3 methods.}
+\newcommand{\MiraCreditLabels}{\label{tab:credit-ablation}}
+\newcommand{\MiraCreditBody}{%
+\begingroup\centering\MiraTableFont\renewcommand{\arraystretch}{1.12}
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lrrrr@{}}
+\toprule
+& \multicolumn{2}{c}{Natural menu} & \multicolumn{2}{c}{Controlled drift} \\
+\cmidrule(lr){2-3}\cmidrule(l){4-5}
+Contrast & $\Delta$ (pp) & 95\% CI & $\Delta$ (pp) & 95\% CI \\
+\midrule
+Local $-$ Frozen & $+0.10$ & $[-1.08,+1.42]$ & $+14.40$ & $[+9.79,+19.23]$ \\
+Permutation $-$ Frozen & $+0.41$ & $[-0.47,+1.32]$ & $-1.27$ & $[-3.66,+0.95]$ \\
+\textbf{Local $-$ Permutation} & $-0.30$ & $[-1.42,+0.76]$ & $+15.67$ & $[+10.65,+20.74]$ \\
+\bottomrule
+\end{tabular*}
+\tnote{The estimand is an equal-weight mean over 124 scaffold clusters, unlike the pooled-call point estimates in Table~\ref{tab:main-results}. Replicas repeat a deterministic schedule; they are not independent molecules or evidence of seed robustness. This is a mechanism intervention, not an extra deployable baseline.}
+\endgroup}
+\begin{table*}[t]
+\caption{\MiraCreditCaption}\MiraCreditLabels
+\MiraCreditBody
+\end{table*}
+
+% E3: learned-prior
+\newcommand{\MiraPriorCaption}{Cold-start selection and task headroom on 722 development molecules. Five scaffold OOF folds; BCE/BT share architecture, initialization, optimization budget, and validation selection.}
+\newcommand{\MiraPriorLabels}{\label{tab:learned-prior}}
+\newcommand{\MiraPriorBody}{%
+\begingroup\centering\MiraTableFont\renewcommand{\arraystretch}{1.12}
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lrr@{}}
+\toprule
+Selector & Seed 0 (\%) & Seed 1 (\%) \\
+\midrule
+Fit-only Best Fixed & 79.22 & 79.22 \\
+Raw Frozen & 79.36 & 79.36 \\
+Corrected Frozen & \textbf{80.19} & \textbf{80.19} \\
+BCE + auxiliary CLS & 78.53 & 78.95 \\
+BT + auxiliary CLS & 78.81 & 78.25 \\
+\midrule
+Per-molecule oracle$^{\dagger}$ & 85.60 & 85.60 \\
+\bottomrule
+\end{tabular*}
+\tnote{All correct: 471; mixed correctness: 147; all wrong: 104. Corrected Frozen gets 579/722 right; the oracle gets 618/722, leaving 39 recoverable selection errors. $\dagger$ Uses unselected outputs for evaluator-only diagnosis. The first three selector rows are deterministic; bold is the best deployable point estimate.}
+\endgroup}
+\begin{table}[t]
+\caption{\MiraPriorCaption}\MiraPriorLabels
+\MiraPriorBody
+\end{table}
+
+% E4: centering-diagnostic
+\newcommand{\MiraCenterCaption}{Score scale $\times$ update rule on development data. Each cell uses 722 molecules, five scaffold folds, three delays, and 2,166 recorded decisions.}
+\newcommand{\MiraCenterLabels}{\label{tab:centering-diagnostic}}
+\newcommand{\MiraCenterBody}{%
+\begingroup\centering\MiraTableFont\renewcommand{\arraystretch}{1.12}
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}llrr@{}}
+\toprule
+Score & Update & Natural (\%) & Drift (\%) \\
+\midrule
+Raw & Frozen & 79.36 & 69.11 \\
+Raw & Marginal & 79.18 & 77.29 \\
+Raw & Query & 78.49 & 75.95 \\
+\midrule
+Corrected & Frozen & 80.19 & 63.30 \\
+Corrected & Marginal & 79.82 & 78.30 \\
+Corrected & Query & 80.33 & 78.67 \\
+\bottomrule
+\end{tabular*}
+\tnote{Marginal subtracts the fit-time success rate; Query subtracts the frozen score saved at selection. Each variant has its own feedback history. Compare update rules within a score scale: changing the scale also changes exposure to the controlled intervention. Descriptive development results; no confirmation reuse.}
+\endgroup}
+\begin{table}[t]
+\caption{\MiraCenterCaption}\MiraCenterLabels
+\MiraCenterBody
+\end{table}
+
+% E5: cost-validity
+\newcommand{\MiraCostCaption}{Policy-operation cost under the one-call contract. Values are means of the 30 recorded stream-level p95 timings per method, in $\mu$s on macOS arm64; they are not the p95 of all pooled operations or end-to-end service latency.}
+\newcommand{\MiraCostLabels}{\label{tab:cost-validity}}
+\newcommand{\MiraCostBody}{%
+\begingroup\centering\MiraTableFont\renewcommand{\arraystretch}{1.12}
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lrrrrr@{}}
+\toprule
+& \multicolumn{2}{c}{Natural menu ($\mu$s)} & Controlled ($\mu$s) & & \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-4}
+Method & Selection & Update & Update & Live state (KiB) & Calls/input \\
+\midrule
+Random & 67.14 & 5.44 & \notrun & \pending & 1 \\
+Fit-only Best Fixed & 5.82 & 0.68 & \notrun & \pending & 1 \\
+Frozen & 15.89 & 1.31 & 1.50 & \pending & 1 \\
+MIRA-Relative & 42.02 & 73.30 & \notrun & \pending & 1 \\
+Online SGD & 14.08 & 19.37 & 20.02 & \pending & 1 \\
+Greedy LinUCB & 128.63 & 90.90 & 92.32 & \pending & 1 \\
+BayesianRouter & 133.65 & 88.96 & 92.55 & \pending & 1 \\
+MIRA-Relay & 27.21 & 2.81 & 3.46 & \pending & 1 \\
+\bottomrule
+\end{tabular*}
+\tnote{Receipt validity: 270/270 natural and 150/150 controlled streams; 157 decisions per stream. Counts include evaluator-only controls, which are excluded from the deployable cost ranking. \pending\ marks a common live-state measurement still to be filled; serialized audit history is not a substitute for learner memory. Timings exclude provider inference, file I/O, and evaluator service cost.}
+\endgroup}
+\begin{table*}[t]
+\caption{\MiraCostCaption}\MiraCostLabels
+\MiraCostBody
+\end{table*}
+
+% E6: postcall-verification
+\newcommand{\MiraPostCaption}{Post-call verification/refusal as a secondary analysis of the existing held-out BBB cohort. Five fit-only fold policies yield 785 records per policy over the same 157 molecules; this is not a new untouched confirmation set.}
+\newcommand{\MiraPostLabels}{\label{tab:postcall-verification}}
+\newcommand{\MiraPostBody}{%
+\begingroup\centering\MiraTableFont\renewcommand{\arraystretch}{1.12}
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lrrrrrr@{}}
+\toprule
+Policy & Coverage (\%) & Acc.$^{\ddagger}$ (\%) & Wrong & Refused & Calls/input & Utility \\
+\midrule
+Always accept & 100.00 & 88.15 & 93 & 0 & 1 & $-0.1285$ \\
+Confidence refuse & 84.46 & \textbf{94.57} & 36 & 122 & 1 & $\mathbf{-0.0947}$ \\
+Always refuse & 0.00 & \notrun & 0 & 785 & 1 & $-0.2600$ \\
+\midrule
+Same-coverage random$^{\dagger}$ & 84.46 & 88.69 & 75 & 122 & 1 & $-0.1444$ \\
+\bottomrule
+\end{tabular*}
+\tnote{$\ddagger$ Accuracy is conditional on acceptance; refusal has null correctness. $\dagger$ Evaluator-side conditional null with acceptance count matched to confidence refuse, not a deployable online policy. $U=-(W+0.25R+0.01C)/N$, where $W,R,C,N$ are wrong accepted returns, refusals, calls, and records. All policies call once before accepting/refusing. Bold denotes the best deployable point estimate, not significance.}
+\tnote{Confidence minus random: accepted accuracy $+5.88$ pp, 95\% CI $[+2.77,+9.29]$. Confidence minus always accept: utility $+0.0338$, 95\% CI $[+0.0088,+0.0609]$. Intervals resample 124 scaffold clusters; this extension does not estimate MIRA-Relay's pre-call gain.}
+\endgroup}
+\begin{table*}[t]
+\caption{\MiraPostCaption}\MiraPostLabels
+\MiraPostBody
+\end{table*}
+

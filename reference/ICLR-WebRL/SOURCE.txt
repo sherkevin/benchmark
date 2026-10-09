@@ -1,0 +1,6 @@
+conference: ICLR 2025
+title: WebRL: Training LLM Web Agents via Self-Evolving Online Curriculum Reinforcement Learning
+arxiv_id: 2411.02337v3
+arxiv_abs: http://arxiv.org/abs/2411.02337v3
+pdf_url: https://arxiv.org/pdf/2411.02337v3
+matched_arxiv_title: WebRL: Training LLM Web Agents via Self-Evolving Online Curriculum Reinforcement Learning

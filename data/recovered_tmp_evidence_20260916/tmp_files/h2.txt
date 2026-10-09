@@ -1,0 +1,16 @@
+HTTP/1.1 200 OK
+Date: Tue, 08 Sep 2026 11:33:33 GMT
+Content-Type: application/zip
+Content-Length: 4851709064
+Connection: keep-alive
+Accept-Ranges: bytes
+ETag: "c52b376459eabdb471af14ae589e86d6:1744062688.344362"
+Last-Modified: Mon, 07 Apr 2025 19:42:39 GMT
+Server: AkamaiNetStorage
+Expires: Tue, 08 Sep 2026 11:33:33 GMT
+Cache-Control: max-age=0, no-cache, no-store
+Pragma: no-cache
+x-via: 1.1 PS-JFK-04K5y239:5 (Cdn Cache Server V2.0), 1.1 PSjsczsx2ic69:6 (Cdn Cache Server V2.0), 1.1 PS-TYN-01LhQ48:19 (Cdn Cache Server V2.0)
+x-ws-request-id: 6a9ff28c_PS-TYN-01LhQ48_7233-2232
+Access-Control-Allow-Origin: *
+

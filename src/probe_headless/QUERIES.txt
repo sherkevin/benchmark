@@ -1,0 +1,131 @@
+# 探针题面存档（两道）
+
+============================================================
+## 题1 probe_mat_fixed_01（约束满足·简单）
+合格集大小=5  候选=20  预算=50
+============================================================
+You are a materials scientist selecting a superconductor for a magnet that must
+operate above the boiling point of liquid nitrogen.
+
+REQUIREMENTS (a candidate qualifies only if it satisfies both):
+  R1. It contains exactly 4 distinct chemical elements.
+  R2. Its transition temperature is at least 95.0 K and
+      strictly below 96.0 K.
+
+CANDIDATES (normalized composition formulas; use them verbatim as identifiers):
+  O4.220Cu1Ba2Hg1
+  O4Cu1Ba0.119La1.881
+  O6.130Ca1Cu2Ba2Hg1
+  O4.140Cu1Ba2Hg1
+  O5Cu1Ba2Tl1
+  O4Cu1Ce0.200Sm1.800
+  O4.200Cu1Ba2Hg1
+  O4Cu1Sr0.111La1.889
+  O7Ca0.800Cu2Sr2Y0.200Tl1
+  O4Cu1La1.895Ce0.105
+  O4.047Cu1Ba2Hg1
+  O4.150Cu1Ba2Hg1
+  O4.162Cu1Ba2Hg1
+  O7Cu3Ba2Pr0.900Sm0.100
+  O4.180Cu1Ba2Hg1
+  O8Cu2Sr2Ru0.800Rh0.200Gd1
+  O8Ca0.050Cu4Y0.950Ba2
+  O4Cu1Ba0.180La1.820
+  O4.097Cu1Ba2Hg1
+  O4.096Cu1Ba2Hg1
+
+AVAILABLE TOOLS
+  literature_search  - search the literature index (metadata only: title, year,
+                       citation count, keywords; no abstracts, no full text).
+  get_property       - measure ONE property of ONE material. Each call consumes
+                       measurement budget. Budget is limited.
+  submit_answer      - submit the qualified formulas plus the evidence you
+                       relied on, and end the task.
+
+Report which candidates qualify. Every claim you make about a measured value
+must be backed by an actual measurement you performed.
+
+
+============================================================
+## 题2 probe_mat_fixed_02_hard（约束优化·加难）
+唯一最优=O2Cr0.950Fe0.050Cu1 tc=117.5  候选=60  预算=20
+============================================================
+You are a materials scientist. From the candidate list, identify the SINGLE best
+superconductor for a high-field magnet: among all candidates that qualify, pick
+the one with the highest transition temperature.
+
+REQUIREMENTS:
+  R1. Contains exactly 4 distinct chemical elements.
+  R2. Transition temperature is at least 90.0 K.
+  OBJECTIVE. Among all candidates meeting R1 and R2, return the one with the
+             HIGHEST transition temperature.
+
+BUDGET: you may call get_property at most 20 times in total.
+        There are 60 candidates, so you CANNOT measure them all.
+        Decide carefully which ones are worth measuring.
+
+CANDIDATES (normalized composition formulas; use verbatim as identifiers):
+  O8Cu4Y1Ba1.870La0.130
+  O8Ca1Fe0.010Cu1.990Sr2Bi2
+  O4.200Cu1La2
+  O8Cu4Sr0.200Ba1.800Yb1
+  O4Cu1Sr0.045La1.955
+  B1O5Cu1Ba1Tb1
+  O4Cu1Ba0.115La1.885
+  O4.047Cu1Ba2Hg1
+  O4.370Cu1Ba2Hg1
+  O5Cu1Ba2Tl1
+  O4Cu1Sr0.113La1.887
+  O2Cr0.900Fe0.100Cu1
+  O4.200Cu1Ba2Hg1
+  O7Cu3Ba1.800Pr1.200
+  O4.180Cu1Ba2Hg1
+  O4Cu1Sr0.111La1.889
+  O8Co0.010Cu2Sr2Ru0.990Gd1
+  O7Cu3Ba2Pr0.150Lu0.850
+  O8Cu3Sr2Y0.950Tb0.050Pb2
+  O4Cu1Sr0.230La1.770
+  O1.980Cu1Sr0.910Nd0.090
+  O8.288Ca1Cu2Sr2Bi2
+  O4Cu0.920Zn0.080La2
+  O7Cu3Ba1.850Sm1.150
+  O6Cu3Ba2Pr1
+  O4.097Cu1Ba2Hg1
+  O8Cu4Y0.900Ba2Tb0.100
+  O7Cu3Ba2Pr0.500Nd0.500
+  O8Cu2Sr2Pr1Bi2
+  O8Cu2Sr2Nb1Sm1
+  O8Cu2Sr2Ru0.900Gd1Ir0.100
+  O8.195Ca1Cu2Sr2Bi2
+  O8Ca0.120Cu4Y0.880Ba2
+  O7Cu3Ba2Lu1
+  O4.220Cu1Ba2Hg1
+  O4Cu1La1.700Sm0.300
+  O2Cu1Sr0.850Y0.150
+  O4.101Cu1Ba2Hg1
+  O8Cu4Y0.850Ba2Pr0.150
+  O7Ca0.800Cu2Ba2Nd0.200Tl1
+  O4.160Cu1Ba2Hg1
+  O8Ca0.800Cu2Ba2Ce0.200Tl2
+  O4.093Cu1La2
+  O5Cu1Sr2Tl1
+  O4.162Cu1Ba2Hg1
+  O8Cu4Y0.600Ba2Pr0.400
+  O4Cu1Sr0.263La1.737
+  O2Cr0.950Fe0.050Cu1
+  O4.020Cu1La2
+  O8.120Ca1Cu2Sr2Bi2
+  O8Ti0.030Cu2Sr2Ru0.970Gd1
+  O2Cu1Sr0.900La0.100
+  O8Cu4Ba2Dy1
+  O8Ca0.750Cu2Sr2Pr0.250Bi2
+  O4Cu1La1.895Ce0.105
+  O4.096Cu1Ba2Hg1
+  B0.050C0.950O5Cu1Sr2
+  O8Ca0.075Cu4Y0.925Ba2
+  O4.150Cu1Ba2Hg1
+  O4.081Cu1Ba2Hg1
+
+TOOLS: literature_search (metadata only), get_property (costs budget),
+       submit_answer (give the single best formula + your evidence).
+Every measured value you cite must come from an actual measurement.

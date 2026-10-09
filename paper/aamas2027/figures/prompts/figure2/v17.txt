@@ -1,0 +1,16 @@
+
+Use v16 as the visual reference and change only the runtime-failure connector directions. Preserve the same compact flat-vector AAMAS style, module positions, colors, icons, typography, and all text.
+
+The runtime branch must be directed exactly as follows:
+
+```
+terminal record / runtime status → system failure → terminal outcome
+```
+
+Draw a short arrow leaving the “runtime status” area of the amber terminal-record card and entering the grey “system failure” card. Then draw a separate short downward arrow leaving the bottom of the grey system-failure card and entering the top of the amber terminal-outcome card. The arrowhead must point down into terminal outcome. Delete any arrow pointing upward from terminal outcome to system failure. Do not make system failure a parent of terminal record.
+
+The chemical branch remains: frozen endpoint judge → chemical correctness → terminal outcome. Terminal outcome remains directly above selected outcome with a short downward arrow; selected outcome alone points right to the purple selected-only queue. Keep the exact lower chain selected outcome → selected-only queue → released outcome → relay update → S_τt → first action at or after τ_t. Keep the local circular-arrow “future state” glyph and “D=0: visible before next action”. Keep the unselected-output badge attached to S_t + A_t.
+
+Render only the existing exact labels. Keep four compact phase tabs DECIDE / EXECUTE + JUDGE / DELAYED FEEDBACK / UPDATE, dense white 1600×440 canvas, navy/grey/amber/purple semantic colors, clean sans-serif type, simple icons, medium outlines, no gradients, 3-D, shadows, grid, table, swimlane, global loop, verifier, refusal, escalation, or second call.
+
+Negative prompt: upward arrow from terminal outcome to system failure, system failure pointing into terminal record, missing runtime-status arrow, terminal outcome bypassing system failure, selected outcome disconnected, queue bypass, terminal record shortcut, chemical branch missing, long bottom loop, global feedback loop, large empty margins, extra prose, current truth before action, same-action feedback, instant learning, fallback ledger, diagnostic ledger, gradients, 3-D, shadows, watermark.

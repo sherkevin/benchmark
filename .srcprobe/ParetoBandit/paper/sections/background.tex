@@ -1,0 +1,38 @@
+\section{Background and Problem}
+\label{sec:background}
+
+We formalize LLM routing as an online decision-making problem in which the router learns which model to dispatch for each prompt, respects an operator-specified cost ceiling, and adapts when model quality or pricing shifts after deployment. This section defines the three components of the problem; Section~\ref{sec:system_design} presents our solution.
+
+\subsection{Contextual Bandit Routing}
+\label{sec:bandit_routing}
+
+At each discrete step $t = 1, 2, \ldots$, a user prompt arrives and the router observes a context vector $x_t \in \mathbb{R}^d$ derived from the prompt (Section~\ref{sec:context_repr}). The router selects a single model $a_t$ from a portfolio $\mathcal{A} = \{1, \ldots, K\}$ and dispatches the prompt. After inference, the system observes a scalar reward $r_t$ reflecting response quality and a realized cost $c_t$ in dollars. The reward may be derived from an automated LLM judge, explicit user feedback, or a task-completion metric; in our setup it is a continuous score normalized to $[0, 1]$ by the judge rubric (Section~\ref{sec:eval_setup}). The objective is to learn a policy $\pi$ that maximizes cumulative quality subject to a ceiling on average cost per request (detailed in Section~\ref{sec:budget_constraint}):
+\begin{align}
+    &\max_{\pi}\; \mathbb{E}\!\left[\sum_{t=1}^{T} r_{t,\,\pi(x_t)}\right]
+    \label{eq:objective} \\
+    &\text{s.t.}\quad
+    \limsup_{T \to \infty}\;\tfrac{1}{T}\textstyle\sum_{t=1}^{T} c_{\pi(x_t)} \leq B
+    \notag
+\end{align}
+where $B$ is the operator's maximum acceptable average cost per request in dollars (e.g., \$0.005/req). The router may spend well below $B$ when cheaper models deliver comparable quality; it approaches the ceiling only when doing so yields a meaningful quality gain. We relax this via a per-request Lagrange multiplier $\lambda_t$ whose scoring function and dynamics are detailed in Section~\ref{sec:budget_pacer}.
+
+The router operates under \emph{bandit feedback}~\cite{lattimore2020bandit}: it observes the reward and cost only for the model to which a query was routed, never the counterfactual outcomes from the $K{-}1$ alternatives. This partial observability is inherent to LLM serving, where evaluating every model on every prompt would multiply cost by $K$.
+
+\subsection{Context Representation}
+\label{sec:context_repr}
+
+The context vector $x_t$ is constructed by encoding the prompt with all-MiniLM-L6-v2, a lightweight model from the Sentence Transformers framework~\cite{reimers2019sentence}, projecting to 25 PCA components whitened to unit variance, and appending a bias term, yielding $d = 26$. The PCA projection is fitted on ${\sim}46{,}000$ disjoint LMSYS Arena prompts~\cite{zheng2023judging}. Section~\ref{sec:efficiency} details the latency impact of this dimensionality choice.
+
+\subsection{Budget Constraint}
+\label{sec:budget_constraint}
+
+Each model $a \in \mathcal{A}$ incurs a deterministic cost $c_a(x_t)$ per request, typically computed from per-token API pricing. In a realistic portfolio, costs span orders of magnitude: the three-tier pool used in our experiments ranges from ${\sim}$\$0.00003/req (Llama-3.1-8B) to ${\sim}$\$0.015/req (Gemini-2.5-Pro), a $530{\times}$ spread.
+
+The rate constraint in Eq.~\ref{eq:objective} departs from the classical Bandits with Knapsacks (BwK) framework~\cite{badanidiyuru2013bwk}, which imposes a cumulative budget over a known horizon $T$. Production LLM serving is open-ended: request volume is unknown, and the natural specification is a cost \emph{rate} (dollars per request), not a finite pool. Our formulation is horizon-free and self-regulates at any traffic volume.
+
+We enforce the rate constraint through a dual variable $\lambda_t$ that rises when recent spending exceeds $B$ and falls when it is below. Section~\ref{sec:budget_pacer} defines the smoothed dual-ascent update and the two-layer enforcement mechanism (soft penalty plus hard cost ceiling) that operationalize $\lambda_t$.
+
+\subsection{Non-Stationarity}
+\label{sec:nonstationarity}
+
+We address two forms of environment drift that affect production LLM deployments. \emph{Reward drift} occurs when providers silently update models behind their APIs~\cite{chen2023chatgptdrift, ma2024prompt}, changing the conditional expected reward. \emph{Cost drift} occurs when API pricing changes significantly~\cite{openai2024gpt4opricing}. The two interact: a price drop changes which models are cost-effective, requiring the router to jointly re-learn reward estimates and re-optimize the quality--cost frontier. Section~\ref{sec:adaptive_learning} presents our approach using geometric discounting~\cite{garivier2011switching, russac2019weighted}.

@@ -1,0 +1,704 @@
+         Stochastic Multi-Armed Bandits with Unrestricted Delay Distributions
+
+
+                          Tal Lancewicki * 1 Shahar Segal * 1 Tomer Koren 1 2 Yishay Mansour 1 2
+
+
+                           Abstract                                   tion, like in the classic stochastic MAB problem. However,
+                                                                      the reward is observed only at time t + dt , where dt is a
+        We study the stochastic Multi-Armed Ban-
+                                                                      random variable denoting the delay at step t. This prob-
+        dit (MAB) problem with random delays in the
+                                                                      lem has been studied extensively in the literature (Joulani
+        feedback received by the algorithm. We consider
+                                                                      et al., 2013; Vernade et al., 2017; Pike-Burke et al., 2018;
+        two settings: the reward-dependent delay setting,
+                                                                      Gael et al., 2020) under an implicit assumption that the de-
+        where realized delays may depend on the stochas-
+                                                                      lays are reward-independent: namely, that dt is sampled
+        tic rewards, and the reward-independent delay
+                                                                      from an unknown delay distribution and may depend on the
+        setting. Our main contribution is algorithms that
+                                                                      chosen arm, but not on the stochastic rewards on the same
+        achieve near-optimal regret in each of the settings,
+                                                                      round. For example, Joulani et al. (2013); Pike-Burke et al.
+        with an additional additive dependence on the
+                                                                      (2018) show a regret bound of the form O(RMT AB + KE[D]).
+        quantiles of the delay distribution. Our results
+                                                                      Here RMT AB denotes the optimal instance-dependent T -round
+        do not make any assumptions on the delay dis-
+                                                                      regret bound for standard (non-delayed) MAB: RMT AB =
+        tributions: in particular, we do not assume they              P
+                                                                         ∆i >0 log(T )/∆i , where ∆i is the sub-optimality gap for
+        come from any parametric family of distributions
+                                                                      arm i. In the second term, K is the number of arms and
+        and allow for unbounded support and expecta-
+                                                                      E[D] is the expected delay.
+        tion; we further allow for infinite delays where
+        the algorithm might occasionally not observe any              A significantly more challenging setting, that to the best of
+        feedback.                                                     our knowledge was not explicitly addressed previously in
+                                                                      the literature,1 is that of reward-dependent delays. In this
+                                                                      setting, the random delay at each round may also depend on
+1       Introduction                                                  the reward received on the same round (in other words, they
+                                                                      are drawn together from a joint distribution over rewards and
+Stochastic Multi-armed Bandit problem (MAB) is a theo-                delays). This scenario is motivated by both of the examples
+retical framework for studying sequential decision making.            mentioned earlier: e.g., in targeted advertisement the delay
+Most of the literature on MAB assumes that the agent ob-              associated with a certain user is strongly correlated with the
+serves feedback immediately after taking an action. How-              reward she generates (i.e., click or no click); and in clinical
+ever, in many real world applications, the feedback might             trials, the delay often depends on the effect of the applied
+be available only after a period of time. For instance, in clin-      treatment as some side-effects take longer than others to
+ical trials, the observed effect of a medical treatment often         surface.
+comes in delay, that may vary between different treatments.
+Another example is in targeted advertising on the web: when           In contrast to the reward-independent case, with reward-
+a user clicks a display ad the feedback is immediate, but if          dependent delays the observed feedback might give a biased
+a user decides not to click, then the algorithm will become           impression of the true rewards. Namely, the expectation of
+aware to that only when the user left the website or enough           the observed reward can be very different than the actual
+time has elapsed.                                                     expected reward. For example, consider Bernoulli rewards.
+                                                                      If the delays given reward 0 are shorter than the delays given
+In this paper, we study the stochastic MAB problem with               reward 1, then the observed reward will be biased towards 0.
+randomized delays (Joulani et al., 2013). The reward of               Even worse, the direction of the bias can be opposite be-
+the chosen action at time t is sampled from some distribu-            tween different arms. Hence, as long as the fraction of
+    *
+    Equal contribution 1 Blavatnik School of Computer Science,        unobserved feedback is significant, the expected observed
+Tel Aviv University, Israel 2 Google Research, Tel Aviv. Correspon-   reward of the optimal arm can be smaller than expected
+dence to: Tal Lancewicki <lancewicki@mail.tau.ac.il>, Shahar             1
+Segal <shaharsegal1@mail.tau.ac.il>.                                      Some of the results of Vernade et al. (2017); Gael et al. (2020)
+                                                                      can be viewed as having a specific form of reward-dependent
+Proceedings of the 38 th International Conference on Machine          delays; we discuss this in more detail in the related work section.
+Learning, PMLR 139, 2021. Copyright 2021 by the author(s).
+                             Stochastic Multi-Armed Bandits with Unrestricted delay distributions
+
+observed reward of a sub-optimal arm, which makes the
+                                                                   Table 1. Regret bounds comparison of this and previous works.
+learning task substantially more challenging.
+                                                                   The bounds in this table omit constant and log(K) factors.
+1.1   Our contributions                                                                  Previous
+                                                                                               P work               This paper
+                                                                                    RM T
+                                                                                         AB
+                                                                                             + i E[G∗T,i ]
+                                                                      General,
+We consider both the reward-independent and reward-                                    RM T
+                                                                                            AB
+                                                                                               + KE[D]      minq { 1q RMT
+                                                                                                                          AB
+                                                                                                                             + d(q)}
+                                                                    Reward-indep.
+dependent versions of stochastic MAB with delays. In the                            (Joulani et al., 2013)
+reward-independent case we give new algorithms whose re-                                  RMT
+                                                                                              AB
+                                                                                                 + Kd
+                                                                                    (Joulani
+                                                                                        √      et al.,
+                                                                                                   √ 2013)
+gret bounds significantly improve upon the state-of-the-art,        Fixed delay d                                   RMT
+                                                                                                                        AB
+                                                                                                                           +d
+                                                                                           T K + Kd
+and also give instance-dependent lower bounds demonstrat-                            (Dudik et al., 2011)
+ing that our algorithms are nearly-optimal. In the reward-                                    P  8  1−α α
+                                                                                     M AB
+dependent setting, we give the first algorithm to handle such         α-Pareto     R T     +     i ∆i             RM  AB
+                                                                                                                         + 21/α
+                                                                                                                    T
+delay structure and the potential bias in the observed feed-                          (Gael et al., 2020)
+back that it induces. We provide both an upper bound on                                     (1 − p)T                  1
+                                                                     Packet loss                                        RM
+                                                                                                                         T
+                                                                                                                           AB
+                                                                                    (Joulani et al., 2013)            p
+the regret and a nearly matching general lower bound.
+                                                                      General,
+                                                                                               —            RM T
+                                                                                                                 AB
+                                                                                                                    + d(1 − ∆min )
+Reward-independent delays: We first consider the easier              Reward-dep.
+reward-independent case. In this case, we provide an al-
+gorithm where the second term scales with a quantile of
+the delay distribution rather the expectation, and the regret      Reward-dependent delays: We then proceed to consider
+is bounded by O(minq {RMT AB /q + d(q)}), where d(q) is            the more challenging reward-dependent setting. In this set-
+the q-quantile of the delay distribution. Specifically, when       ting, the feedback reveals much less information on the true
+choosing the median (i.e., q = 1/2), we obtain regret              rewards due to the selection bias in the observed rewards
+bound of O(RMT AB + d(1/2)). We thus improve over the              (in other words, the distributions of the observed feedback
+O(RMT AB + KE[D]) regret bound of Joulani et al. (2013);           and the unobserved feedback might be very different). In
+Pike-Burke et al. (2018), as the median is always smaller          order to deal with this uncertainty, we present another al-
+than the expected delay, up to factor of two. Moreover, the        gorithm, also inspired by Successive Elimination. The al-
+increase in regret due to delays in our bound does not scale       gorithm widens the confidence bounds in order to handle
+with number of arms, so the improvement is significant even        the potential bias. We achieve a regret bound of the form
+with fixed delays (Dudik et al., 2011; Joulani et al., 2013).      O(RMT AB +log(K)d(1−∆min /4)), where ∆min is the min-
+Our bound is achieved using a remarkably simple algorithm,         imal sub-optimality gap, and d(·) is the quantile function of
+based on variant of Successive Elimination (Even-Dar et al.,       the marginal delay distribution. We show that this bound
+2006). For this algorithm, we also prove a more delicate           is optimal, by presenting a matching lower bound, up to a
+regret bound for arm-dependent delays that allows for choos-       factor of ∆ in the second term (and log (K) factors).
+ing different quantiles qi for different arms i (rather than a
+single quantile q for all arms simultaneously).                    Summary and comparison of bounds: Our main results,
+                                                                   along with a concise comparison to previous work, are pre-
+The intuition why the increase in regret due to delays should      sented in Table 1. G∗T,i denotes the maximal number of
+scale with a certain quantile is fairly straightforward: con-      unobserved feedback from arm i. The results show that our
+sider for instance the median of the delay, dM . For simplic-      algorithm works well even under heavy-tailed distributions
+ity, assume that the delay value is known when we take the         and some distributions with infinite expected value. For ex-
+action. One can simulate a black box algorithm for delays          ample, the arm-dependent delay distributions used by Gael
+that are bounded by dM on the rounds in which delay is             et al. (2020) are all bounded by an α-pareto distribution
+smaller than dM (approximately half of the rounds), and in         (in terms of the delay distributions CDFs). Hence, their
+the rest of the rounds, imitate the last action of the black-box   median is bounded by 21/α . Our algorithm suffer at most an
+algorithm. Since rewards are stochastic, and independent of        additional O(21/α ) to the classical regret for MAB without
+time and the delay, the regret on rounds with delay larger         delays (see bounds for the α-Pareto case in Table 1). In the
+than dM is similar to the regret of the black-box algorithm        “packet loss” setting, the delay is 0 with probability p, and ∞
+on the rest of the rounds, resulting with total regret of twice    (or T ) otherwise. If p is a constant (e.g., > 1/4), our regret
+the regret of the black-box algorithm. For example, when           bound scales as the optimal regret bound for MAB without
+using the algorithm of (Joulani et al., 2013), this would give     delays, up to constant factors. Previous work Joulani et al.
+us O(RMT AB + KdM ). We stress that unlike this reduction,         (2013) show a regret bound which scales with the number
+our algorithm does not need to know the value of the delay         of missing samples, and thus is linear. A Pareto distribution
+at any time, nor the median or any other quantile. In addi-        that will bound such delay would require a very small pa-
+tion, our bound is much stronger and does not depend on K          rameter α which also result in linear regret bound by the
+on the second term.                                                result of Gael et al. (2020).
+                            Stochastic Multi-Armed Bandits with Unrestricted delay distributions
+
+1.2   Related work                                               Protocol 1 MAB with stochastic delays
+To the best of our knowledge, Dudik et al. (2011) were             for t ∈ [T ] do
+the first to consider delays in stochastic MAB. They exam-           Agent picks an action at ∈ [K].
+ine contextual                     delay d, and obtain regret        Environment samples a pair, (rt (·), dt (·)), from a joint
+              pbandit with fixed √                                   distribution.
+bound of O( K log(N T )(d + T )), where N is number
+of possible policies. Joulani et al. (2013) use a reduction          Agent get a reward rt (at ) and observes feedback
+to non-delayed MAB. For their explicit bound they assume             {(as , rs (as )) : t = s + ds (as )}.
+that expected value of the delay is bounded (see Table 1 for
+their implicit bound). Pike-Burke et al. (2018) consider a       dard MAB setting, the agent does not immediately observe
+more challenging setting in which the learner observe the        rt (at ) at the end of round t; rather, only after dt (at ) rounds
+sum of rewards that arrive at the same round. They assume        (namely, at the end of round t+dt (at )) the tuple (at , rt (at ))
+that the expected delay is known, and obtain similar bound       is received as feedback. We stress that neither the delay
+as Joulani et al. (2013).                                        dt (at ) nor the round number t are observed as part of the
+                                                                 feedback (so that the delay cannot be deduced directly from
+Vernade et al. (2017) study partially observed feedback
+                                                                 the feedback). The delay is supported in N ∪ {∞}. In
+where the learner cannot distinguish between reward of 0
+                                                                 particular, we allow dt (at ) to be infinite, in which case the
+and a feedback that have not returned yet, which is a special
+                                                                 associated reward is never observed. The pairs of vectors
+form of reward-dependent delay. However, they assume
+                                                                 {(rt (·), dt (·))}Tt=1 are sampled i.i.d from a joint distribution.
+bounded expected delay and full knowledge on the delay
+                                                                 Throughout the paper we sometimes abuse notation and de-
+distribution. Gael et al. (2020) also consider partially ob-
+                                                                 note rt (at ) and dt (at ) simply by rt and dt , respectively.
+served feedback, and aim to relax the bounded expected
+                                                                 This protocol is summarized in Protocol 1.
+delay assumption. They consider delay distributions that
+their CDF are bounded from below by the CDF of an α-             We discuss two forms of stochastic delays: (i) reward-
+Pareto distribution, which might have infinite expected delay    independent delays, where the vectors rt (·) and dt (·) are
+for α ≤ 1. However, this assumption still limits the distribu-   independent from each other, and (ii) reward-dependent
+tion, e.g., the commonly examined fixed delay falls outside      delays, where there is no restriction on the joint distribution.
+their setting. Moreover, they assume that the parameter α
+                                                                 The performance of the agent is measured as usual by the
+is known to the learner. Other extensions include Gaussian
+                                                                 the difference between the algorithm’s cumulative expected
+Process Bandit Optimization (Desautels et al., 2014) and
+                                                                 reward and the best possible total expected reward of any
+linear contextual bandits (Zhou et al., 2019). As opposed to
+                                                                 fixed arm. This is known as the expected pseudo regret,
+most of these works, we place no assumptions on the delay
+                                                                 formally defined by
+distribution, and the learner has no prior knowledge on it.
+                                                                                          " T          #         " T           #
+Delays were also studied in the context of the non-stochastic                              X                      X
+MAB problem (Auer et al., 2002b). Generally, when reward                RT = max E               rt (i) − E             rt (at )
+                                                                                  i
+are chosen in an adversarial fashion, the regret increases                                 t=1                    t=1
+                                                                                             " T           #       " T             #
+by a multiplicative factor of the delay. Under full informa-                                  X                     X
+tion,                                                                        = T µi∗ − E             µat = E              ∆a t ,
+   √Weinberger & Ordentlich (2002) show regret bound of                                        t=1                  t=1
+O( dT ), with fixed delay d. This was extended to bandit
+feedback by (Cesa-Bianchi
+                    p         et al., 2019), with near-optimal   where µi is the mean reward of arm i, i∗ denotes the optimal
+regret bound of O( T (K + d)). Several works have stud-          arm and ∆i = µi∗ − µi for all i ∈ [K].
+ied the effect √of adversarial
+                        √        delays, in which the regret
+scales with O( T + D), where D is the sum of delays              For a fixed algorithm for the agent (the relevant algorithm
+(Thune et al., 2019; Bistritz et al., 2019; Zimmert & Seldin,    will always be clear from the context), we denote by mt (i)
+2020; György & Joulani, 2020). For last, Cesa-Bianchi et al.    the number of times it choose arm i by the end of round t−1.
+(2018) consider a similar setting to Pike-Burke et al. (2018),   Similarly nt (i) denotes the number of observed feedback
+in which the learner observe only the sum of rewards.            from arm i, by the end of round t − 1. The two might
+                                                        √ The
+increase in the regret is by a multiplicative factor of d.       differ as some of the feedback is delayed. Let µ̂t (i) be the
+                                                                 observed empirical average of arm i, defined as:
+2     Problem Setup and Background
+                                                                                            1         X
+We consider a variant of the classical stochastic Multi-armed              µ̂t (i) =                            I{as = i}rs ,
+                                                                                       nt (i) ∨ 1
+Bandit (MAB) problem. In each round t = 1, 2, . . . , T , an                                        s:s+ds <t
+agent chooses an arm at ∈ [K] and gets reward rt (at ),
+where rt (·) ∈ [0, 1]K is a random vector. Unlike the stan-      where a ∨ b = max{a, b} and I{π} is the indicator function
+                                                                 of predicate π.
+                             Stochastic Multi-Armed Bandits with Unrestricted delay distributions
+
+We denote di (q) to be the quantile function for arm i’s delay   and the additional regret due to the delay can in general
+distribution; formally, if Di is the delay of arm i then the     scale as Ω(Kd). The reason is due to the nature of UCB:
+quantile function is defined as                                  it always samples the currently most promising arm, and it
+                                                                might take as much as d rounds to update the latter. This
+         di (q) = min γ ∈ N | Pr[Di ≤ γ] ≥ q .                   is formalized in the following theorem (proof is deferred
+                                                                 to the full version of the paper (Lancewicki et al., 2021).)
+3     Reward-independent Delays                                  Theorem 1. Under fixed delay d ≥ K, there exist a problem
+We first consider the case where delays are independent of       instance such that U CB suffers regret of Ω(Kd).
+the realized stochastic rewards. We begin with an analysis
+of two classic algorithms: UCB (Auer et al., 2002a) and          3.2   Successive Elimination with delays
+Successive Elimination (SE) (Even-Dar et al., 2006), ad-         Successive Elimination (SE) maintains a set of active arms,
+justed to handle delayed feedback in a straightforward naive     where initially all arms are active. It pulls all arms equally
+way (see Procedure 2).                                           and whenever there is a high-confidence that an arm is sub-
+3.1   Suboptimality of UCB with delays                           optimal, it eliminates it from the set of active arms. The
+                                                                 exact description appears in Algorithm 4.
+UCB (Auer et al., 2002a) is based on the basic principle of
+“optimism under uncertainty.” It maintains for each arm an       Algorithm 4 Successive Elimination with Delays
+upper confidence bound (UCB): a value that upper bounds            Input: number of rounds T , number of arms K
+the true mean with high probability. In each round it simply       Initialization: S ← [K], t ← 1
+pulls the arm with the highest UCB. The exact description          while t < T do
+appears in Algorithm 3.                                              Pull each arm i ∈ S
+                                                                     Observe any incoming feedback
+Procedure 2 Update-Parameters                                        Set t ← t + |S|
+  for i ∈ [K] do                                                     Call Update-Parameters (Procedure 2)
+    # numberP  of observed feedback                                  # Elimination Step
+    nt (i) ← s:s+ds <t I{as = i}                                     Remove from S all arms i such that exists j with
+    # observed empirical
+                       P mean                                        U CBt (i) < LCBt (j)
+                  1
+    µ̂t (i) ← nt (i)∨1  s:s+ds <t I{as = i}rs
+                          q
+    LCBt (i) ← µ̂t (i) − n2tlog    T
+                                                                 Unlike UCB, SE continues to sample all arms equally, and
+                           q (i)∨1
+                                                                 not just the most promising arm. In fact, the number of
+    U CBt (i) ← µ̂t (i) + n2tlog   T
+                                (i)∨1                            rounds that SE runs before it observes m samples for K
+                                                                 arms is approximately Km+d, whereas UCB might require
+                                                                 K(m+d) rounds in certain cases. More generally, we prove:
+Algorithm 3 UCB with Delays
+  Input: number of rounds T , number of arms K                   Theorem 2. For reward-independent delay distributions,
+  Initialization: t ← 1                                          the expected pseudo-regret of Algorithm 4 is bounded by
+  # begin with sampling each arm once                                              X 40 log T  1              
+                                                                                                         1
+  Pull each arm i ∈ [K] once                                       RT ≤ min                           +
+                                                                          ~∈(0,1]K
+                                                                          q              ∆i       qi    q i∗
+  Observe any incoming feedback                                                    i6=i∗                                     (1)
+  Set t ← t + K
+                                                                                            
+                                                                             + log (K) max∗
+                                                                                              (d (q
+                                                                                                i i ) + d  i ∗ (q i∗ ))∆ i .
+  while t < T do                                                                            i6=i
+
+     Call Update-Parameters (Procedure 2)
+                                                                 Additionally, if instead we minimize over a single quantile
+     Pull arm at ∈ arg maxi U CBt (i)
+                                                                 q ∈ (0, 1], the expected pseudo-regret becomes
+     # With deterministic tie breaking rule i.e. by index
+     Observe feedback {(as , rs ) : s + ds = t}                                          X 325 log (T )
+     Set t ← t + 1                                                     RT ≤ min                           + 4 max di (q).   (2)
+                                                                               q∈(0,1]             q∆i        i∈[K]
+                                                                                         i6=i∗
+
+In the standard non-delayed setting, UCB is known to be
+optimal. However, with delays this is no longer the case.        Particularly, Theorem 2 implies that for fixed delay d, we
+Consider the simpler case where all arms suffers from a          have RT = O(RMT AB + d). Note that the bounds in Eqs. (1)
+constant fixed delay d. Joulani et al. (2013) show that the      and (2) are incomparable: Eq. (1) allows choosing a dif-
+regret of UCB with delay is bounded by O(RMT AB +Kd). We         ferent quantile for each arm, while Eq. (2) gives a slightly
+show that the increase in the regret is necessary for UCB,       better dependence on K.
+                              Stochastic Multi-Armed Bandits with Unrestricted delay distributions
+
+We now turn to show the main ideas of the proof of The-           3.3   Phased Successive Elimination
+orem 2, deferring the full proof to the full version of the
+                                                                  Next, we introduce a phased version of successive elimina-
+paper (Lancewicki et al., 2021).
+                                                                  tion, we call Phased Successive Elimination (PSE). Inspired
+                                                                  by phased versions of the commonly used algorithms (Auer
+Proof of Theorem 2 (sketch). Here we sketch the proof             & Ortner, 2010), the algorithm works in phases. Unlike
+of Eq. (1); proving Eq. (2) is similar, but requires a more       SE, it does not round-robin naively, instead it attempts to
+delicate argument in order to eliminate the K dependency          maintains a balanced number of observed feedback at the
+in the second term.                                               end of each phase. As a result, PSE does not depend on
+                                                                  the delay of the optimal arm. Surprisingly, the dependence
+Fix some vector q~ ∈ (0, 1]K and let dmax =                       on the delay of the sub-optimal arms remain similar, up to
+maxi6=i∗ di (qi ). First, with high probability all the true      log-factors.
+means of the reward remain within the confidence in-
+terval (i.e., ∀t, i : µi ∈ [LCBt (i), U CBt (i)]). Under          On each phase ` of PSE, we sample arms that were not
+this condition, the optimal arm is never eliminated. If           eliminated in previous phase in a round-robin fashion. When
+a sub-optimal arm i was not eliminated by time t then,            we observe at least 16 log(T )/2−2` samples for an active
+LCBt (i∗ ) ≤ U CBt (i). which implies with high probabil-         arm, we stop sampling it, but keep sampling the rest of
+ity,                                                              active arms. Once we reach enough samples from all active
+                                                                  arms, we perform elimination the same way we do on SE,
+                                                                  and advance to the next phase ` + 1. The full description of
+                          s                    s
+                              2 log(T )            2 log(T )
+     ∆i = µi∗ − µi ≤ 2                  +2                   .    the algorithm is found in Algorithm 5.
+                                nt (i)              nt (i∗ )
+                                                                  Algorithm 5 Phased Successive Elimination (PSE)
+Now, using a concentration bound, we show that the amount
+                                                                    Input: number of rounds T , number of arms K
+of observed feedback from arm j at time t, is approximately
+                                                                    Initialization: S ← [K], ` ← 0, t ← 1
+a fraction qj of the number of pulls at time t − dj (qj ). We
+                                                                    while t < T do
+use that to bound nt (i) and nt (i∗ ) from below and obtain,
+                                                                      Set ` ← ` + 1 (phase counter)
+                                                                  Set S` ← S
+                               log T       1     1
+        mt−dmax (i) = O                       +            .          while S` 6= ∅ do
+                                ∆2i        qi   qi∗                      Pull each arm i ∈ S` , observe incoming feedback
+                                                                         Set t ← t + |S` |
+Now, if t is the last time we pulled arm i, then we can write
+                                                                         Call Update-Parameters (Procedure 2)
+the total regret from arm i as,
+                                                                         Remove from S` all arms that where observed at
+                                                                         least 16 log(T )/2−2` times.
+ mt (i)∆i = mt−dmax (i)∆i + (mt (i) − mt−dmax (i))∆i
+                                                                  Remove from S all arms i such that exists j with
+          log T 1       1                                             U CBt (i) < LCBt (j)
+    ≤O              +         + mt (i) − mt−dmax (i).
+           ∆i    qi    qi∗
+                                                                  Theorem 3. For reward-independent delay distributions,
+The difference mt (i) − mt−dmax (i) is number of times            the expected pseudo-regret of Algorithm 5 (PSE) satisfies
+we pull i between time t − dmax and t. This is trivially
+bounded by dmax , but since we round-robin over active                                       X 290 log T
+                                                                            RT ≤ min
+arms, we can divide it by the number of active arms. At the                       ~∈(0,1]K
+                                                                                  q                  qi ∆i
+                                                                                             i6=i∗                         (3)
+first elimination there are K active arms, in second there
+K − 1 active arms, and so on. When summing the regret of                           + log(T ) log(K) max
+                                                                                                      ∗
+                                                                                                        di (qi )∆i .
+                                                                                                        i6=i
+all arms we get,
+                                                                The proof of Theorem 3 appears in the full version of the
+                   X log T  1  1 
+                                           
+                                                                  paper (Lancewicki et al., 2021). Similarly to the proof
+   RT = O                   +        + log(K)dmax
+                 ∆  i     qi   qi∗                                Theorem 2, both SE and PSE eliminate arm i approximately
+           i6=i∗
+                                                                whenever      s           s
+      X log T  1                                                                  log T      log T
+                             
+                         1 
+ = O                 +         + log(K) max di (qi ),                                    +            ≈ ∆i .
+        ∗
+           ∆ i   qi     qi∗                i                                       nt (i)     nt (i∗ )
+        i6=i
+                                                                  In a sense, PSE aims to shrink both terms in the left-hand
+where we have used the fact that 1/K + 1/(K − 1) + ... +          side at a similar rate, which avoid the dependence on 1/qi∗
+1/2 ≤ log(K). This proves the bound in Eq. (1).                   in the first term of Eq. (3). The down side is in the second
+                               Stochastic Multi-Armed Bandits with Unrestricted delay distributions
+
+term: SE keeps sampling all active arms at the same rate,          below by this term, even if the instance I is known to the
+which gives rise to the log(K) dependence in the second            learner (the regret guarantee over the other instances ensures
+term. Under PSE this is no longer the case: naively, one           that the algorithm does not specialized particularly for that
+could show a linear dependence on K, but a more careful            instance). A more detailed lower bound and its full proof is
+analysis that uses round-robin sampling within phases gives        provided in the full version of the paper (Lancewicki et al.,
+a log(T ) log(K) dependence in the second term of Eq. (3).         2021).
+One important example in which PSE dominates SE is the             4   Reward-dependent Delays
+arm-dependent packet loss setting, where we get the feed-
+back of arm i immediately (i.e., zero delay) with probability      We next consider the more challenging case where we let
+pi , and infinite                                                  the reward and the delays to be probabilistically dependent.
+           P delay otherwise. The regret of SE in this set-        Namely, there is no restriction on the reward-delay joint
+ting is O( i6=i∗ log(T )/∆i · (1/pi +P 1/pi∗ )). On the other
+hand, PSE’s regret is bounded by O( i6=i∗ log T /(∆i pi )).        distribution.
+The difference in the regret is substantial when pi∗ is very       The main challenge in this setting is that the observed empir-
+small. In fact, small amount of feedbacks from the optimal         ical mean is no longer an unbiased estimator of the expected
+arm only benefits PSE, as it would keep sampling it until it       reward; e.g., if the delay given a reward of 0 is shorter than
+gets enough feedbacks.                                             the delay given that the reward is 1, then the observed em-
+3.4   Lower Bound                                                  pirical mean would be biased towards 0. Therefore, the anal-
+                                                                   ysis from the previous section does not hold anymore. To
+We conclude this section with showing an instance-                 tackle the problem, we present a new variant of successive
+dependent lower bound (an instance is defined by the set of        elimination, Optimistic-Pessimistic Successive Elimination
+sub-optimality gaps ∆i ).                                          (OPSE), described in Algorithm 6. When calculating UCB
+Theorem 4. Let ALGdelay be an algorithm that guaran-               the agent is optimistic regarding the unobserved samples,
+tees a regret bound of T α over any instance. For any sub-         by assuming all missing samples have the maximal reward
+optimality gaps set S∆ = {∆i : ∆i ∈ [0, 14 ]} of cardinality       (one). When calculating LCB the agent assumes all missing
+K, a quantile q ∈ (0, 1], and d˜ ≤ T , there exists an instance    samples have the minimal reward (zero). We emphasize
+with an order on S∆ , and delay distributions with di (q) = d˜     that unlike the previous section, here the estimators take
+for any i, such that ALGdelay ’s regret on that instance is        into account all samples, including the unobserved ones.
+                                                                   The above implies that the confidence interval computed by
+          1       X          (1 − α) log T  1                      OPSE contains the confidence interval computed by non-
+  RT ≥                                     + ∆ max di (q)
+         128                     q∆i        2 i∈[K]                delayed SE.
+               i:S∆ 3∆i >0
+                                                           (4)
+                                     1
+                                          P
+for sufficiently large T , where ∆ = K       i∈[K] ∆i .
+                                                                   Algorithm 6 Optimistic-Pessimistic Successive Elimination
+The lower bound is proved using delay distribution which             Input: number of rounds T , number of arms K
+is homogeneous across all arms: at time t, the delay is d˜           Initialization: S ← [K], t ← 1
+with probability q and ∞ otherwise. The upper bound of SE            while t < T do
+and PSE involves a minimization over qi . In this case, it is          Pull each arm i ∈ S
+solved by qi = q for all i. Therefore, the best comparison is          Observe any incoming feedback
+to Eq. (2) in Theorem 2, where a single quantile is chosen.            Set t ← t + |S|
+Theorem 4 shows that SE is near optimal in this case. The              for i ∈ S do
+first term in Eq. (2) is aligned with Eq. (4), up to constant             # the number
+factors. The difference between the two is on the second                            P of pulls and observations
+                                                                          mt (i) ←P s<t I{as = i}
+term, where there is a ∆ factor in the lower bound.                       nt (i) ← s:s+ds <t I{as = i}
+The second term in Eq. (4) is due to the fact that the al-                # pessimistic andPoptimistic estimators for µi
+gorithm does not get any feedback for the first d˜ = di (q)               µ̂−         1
+                                                                            t (i) ← mt (i)  s:s+ds <t I{as = i}rs
+                                                                                    mt (i)−nt (i)
+rounds. Thus, any order on ∆ is statistically indistinguish-              µ̂+
+                                                                            t (i) ←               + µ̂−  (i)
+able from the others for the first rounds. Therefore, the
+                                                                                       mt (i)
+                                                                                                  q t
+                                                                                          −          2 log T
+learner suffers ∆ regret on average, over the first d˜ rounds,            LCBt (i) ← µ̂t (i) −
+                                                                                                  q mt (i)
+under at least one of the instances. The first term is achieved           U CBt (i) ← µ̂t (i) + 2mlog
+                                                                                          +                  T
+                                                                                                         t (i)
+using a reduction from instance-depended lower bound for
+                                                                        Remove from S all arms i such that exists j with
+MAB without delays (Kleinberg et al., 2010; see also Lat-
+                                                                        U CBt (i) < LCBt (j)
+timore & Szepesvári, 2020). The regret is bounded from
+                                     Stochastic Multi-Armed Bandits with Unrestricted delay distributions
+
+For OPSE we prove the following regret guarantee.                        Hence,
+Theorem 5. For reward-dependent delay distributions, the                       mt (i) − nt (i)
+expected pseudo-regret of Algorithm 6 is bounded by                                mt (i)
+                  X 1166 log T                                                    mt (i) − mt−dmax (i) mt−dmax (i) − nt (i)
+                                                                               =                       +
+       RT ≤                                                                               mt (i)                mt (i)
+                            ∆i
+                  i6=i∗                                          (5)              mt (i) − mt−dmax (i)
+                                                                             ≤                       + ∆i /4 + λt (i).
+                  + 4 log (K) max d i (qi ) + di ∗ (qi∗ ) ,                               mt (i)
+                                ∗    i6=i
+                                                                         The third term on the right hand side in Eq. (7) is bounded
+where q     i∗   = 1 − min   i6=i∗   ∆i /4 and qi = 1 − ∆i /4 for        in a similar fashion, which gives us the following bound:
+i 6= i∗ .                                                                                                                    s        !
+                                                                                    2mt (i) − mt−dmax (i) − mt−d∗max (i)       log T
+                                                                         ∆i = O                                           +            ,
+Theorem 5 is analogous to Theorem 2 in the reward-                                                 mt (i)                      mt (i)
+independent setting. We show a variant of SE, rather than
+PSE, because the algorithm relies on the entire feedback,                where d∗max = maxi6=i∗ di∗ (1 − ∆i ). Either the last term on
+rather than just the observed feedback. In addition, the                 the right hand side is larger than the first two, or vice versa.
+dependence in 1/qi was the main motivation to introduce                  By considering both cases and solving them, we yield the
+PSE in the previous section, here it is bounded by a con-                following result:
+                                                                                              
+stant. In the reward-dependent setting we have much less                                        log T
+information on the unobserved feedback, thus it would be                       mt (i)∆i = O            + mt (i) − mt−dmax (i)
+                                                                                                  ∆i
+unrealistic to expect similar regret bounds. The main differ-                                                                   
+ence between the two bounds is that here we are restricted                                             + mt (i) − mt−dmax ∗  (i) .
+to specific choice of quantiles qi and qi∗ , while the bound
+in Theorem 2 hold for any vector q~. A second difference                 The above holds for the last time we pull arm i, τi . Sum-
+between the theorems is in the additive penalty due to the               ming over the sub-optimal arms givesP us a bound on regret.
+delay, here it is not multiplied by the sub-optimality gap, ∆i .         Similar to the setting of Section 3, i mτi (i)−mτi −d (i) ≤
+This factor ∆i also appears in the lower bound in Theorem 6,             log(K)d. Here, we set d to dmax or d∗max accordingly, which
+which we discuss later on.                                               gives us the desired regret bound.
+
+                                                                         Optimistic-UCB. The dependency on the delay of the opti-
+Proof of Theorem 5 (sketch). p    Consider time t in which arm
+                                                                         mal arm comes from the bias of µ̂−
+                                                                                                          t . A similar proof would
+i is still active. Define λt (i) = 2 log(T )/mt (i). Let µ̃t (i)
+                                                                         hold for a variant of UCB that uses µ̂+
+                                                                                                               t . In that case, one
+be the empirical mean of arm i that  P is based on all mt (i)            can obtain a regret bound of
+samples. Formally, µ̃t (i) = mt1(i) s<t I{as = i}rs .                                                                 
+This is the estimator that we would use to compute the                                  X log T      X
+                                                                                   O             +     di (1 − ∆i /4) .         (8)
+confidence interval in non-delayed setting, but since not all                             ∗
+                                                                                              ∆i      ∗
+                                                                                        i6=i          i6=i
+observations are available at time t, we cannot compute it
+directly. Note that by definition,                                       In most cases, this is a weaker bound than the bound of The-
+                                                                         orem 5, as the second term scales linearly with the number
+                  ∀t, i :   µ̂−                   +
+                              t (i) ≤ µ̃t (i) ≤ µ̂t (i).         (6)     of arms. The advantage of Optimistic-UCB is that it does
+                                                                         not depend on the delay of the optimal arm. It still remains
+With high probability, using concentration bound on µ̃t and              an open question whether we can enjoy the benefits of both
+Eq. (6) we can show that,                                                bounds, and achieve a regret bound that depends only on
+                                                                         maxi6=i∗ di (1 − ∆i ).
+  ∆i = µi∗ − µi
+                                                                         On the other hand, in Theorem 6 we show that the depen-
+                              −         + ∗        − ∗
+      ≤ 4λt (i) + µ̂+
+                    t (i) − µ̂t (i) + µ̂t (i ) − µ̂t (i )                dence in maxi6=i∗ di (1 − ∆i ) cannot be avoided, which
+                                                                 (7)
+                  mt (i) − nt (i) mt (i∗ ) − nt (i∗ )                    establishes that our bound is not far from being optimal.
+      = 4λt (i) +                +                    .
+                      mt (i)           mt (i∗ )                          Theorem 6. Let K = 2. For any d˜ ≤ T and ∆ ∈ [0, 1/2],
+                                                                         there exist reward distributions with sub-optimality gap
+Let dmax = maxi6=i∗ di (1 − ∆i /4). Using Hoeffding’s in-                ∆ and reward-dependent delay distributions with di (1 −
+equality, with high probability, we have that,                           2∆) = d,˜ such that,
+                                                                                                   1
+      nt (i) ≥ (1 − ∆i /4)mt−dmax (i) − λt (i)mt (i).                                      RT ≥      ∆ · di (1 − 2∆).                (9)
+                                                                                                   2
+                             Stochastic Multi-Armed Bandits with Unrestricted delay distributions
+
+Moreover, for any algorithm ALGdelay that guarantees a
+regret bound of T α over any instance, the regret is at least,
+                                                   
+                (1 − α) log(T )
+     RT = Ω                      + ∆ · di (1 − 2∆) ,
+                       ∆
+
+for sufficiently large T .
+
+Note that di (1 − 2∆) ≤ di (1 − ∆/4), which complies with
+our upper bound. It seems necessary to have the ∆ factor in
+Eq. (9), and we conjecture that it should also appear in the
+upper bound.
+The proof for Theorem 6 is built upon two instances which
+are indistinguishable until time d. ˜ The reward distributions
+are Bernoulli and the index of the optimal arm alternates
+in the two instances. The idea is that when arm 2 is opti-               Figure 1. Regret of SE and UCB for fixed delays.
+mal, samples with reward 1 are delayed more often than
+samples with reward 0. When arm 2 is sub-optimal, the
+opposite occurs. The delay distribution is tailored such that
+under both instances, (i) the probability to observe feedback
+immediately is exactly 1 − 2∆; and (ii) the probability for
+reward 1 given that the delay is 0, is identical for both arms
+under both instances. These two properties guarantee that
+the learner cannot distinguish between the two instances
+            ˜ After that, it is possible to distinguish between
+until time d.
+them whenever a sample with delay d˜ is observed. The
+full details of the proof appears in the full version of the
+paper (Lancewicki et al., 2021).
+5    Experiments                                                  Figure 2. Regret of SE and PatientBandits (PB) for Pareto delays.
+We conducted a variety of synthetic experiments to support
+                                                                  α-Pareto delays. We reproduce an experiment done by
+our theoretical findings. We provide additional experiments
+                                                                  Gael et al. (2020) under our reward-independent setting,
+in the full version of the paper (Lancewicki et al., 2021).
+                                                                  in Fig. 2. We compare their algorithm, PatientBandits (PB),
+Fixed delays. In Fig. 1 we show the effect of different fixed     with SE. For T = 3000 rounds and K = 2 arms, we ran
+delays on UCB and SE. p  We ran both algorithms with a con-       sub-optimality gaps ∆ ∈ [0.04, 0.6]. The expected rewards
+fidence radius λt (i) = 2/nt (i), for K = 20 arms, each           are µ1 = 0.4 and µ2 = 0.4 + ∆. The delay is sampled from
+with Bernoulli rewards with mean uniform in [0.25, 0.75],         Pareto distribution with α1 = 1 for arm 1 and α2 = 0.2 for
+under various fixed delays. Top plots show cumulative regret      arm 2. The results are averaged over 300 runs.
+until T = 2 · 104 . Bottom plot shows regret over increasing
+                                                                  PB is a UCB-based algorithm that uses a prior knowledge on
+delays for T = 2 · 105 . The results are averaged over 100
+                                                                  distribution in order to tune confidence radius. Even though
+runs and intervals in both plots are 4 times the standard
+                                                                  it is designed to work under Pareto distributions, SE’s regret
+error.
+                                                                  is strictly smaller for any value of ∆. For small values of ∆,
+As delay increases, the regret of UCB increases as well,          the regret increases with ∆, as the algorithms are not able to
+while SE is quite robust to the delay, and around delay of        distinct between the arms. When ∆ becomes large enough
+200 SE becomes superior. These empirical results coincides        the regret starts to decrease as ∆ increases. This transi-
+with our theoretical results: As in the proof Theorem 1,          tion occurs much sooner under SE, which indicates that SE
+the regret UCB grows linearly in the first Kd rounds. On          starts to distinguish between the arms at lower values of ∆.
+the other hand, SE created a pipeline of observations, so it      We note that PB is designed for partial observation setting,
+keeps getting observations from all active arms. While it         which is more challenging than the reward-independent set-
+cannot avoid from sampling each sub-optimal arm for d/K           ting. However, the work of (Gael et al., 2020) is the only
+times, as long as this does not exceed the minimal amount         previous work, as far as know, to present a regret bound for
+of observations required for SE to eliminate a sub-optimal        delay distributions that potentially have infinite expected
+arm, the effect on the regret is minor.                           value and arm-dependent delays, as in this experiment.
+                            Stochastic Multi-Armed Bandits with Unrestricted delay distributions
+
+
+
+
+                                                                Figure 4. Reward-dependent setting. Regret of OPSE and UCB.
+    Figure 3. Regret of SE and PSE for packet loss delays.
+
+Packet-loss. We study the regret of SE and PSE in the           lays, the latter achieves O(RMT AB + d) for fixed delays
+packet loss setting. Specifically to evaluate the difference    and O(minq RMT AB /q + maxi di (q)) in the general setting.
+when amount of feedback from the best arm is significantly      We further showed the PSE algorithm, which removes the
+smaller than the other arms. We ran the algorithms for          dependency on the delay of the best arm. We then pre-
+T = 2 · 104 rounds and K = 10 arms with randomized              sented the reward-dependent delay setting, which is more
+values of sub-optimality gaps between ∆ ∈ [0.15, 0.25].         challenging since the observed and the actual rewards dis-
+The probability to observe the best arm is 0.1, and 1 for       tribute differently. Our novel OPSE algorithm achieves
+the sub-optimal arms. The results are averaged over 300         O(RMT AB + log(K)d(1 − ∆min )) by widening the gap of
+runs. As seen in Fig. 3, the slope of PSE zeroes in some        the confidence bounds to incorporate the potential observed
+regions. This is the part of a phase in which the algorithm     biases. In both settings we provided almost matching lower
+observed enough feedback from all sub-optimal arms and          bounds.
+keeps sampling only the optimal arm. This happens due to        Our paper leaves some interesting future lines of research.
+the fact that the feedback of the optimal arm is unobserved     The reward-dependent setting is mostly unaddressed in the
+90% of the time. Meanwhile, SE samples each arm equally         literature and we believe there is more to uncover in this
+and receives less reward. The slope of PSE in other regions,    setting. One important question regards the gap between
+is similar to the one of SE which indicates that the set of     UCB and SE with fixed delays. In non-delayed multi-arm
+active arms is similar as well.                                 bandits, UCB and SE have similar regret bounds (and UCB
+Reward-dependent case. We compare between OPSE (Al-             even outperforms SE empirically when the delay is zero as
+gorithm 6) and UCB. We show that unlike in the reward-          evidence by Fig. 1). This raises the question: Can a variant
+independent case, here an ”off-the-shelf” solution doesn’t      of UCB or any other optimistic algorithm achieve similar
+perform very well, thus this case requires a modified algo-     regret bounds as a round-robin algorithm in the delayed
+rithm. We set T = 6 · 104 and K = 3 arms with random            settings? Lastly, another interesting direction is to tighten
+sub-optimality gaps of ∆ ∈ [0.15, 0.25]. The delay is biased    the regret bounds: In the reward independent case the gap
+with fixed delay of 5,000 rounds for reward 1 of the best       between the lower and upper bound is either logarithmic
+arm and reward 0 of the sub-optimal arms. The results are       in K (e.g., the bound in Eq. (1)) or missing a ∆ factor
+averaged over 100 runs. In Fig. 4, OPSE outperforms UCB,        on the delay term (e.g., Eq. (2)). In the reward dependent
+mostly due to UCB’s unawareness that the observed reward        case it is still remains open question whether we can enjoy
+empirical means are biased. Thus, it favors the sub-optimal     the benefits of both optimistic-SE and optimistic-UCB and
+arms at the beginning and never recovers from that regret       obtain a regret bound that scales with maxi6=i∗ di (1 − ∆i ).
+loss. We remark that in this settings, standard SE eliminates   Acknowledgments
+the best arm and suffers linear regret, so we omitted it.
+                                                                The work of YM and TL has received funding from the
+6   Discussion                                                  European Research Council (ERC) under the European
+We presented algorithms for multi-arm bandits under             Union’s Horizon 2020 research and innovation program
+two stochastic delayed feedback settings. In the reward-        (grant agreement No. 882396), by the Israel Science Foun-
+independent, which was studied previously, we present near-     dation (grant number 993/17) and the Yandex Initiative for
+optimal regret bounds that scale with the delays quantiles.     Machine Learning at Tel Aviv University. SS and TK were
+Those are significantly stronger, in many cases, then pre-      supported in part by the Israeli Science Foundation (ISF)
+vious results. In addition we show a surprising gap be-         grant no. 2549/19, by the Len Blavatnik and the Blavatnik
+tween two classic algorithms: UCB and SE. While the             Family foundation, and by the Yandex Initiative in Machine
+former suffers a regret of Ω(RMT AB + Kd) under fixed de-       Learning.
+                            Stochastic Multi-Armed Bandits with Unrestricted delay distributions
+
+References                                                       Kleinberg, R., Niculescu-Mizil, A., and Sharma, Y. Re-
+                                                                   gret bounds for sleeping experts and bandits. Machine
+Auer, P. and Ortner, R. Ucb revisited: Improved regret
+                                                                   learning, 80(2-3):245–272, 2010.
+  bounds for the stochastic multi-armed bandit problem.
+ Periodica Mathematica Hungarica, 61(1-2):55–65, 2010.           Lancewicki, T., Segal, S., Koren, T., and Mansour, Y.
+Auer, P., Cesa-Bianchi, N., and Fischer, P. Finite-time            Stochastic multi-armed bandits with unrestricted delay
+  analysis of the multiarmed bandit problem. Machine               distributions. arXiv preprint arXiv:2106.02436, 2021.
+  learning, 47(2-3):235–256, 2002a.                              Lattimore, T. and Szepesvári, C. Bandit algorithms. Cam-
+Auer, P., Cesa-Bianchi, N., Freund, Y., and Schapire, R. E.        bridge University Press, 2020.
+ The nonstochastic multiarmed bandit problem. SIAM               Pike-Burke, C., Agrawal, S., Szepesvari, C., and
+  journal on computing, 32(1):48–77, 2002b.                        Grunewalder, S. Bandits with delayed, aggregated anony-
+Bistritz, I., Zhou, Z., Chen, X., Bambos, N., and Blanchet, J.     mous feedback. In International Conference on Machine
+  Online exp3 learning in adversarial bandits with delayed         Learning, pp. 4105–4113. PMLR, 2018.
+  feedback. In Advances in Neural Information Processing
+                                                                 Thune, T. S., Cesa-Bianchi, N., and Seldin, Y. Nonstochas-
+  Systems, pp. 11349–11358, 2019.
+                                                                   tic multiarmed bandits with unrestricted delays. In Ad-
+Cesa-Bianchi, N., Gentile, C., and Mansour, Y. Nonstochas-         vances in Neural Information Processing Systems, pp.
+  tic bandits with composite anonymous feedback. In Con-           6541–6550, 2019.
+  ference On Learning Theory, pp. 750–773, 2018.
+                                                                 Vernade, C., Cappé, O., and Perchet, V. Stochastic ban-
+Cesa-Bianchi, N., Gentile, C., and Mansour, Y. Delay and           dit models for delayed conversions. In Conference on
+  cooperation in nonstochastic bandits. The Journal of             Uncertainty in Artificial Intelligence, 2017.
+  Machine Learning Research, 20(1):613–650, 2019.
+                                                                 Weinberger, M. J. and Ordentlich, E. On delayed prediction
+Csiszár, I. and Talata, Z. Context tree estimation for not       of individual sequences. IEEE Transactions on Informa-
+  necessarily finite memory processes, via bic and mdl.           tion Theory, 48(7):1959–1976, 2002.
+  IEEE Transactions on Information theory, 52(3):1007–
+  1016, 2006.                                                    Zhou, Z., Xu, R., and Blanchet, J. Learning in general-
+                                                                   ized linear contextual bandits with stochastic delays. In
+Desautels, T., Krause, A., and Burdick, J. W. Paralleliz-          Advances in Neural Information Processing Systems, pp.
+  ing exploration-exploitation tradeoffs in gaussian process       5197–5208, 2019.
+  bandit optimization. Journal of Machine Learning Re-
+  search, 15:3873–3923, 2014.                                    Zimmert, J. and Seldin, Y. An optimal algorithm for ad-
+                                                                   versarial bandits with arbitrary delays. In International
+Dudik, M., Hsu, D., Kale, S., Karampatziakis, N., Langford,        Conference on Artificial Intelligence and Statistics, pp.
+  J., Reyzin, L., and Zhang, T. Efficient optimal learning for     3285–3294. PMLR, 2020.
+  contextual bandits. In Proceedings of the Twenty-Seventh
+  Conference on Uncertainty in Artificial Intelligence, pp.
+ 169–178, 2011.
+Even-Dar, E., Mannor, S., and Mansour, Y. Action elimina-
+  tion and stopping conditions for the multi-armed bandit
+  and reinforcement learning problems. Journal of machine
+  learning research, 7(Jun):1079–1105, 2006.
+Gael, M. A., Vernade, C., Carpentier, A., and Valko, M.
+  Stochastic bandits with arm-dependent delays. In Interna-
+  tional Conference on Machine Learning, pp. 3348–3356.
+  PMLR, 2020.
+György, A. and Joulani, P. Adapting to delays and
+  data in adversarial multi-armed bandits. arXiv preprint
+  arXiv:2010.06022, 2020.
+Joulani, P., Gyorgy, A., and Szepesvári, C. Online learning
+  under delayed feedback. In International Conference on
+  Machine Learning, pp. 1453–1461, 2013.
+

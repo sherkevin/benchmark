@@ -1,0 +1,21 @@
+event: tree_resume
+data: {"thread_id": "tree-20b27c96-c2c988"}
+
+event: tree_decided
+data: {"promoted": 1, "depth": 2}
+
+event: tree_hypotheses
+data: {"hypotheses": [{"node_id": "d2_n0", "hypothesis": "MgB₂中σ带电子-声子耦合存在未被解析的k空间各向异性，该各向异性直接导致双能隙的温度依赖偏离标准BCS行为，通过高分辨率角分辨光电子能谱（ARPES）可以定量映射该耦合在费米面上的分布，从而修正现有各向同性近似模型。", "objective": "利用高分辨率ARPES测量MgB₂不同费米面片段的能隙随温度演化，结合第一性原理计算提取σ带耦合各向异性因子，建立包含k依赖耦合强度的双能隙模型，提高对Tc和比热跳变的预测精度。"}, {"node_id": "d2_n1", "hypothesis": "带间散射矩阵元V_σπ并非恒定，而是强烈依赖于声子频率和动量转移，低频E₂g声子模式的带间散射贡献被低估，通过非弹性X射线散射（IXS）精确测量全声子色散并重新计算带间散射权重，可以解释双能隙比值的实验分散性。", "objective": "测量MgB₂的全声子色散并构建频率依赖的带间散射函数，将其嵌入各向异性Eliashberg方程，重新评估带间散射对双能隙比值和Tc的修正幅度，解决理论预测与不同实验（隧道谱、比热）之间的系统偏差。"}, {"node_id": "d2_n2", "hypothesis": "MgB₂中σ带强耦合不仅源于E₂g声子模，还存在非线性电子-声子耦合效应（如非谐性或多声子过程），这些效应在α²F(ω)的高频部分产生额外权重，足以将Tc提升约5-10%，忽视它们会导致Tc被系统性低估。", "objective": "通过第一性原理计算高阶电子-声子矩阵元，评估非谐声子效应和多声子散射对σ带Eliashberg函数的贡献，量化其对Tc的增强，并构建包含非线性耦合的修正超导理论，与现有多隧道谱数据进行对比验证。"}, {"node_id": "d2_n3", "hypothesis": "MgB₂的π带超导电性不完全是被动的感应能隙，π带电子在带间散射过程中通过动态屏蔽效应主动调制σ带的耦合强度，这种反作用机制在双能隙模型中缺失，将其纳入自洽计算可消除对Tc的高估问题。", "objective": "建立包含π带动态屏蔽的完全自洽双带Eliashberg方程，采用第一性原理计算屏蔽函数，重新求解线性化能隙方程，考察π带反作用对σ带耦合强度以及Tc的抑制程度，并预测非平衡态下双能隙的弛豫速率差异。"}, {"node_id": "d2_n4", "hypothesis": "MgB₂的能隙各向异性及双能隙特征在无序或掺杂条件下会发生非平庸的演化，带间散射与带内无序散射之间存在竞争，导致能隙合并的临界杂质浓度与散射相移密切相关，通过可控的点缺陷引入可以揭示这种竞争并验证带间散射机制的主导性。", "objective": "利用第一性原理计算不同缺陷（如Al掺杂、C掺杂、空位）对MgB₂能带结构和散射矩阵元的影响，结合无序Eliashberg理论模拟能隙演化与Tc抑制，预测能隙合并的临界散射率，并设计对比实验验证带间散射在双能隙稳定性中的角色。"}]}
+
+event: tree_branch_done
+data: {"node_id": "d2_n1", "hypothesis": "带间散射矩阵元V_σπ并非恒定，而是强烈依赖于声子频率和动量转移，低频E₂g声子模式的带间散射贡献被低估，通过非弹性X射线散射（IXS）精确测量全声子色散并重新计算带间散射权重，可以解释双能隙比值的实验分散性。", "status": "succeeded", "score": 0.0, "session_id": "1f58eb1c"}
+
+event: tree_branch_done
+data: {"node_id": "d2_n0", "hypothesis": "MgB₂中σ带电子-声子耦合存在未被解析的k空间各向异性，该各向异性直接导致双能隙的温度依赖偏离标准BCS行为，通过高分辨率角分辨光电子能谱（ARPES）可以定量映射该耦合在费米面上的分布，从而修正现有各向同性近似模型。", "status": "succeeded", "score": 0.665, "session_id": "15c3f86b"}
+
+event: tree_branch_done
+data: {"node_id": "d2_n2", "hypothesis": "MgB₂中σ带强耦合不仅源于E₂g声子模，还存在非线性电子-声子耦合效应（如非谐性或多声子过程），这些效应在α²F(ω)的高频部分产生额外权重，足以将Tc提升约5-10%，忽视它们会导致Tc被系统性低估。", "status": "succeeded", "score": 0.0, "session_id": "d92a242e"}
+
+event: tree_interrupt
+data: {"type": "research_tree_evaluate", "depth": 2, "goal": "MgB2超导机制", "branches": [{"node_id": "d2_n0", "hypothesis": "MgB₂中σ带电子-声子耦合存在未被解析的k空间各向异性，该各向异性直接导致双能隙的温度依赖偏离标准BCS行为，通过高分辨率角分辨光电子能谱（ARPES）可以定量映射该耦合在费米面上的分布，从而修正现有各向同性近似模型。", "status": "succeeded", "score": 0.665, "recommended": "unknown", "summary": "## Branch Summary\n本分支调查了MgB₂中σ带电子-声子耦合的k空间各向异性是否对双能隙的温度演化产生可观测的偏离，并评估高分辨率ARPES能否定量映射该耦合各向异性以修正现有各向同性近似模型。结果显示，ARPES已明确观测到σ带能隙约10%的面内各向异性，但该各向异性的温度依赖与包含带间耦合的各向同性Eliashberg模型无显著差异。现有实验数据在误差范围内完全可被各向同性双带", "failure_reason": ""}, {"node_id": "d2_n1", "hypothesis": "带间散射矩阵元V_σπ并非恒定，而是强烈依赖于声子频率和动量转移，低频E₂g声子模式的带间散射贡献被低估，通过非弹性X射线散射（IXS）精确测量全声子色散并重新计算带间散射权重，可以解释双能隙比值的实验分散性。", "status": "succeeded", "score": 0.0, "recommended": "unknown", "summary": "## Branch Summary\n本分支验证了假设：MgB₂中带间散射矩阵元V_σπ并非恒定，而是强烈依赖于声子频率与动量转移，尤其低频E₂g声子模的带间散射贡献被传统常数λ模型系统性低估。通过整合非弹性X射线散射（IXS）实测的全声子色散，我们构建了频率分辨的带间散射函数\\(\\alpha^2F_{\\sigma\\pi}(\\omega)\\)，并将其嵌入各向异性Eliashberg方程。初步计算表明", "failure_reason": ""}, {"node_id": "d2_n2", "hypothesis": "MgB₂中σ带强耦合不仅源于E₂g声子模，还存在非线性电子-声子耦合效应（如非谐性或多声子过程），这些效应在α²F(ω)的高频部分产生额外权重，足以将Tc提升约5-10%，忽视它们会导致Tc被系统性低估。", "status": "succeeded", "score": 0.0, "recommended": "unknown", "summary": "## Branch Summary\n本分支系统评估了 MgB₂ 中超越传统 Migdal-Eliashberg 框架的非线性电子-声子耦合效应，重点关注非谐声子过程与多声子散射对 σ 带 Eliashberg 函数高频部分的贡献。通过文献调研、现有隧道谱重新分析以及初步第一性原理模拟，发现这些高阶效应确实能在 α²F(ω) 的 60–120 meV 区间引入额外权重，但量化其对 Tc 的提升幅度普", "failure_reason": ""}], "thread_id": "tree-20b27c96-c2c988"}
+

@@ -1,0 +1,35 @@
+--- a/skills/drug_discovery/tools/validate_target.py
++++ b/skills/drug_discovery/tools/validate_target.py
+@@ -52,14 +52,28 @@
+     for k, v in MOCK_TARGETS.items():
+         if k.upper().replace("-", "-") in key or key in k.upper():
+             return json.dumps(v, ensure_ascii=False, indent=2)
+ 
++    # 未命中 MOCK_TARGETS 时的兜底。此前这里返回一组**与输入无关的固定常数**
++    # （score=0.65 / "Limited structural data available"）且不带任何模拟数据标记，
++    # 调用方只看 success/字段齐全无法分辨真假，会把占位值当成真实评估结果。
++    # 实测反例（2026-08-14）：target_name="ABL1" —— 伊马替尼靶点，有 2.1 Å 晶体
++    # 结构（PDB 1IEP）与多个已批准药物 —— 却被返成"结构数据有限、需进一步验证"，
++    # 属事实错误。故改为：
++    #   1) data_provenance 用可区分的 SHOWCASE_MOCK_FALLBACK（策展真值仍为 SHOWCASE_MOCK）；
++    #   2) 显式 warning 字段，与 docking.py 兜底的诚实标注方式保持一致；
++    #   3) 不再编造 druggability 分数，score=None + "Not assessed"。
+     return json.dumps({
+-        "data_provenance": "SHOWCASE_MOCK",
++        "data_provenance": "SHOWCASE_MOCK_FALLBACK",
++        "warning": "Simulated placeholder, not a real target assessment: "
++                   f"{target_name!r} is not in the curated library.",
+         "target_name": target_name,
+         "pdb_id": pdb_id or "N/A",
+         "uniprot_id": uniprot_id or "N/A",
+-        "druggability": {"score": 0.65, "assessment": "Moderately druggable", "rationale": "Limited structural data available"},
+-        "binding_pocket": {"type": "Unknown", "key_residues": [], "description": "Requires further structural characterization"},
++        "druggability": {"score": None, "assessment": "Not assessed",
++                         "rationale": "Target absent from curated library; no assessment was run. "
++                                      "Do not treat this record as evidence."},
++        "binding_pocket": {"type": "Unknown", "key_residues": [], "description": "Not characterized by this tool"},
+         "known_drugs": [],
+-        "conclusion": f"Target {target_name} requires further validation. Consider AlphaFold structure prediction."
++        "conclusion": f"No curated record for {target_name}. Query UniProt/RCSB PDB/ChEMBL "
++                      "for real target evidence, or configure the drug discovery API."
+     }, ensure_ascii=False, indent=2)

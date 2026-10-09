@@ -1,0 +1,1866 @@
+Proceedings of Machine Learning Research vol 272:1–24, 2025   36th International Conference on Algorithmic Learning Theory
+
+
+
+
+                Non-stochastic Bandits With Evolving Observations
+
+Yogev Bar-On                                                                          BARONYOGEV @ GMAIL . COM
+Tel Aviv University, Israel
+
+Yishay Mansour                                                                  MANSOUR . YISHAY @ GMAIL . COM
+Tel Aviv University and Google Research, Israel
+
+
+Editors: Gautam Kamath and Po-Ling Loh
+
+
+                                                        Abstract
+     We introduce a novel online learning framework that unifies and generalizes pre-established mod-
+     els, such as delayed and corrupted feedback, to encompass adversarial environments where action
+     feedback evolves over time. In this setting, the observed loss is arbitrary and may not correlate
+     with the true loss incurred, with each round updating previous observations adversarially. We pro-
+     pose regret minimization algorithms for both the full-information and bandit settings, with regret
+     bounds quantified by the average feedback accuracy relative to the true loss. Our algorithms match
+     the known regret bounds across many special cases, while also introducing previously unknown
+     bounds.
+     Keywords: online learning, multi-armed bandits, delayed feedback
+
+
+1. Introduction
+In many sequential decision problems, the outcomes of actions are not immediately observed, and
+rather could only be estimated. Those estimations may be changing constantly (usually becoming
+more accurate) until certainty about the outcome is achieved.
+    This situation is common in financial settings, such as options trading, where the underlying
+asset price at the time of exercising can only be estimated at the time of the trade. Another more
+modern example is trading on blockchain systems (see, e.g., Bar-On and Mansour, 2023), where
+new blocks are created immediately but may be deleted with a low probability after a certain time
+(due to ”forking”, as in Neudecker and Hartenstein, 2019).
+    Another application is online advertising, where the value of an ad may evolve over time. For
+example, a user’s click indicates some positive value. If the user completes an online form at a later
+time, the value increases. The value can then increase again if the user completes a purchase, or
+decrease if the user leaves without further action.
+    While working under these conditions, the theory of online learning with delayed feedback
+(Cesa-Bianchi et al., 2016; Thune et al., 2019) is useful for making informed decisions. However,
+there is still a big gap between theory and practice - primarily since the estimations of action values
+are not considered before the true value becomes known.
+Evolving feedback To bridge this gap, we propose a new framework for online decision-making
+in which the feedback on actions taken by the agent evolves and changes over time. Notably, the
+feedback can change retroactively, overriding previous observations. This applies to and generalizes
+various established feedback mechanisms. Those include delayed feedback, where all the informa-
+tion about the loss (the action’s result) is revealed at a future time; composite feedback, where
+
+© 2025 Y. Bar-On & Y. Mansour.
+                                        BAR -O N M ANSOUR
+
+
+
+
+the loss is revealed monotonically over time; and corrupted feedback, where the true loss is never
+revealed.
+    We investigate online learning environments with K actions over T rounds. An oblivious ad-
+versary chooses ahead of time not only the true loss ℓt ∈ [0, 1]K for round t, but also the feedback
+      (t)
+loss ℓτ ∈ [0, 1]K , which represents the new observation regarding the actions taken previously at
+any step τ ≤ t, overriding any previous observations.
+    As usual, at each round t the agent chooses an action at ∈ [K]. The observations do not affect
+the suffered loss, and our objective is still to minimize the expected regret R(T ) in comparison to
+the best true loss in hindsight:
+                                                   " T                  #
+                                                    X
+                                R(T ) ≜ max E                ℓt,at − ℓt,a .
+                                         a∈[K]
+                                                       t=1
+
+    In our model, the observed losses may or may not correlate with the true loss. In the latter
+case, the agent gains no information and thus no strategy can guarantee a low regret. Fortunately,
+in real-life situations we expect the observations to be good estimates of the true loss and be more
+accurate as time progresses. Hence our algorithms’ regret bound is smaller the more accurate the
+feedback is, and depends on the accuracy term
+                                     T X
+                                     X t           n                       o
+                               Λ=               min 1, ℓτ − ℓ(t)
+                                                             τ              .
+                                                                       2
+                                     t=1 τ =1
+
+
+1.1. Contributions and outline
+Full-information setting We start with presenting an Exponential Weights (Cesa-Bianchi et al.,
+1997; Cesa-Bianchi and Lugosi, 2006) variant for the full-information setting in Section 2, where
+all the feedback
+          √      generated
+                          by the adversary is revealed to the agent, and show a regret bound better
+than Oe T + Λ , where O    e hides logarithmic terms.
+
+Bandit setting We then present a Follow-The-Regularized-Leader (FTRL) (Abernethy et al., 2008;
+Orabona, 2019) variant for the bandit setting in Section 3, where only √ the feedback
+                                                                                      generated for
+actions taken by the agent is revealed, and show a regret bound of O KT + Λ . Our novel analy-
+                                                                   e
+sis creatively adapts methods from the delayed setting, where we quantify the information revealed
+at each step using the feedback accuracy, instead of a binary revealed/not revealed.
+     We can consider the delayed setting as a special case, where if the delay of round τ is dτ , then
+ (t)                                 (t)
+ℓτ = ℓτ for any t ≥ τ + dτ , and ℓτ = 0 otherwise. Hence, Λ = Tt=1 dt captures the total delay.
+                                                                    P
+Thus, our regret bounds are optimal (up to logarithmic terms) when used in the delayed setting
+(Cesa-Bianchi et al., 2016).
+
+Applications We show more special cases in Section 4. A key benefit to our framework is that
+it naturally supports any combination of those applications, for example, delayed feedback that is
+sometimes corrupted.
+
+    • In the optimistic delayed feedback environment (Flaspohler et al., 2021; Hsieh et al., 2022),
+      where hints on delayed feedback are available to the agent, we match the existing regret bound
+      in the full-information setting and show the first regret bound in the bandit setting.
+
+                                                   2
+                    N ON - STOCHASTIC BANDITS W ITH E VOLVING O BSERVATIONS
+
+
+
+
+    • In the corrupted feedback environment (Resler and Mansour, 2019;
+                                                                    √ Hajiesmaili
+                                                                                  et al., 2020),
+      where the true losses are never revealed, we get a standard O
+                                                                  e   KT + C bound, where C
+      is the corruption budget.
+
+    • In the composite delayed feedback environment (Cesa-Bianchi et al., 2018; Wang et al.,
+                                     p over d partial
+      2021), where the feedback is spread             consecutive observations, we apply our
+      framework to get the optimal O
+                                   e    (K + d)T regret bound.
+
+    For clarity, we defer detailed proofs to the appendix.
+
+1.2. Additional related works
+Online learning under adversarial delayed feedback has been studied extensively both under the
+full-information (Weinberger and Ordentlich, 2002; Joulani et al., 2013, 2016) and bandit (Bistritz
+et al., 2019; Zimmert and Seldin, 2020; Ito et al., 2020; Gyorgy and Joulani, 2021; Jin et al., 2022;
+Van Der Hoeven and Cesa-Bianchi, 2022; Li and Guo, 2023) settings. Our analysis in this work is
+inspired by a recent work (van der Hoeven et al., 2023) that unifies the analysis of delayed feedback
+under many regimes such as linear bandits and Markov decision processes.
+    Many works study stochastic delayed environments as well (Agarwal and Duchi, 2011; Vernade
+et al., 2020; Pike-Burke et al., 2018; Gael et al., 2020; Lancewicki et al., 2021; Tang et al., 2024),
+and there are optimal algorithms for both cases simultaneously (”best of both worlds”) (Masoudian
+et al., 2022, 2023).
+    Also generalized by our work is a corrupted adversarial feedback environment, previously stud-
+ied for the stochastic case as well (Lykouris et al., 2018; Amir et al., 2020; Ito, 2021; He et al.,
+2022).
+
+
+2. Evolving Exponential Weights
+We start by presenting a simple regret minimization algorithm for the full information setting, where
+                                                            (t)
+after step t the agent observes all the feedback losses ℓτ for all τ ≤ t. Our proposed algorithm
+is a modified version of Exponential Weights (Cesa-Bianchi et al., 1997; Cesa-Bianchi and Lugosi,
+2006), summarized in Algorithm 1. The idea is for the agent to continuously update their beliefs on
+the true loss, even retroactively, as more feedback is presented.
+     Specifically, at each step t, the agent maintains a probability distribution p over the set of possi-
+ble actions as a function of an estimated total loss L ∈ RK  +:
+
+
+                                                        e−ηLi
+                                       pi (L) = P             −ηLj
+                                                                   .                                  (1)
+                                                      j∈[K] e
+
+where η is some learning rate chosen by the agent. In our case, the agent’s estimation of the total
+loss is based on the most recently observed feedback losses:
+
+                                                    t−1
+                                                    X
+                                            Let =          ℓ(t−1)
+                                                            τ     .
+                                                    τ =1
+
+
+                                                     3
+                                                BAR -O N M ANSOUR
+
+
+
+
+Algorithm 1 Evolving Exponential Weights
+Input: K, T ∈ N; η > 0
+Le1,i ← 0 for all i ∈ [K];
+for t ← 1 to T do
+                        −ηLe t,i
+   Set pi (Let ) ← P e      −ηLe       for all i ∈ [K];
+                                 t,j
+                     j∈[K] e
+                                                                  (t)
+   Play a random action at ∼ p (Let ) and observe ℓτ for all τ ≤ t;
+                      (t)
+   Set Let+1 ← tτ =1 ℓτ ;
+               P
+
+end
+
+
+   To quantify the regret, we will use the total feedback inaccuracy D of the adversary:
+                                                     T
+                                                     X
+                                             D≜              ∥Let − Lt ∥∞ ,
+                                                     t=1
+
+denoting the true total loss up to step t by Lt = t−1
+                                                     P
+                                                      τ =1 ℓτ . Note this term does not depend on the
+agent’s actions, but only on the losses generated by the adversary. It captures the magnitude of the
+difference between the observed and true losses.
+    In the case of a delayed setting with delay dt we have that ∥Let − Lt ∥∞ ≤ dt , and thus
+       PT
+D ≤      t=1 dt , generalizing the total delay term.
+
+
+2.1. Analysis
+To analyze the regret of Algorithm 1, we will start by separating the regret into an observation drift
+term and an auxiliary regret term, as usually done when analyzing delayed settings. We can present
+the expected regret, assuming a∗ is the optimal action, as:
+                               " T                    #
+                                 X
+                    R(T ) = E        (ℓt,at − ℓt,a∗ )
+                                       t=1
+                               T
+                               X
+                           =           (p(Let ) · ℓt − ℓt,a∗ )
+                               t=1
+                               XT                                       T
+                                                                        X
+                           =           (p(Let ) − p(Lt )) · ℓt +              (p(Lt ) · ℓt − ℓt,a∗ ) .   (2)
+                               t=1                                      t=1
+                               |               {z                 }     |             {z           }
+                                         observation drift                      auxiliary regret
+
+   A standard Exponential Weights analysis bounds the auxiliary regret:
+
+Lemma 1 Computing p as in Eq. (1), we have for any action a ∈ [K]:
+                                   T
+                                   X                                    ln K  η
+                                         (p(Lt ) · ℓt − ℓt,a ) ≤             + T.
+                                                                          η   2
+                                   t=1
+
+   To bound the drift term, we will use the following lemma:
+
+                                                              4
+                       N ON - STOCHASTIC BANDITS W ITH E VOLVING O BSERVATIONS
+
+
+
+
+Lemma 2 Let ℓ ∈ [0, 1]K be some loss vector, and L1 , L2 two different estimations of the total
+loss. If the probability p is computed as described in Eq. (1), we get:
+                                  (p(L1 ) − p(L2 )) · ℓ ≤ 2η ∥L1 − L2 ∥∞ .
+    By substituting the results of Lemmas 1 and 2 in Eq. (2), we can now derive the main result for
+this section:
+Theorem 3 The expected regret of Algorithm 1 after T rounds holds:
+                               T                                              
+                   ln K       X      1                       ln K        T
+           R(T ) ≤       +η            + 2 ∥Let − Lt ∥∞ =          +η       + 2D .
+                     η               2                         η         2
+                              t=1
+                                        q
+                                            ln K
+   Optimally, we would like to set η =     T
+                                             +2D
+                                                 , but we do not necessarily know the value of D
+                                                 2
+ahead of time. We can either use a standard doubling trick (Bistritz et al., 2019; Lancewicki et al.,
+2022) to get a parameter-independent algorithm, or use a known upper bound:
+Corollary 4 Let D̄ be a known upper bound on the feedback inaccuracy, such that:
+                                                     T
+                                                     X
+                                        D̄ ≥ D =           ∥Let − Lt ∥∞ .
+                                                     t=1
+            q
+                ln K
+Using η =       T
+                  +2D̄
+                         , the expected regret of Algorithm 1 after T rounds holds:
+                2
+                                                s                     
+                                                                T
+                                      R(T ) ≤     4 ln K          + 2D̄ .
+                                                                2
+   In the delayed setting where D is the total delay, this bound is known to be optimal (Cesa-
+                                                              2
+Bianchi et al., 2016). Note that in the worst case, D = Ω T . This implies that if the adversary
+provides no feedback until time T on any of the losses, the regret is potentially Θ(T ), as should be
+expected in such a scenario.
+
+3. Evolving FTRL
+In the bandit setting, the agent only receives feedback losses for actions they played at the times
+                                                                                    (t)
+they were played. So if at time τ that agent chose action aτ , it will now receive ℓτ,aτ for all t ≥ τ ,
+                       (t)
+and will not receive ℓτ,a for any other action a ̸= aτ .
+    We will use a Follow-The-Regularized-Leader (FTRL) (Abernethy et al., 2008; Orabona, 2019)
+variant as a strategy, presented in Algorithm 2. Given an estimated total loss L ∈ RK  + , we compute
+the probabilities over the set of actions as follows:
+                                      p(L) = arg min (p · L + Φ (p)),                               (3)
+                                              p∈∆K−1
+
+where ∆K−1 is the K-dimensional simplex and Φ is the regularization function. Specifically in our
+analysis, we will use a standard negative entropy with log barrier regularization:
+                                              X  pi      1
+                                                            
+                                  Φη,γ (p) ≜           −      ln pi                           (4)
+                                                     η    γ
+                                                 i∈[K]
+
+for some parameters η, γ > 0.
+
+                                                       5
+                                                  BAR -O N M ANSOUR
+
+
+
+
+Loss estimates Similar to what we did in the full-information case, as an estimation for the total
+loss at step t we will use the most recent update:
+                                                             t−1
+                                                             X
+                                                    b et =
+                                                    L               ℓ̂(t−1)
+                                                                      τ     ,
+                                                             τ =1
+
+        (t−1)
+where ℓ̂τ         is an unbiased loss estimate calculated as:
+                                                                    1 [a = aτ ]
+                                            ℓ̂(t−1)
+                                              τ,a   = ℓ(t−1)
+                                                       τ,a               
+                                                                    paτ L b eτ
+
+for all τ < t and a ∈ [K]. Although these definitions might appear circular at first, we highlight
+                b et there is a need only for prior values of L
+that to compute L                                              b eτ where τ < t.
+    Useful for our analysis is also ℓ̂τ , the unbiased loss estimate when the feedback is accurate:
+                                                                1 [a = aτ ]
+                                                 ℓ̂τ,a = ℓτ,a        .
+                                                                paτ L b eτ
+
+Feedback accuracy measure In contrast to the full-information setting, we will quantify the feed-
+back accuracy differently, using what we call the feedback inaccuracy coefficients:
+                                      (t)
+                                     ℓτ − ℓτ                       n                 o
+                           λ(t)
+                            τ ≜
+                                                     2
+                                                             = Θ min 1, ℓ(t)
+                                                                         τ − ℓτ            ,
+                                           (t)                                    2
+                                  1 + ℓτ − ℓτ
+                                                         2
+
+measuring the feedback inaccuracy at step t about the losses of step τ . We again emphasize that the
+          (t)
+value of λτ does not depend on the agent’s actions.
+                                   Pt−1 (t−1)
+                     n by λt =
+    We will also denote                    λτ
+                                      τ =1 o     the total feedback inaccuracy measure at step t,
+                                     (t)
+and by dmax = max d | ∃t ℓt−d ̸= ℓt−d         the maximal amount of rounds that the feedback can
+evolve.
+    Again taking an example from the delayed setting, we can see that λt ≤ dt and thus the accuracy
+measures generalize the delays.
+
+Algorithm 2 Evolving FTRL
+Input: Function Φ; K, T ∈ N
+b e ← 0 for all i ∈ [K];
+L 1,i
+for t ← 1to T do                                  
+           b et ← arg minp∈∆
+     Set p L                         p · b et + Φ (p) ;
+                                         L
+                              K−1
+                                
+    Play a random action at ∼ p Lb et and observe ℓ(t) τ,a for all τ ≤ t such that a = aτ ;
+            (t)      (t)
+   Set ℓ̂τ,a ← ℓτ,a 1[a=a  τ]
+                         b e ) for all τ ≤ t and a ∈ [K];
+                    paτ (L τ
+       b e ← Pt ℓ̂(t)
+   Set L                  τ   ;
+          t+1       τ =1
+end
+
+
+
+                                                                6
+                    N ON - STOCHASTIC BANDITS W ITH E VOLVING O BSERVATIONS
+
+
+
+
+3.1. Analysis
+
+For the analysis of Algorithm 2, we will follow a method similar to (van der Hoeven et al., 2023).
+We will separate the regret into different drift terms, bounding each independently. Our novelty
+comes from new intermediate loss estimates, parameterized by the feedback accuracy coefficients
+ (t)
+λτ . Namely, we will use the following intermediate loss estimates:
+
+
+                                     t−1 
+                                     X                                                        
+                         e et =
+                         L                          1 − λ(t−1)
+                                                         τ           ℓ̂(t−1)
+                                                                       τ     + λ(t−1)
+                                                                                τ     ℓ(t−1)
+                                                                                       τ           ,
+                                     τ =1
+                                     t−1 
+                                     X                                           
+                          L
+                          et =                      1 − λ(t−1)
+                                                         τ       ℓ̂τ + λ (t−1)
+                                                                         τ     ℓτ   ,
+                                     τ =1
+                                     t−1
+                                     X                                                        t
+                                                                                              X
+                          L
+                          bt =              ℓ̂τ ,         and            b ∗t = L
+                                                                         L      b t + ℓ̂t =            ℓ̂τ .
+                                     τ =1                                                     τ =1
+
+
+
+
+3.1.1. D RIFT TERMS
+
+We can now represent the regret as (again denoting the optimal action by a∗ ):
+
+                           " T                              #
+                            X
+               R(T ) = E             (ℓt,at − ℓt,a∗ )
+                               t=1
+                       T
+                       X  h                 i
+                     =       b e · ℓt − ℓt,a∗
+                         E p L t
+                         t=1
+                         XT        h          i X    T  h                i
+                     =         E       b et − p L
+                                     p L        b t · ℓt +       b t · ℓt − ℓt,a∗ .
+                                                             E p L                                             (5)
+                         t=1                                                    t=1
+
+
+
+   Note that
+
+                                                                                             
+                                                                                             be ,
+             E [1 [a = aτ ] | a0 , . . . , aτ −1 ] = Pr [a = aτ | a0 , . . . , aτ −1 ] = paτ Lτ
+
+
+
+and thus our loss estimate is indeed unbiased relative to the feedback losses:
+
+                                                                 
+                                                               p    be
+                                                                 aτ Lτ
+                                 (t−1) 1 [a 
+                                            = aτ ] 
+                 h        i
+                    (t−1)                                (t−1)
+                                                   = E ℓτ,a          = ℓ(t−1)
+                E ℓ̂τ       = E ℓτ,a
+                                                                          τ     .
+                                       paτ Lτ b e              paτ Lb eτ
+
+
+                                                                     7
+                                                    BAR -O N M ANSOUR
+
+
+
+                 h i
+In the same way E ℓ̂τ = ℓτ , and hence, continuing Eq. (5):
+
+                     T
+                     X       h       i X   T  h                   i
+                                   e                   b t · ℓ̂t − ℓ̂t,a∗
+           R(T ) =          E p Lt − p Lt · ℓt +
+                                 b     b           E p L
+                     t=1                                                    t=1
+                     XT      h          i X     T  h        i
+                 =          E p L         e et
+                                 b et − p L    · ℓt +   E p Lee − p L
+                                                                    e t · ℓt
+                                                              t
+                     |t=1                    {z                  }          |t=1                 {z           }
+                                             H1                                                  H2
+                     T
+                     X          h        i      T
+                                                      X h        i                                          (6)
+                 +          E       et − p L
+                                  p L      b t · ℓt +              b ∗t
+                                                            bt − p L
+                                                        E p L           · ℓ̂t
+                     |t=1                    {z                  }      |t=1                    {z            }
+                                             H3                                                 H4
+                    " T                      #
+                     X  
+                 +E       b ∗t · ℓ̂t − ℓ̂t,a∗ .
+                        p L
+                            t=1
+                     |                  {z               }
+                                  cheating regret
+
+3.1.2. B OUNDS
+As we can see from the above equation, we have a cheating regret and four drift terms H1 , H2 , H3 , H4 .
+We bound the cheating regret in the following lemma:
+Lemma 5 Computing p as in Eq. (3) and using regularization Φη,γ as in Eq. (4) for some η, γ > 0,
+we get:             " T                         #
+                              b ∗ · ℓ̂t − ℓ̂t,a∗ ≤ 1 + K ln T + ln K .
+                      X  
+                  E       p L   t
+                                                          γ         η
+                                  t=1
+
+    For the drift terms, we use the following:
+Lemma 6 Computing p as in Eq. (3) and using regularization Φη,γ as in Eq. (4) for some η, γ > 0
+such that √1γ ≥ 128 (1 + dmax ), we have for the drift terms in Eq. (6):
+
+                                                                            T
+                                                                                        !
+                                                                            X
+                                         H1 , H3 ≤ 8η KT +                         λt       ,
+                                                                             t=1
+                                                             T
+                                                             X
+                                                  H2 ≤ 24η           λt ,
+                                                             t=1
+                                                  H4 ≤ 8ηKT.
+
+    Substituting the results of Lemmas 5 and 6 in Eq. (6), we get our main result:
+Theorem 7 By using regularization function Φη,γ as in Eq. (4) for some η, γ > 0 such that
+√1 ≥ 128 (1 + dmax ), the expected regret of Algorithm 2 after T rounds holds:
+  γ
+
+                                                                                                T
+                                                                                                      !
+                                  K ln T   ln K               X
+                      R(T ) ≤ 1 +        +      + η 24KT + 40   λt                                        .
+                                    γ        η
+                                                                                                t=1
+
+
+                                                             8
+                   N ON - STOCHASTIC BANDITS W ITH E VOLVING O BSERVATIONS
+
+
+
+
+    Same as in the full-information case, we can either use a doubling trick or use a known bound
+on the feedback accuracy as follows.
+                           PT
+Corollary 8 Let Λ̄ ≥         t=1 λt be a known upper bound on the total inaccuracy. Choosing
+η = √ 1        and γ = ηK, the expected regret of Algorithm 2 using regularization Φη,γ as in Eq.
+        KT +Λ̄
+(4) holds for any T ≥ 256Kd4max :
+                                                  p       
+                                    R(T ) = O
+                                            e       KT + Λ̄ .
+                                                  PT              PT
+   Since in the delayed setting the total delay        t=1 dt ≥     t=1 λt , we again capture the optimal
+asymptotic bound (up to logarithmic terms).
+
+3.2. Skipping technique
+Note that in cases where the maximal delay dmax is very large or unbounded, we cannot use Corol-
+lary 8 directly.
+     To accommodate this issue, we will use a skipping wrapper similar to the one used in delayed
+settings with unbounded delays (Thune et al., 2019; Zimmert and Seldin, 2020), presented in Algo-
+rithm 3. The idea is to wrap our regret minimization algorithm to receive new observations only up
+to a certain delay.
+
+Algorithm 3 Skipping wrapper
+Input: Algorithm A; T ∈ N; dmax > 0
+for t ← 1 to T do
+    Receive an action distribution pAt from algorithm A;
+    Play a random action at ∼ pA t ;
+                                   (t)                                          (τ +d  )
+    Feed back to A all observed ℓτ,i such that τ ≥ t − dmax , and all observed ℓτ,i max such that
+      τ < t − dmax ;
+end
+
+
+Lemma 9 Denote the regret of
+                            some algorithm
+                                            A compared to a loss sequence ℓ1 , . . . , ℓT with
+                       A
+maximal delay dmax as Rdmax {ℓt }1≤t≤T . When using Algorithm 3 with A, the expected regret
+holds:
+                             n            o        T
+                                 (t+dmax )                     (t+d   )
+                                                    X
+                        A
+               R(T ) ≤ Rdmax    ℓt              +2       ℓt − ℓt max      .
+                                              1≤t≤T                                  ∞
+                                                                  t=1
+
+   We thus obtain a small regret bound when the estimation accuracy improves with time and
+becomes very accurate for large delays.
+                                     1
+Corollary 10 Denote dmax = ⌊ 14 K  T 4
+                                        ⌋. Using Algorithm 2 wrapped in Algorithm 3 with η = √ 1
+                                                                                              KT +Λ̄
+                       PT
+and γ = ηK, let Λ̄ ≥      t=1 λt be a known upper bound on the total inaccuracy of the feedback
+                                             (t)
+recieved from the wrapper. Assuming ℓτ − ℓτ   ≤ ε for any t ≥ τ + dmax , the expected regret
+                                            ∞
+holds for any T :                        p             
+                               R(T ) = O
+                                       e    KT + Λ̄ + εT .
+
+                                                   9
+                                         BAR -O N M ANSOUR
+
+
+
+
+4. Applications
+Our framework generalizes many established online learning environments, some of which we
+present here.
+
+4.1. Optimistic delayed feedback
+Previously investigated in (Flaspohler et al., 2021; Hsieh et al., 2022) for the full-information setting
+is the optimistic delayed framework. In this model, the feedback is delayed by d steps, but the agent
+has access to hints about it after choosing the action.
+     Specifically, at time t the agent receives a hint ℓ̃t ∈ [0, 1]K that estimates ℓt , before observing
+                                                                    (t)
+ℓt at time t + d. Applying it to our framework, we can define ℓτ = ℓ̃τ for any τ ≤ t < τ + d, and
+ (t)
+ℓτ = ℓτ otherwise.
+     Using Corollaries 4 and 8, we then obtain a full-information regret bound similar to (Flaspohler
+et al., 2021), and a newly established regret bound for the bandit setting.
+
+Corollary 11 Using Algorithm 1 with optimistic delayed feedback in the full-information setting
+guarantees an expected regret of:
+                                v                           
+                                  u T     t               
+                                  uX     X
+                             Oe t                ℓτ − ℓ̃τ   .
+                                       t=1    τ =t−d+1                 ∞
+
+    In the bandit setting, using Algorithm 2 guarantees an expected regret of:
+                               vu T                                 
+                                 uX X      t        n              o
+                             O
+                             e t               min 1, ℓτ − ℓ̃τ      .
+                                                                           2
+                                    t=1 τ =t−d+1
+
+
+4.2. Corrupted feedback
+In the corrupted feedback setting (Resler and Mansour, 2019; Hajiesmaili et al., 2020), true losses
+are never revealed, only some corrupted loss ℓ̃t ∈ [0, 1]K that is observed immediately. In terms of
+                                                                 (t)
+the evolving feedback framework, this is equivalent to having ℓτ = ℓ̃τ for any τ ≤ t.
+    To measure the amount of corruption, we denote the corruption budget by
+                                              T
+                                              X
+                                         C≜         ℓt − ℓ̃t       .
+                                                               ∞
+                                              t=1
+
+    Since the true loss is never revealed and the maximal delay is infinite, we need only the result
+of the skipping technique (Lemma 9) to obtain a regret bound.
+                                                                                    √     
+Corollary 12 Using Algorithm 3 with dmax = 0 and any multi-armed bandit O         e    KT regret
+minimization algorithm, we obtain an
+                                             √         
+                                           O
+                                           e    KT + C
+
+expected regret in a corrupted environment.
+
+                                                    10
+                   N ON - STOCHASTIC BANDITS W ITH E VOLVING O BSERVATIONS
+
+
+
+
+4.3. Composite delayed feedback
+The composite delayed feedback setting is the case where each loss is spread into d positive par-
+              (1)           (d)
+tial losses ℓ̃t , . . . , ℓ̃t that sum to ℓt , observed consecutively by the agent. Applying it to our
+framework, we have that
+                                                 min{t+1,τ +d}
+                                                     X
+                                          (t)
+                                         ℓτ =                  ℓ̃(s−τ
+                                                                 τ
+                                                                      )
+                                                                        .
+                                               s=τ +1
+
+     Previous works (Cesa-Bianchi et al., 2018; Wang et al., 2021) discuss the case where the obser-
+vations are anonymous. Namely, the agent observes only the sum of partial losses revealed in the
+current step. This fact does not generalize directly into our evolving feedback framework.
+     Hence, we will look at the non-anonymous scenario, where each observation can be attributed
+to a time and action. However, we can remove the limitation that the partial losses must be pos-
+itive and can accommodate in our framework negative partial losses. The only restriction is that
+Ps̄       (s)
+    s=1 ℓ̃t   ∈ [0, 1]K for any 1 ≤ s̄ ≤ d.
+     We can thus obtain regret bounds using Corollaries 4 and 8.
+
+Corollary 13 In a composite feedback environment, allowing negative partial losses, using Algo-
+rithm 1 in the full-information setting guarantees an expected regret of:
+                                            p           
+                                          O
+                                          e     (1 + d)T .
+
+   In the bandit setting, using Algorithm 2 guarantees an expected regret of:
+                                          p            
+                                        O
+                                        e     (K + d)T .
+
+
+5. Discussion
+This work introduces a framework for online learning under adversarial feedback that evolves over
+time. Our setting generalizes and unifies previously studied models like delayed, corrupted, and
+composite feedback.
+     We proposed regret minimization algorithms for both the full information (Algorithm 1) and the
+bandit (Algorithm 2) settings, achieving asymptotically optimal regret bounds (up to logarithmic
+terms) that depend on the average accuracy of the observed feedback compared to the true losses,
+using a novel analysis.
+     In addition to providing a unified model for many problems, our framework is beneficial for real-
+world scenarios such as finance and online advertising. By incorporating all available information
+on the value of actions, our approach achieves regret bounds that were previously not feasible.
+     Our work introduces a few follow-up research questions. Mainly, are our regret bounds optimal
+in terms of the instance-dependent average feedback accuracy? Currently, we can show optimality
+only in cases where the difference between the agent’s estimations and the true loss is large, like
+in the delayed setting. It is an open question if our bounds could be improved for cases where the
+difference is small.
+     Another natural question to ask is whether we can expand our model to accommodate loss
+estimations for future rounds as well as past ones, and how the optimal regret bounds will behave
+in this scenario.
+
+                                                 11
+                                       BAR -O N M ANSOUR
+
+
+
+
+Acknowledgments
+This project has received funding from the European Research Council (ERC) under the European
+Union’s Horizon 2020 research and innovation program (grant agreement No. 882396), by the Israel
+Science Foundation, the Yandex Initiative for Machine Learning at Tel Aviv University and a grant
+from the Tel Aviv University Center for AI and Data Science (TAD).
+
+References
+Jacob D Abernethy, Elad Hazan, and Alexander Rakhlin. Competing in the dark: An efficient
+  algorithm for bandit linear optimization. In COLT, pages 263–274. Citeseer, 2008.
+
+Alekh Agarwal and John C Duchi. Distributed delayed stochastic optimization. Advances in neural
+  information processing systems, 24, 2011.
+
+Idan Amir, Idan Attias, Tomer Koren, Yishay Mansour, and Roi Livni. Prediction with corrupted
+  expert advice. Advances in Neural Information Processing Systems, 33:14315–14325, 2020.
+
+Yogev Bar-On and Yishay Mansour. Uniswap liquidity provision: An online learning approach.
+  In International Conference on Financial Cryptography and Data Security, pages 247–261.
+  Springer, 2023.
+
+Ilai Bistritz, Zhengyuan Zhou, Xi Chen, Nicholas Bambos, and Jose Blanchet. Online exp3 learning
+   in adversarial bandits with delayed feedback. Advances in neural information processing systems,
+   32, 2019.
+
+Nicolo Cesa-Bianchi and Gábor Lugosi. Prediction, learning, and games. Cambridge university
+  press, 2006.
+
+Nicolo Cesa-Bianchi, Yoav Freund, David Haussler, David P Helmbold, Robert E Schapire, and
+  Manfred K Warmuth. How to use expert advice. Journal of the ACM (JACM), 44(3):427–485,
+  1997.
+
+Nicolo Cesa-Bianchi, Claudio Gentile, and Yishay Mansour. Nonstochastic bandits with composite
+  anonymous feedback. In Conference On Learning Theory, pages 750–773. PMLR, 2018.
+
+Nicol‘o Cesa-Bianchi, Claudio Gentile, Yishay Mansour, and Alberto Minora. Delay and coop-
+  eration in nonstochastic bandits. In Conference on Learning Theory, pages 605–622. PMLR,
+  2016.
+
+Genevieve E Flaspohler, Francesco Orabona, Judah Cohen, Soukayna Mouatadid, Miruna Oprescu,
+  Paulo Orenstein, and Lester Mackey. Online learning with optimism and delay. In International
+  Conference on Machine Learning, pages 3363–3373. PMLR, 2021.
+
+Manegueu Anne Gael, Claire Vernade, Alexandra Carpentier, and Michal Valko. Stochastic bandits
+ with arm-dependent delays. In International Conference on Machine Learning, pages 3348–
+ 3356. PMLR, 2020.
+
+Andras Gyorgy and Pooria Joulani. Adapting to delays and data in adversarial multi-armed bandits.
+  In International Conference on Machine Learning, pages 3988–3997. PMLR, 2021.
+
+                                                12
+                  N ON - STOCHASTIC BANDITS W ITH E VOLVING O BSERVATIONS
+
+
+
+
+Mohammad Hajiesmaili, Mohammad Sadegh Talebi, John Lui, Wing Shing Wong, et al. Adversar-
+ ial bandits with corruptions: Regret lower bound and no-regret algorithm. Advances in Neural
+ Information Processing Systems, 33:19943–19952, 2020.
+
+Jiafan He, Dongruo Zhou, Tong Zhang, and Quanquan Gu. Nearly optimal algorithms for lin-
+   ear contextual bandits with adversarial corruptions. Advances in neural information processing
+   systems, 35:34614–34625, 2022.
+
+Yu-Guan Hsieh, Franck Iutzeler, Jérôme Malick, and Panayotis Mertikopoulos. Multi-agent on-
+  line optimization with delays: Asynchronicity, adaptivity, and optimism. Journal of Machine
+  Learning Research, 23(78):1–49, 2022.
+
+Shinji Ito. On optimal robustness to adversarial corruption in online decision problems. Advances
+  in Neural Information Processing Systems, 34:7409–7420, 2021.
+
+Shinji Ito, Daisuke Hatano, Hanna Sumita, Kei Takemura, Takuro Fukunaga, Naonori Kakimura,
+  and Ken-Ichi Kawarabayashi. Delay and cooperation in nonstochastic linear bandits. Advances
+  in Neural Information Processing Systems, 33:4872–4883, 2020.
+
+Tiancheng Jin, Tal Lancewicki, Haipeng Luo, Yishay Mansour, and Aviv Rosenberg. Near-optimal
+  regret for adversarial mdp with delayed bandit feedback. Advances in Neural Information Pro-
+  cessing Systems, 35:33469–33481, 2022.
+
+Pooria Joulani, Andras Gyorgy, and Csaba Szepesvári. Online learning under delayed feedback. In
+  International conference on machine learning, pages 1453–1461. PMLR, 2013.
+
+Pooria Joulani, Andras Gyorgy, and Csaba Szepesvári. Delay-tolerant online convex optimization:
+  Unified analysis and adaptive-gradient algorithms. In Proceedings of the AAAI Conference on
+  Artificial Intelligence, volume 30, 2016.
+
+Tal Lancewicki, Shahar Segal, Tomer Koren, and Yishay Mansour. Stochastic multi-armed bandits
+  with unrestricted delay distributions. In International Conference on Machine Learning, pages
+  5969–5978. PMLR, 2021.
+
+Tal Lancewicki, Aviv Rosenberg, and Yishay Mansour. Learning adversarial markov decision pro-
+  cesses with delayed feedback. In Proceedings of the AAAI Conference on Artificial Intelligence,
+  volume 36, pages 7281–7289, 2022.
+
+Yandi Li and Jianxiong Guo. A modified exp3 in adversarial bandits with multi-user delayed feed-
+  back. In International Computing and Combinatorics Conference, pages 263–278. Springer,
+  2023.
+
+Thodoris Lykouris, Vahab Mirrokni, and Renato Paes Leme. Stochastic bandits robust to adver-
+  sarial corruptions. In Proceedings of the 50th Annual ACM SIGACT Symposium on Theory of
+  Computing, pages 114–122, 2018.
+
+Saeed Masoudian, Julian Zimmert, and Yevgeny Seldin. A best-of-both-worlds algorithm for ban-
+  dits with delayed feedback. Advances in Neural Information Processing Systems, 35:11752–
+  11762, 2022.
+
+                                               13
+                                       BAR -O N M ANSOUR
+
+
+
+
+Saeed Masoudian, Julian Zimmert, and Yevgeny Seldin. An improved best-of-both-worlds algo-
+  rithm for bandits with delayed feedback. arXiv preprint arXiv:2308.10675, 2023.
+
+Till Neudecker and Hannes Hartenstein. Short paper: An empirical analysis of blockchain forks
+   in bitcoin. In Financial Cryptography and Data Security: 23rd International Conference, FC
+   2019, Frigate Bay, St. Kitts and Nevis, February 18–22, 2019, Revised Selected Papers 23, pages
+   84–92. Springer, 2019.
+
+Francesco Orabona. A modern introduction to online learning. arXiv preprint arXiv:1912.13213,
+  2019.
+
+Ciara Pike-Burke, Shipra Agrawal, Csaba Szepesvari, and Steffen Grunewalder. Bandits with de-
+  layed, aggregated anonymous feedback. In International Conference on Machine Learning, pages
+  4105–4113. PMLR, 2018.
+
+Alon Resler and Yishay Mansour. Adversarial online learning with noise. In International Confer-
+  ence on Machine Learning, pages 5429–5437. PMLR, 2019.
+
+Yifu Tang, Yingfei Wang, and Zeyu Zheng. Stochastic multi-armed bandits with strongly reward-
+  dependent delays. In International Conference on Artificial Intelligence and Statistics, pages
+  3043–3051. PMLR, 2024.
+
+Tobias Sommer Thune, Nicolò Cesa-Bianchi, and Yevgeny Seldin. Nonstochastic multiarmed ban-
+  dits with unrestricted delays. Advances in Neural Information Processing Systems, 32, 2019.
+
+Dirk Van Der Hoeven and Nicolo Cesa-Bianchi. Nonstochastic bandits and experts with arm-
+  dependent delays. In International Conference on Artificial Intelligence and Statistics. PMLR,
+  2022.
+
+Dirk van der Hoeven, Lukas Zierahn, Tal Lancewicki, Aviv Rosenberg, and Nicoló Cesa-Bianchi. A
+  unified analysis of nonstochastic delayed feedback for combinatorial semi-bandits, linear bandits,
+  and mdps. In The Thirty Sixth Annual Conference on Learning Theory, pages 1285–1321. PMLR,
+  2023.
+
+Claire Vernade, Alexandra Carpentier, Tor Lattimore, Giovanni Zappella, Beyza Ermis, and Michael
+  Brueckner. Linear bandits with stochastic delayed feedback. In International Conference on
+  Machine Learning, pages 9712–9721. PMLR, 2020.
+
+Siwei Wang, Haoyun Wang, and Longbo Huang. Adaptive algorithms for multi-armed bandit with
+  composite and anonymous feedback. In Proceedings of the AAAI Conference on Artificial Intel-
+  ligence, volume 35, pages 10210–10217, 2021.
+
+Marcelo J Weinberger and Erik Ordentlich. On delayed prediction of individual sequences. IEEE
+ Transactions on Information Theory, 48(7):1959–1976, 2002.
+
+Julian Zimmert and Yevgeny Seldin. An optimal algorithm for adversarial bandits with arbitrary
+  delays. In International Conference on Artificial Intelligence and Statistics, pages 3285–3294.
+  PMLR, 2020.
+
+
+                                                14
+                   N ON - STOCHASTIC BANDITS W ITH E VOLVING O BSERVATIONS
+
+
+
+
+Appendix A. Deferred proofs from Section 2
+Lemma 14 Computing p as in Eq. (1), we have for any action a ∈ [K]:
+
+                                  T
+                                  X                                   ln K  η
+                                        (p(Lt ) · ℓt − ℓt,a ) ≤            + T.
+                                                                        η   2
+                                  t=1
+
+
+Proof For any t, we have:
+
+                                    −ηLt+1,j                    −ηLt,j e−ηℓt,j
+                       P                            P
+                          j∈[K] e                        j∈[K] e
+                        P          −ηLt,j
+                                               =          P         −ηLt,j
+                            j∈[K] e                         j∈[K] e
+                                                    X
+                                               =             p(Lt,j )e−ηℓt,j
+                                                    j∈[K]
+                                                    X                                 η2 2
+                                               ≤             p(Lt,j )(1 − ηℓt,j +       ℓ )
+                                                                                      2 t,j
+                                                    j∈[K]
+
+                                                                               η2
+                                               ≤ 1 − η (p(Lt ) · ℓt ) +           ,
+                                                                               2
+                                                     2
+where we used the fact that e−x ≤ 1 − x + x2 for x ≥ 0.
+   For any a ∈ [K], we thus have:
+
+                                                       −ηLT,j
+                                               P
+                             e−ηLT,a            j∈[K] e
+                                     ≤
+                               K                         K
+                                              T                    −ηLt+1,j
+                                                    P
+                                                         j∈[K] e
+                                              Y
+                                          =         P            −ηLt,j
+                                              t=1         j∈[K] e
+                                               T 
+                                                                            η2
+                                              Y                                
+                                          ≤          1 − η (p(Lt ) · ℓt ) +     .
+                                                                            2
+                                              t=1
+
+
+Taking logs of both sides and using the fact that ln (1 + x) ≤ x, we get the desired result.
+
+
+
+Lemma 15 Let ℓ ∈ [0, 1]K be some loss vector, and L1 , L2 two different estimations of the total
+loss. If the probability p is computed as described in Eq. (1), we get:
+
+                               (p(L1 ) − p(L2 )) · ℓ ≤ 2η ∥L1 − L2 ∥∞ .
+
+Proof We start by noting that:
+                                                                                                       
+                                  X                                           X                pi (L2 )
+        (p(L1 ) − p(L2 )) · ℓ =           (pi (L1 ) − pi (L2 )) ℓi =              pi (L1 ) 1 −            ℓi .   (7)
+                                                                                               pi (L1 )
+                                  i∈[K]                                   i∈[K]
+
+
+
+                                                           15
+                                          BAR -O N M ANSOUR
+
+
+
+
+To bound this term, we will use the fact that:
+
+                                                       −ηL1j
+                                            P
+                         pi (L2 )   e−ηL2i j∈[K] e
+                                  = −ηL1i P            −ηL2j
+                         pi (L1 )   e          j∈[K] e
+                                                           −ηL2j −η(L1j −L2j )
+                                                  P
+                                                   j∈[K] e
+                                  = eη(L1i −L2i )      P         −ηL2j
+                                                         j∈[K] e
+
+                                   ≥ eη(L1i −L2i )−η maxj (L1j −L2j )
+                                   ≥ eη(minj (L1j −L2j )−maxj (L1j −L2j ))
+                                   ≥ e−2η∥L1 −L2 ∥∞
+                                   ≥ 1 − 2η ∥L1 − L2 ∥∞ .
+
+Substituting in Eq. (7), we get:
+
+                       (p(L1 ) − p(L2 )) · ℓ
+                                                   X
+                                               ≤           2pi (L1 )η ∥L1 − L2 ∥∞ ℓi
+                                                   i∈[K]
+                                                                       X
+                                               = 2η ∥L1 − L2 ∥∞                pi (L1 )ℓi
+                                                                       i∈[K]
+
+                                               ≤ 2η ∥L1 − L2 ∥∞ ,
+
+as required.
+
+
+
+
+Appendix B. Deferred proofs from Section 3
+
+B.1. Cheating regret bound
+
+Lemma 16 Computing p as in Eq. (3), for any fixed probability q ∈ ∆K−1 and regularization
+function Φ:
+                        T
+                        X                       T
+                                                      X
+                                b ∗ · ℓ̂t + Φ p L
+                              p L               b∗  ≤   q · ℓ̂t + Φ (q) .
+                                  t               1
+                        t=1                                      t=1
+
+
+
+Proof We use a standard be-the-leader analysis and prove using induction on T . The base case
+T = 1 follows directly from Eq. (3), so we assume for any q ∈ ∆K−1 :
+
+                       T
+                       X −1                   TX−1
+                                b ∗ · ℓ̂t + Φ p L
+                              p L               b∗  ≤    q · ℓ̂t + Φ (q) .
+                                  t               1
+                        t=1                                      t=1
+
+
+                                                     16
+                     N ON - STOCHASTIC BANDITS W ITH E VOLVING O BSERVATIONS
+
+
+
+                                      
+                                      b ∗ . Hence:
+    Specifically, we can assign q = p L T
+
+
+          T
+          X                      TX −1                       
+                                   b ∗1
+                  b ∗t · ℓ̂t + Φ p L
+                p L                     =   p L                          b ∗T · ℓ̂t
+                                                                b ∗1 + p L
+                                               b ∗t · ℓ̂t + Φ p L
+          t=1                                   t=1
+                                                T
+                                                X −1                        
+                                            ≤                             b ∗T
+                                                         b ∗T · ℓ̂t + Φ p L
+                                                       p L                        b ∗T · ℓ̂t
+                                                                               +p L
+                                                t=1
+                                                               
+                                               b ∗T · L
+                                            =p L      b ∗T + Φ p L  b ∗T
+                                                                    
+                                            = min q · L   b ∗ + Φ (q)
+                                                            T
+                                                q∈∆K−1
+
+
+as required, where the last equality is from Eq. (3).
+
+
+
+
+Lemma 17 Computing p as in Eq. (3) and using regularization Φη,γ as in Eq. (4) for some η, γ >
+0, we get:
+                    " T                      #
+                             b · ℓ̂t − ℓ̂t,a∗ ≤ 1 + K ln T + ln K .
+                      X  
+                               ∗
+                  E       p L  t
+                                                         γ        η
+                            t=1
+
+
+
+Proof Denote by q ∗ the action probability that chooses a∗ with probability 1, and let
+
+                                                    
+                                                 1              1  b∗ 
+                                   q=       1−           q∗ +     p L1 .
+                                                 T              T
+
+We get:
+
+          T  
+          X                        XT            
+             p Lb ∗t · ℓ̂t − ℓ̂t,a∗ =    p Lb ∗t − q ∗ · ℓ̂t
+          t=1                           t=1
+                                        XT                   T
+                                                                 X
+                                                    ∗
+                                    =           p Lt − q · ℓ̂t +
+                                                  b                (q − q ∗ ) · ℓ̂t
+                                        t=1                           t=1
+                                         T                                T  
+                                                  b ∗t − q · ℓ̂t + 1
+                                        X                               X              
+                                    =           p L                           p Lb ∗1 − q ∗ · ℓ̂t
+                                                                   T
+                                        t=1                                t=1
+                                        XT            
+                                    ≤             b ∗ − q · ℓ̂t + 1
+                                                p L t
+                                        t=1
+                                                       
+                                                        b ∗ + 1,
+                                    ≤ Φη,γ (q) − Φη,γ p L 1
+
+
+
+                                                       17
+                                         BAR -O N M ANSOUR
+
+
+
+
+where we used Lemma 16 in the last step. Thus, using Eq. (4):
+                                                                                      
+ T                              X  qi                                p i
+                                                                              b∗
+                                                                              L
+X                        
+       b ∗t · ℓ̂t − ℓ̂t,a∗ ≤ 1 +                 1                X             1      1         
+                                                                                                 b ∗1
+    p L                                      −        ln qi −                      −  ln pi L
+                                          η      γ                           η         γ
+t=1                              i∈[K]                          i∈[K]
+                                                                      
+                                             p i
+                                                   b∗
+                                                   L                pi
+                                                                         b∗
+                                                                         L
+                                  1  X               1        X            1         1
+                            ≤1+           ln             +                     ln  
+                                 γ                qi                    η         pi L b∗
+                                    i∈[K]                    i∈[K]                      1
+                                                                                         
+                                                        p     L ∗                           b∗
+                                  1 X                     i
+                                                              b
+                                                                1                 X i Lp     1        1
+                            =1+           ln                           +                     ln  
+                                 γ            1 − T1 qi∗ + T1 pi L
+                                                       
+                                                                        b∗                 η     pi L  b∗
+                                    i∈[K]                                 1      i∈[K]                  1
+                                 K ln T      1    X         
+                                                              b ∗ ln 1  .
+                                                                  
+                            ≤1+            +           pi L     1
+                                     γ       η                         pi L b∗
+                                                 i∈[K]                     1
+
+Using Jensen’s inequality, we can complete the proof:
+                                                                 
+                  T                                       p i
+                                                                  b∗
+                                                                  L
+                  X
+                          ∗
+                                            K ln T  1   X         1
+                     p Lt · ℓ̂t − ℓ̂t,a ≤ 1 +
+                        b              ∗             + ln            
+                                                γ     η     p L   b∗
+                  t=1                                                  i∈[K]     i     1
+                                                        K ln T   ln K
+                                               =1+             +      .
+                                                          γ        η
+
+
+
+
+B.2. Drift bounds preliminaries
+We start with defining the dual norms on x ∈ RK induced by a strictly-convex twice-differentiable
+regularization function Φ and a point p ∈ RK :
+                       q                                         q
+                           T    2       −1                ∗
+             ∥x∥Φ,p ≜ x (∇ Φ (p)) x            and    ∥x∥Φ,p ≜ xT (∇2 Φ (p)) x,
+
+where ∇2 Φ denotes the Hessian matrix of Φ.
+   For Φη,γ as defined in Eq. (4) we get:
+                       v
+                                 ηγp2i 2
+                                                                           sX
+                                                                                       η + γpi 2
+                       uX
+          ∥x∥Φη,γ ,p = t                                   ∥x∥∗Φη,γ ,p =
+                       u
+                                       x    and                                               x .      (8)
+                               η + γpi i                                                ηγp2i i
+                           i∈[K]                                               i∈[K]
+
+
+   For clarity, we will also denote the Dikin ellipsoid of radius 12 as:
+                                                                      
+                                                                     1
+                             DΦ (p) ≜ x ∈ RK | ∥x − p∥∗Φ,p ≤             .
+                                                                     2
+
+   We will use the following facts (for proofs see Lemma 16, Lemma 1 and Lemma 9 in (van der
+Hoeven et al., 2023) respectively):
+
+                                                   18
+                        N ON - STOCHASTIC BANDITS W ITH E VOLVING O BSERVATIONS
+
+
+
+
+Fact 1 Let x, p, q ∈ RK . Using regularization Φη,γ as in Eq. (4) for some η, γ > 0, we get that if
+q ∈ DΦη,γ (p), then:
+                             1
+                               ∥x∥Φη,γ ,q ≤ ∥x∥Φη,γ ,p ≤ 2∥x∥Φη,γ ,q .
+                             2
+Fact 2 Let L, L′ ∈ RK               K
+                       + and q ∈ R . Computing p as in Eq. (3) and using regularization Φη,γ as
+in Eq. (4) for some η, γ > 0, we get that if p (L) , p (L′ ) ∈ DΦη,γ (q), then:
+                                                       ∗
+                                   p(L′ ) − p(L) Φη,γ ,q ≤ 8 L′ − L Φη,γ ,q .
+
+Fact 3 Let L, L′ ∈ RK + . Computing p as in Eq. (3) and using regularization Φη,γ as in Eq. (4) for
+some η, γ > 0, we get that if ∥L′ − L∥Φη,γ ,p(L) ≤ 16
+                                                   1
+                                                      , then:
+
+                                     p L′ ∈ DΦη,γ (p (L)) .
+                                           
+
+
+B.3. Drift bounds
+Lemma 18 Computing p as in Eq. (3) and using regularization Φη,γ as in Eq. (4) for some
+η, γ > 0 such that √1γ ≥ 32dmax , we have for all 0 ≤ d ≤ dmax :
+                                                     
+                                  p Lbe     ∈ D          be .
+                                                 Φη,γ p Lt
+                                      t+d
+
+Proof We will prove by induction on d. The base case d = 0 is trivially true. We will thus assume
+the claim is true for any d′ < d. Using Fact 3, we only need to show that:
+                                 t+d−1
+                                  X                                                         1
+                                             ℓ̂τ(t+d−1) − ℓ̂(t−1)
+                                                            τ                           ≤      .
+                                   τ =t
+                                                                                 be )
+                                                                         Φη,γ ,p(Lt         16
+
+From our assumption, we can use Fact 1 and get:
+           t+d−1
+            X                                                     t+d−1
+                                                                   X
+                      ℓ̂τ(t+d−1) − ℓ̂(t−1)
+                                     τ                       ≤2                ℓ̂(t+d−1)
+                                                                                 τ       − ℓ̂(t−1)
+                                                                                             τ                      .
+                                                      be )
+                                              Φη,γ ,p(L                                              Φη,γ ,p(L
+                                                                                                             be )
+                                                       t                                                      τ
+               τ =t                                                 τ =t
+
+Hence, from Eq. (8):
+                                                                                 (t−1) 2
+                                                                                      
+                                                       2 L    e     (t+d−1)
+                             2               X     ηγp i
+                                                            b τ   ℓ τ,i     −  ℓ τ,i       1 [i = aτ ]
+        ℓ̂τ(t+d−1) − ℓ̂(t−1)
+                       τ                  =                                           
+                             Φη,γ ,p(L
+                                     be )                    be              p2i L  b eτ
+                                            i∈[K] η + γpi Lτ
+                                      τ
+
+                                                   ηγ
+                                          ≤            
+                                            η + γpaτ L   be
+                                                                     τ
+
+                                               ≤ γ,
+and thus we get that
+                      t+d−1
+                       X                                                 √         √    1
+                              ℓ̂τ(t+d−1) − ℓ̂(t−1)
+                                             τ                       ≤ 2d γ ≤ 2dmax γ ≤
+                       τ =t
+                                                              be )
+                                                      Φη,γ ,p(Lt                        32
+
+as required.
+
+
+                                                             19
+                                                       BAR -O N M ANSOUR
+
+
+
+
+Lemma 19 Computing p as in Eq. (3) and using regularization Φη,γ as in Eq. (4) for some η, γ > 0
+such that √1γ ≥ 128 (1 + dmax ), we have for the drift terms in Eq. (6):
+                                                         T
+                                                              !
+                                                        X
+                                H1 , H3 ≤ 8η KT +           λt ,
+                                                                                     t=1
+                                                                    T
+                                                                    X
+                                                   H2 ≤ 24η               λt ,
+                                                                    t=1
+                                                   H4 ≤ 8ηKT.
+Proof
+H1 , H3 .   We will prove the bound for H3 , and the proof for H1 is identical. First, note that:
+                                   t−1 
+                                   X                                                             
+                     be =
+                et − L
+                L                           1 − λ(t−1)       ℓ̂τ − ℓ̂(t−1)   + λ(t−1)   ℓτ − ℓ̂(t−1)    .
+                      t                          τ                   τ          τ              τ
+                                   τ =1
+                                                                                                         (t−1)           (t−1)
+Denote t′ = max {1, t − dmax }. For any τ < t′ we have that ℓ̂τ = ℓ̂τ                                            and λτ            = 0, and thus:
+                                    t−1
+                                    X                                                    t−1
+                                                                                         X
+         b et
+    et − L
+    L                          ≤            ℓ̂τ − ℓ̂(t−1)
+                                                    τ                            +               ℓτ − ℓ̂(t−1)
+                                                                                                        τ
+                        be )
+                Φη,γ ,p(L                                               be )
+                                                                Φη,γ ,p(L                                                    be )
+                                                                                                                     Φη,γ ,p(L
+                         t                                                t                                                   t
+                                    τ =t′                                                τ =t′
+                                    t−1
+                                    X                                 t−1
+                                                                      X                                          t−1
+                                                                                                                 X
+                               ≤            ℓ̂τ                   +           ∥ℓτ ∥Φη,γ ,p(Lbe ) + 2                     ℓ̂(t−1)
+                                                                                                                           τ                      .
+                                                          be )
+                                                  Φη,γ ,p(L                                         t                                      be )
+                                                                                                                                   Φη,γ ,p(L
+                                                           t                                                                                t
+                                    τ =t′                             τ =t′                                      τ =t′
+                                                               
+                                                               b eτ :
+Using Fact 1 and Lemma 18 we can move to the norm induced by p L
+
+                     be
+                et − L
+                L      t               be )
+                               Φη,γ ,p(Lt
+                     t−1
+                     X                                 t−1
+                                                       X                                         t−1
+                                                                                                 X
+                ≤2           ℓ̂τ                   +           ∥ℓτ ∥Φη,γ ,p(Lbe ) + 4                    ℓ̂(t−1)
+                                                                                                           τ                        .
+                                    Φη,γ ,p(L
+                                            be )
+                                             τ
+                                                                                     t                               Φη,γ ,p(L
+                                                                                                                             be )
+                                                                                                                              τ
+                     τ =t′                             τ =t′                                     τ =t′
+
+We can now use Eq. (8) to see that
+                                                                    
+                                                             ηγp 2 L  be
+                                       2                         i     τ  ℓ2 1 [i = a ]
+                                                                       τ  τ
+                                                           X
+                                   ℓ̂τ              =
+                                       Φη,γ ,p(L
+                                               be )                    be   p2i L b eτ
+                                                      i∈[K] η + γpi Lτ
+                                                τ
+
+                                                             ηγ
+                                                    ≤            
+                                                      η + γpaτ L   be
+                                                                                 τ
+
+                                                       ≤ γ,
+                                    (t−1) 2
+and the same is true for ℓ̂τ                               . Also:
+                                            Φη,γ ,p(L
+                                                    be )
+                                                     τ
+                                                    
+                                              ηγp2i L
+                                                  X b et         X         
+                          2
+                     ∥ℓτ ∥Φ ,p(Lbe ) =                ℓ2τ,i ≤       γp2i L
+                                                                           be ≤ γ
+                                                                            t
+                            η,γ  t                       e
+                                       i∈[K] η + γpi Lt
+                                                     b          i∈[K]
+
+
+                                                                    20
+                         N ON - STOCHASTIC BANDITS W ITH E VOLVING O BSERVATIONS
+
+
+
+
+as well. Hence:
+                                                be                                  √   1
+                                           et − L
+                                           L     t                           ≤ 7dmax γ ≤ .
+                                                                  be )
+                                                          Φη,γ ,p(Lt                    16
+Similarly:
+                                                                     t−1
+                                                                     X
+                                      b et
+                                 bt − L
+                                 L                               ≤            ℓ̂τ − ℓ̂(t−1)
+                                                                                      τ
+                                                          be )
+                                                  Φη,γ ,p(L                                                be )
+                                                                                                   Φη,γ ,p(L
+                                                           t                                                t
+                                                                     τ =1
+                                                                     t−1
+                                                                     X
+                                                                 =             ℓ̂τ − ℓ̂(t−1)
+                                                                                       τ                   be )
+                                                                                                   Φη,γ ,p(Lt
+                                                                     τ =t′
+                                                                       Xt−1
+                                                                 ≤2             ℓ̂τ − ℓ̂(t−1)
+                                                                                        τ
+                                                                                                       Φη,γ ,p(L
+                                                                                                               be )
+                                                                                                                τ
+                                                                       τ =t′
+                                                                        √
+                                                                 ≤ 2dmax γ
+                                                                    1
+                                                                 ≤ .
+                                                                   16
+   Thus, we can use Hölder’s inequality to get:
+                                 
+                      p L et − p L  b t · ℓt
+                                      ∗
+                     ≤ p L   et − p L   bt                                         ∥ℓt ∥Φη,γ ,p(Lbe )
+                                                                           be )
+                                                                   Φη,γ ,p(L                             t
+                                                                            t
+
+                                ≤8 L
+                                   et − L
+                                        bt                             ∥ℓt ∥Φη,γ ,p(Lbe )
+                                                               be )
+                                                       Φη,γ ,p(L                           t
+                                                                t
+                                         t−1
+                                         X                        
+                                ≤8               λ(t−1)
+                                                  τ       ℓτ − ℓ̂τ                             ∥ℓt ∥Φη,γ ,p(Lbe )
+                                                                                                                     t
+                                         τ =1                                        be )
+                                                                             Φη,γ ,p(Lt
+                                         t−1
+                                         X                          
+                                =8               λ(t−1)
+                                                  τ       ℓ τ − ℓ̂ τ                           ∥ℓt ∥Φη,γ ,p(Lbe ) ,
+                                                                                                                     t
+                                         τ =t′                                       be )
+                                                                             Φη,γ ,p(Lt
+
+                                                                                                                     (t−1)
+where the second inequality is due to Facth2 and last inequality
+                                                                  is since λτ
+                                                                   i          = 0 for any τ < t′ .
+   Since our estimators are unbiased, E ℓτ − ℓ̂τ ℓτ ′ − ℓ̂τ ′ = 0 for any τ ̸= τ ′ , and thus
+                                                         
+        t−1
+        X                               2                       t−1 
+                                                                  X                   2       
+                                                                                                                     2
+                                                                                                                                         
+  E            λ(t−1)
+                 τ           ℓτ − ℓ̂τ                     =                 λ(t−1)
+                                                                              τ            E       ℓτ − ℓ̂τ
+                                                                                                                             be )
+                                                                                                                     Φη,γ ,p(L t
+        τ =t′                                      be )
+                                           Φη,γ ,p(Lt
+                                                                  τ =t′
+                                                                  t−1                2                                                                       
+                                                                  X                                          2
+                                                              =              λ(t−1)
+                                                                              τ            E       ℓ̂τ                       − ∥ℓτ ∥2Φ                (Lbet )
+                                                                                                                     be )
+                                                                                                             Φη,γ ,p(L                       η,γ ,p
+                                                                                                                      t
+                                                                  τ =t′
+                                                                  t−1                                                      
+                                                                  X                   2                     2
+                                                              ≤              λ(t−1)
+                                                                              τ            E       ℓ̂τ
+                                                                                                                     be )
+                                                                                                             Φη,γ ,p(Lt
+                                                                  τ =t′
+                                                                     t−1               2                                      
+                                                                    X                                            2
+                                                              ≤2               λ(t−1)
+                                                                                τ              E       ℓ̂τ                           ,
+                                                                                                                 Φη,γ ,p(L
+                                                                                                                         be )
+                                                                                                                          τ
+                                                                     τ =t′
+
+
+                                                                       21
+                                                     BAR -O N M ANSOUR
+
+
+
+                                                                                     
+                                                                                     b eτ .
+where in the last step we used Fact 3 and Lemma 18 to move to the norms induced by p L
+    Using Eq. (8):
+
+                                                                                    
+                                                          ηγp 2 L   e      2
+                                                                         ℓ 1 [i = aτ ]
+                                              
+                                  2
+                                                                 b
+                                                              i     τ
+                                                                   τ,i   
+                                                             X
+                      E       ℓ̂τ              = E
+                                  Φη,γ ,p(Lτ )
+                                            e
+                                                                    be       p2i L
+                                                                                 be
+                                                   i∈[K] η + γpi Lτ
+                                          b
+                                                                                  τ
+                                                                            
+                                                    X ηγpi L     b eτ
+                                               =E                     ℓ2τ,i 
+                                                   i∈[K] η + γpi Lτ
+                                                                    be
+
+                                                   ≤ ηK.                                                          (9)
+
+
+Combining the last equations and using Jensen’s inequality, we thus have:
+
+                                                       v
+        t−1                                              u    t−1 
+        X                                              u    X      (t−1) 2
+                                                                             p       √
+  E            λ(t−1)
+                 τ     ℓτ − ℓ̂τ                       ≤ t2ηK       λτ       ≤ 2ηKλt ≤ η(K + λt ).
+        τ =t′                                 be )
+                                      Φη,γ ,p(Lt
+                                                                   τ =1
+
+
+
+
+Using Eq. (8) again, we have for any τ, t:
+
+                                                    
+                                                    b et
+                                              ηγp2i L
+                                               X                 X        
+                          2
+                     ∥ℓτ ∥Φ ,p(Lbe ) =                ℓ2τ,i ≤           b e = η,
+                                                                      ηpi L t
+                            η,γ  t                       e
+                                       i∈[K] η + γpi Lt
+                                                     b          i∈[K]
+
+
+
+so in total, we get
+
+
+                               T                                   T
+                                                                                                       !
+                               X       h       i             X
+                      H3 =            E p Lt − p Lt · ℓt ≤ 8η KT +
+                                           e     b                   λt
+                               t=1                                                            t=1
+
+
+
+as desired.
+
+
+H2 . For H2 , observe that the same as before, we have:
+
+
+                         be
+                    et − L                         1                      e et − L
+                                                                                 b et                      1
+                    L      t                   ≤             and          L                            ≤      .
+                                        be )
+                                Φη,γ ,p(Lt         16                                           be )
+                                                                                        Φη,γ ,p(Lt         16
+
+
+                                                              22
+                            N ON - STOCHASTIC BANDITS W ITH E VOLVING O BSERVATIONS
+
+
+
+
+And thus we can use Hölder’s inequality as before:
+            
+      e et − p L
+    p L        e t · ℓt
+
+      ee − L
+   ≤8 L    et                              ∥ℓt ∥Φη,γ ,p(Lbe )
+       t                            be )
+                            Φη,γ ,p(Lt
+                                                          t
+
+               t−1                                                                       t−1
+     √ X                                                                        √ X (t−1) (t−1)
+   ≤8 η   1 − λ(t−1)
+               τ       ℓ̂(t−1)
+                         τ     − ℓ̂τ                                            +8 η λτ     ℓτ    − ℓτ
+                                                                         be )
+                                                                 Φη,γ ,p(L                                                            be )
+                                                                                                                              Φη,γ ,p(L
+                                                                          t                                                            t
+               τ =1                                                                      τ =1
+               t−1 
+     √         X                      
+   ≤8 η                 1 − λ(t−1)
+                             τ               ℓ̂(t−1)
+                                               τ     − ℓ̂τ                      + 8ηλt
+                                                                         be )
+                                                                 Φη,γ ,p(Lt
+               τ =1
+               t−1 
+     √         X                      
+   =8 η                 1 − λ(t−1)
+                             τ               ℓ̂(t−1)
+                                               τ     − ℓ̂τ                      + 8ηλt
+                                                                         be )
+                                                                 Φη,γ ,p(Lt
+               τ =t′
+                 t−1
+       √ X            
+   ≤ 16 η   1 − λ(t−1)
+                 τ       ℓ̂(t−1)
+                           τ     − ℓ̂τ                                           + 8ηλt
+                                                                  Φη,γ ,p(L
+                                                                          be )
+                                                                           τ
+                τ =t′
+
+
+where again we denote t′ = max {1, t − dmax }. The second inequality is due to Fact 2 and
+∥ℓt ∥2Φ ,p(Lbe ) ≤ η, and the last inequality is due to Fact 3 and Lemma 18 to move to the norms
+       η,γ   t     
+induced by p L   be .
+                  τ
+   Using Eq. (8):
+                                                          
+                                                                                 2              
+                                                                     (t−1)
+           
+                                  2
+                                                    ηγp2i L
+                                                        X
+                                                           be
+                                                            τ      ℓ τ,i   −  ℓ τ,i     1 [i = aτ ]
+               ℓ̂(t−1) − ℓ̂τ                         = E
+                                                                                                    
+       E         τ                                                                              
+                             Φη,γ ,p(Lτ )
+                                       e
+                                                            be              p2i L  be
+                                              i∈[K] η + γpi Lτ
+                                     b
+                                                                                     τ
+                                                                                     
+                                               X ηγpi L    be                         2
+                                                            τ                      
+                                          = E               ℓ(t−1)τ,i   − ℓτ,i 
+                                                            be
+                                              i∈[K] η + γpi Lτ
+                                             X  (t−1)         2
+                                          ≤η       ℓτ,i − ℓτ,i
+                                                         i∈[K]
+                                                                                2
+                                                     = η ℓ(t−1)
+                                                          τ     − ℓτ                ,
+                                                                                2
+
+and so by Jensen’s inequality:
+
+                                                                                                             (t−1)
+                                                                     √                              √        λτ
+                   E        ℓ̂(t−1)
+                              τ     − ℓ̂τ                        ≤       η ℓ(t−1)
+                                                                            τ     − ℓτ          =       η         (t−1)
+                                                                                                                          .
+                                                      be )
+                                              Φη,γ ,p(L                                     2
+                                                       τ                                                    1 − λτ
+
+Overall we get
+                                           T
+                                           X         h        i          T
+                                                                               X
+                                H2 =             E       ee − p L
+                                                       p L      e t · ℓt ≤ 24η   λt .
+                                                          t
+                                           t=1                                                      t=1
+
+
+                                                                      23
+                                               BAR -O N M ANSOUR
+
+
+
+
+H4 .   Note that:
+
+       b∗ − L
+            be                                                be                                 √    1
+       L t   t                  ≤ ℓ̂t                    bt − L
+                                                       + L      t                  ≤ (1 + 2dmax ) γ ≤ ,
+                         be )
+                 Φη,γ ,p(Lt
+                                                be )
+                                        Φη,γ ,p(Lt
+                                                                            be )
+                                                                    Φη,γ ,p(Lt                       16
+
+Ss we can again use Fact 2:
+              h       i                                                   
+                          ∗                     ∗
+             E p Lt − p Lt
+                  b     b   · ℓ̂t ≤ 8E Lt − Lt
+                                        b    b                  ℓ̂t
+                                                           be )
+                                                   Φη,γ ,p(L                be )
+                                                                    Φη,γ ,p(L
+                                                            t                t
+                                                       
+                                           2
+                                  = 8E ℓ̂t
+                                                   be )
+                                           Φη,γ ,p(Lt
+
+                                  ≤ 8ηK
+
+where the last step is due to Eq. (9). We can now complete the proof with:
+                                   T
+                                   X  h        i
+                            H4 =     E p L       b ∗t
+                                          bt − p L    · ℓ̂t ≤ 8ηKT.
+                                    t=1
+
+
+
+
+B.4. Skipping bound
+Lemma 20 Denote the regret of some algorithm
+                                             A compared to a loss sequence ℓ1 , . . . , ℓT with
+                       A
+maximal delay dmax as Rdmax {ℓt }1≤t≤T . When using Algorithm 3 with A, the expected regret
+holds:
+                              n          o         T
+                                  (t+d  )                       (t+d  )
+                                                    X
+               R(T ) ≤ RdAmax    ℓt max          +2       ℓt − ℓt max     .
+                                                        1≤t≤T                               ∞
+                                                                      t=1
+
+Proof We have:
+                       " T                 #
+                        X
+   R(T ) = max E        ℓt,at − ℓt,a
+             a∈[K]
+                    t=1
+                   " T                                                                           #
+                    X  (t+d )          (t+dmax )
+                                                   
+                                                               (t+dmax )
+                                                                           
+                                                                              (t+dmax )
+                                                                                               
+                                max
+          = max E         ℓt,at      − ℓt,a        + ℓt,at − ℓt,at         + ℓt,a       − ℓt,a
+            a∈[K]
+                    t=1
+                   " T                         #     T
+                    X (t+d )          (t+d   )
+                                                    X          (t+d     )
+          ≤ max E       ℓt,at max − ℓt,a max +           ℓt − ℓt max
+            a∈[K]                                                          ∞
+                    t=1                             t=1
+                  n            o             T
+                      (t+dmax )                           (t+d   )
+                                              X
+              A
+          = Rdmax    ℓt                   +2        ℓt − ℓt max       ,
+                                 1≤t≤T                              ∞
+                                              t=1
+
+where           o is since algorithm A cannot distinguish between being wrapped in Algorithm 3
+   n the last step
+      (t+dmax )
+and ℓt                 being the true losses with maximal delay dmax .
+                    1≤t≤T
+
+
+
+
+                                                          24
+

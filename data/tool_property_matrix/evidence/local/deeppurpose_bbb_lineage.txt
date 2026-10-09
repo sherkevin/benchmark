@@ -1,0 +1,30 @@
+# 出处：/Users/jingwu/work/benchmark/src/probe_headless/model_workers/deeppurpose_bbb_worker.py（返回体中的谱系字段，行号约 443）
+ersed_auc >= 0.5:
+        raise RuntimeError("DeepPurpose output direction disagrees with BBBP p_np=1.")
+    return {
+        "method": "frozen official BBBP labels plus checkpoint probability ROC-AUC",
+        "dataset_path": str(dataset_path),
+        "dataset_sha256": BBBP_DATASET_SHA256,
+        "dataset_rows": len(source_rows),
+        "valid_rows": len(inputs),
+        "positive_rows": sum(labels),
+        "negative_rows": len(labels) - sum(labels),
+        "label_column": "p_np",
+        "positive_label_meaning": "BBB permeability present (Y=1)",
+        "dataset_lineage": "MoleculeNet BBBP from Martins et al. 2012",
+        "dataset_paper_doi": "10.1021/ci300124c",
+        "benchmark_paper_doi": "10.1039/C7SC02664A",
+        "positive_label_auc": positive_auc,
+        "reversed_label_auc": reversed_auc,
+        "acceptance_rule": "positive_label_auc > 0.5 and reversed_label_auc < 0.5",
+    }
+
+
+def parse_request(value):
+    if not isinstance(value, dict) or set(value) != {"invocation", "rows"}:
+        raise ValueError("Worker request must contain only invocation and rows.")
+    invocation = value["invocation"]
+    if not isinstance(invocation, dict) or set(invocation) != {"round", "nonce"}:
+        raise ValueError("Worker invocation challenge is malformed.")
+    if invocation["round"] not in {"qualification", "discovery", "replay1", "replay2"}:
+        raise ValueError

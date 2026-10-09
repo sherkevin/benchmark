@@ -1,0 +1,16 @@
+Create a clean, publication-quality flat vector lifecycle diagram for a top multi-agent systems paper. Use a 1000×1200 white portrait canvas, one vertical main lane, one consistent sans-serif font, flat fills, no shadows, and large labels that remain at least 8 pt equivalent at final single-column width. Use numbered stages and exact short labels.
+
+At the top, add a blue box: “1  decision t” with the subtitle “read released state S_t and eligible menu A_t; choose one provider”. Below it add a grey box: “2  selected call”. Below it add an amber box: “3  termination” with the subtitle “selected output + runtime status”. Branch from runtime status to a grey box “system failure”; chemical correctness must remain undefined for this branch.
+
+Below termination, add an amber box: “4  frozen endpoint judge” with the subtitle “after termination: chemical correctness”. Draw a clear horizontal boundary labelled “action at t completes before any state update”.
+
+Below the boundary, add a purple box: “5  pending queue” with the subtitle “selected outcome hidden until τ_t = t + 1 + D”. Add a side annotation for positive delay: “decisions t+1, …, τ_t−1 use the previous released state”. The annotation must not connect back to action t.
+
+Next add a blue box: “6  release at τ_t” with the subtitle “update released state S_{τ_t}”. Then add a final blue box: “7  first decision at or after τ_t” with the subtitle “reads the released state”. Do not label this box “decision t+1” unless the label is explicitly restricted to the D=0 case. Add a small note beside the release box: “D=0 ⇒ τ_t=t+1; still no same-action feedback”.
+
+Place a small crossed-out ghost outside the main lane labelled “unselected output — not observed”, with no arrow to the queue or updater. Use navy #2E5DA1 for state and decisions, light grey #B8C0CC for execution and old state, amber #D99000 for terminal record and frozen judge, muted purple #6B4C9A for pending/delay, and black text. Solid arrows mean completed transitions; dashed arrows mean waiting or control flow. Use line style and labels as redundant encodings so the figure remains readable in black and white.
+
+Do not draw instantaneous feedback, a circular loop, a second provider call, refusal, an arrow from correctness to decision t, an arrow from an unselected output, a system-wide pause while the queue is pending, a claim of safety, gradients, 3-D, drop shadows, decorative icons, fake metrics, or illegible equations.
+
+Negative prompt: avoid the misleading sequence “release phase → decision t+1” for positive D, avoid “only next decision reads it”, avoid same-tick update, avoid connecting runtime failure to chemical correctness, and avoid mixed typography or tiny auxiliary text.
+

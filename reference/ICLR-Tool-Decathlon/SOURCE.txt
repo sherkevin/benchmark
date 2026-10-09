@@ -1,0 +1,6 @@
+conference: ICLR 2026
+title: The Tool Decathlon: Benchmarking Language Agents for Diverse, Realistic, and Long-Horizon Task Execution
+arxiv_id: 2510.25726v2
+arxiv_abs: http://arxiv.org/abs/2510.25726v2
+pdf_url: https://arxiv.org/pdf/2510.25726v2
+matched_arxiv_title: The Tool Decathlon: Benchmarking Language Agents for Diverse, Realistic, and Long-Horizon Task Execution

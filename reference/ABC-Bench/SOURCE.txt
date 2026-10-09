@@ -1,0 +1,5 @@
+arXiv:2606.11150
+abs: https://arxiv.org/abs/2606.11150
+pdf: https://arxiv.org/pdf/2606.11150
+topic: 生物安全能力
+pulled: 2026-08-09 via arxiv MCP (arxiv_get_metadata / arxiv_read_paper)

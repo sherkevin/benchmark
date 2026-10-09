@@ -1,0 +1,26 @@
+Use case: infographic-diagram
+Asset type: Figure 1 method architecture for a top-conference machine-learning paper.
+
+Input images:
+- Image 1: Figure 1 v28, the edit target. Preserve its compact central-hub architecture, labels, palette, execution branch, and straight lower feedback chain.
+- Image 2: Figure 2 v26, style reference only. Match its flat white paper texture, compact cards, fine navy outlines, icon family, typography, and restrained palette. Do not copy its timeline.
+
+Single visual correction to the lower write edge:
+Keep the lower chain queue → Release → Update → released state from right to left. Keep Update immediately to the right of the blue released-state card and keep the write horizontal. Inside the highlighted bottom row of the released-state card, add one small solid-blue circular write port near the right side of the row, with no label. Extend the blue arrow from the LEFT edge of Update through the register border and visibly into the highlighted row, ending with its arrowhead on that interior write port. The arrowhead must be inside the blue row, clearly separated from the card border; do not stop at the border or in the white background. Do not add a second arrow or a second state store.
+
+Keep all other parts of v28 unchanged:
+- molecule and endpoint feed Features;
+- eligible-tools tray feeds Selector only;
+- Features → Frozen score and released state → residual → plus operator with q=q^0+Δ → score → Selector → selected tool;
+- Call → Terminal record → Frozen endpoint judge → Chemical feedback; runtime error ends only at Runtime ledger;
+- Chemical feedback drops to selected-only queue; queue→Release is one purple dashed leftward edge labeled τ_t=t+1+D; Release→Update is one solid blue leftward edge;
+- small captions input, relay, execution; no giant headings, brackets, provider names, A/B/C labels, or Figure 2 timeline.
+
+Style/medium:
+Flat-vector scientific infographic with top-conference polish and the same visual texture as Figure 2 v26. White background, dark navy text, compact rounded cards, fine outlines, consistent arrowheads and stroke width. Deep blue for method/state, gray for frozen/diagnostic, amber for terminal/chemical feedback, muted purple only for pending/release.
+
+Hard constraints:
+- Keep exactly two equations: q=q^0+Δ and τ_t=t+1+D.
+- Released state is the only persistent state store; residual is a readout; the write port is only a visual connector, not a module.
+- Every edge is short, direct, single-direction, attached to a node, and visibly ends inside its destination when it represents a write. No crossing, floating arrowheads, border-stopping Update edge, bypass, duplicated edge, gradient, 3-D, swimlane, grid background, crossed-out symbol, or decorative clutter.
+- Every label is at most two short lines. Do not add explanatory prose, metrics, or arbitrary symbols.

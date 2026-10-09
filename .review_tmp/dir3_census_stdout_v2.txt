@@ -1,0 +1,476 @@
+{
+ "meta": {
+  "generated_at": "2026-09-02T11:25:10",
+  "script": "/Users/jingwu/work/benchmark/.review_tmp/dir3_census_bbb_constraints_v2.py",
+  "ledger": "/Users/jingwu/work/benchmark/cases/_methodology/tool_conflict_census/bbb_authoritative_v2/screening_ledger.jsonl",
+  "rows_total": 730,
+  "rows_rdkit_parsed_ok": 730,
+  "rdkit_parse_failures": [],
+  "conflict_subset_rows": 400,
+  "truth_dist_730": {
+   "1": 522,
+   "0": 208
+  },
+  "truth_dist_400": {
+   "1": 265,
+   "0": 135
+  }
+ },
+ "computability": {
+  "C1_HH_logD_logP_pKa": {
+   "status": "NOT_COMPUTABLE",
+   "missing": [
+    "实测 pKa",
+    "实测 logD"
+   ],
+   "evidence": "bbb_martins.tsv 表头仅 Drug_ID/Drug/Y；ledger 每行仅 4 模型概率+标签+真值标签；全目录 grep pka|logd|melting|logS 无命中"
+  },
+  "C2_pH_solubility_monotonic": {
+   "status": "NOT_COMPUTABLE",
+   "missing": [
+    "任何 pH 下的实测溶解度"
+   ]
+  },
+  "C3_permanent_cation": {
+   "status": "COMPUTABLE",
+   "method": "形式电荷 N+（排硝基/N-oxide）+ 胍/脒强碱核心（原子遍历）"
+  },
+  "C4_GSE_logS": {
+   "status": "NOT_COMPUTABLE",
+   "missing": [
+    "熔点 MP",
+    "实测 logS"
+   ],
+   "note": "Crippen MolLogP 可算但属预测值，GSE 另需 MP 与实测 logS"
+  },
+  "C5_TPSA_HBD": {
+   "status": "COMPUTABLE",
+   "method": "rdMolDescriptors.CalcTPSA / CalcNumHBD"
+  },
+  "C6_InChIKey_segment": {
+   "status": "COMPUTABLE",
+   "method": "MolToInchiKey 分段（实为 14-10-1 三段）"
+  },
+  "C7_unit_identity": {
+   "status": "NOT_COMPUTABLE",
+   "missing": [
+    "带物理单位的数值列"
+   ],
+   "note": "输出为无量纲概率与二分类标签，无单位换算空间"
+  }
+ },
+ "inchikey_format_note": "标准 InChIKey = 14位骨架层 - 10位(立体/同位素/质子化)层 - 1位版本位；任务书写『后6位立体层』与真实格式不符，按真实 14-10-1 分段执行",
+ "constraint_stats": {
+  "C3_perm_cation_tierB": {
+   "fire_730": 24,
+   "fire_rate_730": 0.0329,
+   "fire_400": 13,
+   "fire_rate_400": 0.0325,
+   "truth_agree_730": {
+    "fire": 24,
+    "agree_with_truth0": 12,
+    "agree_rate": 0.5
+   },
+   "truth_agree_400": {
+    "fire": 13,
+    "agree_with_truth0": 7,
+    "agree_rate": 0.5385
+   },
+   "entity_ids_400": [
+    "z000282",
+    "z020719",
+    "z034511",
+    "z034566",
+    "z034635",
+    "z034729",
+    "z034867",
+    "z042947",
+    "z070823",
+    "z070837",
+    "z070856",
+    "z070889",
+    "z071041"
+   ]
+  },
+  "C3_perm_cation_tierA_only": {
+   "fire_730": 12,
+   "fire_rate_730": 0.0164,
+   "fire_400": 9,
+   "fire_rate_400": 0.0225,
+   "truth_agree_730": {
+    "fire": 12,
+    "agree_with_truth0": 8,
+    "agree_rate": 0.6667
+   },
+   "truth_agree_400": {
+    "fire": 9,
+    "agree_with_truth0": 5,
+    "agree_rate": 0.5556
+   },
+   "entity_ids_400": [
+    "z000282",
+    "z020719",
+    "z034511",
+    "z034635",
+    "z034729",
+    "z034867",
+    "z042947",
+    "z070837",
+    "z070856"
+   ]
+  },
+  "C5_tpsa_or_hbd": {
+   "fire_730": 63,
+   "fire_rate_730": 0.0863,
+   "fire_400": 35,
+   "fire_rate_400": 0.0875,
+   "truth_agree_730": {
+    "fire": 63,
+    "agree_with_truth0": 45,
+    "agree_rate": 0.7143
+   },
+   "truth_agree_400": {
+    "fire": 35,
+    "agree_with_truth0": 21,
+    "agree_rate": 0.6
+   },
+   "entity_ids_400": [
+    "z000846",
+    "z000884",
+    "z001496",
+    "z002905",
+    "z012388",
+    "z012510",
+    "z012515",
+    "z015348",
+    "z015371",
+    "z015389",
+    "z015433",
+    "z015815",
+    "z018260",
+    "z021775",
+    "z034462",
+    "z034505",
+    "z034511",
+    "z034544",
+    "z034547",
+    "z034561",
+    "z034566",
+    "z034573",
+    "z034595",
+    "z034667",
+    "z034806",
+    "z034824",
+    "z034850",
+    "z042947",
+    "z063965",
+    "z067929",
+    "z070795",
+    "z070862",
+    "z071003",
+    "z071015",
+    "z071317"
+   ]
+  },
+  "C5_tpsa_gt140": {
+   "fire_730": 63,
+   "fire_rate_730": 0.0863,
+   "fire_400": 35,
+   "fire_rate_400": 0.0875,
+   "truth_agree_730": {
+    "fire": 63,
+    "agree_with_truth0": 45,
+    "agree_rate": 0.7143
+   },
+   "truth_agree_400": {
+    "fire": 35,
+    "agree_with_truth0": 21,
+    "agree_rate": 0.6
+   },
+   "entity_ids_400": [
+    "z000846",
+    "z000884",
+    "z001496",
+    "z002905",
+    "z012388",
+    "z012510",
+    "z012515",
+    "z015348",
+    "z015371",
+    "z015389",
+    "z015433",
+    "z015815",
+    "z018260",
+    "z021775",
+    "z034462",
+    "z034505",
+    "z034511",
+    "z034544",
+    "z034547",
+    "z034561",
+    "z034566",
+    "z034573",
+    "z034595",
+    "z034667",
+    "z034806",
+    "z034824",
+    "z034850",
+    "z042947",
+    "z063965",
+    "z067929",
+    "z070795",
+    "z070862",
+    "z071003",
+    "z071015",
+    "z071317"
+   ]
+  },
+  "C5_hbd_gt6": {
+   "fire_730": 10,
+   "fire_rate_730": 0.0137,
+   "fire_400": 7,
+   "fire_rate_400": 0.0175,
+   "truth_agree_730": {
+    "fire": 10,
+    "agree_with_truth0": 9,
+    "agree_rate": 0.9
+   },
+   "truth_agree_400": {
+    "fire": 7,
+    "agree_with_truth0": 6,
+    "agree_rate": 0.8571
+   },
+   "entity_ids_400": [
+    "z002905",
+    "z012388",
+    "z015815",
+    "z034595",
+    "z063965",
+    "z070862",
+    "z071015"
+   ]
+  },
+  "C5_hbd_gt6_not_subsumed_by_tpsa": {
+   "count": 0,
+   "entity_ids": []
+  }
+ },
+ "strongbase_audit": {
+  "raw_core_hit_rows": 13,
+  "raw_ids": [
+   "z002966",
+   "z018452",
+   "z034496",
+   "z034549",
+   "z034560",
+   "z034566",
+   "z034693",
+   "z034807",
+   "z066711",
+   "z070783",
+   "z070823",
+   "z070889",
+   "z071041"
+  ],
+  "kept_after_deactivation_rows": 12,
+  "kept_ids": [
+   "z018452",
+   "z034496",
+   "z034549",
+   "z034560",
+   "z034566",
+   "z034693",
+   "z034807",
+   "z066711",
+   "z070783",
+   "z070823",
+   "z070889",
+   "z071041"
+  ],
+  "nitro_Noxide_excluded_atoms_total": 14
+ },
+ "buckets": {
+  "hard_C3_only_on_400": {
+   "decidable": 13,
+   "silent": 387,
+   "decidable_rate": 0.0325,
+   "acc": {
+    "rows_with_bbb_label_verdict": 13,
+    "agree": 7,
+    "agree_rate": 0.5385,
+    "rows_c6_only_no_label_verdict": 0
+   }
+  },
+  "hard_C3_plus_C6_on_400": {
+   "decidable": 21,
+   "silent": 379,
+   "decidable_rate": 0.0525,
+   "acc": {
+    "rows_with_bbb_label_verdict": 13,
+    "agree": 7,
+    "agree_rate": 0.5385,
+    "rows_c6_only_no_label_verdict": 8
+   },
+   "c6_entity_ids": [
+    "z000364",
+    "z002909",
+    "z015738",
+    "z015780",
+    "z020806",
+    "z021608",
+    "z034662",
+    "z034775"
+   ]
+  },
+  "hard_C3_C6_plus_soft_C5_on_400": {
+   "decidable": 53,
+   "silent": 347,
+   "decidable_rate": 0.1325,
+   "acc": {
+    "rows_with_bbb_label_verdict": 45,
+    "agree": 28,
+    "agree_rate": 0.6222,
+    "rows_c6_only_no_label_verdict": 8
+   }
+  },
+  "hard_C3_plus_C6_on_730": {
+   "decidable": 38,
+   "silent": 692,
+   "decidable_rate": 0.0521
+  }
+ },
+ "external_join_coverage_INFORMATIONAL": {
+  "measured_logD_lipophilicity_astrazeneca": {
+   "external_rows": 4102,
+   "join_hit_730": 176,
+   "join_hit_400": 104
+  },
+  "measured_logS_solubility_aqsoldb": {
+   "external_rows": 9669,
+   "join_hit_730": 289,
+   "join_hit_400": 163
+  }
+ },
+ "descriptor_distribution": {
+  "TPSA_bins": {
+   "<75": 467,
+   "75-140": 200,
+   ">140": 63
+  },
+  "HBD_bins": {
+   "1": 238,
+   "0": 179,
+   "2": 164,
+   "3": 76,
+   "4": 43,
+   "6": 5,
+   "5": 15,
+   "13": 1,
+   "8": 4,
+   "12": 1,
+   "10": 1,
+   "19": 1,
+   "11": 1,
+   "7": 1
+  },
+  "HBA_bins": {
+   "1": 49,
+   "6": 63,
+   "4": 120,
+   "7": 28,
+   "3": 153,
+   "2": 149,
+   "5": 85,
+   "10": 9,
+   "9": 11,
+   "0": 12,
+   "14": 6,
+   "17": 1,
+   "12": 12,
+   "8": 17,
+   "13": 4,
+   "15": 3,
+   "11": 4,
+   "16": 2,
+   "18": 1,
+   "25": 1
+  },
+  "RotB_bins": {
+   "2": 120,
+   "5": 64,
+   "4": 102,
+   "3": 105,
+   "7": 48,
+   "9": 21,
+   "12": 3,
+   "0": 61,
+   "1": 83,
+   "6": 67,
+   "8": 31,
+   "11": 7,
+   "10": 14,
+   "13": 2,
+   "17": 1,
+   "15": 1
+  },
+  "FormalCharge_dist": {
+   "1": 8,
+   "0": 722
+  },
+  "CrippenLogP_PREDICTED_bins": {
+   "<0": 78,
+   "2-4": 270,
+   ">=4": 123,
+   "0-2": 259
+  }
+ },
+ "data_sanity_check": {
+  "conflict_rows": 400,
+  "majority_label_rate_400": 0.6625,
+  "morgan_acc_400": 0.805,
+  "all_four_wrong_730": 12,
+  "all_four_wrong_400": 0,
+  "n_wrong_distribution_730": {
+   "0": 318,
+   "1": 262,
+   "2": 82,
+   "3": 56,
+   "4": 12
+  }
+ }
+}
+
+--- C6 groups ---
+GSDSWSVVBLHKDQ identical_full= False truth_contra= False | truths= [1, 1] | in400= [True, True] | ['z015738', 'z034775']
+HXHWSAZORRCQMX identical_full= True truth_contra= False | truths= [1, 1] | in400= [True, True] | ['z002909', 'z015780']
+IAKHMKGGTNLKSZ identical_full= False truth_contra= True | truths= [0, 1] | in400= [True, True] | ['z000364', 'z021608']
+JAQUASYNZVUNQP identical_full= False truth_contra= False | truths= [1, 1] | in400= [True, True] | ['z020806', 'z034662']
+KWTSXDURSIMDCE identical_full= False truth_contra= False | truths= [1, 1] | in400= [False, False] | ['z002162', 'z020714']
+ODQWQRRAPPTVAG identical_full= False truth_contra= False | truths= [1, 1] | in400= [False, False] | ['z034777', 'z070883']
+UCTWMZQNUQWSLP identical_full= False truth_contra= False | truths= [0, 0] | in400= [False, False] | ['z002936', 'z063416']
+
+--- C3 detail rows ---
+z000282 truth= 1 conflict= True tierA= ['aliphatic_N_plus(季铵/铵盐类)'] sb_kept= [] sb_dropped= [] | C[N+](C)(C)CCO
+z015848 truth= 0 conflict= False tierA= ['aliphatic_N_plus(季铵/铵盐类)'] sb_kept= [] sb_dropped= [] | Cc1cn([C@H]2C[C@H](N=[N+]=[N-])[C@@H](CO)O2)c(=O)[nH]c1=O
+z018452 truth= 0 conflict= False tierA= [] sb_kept= [{'C': 15, 'core': 'guanidine(胍基)', 'N': [14, 16, 17], 'basic_N': [14, 16, 17]}, {'C': 22, 'core': 'guanidine(胍基)', 'N': [21, 23, 24], 'basic_N': [21, 23, 24]}] sb_dropped= [{'C': 15, 'core': 'guanidine(胍基)', 'N': [14, 16, 17]}, {'C': 22, 'core': 'guanidine(胍基)', 'N': [21, 23, 24]}] | CN[C@@H]1[C@H](O[C@H]2[C@H](O[C@H]3[C@H](O)[C@@H](O)[C@H](N=
+z020719 truth= 1 conflict= True tierA= ['aromatic_N_plus(吡啶鎓类)'] sb_kept= [] sb_dropped= [] | CN(C)C(=O)Oc1ccc[n+](C)c1
+z034476 truth= 0 conflict= False tierA= ['aliphatic_N_plus(季铵/铵盐类)'] sb_kept= [] sb_dropped= [] | C[C@H]1[C@H](NC(=O)/C(=N\OC(C)(C)C(=O)O)c2csc([NH3+])n2)C(=O
+z034496 truth= 1 conflict= False tierA= [] sb_kept= [{'C': 5, 'core': 'amidine(脒基)', 'N': [4, 6], 'basic_N': [4]}] sb_dropped= [{'C': 5, 'core': 'amidine(脒基)', 'N': [4, 6]}] | CN1CCN(C2=Nc3ccccc3Oc3ccc(Cl)cc32)CC1
+z034511 truth= 1 conflict= True tierA= ['aromatic_N_plus(吡啶鎓类)'] sb_kept= [] sb_dropped= [] | CC(C)(O/N=C(\C(=O)N[C@@H]1C(=O)N2C(C(=O)[O-])=C(C[n+]3ccccc3
+z034549 truth= 1 conflict= False tierA= [] sb_kept= [{'C': 7, 'core': 'amidine(脒基)', 'N': [8, 14], 'basic_N': [8]}] sb_dropped= [{'C': 7, 'core': 'amidine(脒基)', 'N': [8, 14]}] | Clc1ccc2c(c1)C(N1CCNCC1)=Nc1ccccc1O2
+z034560 truth= 1 conflict= False tierA= [] sb_kept= [{'C': 9, 'core': 'guanidine(胍基)', 'N': [8, 10, 13], 'basic_N': [10, 13]}] sb_dropped= [{'C': 9, 'core': 'guanidine(胍基)', 'N': [8, 10, 13]}] | Clc1cccc(Cl)c1NC1=NCCN1
+z034566 truth= 1 conflict= True tierA= [] sb_kept= [{'C': 1, 'core': 'guanidine(胍基)', 'N': [0, 2, 3], 'basic_N': [0, 2]}] sb_dropped= [{'C': 1, 'core': 'guanidine(胍基)', 'N': [0, 2, 3]}] | NC(N)=NC(=O)c1nc(Cl)c(N)nc1N
+z034635 truth= 0 conflict= True tierA= ['aliphatic_N_plus(季铵/铵盐类)'] sb_kept= [] sb_dropped= [] | CC(C)[N+](C)(CCOC(=O)C1c2ccccc2Oc2ccccc21)C(C)C
+z034693 truth= 1 conflict= False tierA= [] sb_kept= [{'C': 1, 'core': 'guanidine(胍基)', 'N': [0, 2, 3], 'basic_N': [0, 2]}, {'C': 11, 'core': 'amidine(脒基)', 'N': [12, 13], 'basic_N': [12]}] sb_dropped= [{'C': 1, 'core': 'guanidine(胍基)', 'N': [0, 2, 3]}, {'C': 11, 'core': 'amidine(脒基)', 'N': [12, 13]}] | NC(N)=Nc1nc(CSCCC(N)=NS(N)(=O)=O)cs1
+z034729 truth= 0 conflict= True tierA= ['aliphatic_N_plus(季铵/铵盐类)'] sb_kept= [] sb_dropped= [] | CC(C[N+](C)(C)C)OC(N)=O
+z034807 truth= 1 conflict= False tierA= [] sb_kept= [{'C': 10, 'core': 'amidine(脒基)', 'N': [9, 11], 'basic_N': [9]}] sb_dropped= [{'C': 10, 'core': 'amidine(脒基)', 'N': [9, 11]}] | OCCOCCN1CCN(C2=Nc3ccccc3Sc3ccccc32)CC1
+z034867 truth= 0 conflict= True tierA= ['aliphatic_N_plus(季铵/铵盐类)'] sb_kept= [] sb_dropped= [] | C[N+]1(C)CCCC(OC(=O)C(O)(c2ccccc2)c2ccccc2)C1
+z042947 truth= 1 conflict= True tierA= ['aliphatic_N_plus(季铵/铵盐类)'] sb_kept= [] sb_dropped= [] | [N-]=[N+]=NCC(=O)N[C@H](CO)[C@H](O)c1ccc([N+](=O)[O-])cc1
+z066711 truth= 1 conflict= False tierA= [] sb_kept= [{'C': 6, 'core': 'guanidine(胍基)', 'N': [5, 7, 1], 'basic_N': [1]}] sb_dropped= [{'C': 6, 'core': 'guanidine(胍基)', 'N': [5, 7, 1]}] | CN1CC(=O)N=C1NC(=O)Nc1cccc(Cl)c1
+z070783 truth= 0 conflict= False tierA= [] sb_kept= [{'C': 1, 'core': 'guanidine(胍基)', 'N': [0, 2, 3], 'basic_N': [0, 2, 3]}] sb_dropped= [{'C': 1, 'core': 'guanidine(胍基)', 'N': [0, 2, 3]}] | NC(N)=NCC1COC2(CCCCC2)O1
+z070823 truth= 1 conflict= True tierA= [] sb_kept= [{'C': 15, 'core': 'amidine(脒基)', 'N': [16, 19], 'basic_N': [16, 19]}] sb_dropped= [{'C': 15, 'core': 'amidine(脒基)', 'N': [16, 19]}] | OC1(c2ccc(Cl)cc2)c2ccccc2C2=NCCN21
+z070837 truth= 0 conflict= True tierA= ['aliphatic_N_plus(季铵/铵盐类)'] sb_kept= [] sb_dropped= [] | C[N+]12CCC(CC1)C(OC(=O)C(O)(c1ccccc1)c1ccccc1)C2
+z070856 truth= 0 conflict= True tierA= ['aliphatic_N_plus(季铵/铵盐类)'] sb_kept= [] sb_dropped= [] | CC[N+](C)(CC)CCOC(=O)C1c2ccccc2Oc2ccccc21
+z070888 truth= 0 conflict= False tierA= ['aliphatic_N_plus(季铵/铵盐类)'] sb_kept= [] sb_dropped= [] | CC[N+](C)(C)Cc1ccccc1Br
+z070889 truth= 0 conflict= True tierA= [] sb_kept= [{'C': 1, 'core': 'guanidine(胍基)', 'N': [0, 2, 3], 'basic_N': [0, 2, 3]}] sb_dropped= [{'C': 1, 'core': 'guanidine(胍基)', 'N': [0, 2, 3]}] | NC(N)=NCCN1CCCCCCC1
+z071041 truth= 0 conflict= True tierA= [] sb_kept= [{'C': 11, 'core': 'amidine(脒基)', 'N': [12, 15], 'basic_N': [12, 15]}] sb_dropped= [{'C': 11, 'core': 'amidine(脒基)', 'N': [12, 15]}] | Cc1ccc(C(C)C)c(OCC2=NCCN2)c1

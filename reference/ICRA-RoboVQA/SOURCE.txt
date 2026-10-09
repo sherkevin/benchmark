@@ -1,0 +1,6 @@
+conference: ICRA 2024
+title: RoboVQA: Multimodal Long-Horizon Reasoning for Robotics
+arxiv_id: 2311.00899v1
+arxiv_abs: http://arxiv.org/abs/2311.00899v1
+pdf_url: https://arxiv.org/pdf/2311.00899v1
+matched_arxiv_title: RoboVQA: Multimodal Long-Horizon Reasoning for Robotics

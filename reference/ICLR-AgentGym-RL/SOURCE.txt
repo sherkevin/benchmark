@@ -1,0 +1,6 @@
+conference: ICLR 2026
+title: AgentGym-RL: Training LLM Agents for Long-Horizon Decision Making through Multi-Turn Reinforcement Learning
+arxiv_id: 2509.08755v1
+arxiv_abs: http://arxiv.org/abs/2509.08755v1
+pdf_url: https://arxiv.org/pdf/2509.08755v1
+matched_arxiv_title: AgentGym-RL: Training LLM Agents for Long-Horizon Decision Making through Multi-Turn Reinforcement Learning

@@ -1,0 +1,6 @@
+{
+  "tests/test_core.py::test_metrics_machine": true,
+  "tests/test_core.py::test_passhatk": true,
+  "tests/test_core.py::test_conservation": true,
+  "tests/test_core.py::test_calibration": true
+}

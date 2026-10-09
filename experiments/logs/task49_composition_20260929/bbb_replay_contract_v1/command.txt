@@ -1,0 +1,1 @@
+python3 -B <inline BBB replay contract smoke>

@@ -1,0 +1,6 @@
+arXiv:2505.18319
+abs: https://arxiv.org/abs/2505.18319
+pdf: https://arxiv.org/pdf/2505.18319
+topic: 【相通思路】迭代消除textual shortcuts逼模型真做视觉分析, 与我方匿名化消除记忆捷径同理
+pulled: 2026-08-09 反向证伪搜索(主动找反例)
+see: research/差异点证伪复核-20260809.md

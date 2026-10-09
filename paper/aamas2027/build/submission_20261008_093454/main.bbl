@@ -1,0 +1,217 @@
+%%% -*-BibTeX-*-
+%%% Do NOT edit. File created by BibTeX with style
+%%% ACM-Reference-Format-Journals [18-Jan-2012].
+
+\begin{thebibliography}{14}
+
+%%% ====================================================================
+%%% NOTE TO THE USER: you can override these defaults by providing
+%%% customized versions of any of these macros before the \bibliography
+%%% command.  Each of them MUST provide its own final punctuation,
+%%% except for \shownote{} and \showURL{}.  The latter two
+%%% do not use final punctuation, in order to avoid confusing it with
+%%% the Web address.
+%%%
+%%% To suppress output of a particular field, define its macro to expand
+%%% to an empty string, or better, \unskip, like this:
+%%%
+%%% \newcommand{\showURL}[1]{\unskip}   % LaTeX syntax
+%%%
+%%% \def \showURL #1{\unskip}           % plain TeX syntax
+%%%
+%%% ====================================================================
+
+\ifx \showCODEN    \undefined \def \showCODEN     #1{\unskip}     \fi
+\ifx \showISBNx    \undefined \def \showISBNx     #1{\unskip}     \fi
+\ifx \showISBNxiii \undefined \def \showISBNxiii  #1{\unskip}     \fi
+\ifx \showISSN     \undefined \def \showISSN      #1{\unskip}     \fi
+\ifx \showLCCN     \undefined \def \showLCCN      #1{\unskip}     \fi
+\ifx \shownote     \undefined \def \shownote      #1{#1}          \fi
+\ifx \showarticletitle \undefined \def \showarticletitle #1{#1}   \fi
+\ifx \showURL      \undefined \def \showURL       {\relax}        \fi
+% The following commands are used for tagged output and should be
+% invisible to TeX
+\providecommand\bibfield[2]{#2}
+\providecommand\bibinfo[2]{#2}
+\providecommand\natexlab[1]{#1}
+\providecommand\showeprint[2][]{arXiv:#2}
+
+\bibitem[Agrawal and Goyal(2013)]%
+        {agrawal2013thompson}
+\bibfield{author}{\bibinfo{person}{Shipra Agrawal} {and} \bibinfo{person}{Navin
+  Goyal}.} \bibinfo{year}{2013}\natexlab{}.
+\newblock \showarticletitle{Thompson Sampling for Contextual Bandits with
+  Linear Payoffs}. In \bibinfo{booktitle}{\emph{Proceedings of the 30th
+  International Conference on Machine Learning}}. \bibinfo{pages}{127--135}.
+\newblock
+
+
+\bibitem[Chen et~al\mbox{.}(2024)]%
+        {chen2024routerdc}
+\bibfield{author}{\bibinfo{person}{Shuhao Chen}, \bibinfo{person}{Weisen
+  Jiang}, \bibinfo{person}{Baijiong Lin}, \bibinfo{person}{James~T. Kwok},
+  {and} \bibinfo{person}{Yu Zhang}.} \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{RouterDC: Query-Based Router by Dual Contrastive
+  Learning for Assembling Large Language Models}. In
+  \bibinfo{booktitle}{\emph{Advances in Neural Information Processing
+  Systems}}.
+\newblock
+
+
+\bibitem[Feng et~al\mbox{.}(2025)]%
+        {feng2025graphrouter}
+\bibfield{author}{\bibinfo{person}{Tao Feng}, \bibinfo{person}{Yanzhen Shen},
+  {and} \bibinfo{person}{Jiaxuan You}.} \bibinfo{year}{2025}\natexlab{}.
+\newblock \showarticletitle{GraphRouter: A Graph-based Router for {LLM}
+  Selections}. In \bibinfo{booktitle}{\emph{International Conference on
+  Learning Representations}}.
+\newblock
+
+
+\bibitem[Hu et~al\mbox{.}(2024)]%
+        {hu2024routerbench}
+\bibfield{author}{\bibinfo{person}{Qitian~Jason Hu}, \bibinfo{person}{Jacob
+  Bieker}, \bibinfo{person}{Xiuyu Li}, \bibinfo{person}{Nan Jiang},
+  \bibinfo{person}{Benjamin Keigwin}, \bibinfo{person}{Gaurav Ranganath},
+  \bibinfo{person}{Kurt Keutzer}, {and} \bibinfo{person}{Shriyash~Kaustubh
+  Upadhyay}.} \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{{RouterBench}: A Benchmark for Multi-{LLM} Routing
+  System}.
+\newblock \bibinfo{journal}{\emph{arXiv preprint arXiv:2403.12031}}
+  (\bibinfo{year}{2024}).
+\newblock
+
+
+\bibitem[Huang et~al\mbox{.}(2021)]%
+        {huang2021tdc}
+\bibfield{author}{\bibinfo{person}{Kexin Huang}, \bibinfo{person}{Ting Fu},
+  \bibinfo{person}{Lucas~M. Glass}, \bibinfo{person}{Marinka Zitnik},
+  \bibinfo{person}{Cao Xiao}, {and} \bibinfo{person}{Jimeng Sun}.}
+  \bibinfo{year}{2021}\natexlab{}.
+\newblock \showarticletitle{Therapeutics Data Commons: Machine Learning
+  Datasets and Tasks for Drug Discovery and Development}. In
+  \bibinfo{booktitle}{\emph{Advances in Neural Information Processing Systems,
+  Datasets and Benchmarks Track}}.
+\newblock
+
+
+\bibitem[Joulani et~al\mbox{.}(2013)]%
+        {joulani2013online}
+\bibfield{author}{\bibinfo{person}{Pooria Joulani}, \bibinfo{person}{Andras
+  Gyorgy}, {and} \bibinfo{person}{Csaba Szepesvari}.}
+  \bibinfo{year}{2013}\natexlab{}.
+\newblock \showarticletitle{Online Learning under Delayed Feedback}. In
+  \bibinfo{booktitle}{\emph{Proceedings of the 30th International Conference on
+  Machine Learning}}. \bibinfo{pages}{1453--1461}.
+\newblock
+
+
+\bibitem[Li et~al\mbox{.}(2010)]%
+        {li2010contextual}
+\bibfield{author}{\bibinfo{person}{Lihong Li}, \bibinfo{person}{Wei Chu},
+  \bibinfo{person}{John Langford}, {and} \bibinfo{person}{Robert~E. Schapire}.}
+  \bibinfo{year}{2010}\natexlab{}.
+\newblock \showarticletitle{A Contextual-Bandit Approach to Personalized News
+  Article Recommendation}. In \bibinfo{booktitle}{\emph{Proceedings of the 19th
+  International Conference on World Wide Web}}. \bibinfo{pages}{661--670}.
+\newblock
+\href{https://doi.org/10.1145/1772690.1772758}{doi:\nolinkurl{10.1145/1772690.1772758}}
+
+
+\bibitem[Oetomo et~al\mbox{.}(2023)]%
+        {oetomo2023warmstart}
+\bibfield{author}{\bibinfo{person}{Bastian Oetomo}, \bibinfo{person}{R.~Malinga
+  Perera}, \bibinfo{person}{Renata Borovica-Gajic}, {and}
+  \bibinfo{person}{Benjamin I.~P. Rubinstein}.}
+  \bibinfo{year}{2023}\natexlab{}.
+\newblock \showarticletitle{Cutting to the Chase with Warm-Start Contextual
+  Bandits}.
+\newblock \bibinfo{journal}{\emph{Knowledge and Information Systems}}
+  \bibinfo{volume}{65}, \bibinfo{number}{9} (\bibinfo{year}{2023}),
+  \bibinfo{pages}{3533--3565}.
+\newblock
+
+
+\bibitem[Panda et~al\mbox{.}(2025)]%
+        {panda2025pilot}
+\bibfield{author}{\bibinfo{person}{Pranoy Panda}, \bibinfo{person}{Raghav
+  Magazine}, \bibinfo{person}{Chaitanya Devaguptapu}, \bibinfo{person}{Sho
+  Takemori}, {and} \bibinfo{person}{Vishal Sharma}.}
+  \bibinfo{year}{2025}\natexlab{}.
+\newblock \showarticletitle{Adaptive {LLM} Routing under Budget Constraints}.
+  In \bibinfo{booktitle}{\emph{Findings of the Association for Computational
+  Linguistics: EMNLP 2025}}. \bibinfo{pages}{23934--23949}.
+\newblock
+\href{https://doi.org/10.18653/v1/2025.findings-emnlp.1301}{doi:\nolinkurl{10.18653/v1/2025.findings-emnlp.1301}}
+
+
+\bibitem[Poon et~al\mbox{.}(2026)]%
+        {poon2026multillm}
+\bibfield{author}{\bibinfo{person}{Manhin Poon}, \bibinfo{person}{Xiangxiang
+  Dai}, \bibinfo{person}{Xutong Liu}, \bibinfo{person}{Fang Kong},
+  \bibinfo{person}{John C.~S. Lui}, {and} \bibinfo{person}{Jinhang Zuo}.}
+  \bibinfo{year}{2026}\natexlab{}.
+\newblock \showarticletitle{Online Multi-{LLM} Selection via Contextual Bandits
+  Under Unstructured Context Evolution}.
+\newblock \bibinfo{journal}{\emph{Proceedings of the AAAI Conference on
+  Artificial Intelligence}} \bibinfo{volume}{40}, \bibinfo{number}{29}
+  (\bibinfo{year}{2026}), \bibinfo{pages}{24855--24863}.
+\newblock
+\href{https://doi.org/10.1609/aaai.v40i29.39672}{doi:\nolinkurl{10.1609/aaai.v40i29.39672}}
+
+
+\bibitem[Schick et~al\mbox{.}(2023)]%
+        {schick2023toolformer}
+\bibfield{author}{\bibinfo{person}{Timo Schick}, \bibinfo{person}{Jane
+  Dwivedi-Yu}, \bibinfo{person}{Roberto Dessi}, \bibinfo{person}{Roberta
+  Raileanu}, \bibinfo{person}{Maria Lomeli}, \bibinfo{person}{Luke
+  Zettlemoyer}, \bibinfo{person}{Nicola Cancedda}, {and}
+  \bibinfo{person}{Thomas Scialom}.} \bibinfo{year}{2023}\natexlab{}.
+\newblock \showarticletitle{Toolformer: Language Models Can Teach Themselves to
+  Use Tools}. In \bibinfo{booktitle}{\emph{Advances in Neural Information
+  Processing Systems}}.
+\newblock
+
+
+\bibitem[Wu and Lu(2026)]%
+        {wu2026rewardrouting}
+\bibfield{author}{\bibinfo{person}{Xinle Wu} {and} \bibinfo{person}{Yao Lu}.}
+  \bibinfo{year}{2026}\natexlab{}.
+\newblock \showarticletitle{Reward Model Routing in Alignment}. In
+  \bibinfo{booktitle}{\emph{International Conference on Learning
+  Representations}}.
+\newblock
+\urldef\tempurl%
+\url{https://proceedings.iclr.cc/paper_files/paper/2026/hash/8dc9b0192713f44f035b8c0bd3f4153a-Abstract-Conference.html}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Wu et~al\mbox{.}(2018)]%
+        {wu2018moleculenet}
+\bibfield{author}{\bibinfo{person}{Zhenqin Wu}, \bibinfo{person}{Bharath
+  Ramsundar}, \bibinfo{person}{Evan~N. Feinberg}, \bibinfo{person}{Nathan
+  Gomes}, \bibinfo{person}{Caleb Geniesse}, \bibinfo{person}{Aneesh~S. Pappu},
+  \bibinfo{person}{Adele Leswing}, {and} \bibinfo{person}{Vijay Pande}.}
+  \bibinfo{year}{2018}\natexlab{}.
+\newblock \showarticletitle{MoleculeNet: A Benchmark for Molecular Machine
+  Learning}.
+\newblock \bibinfo{journal}{\emph{Chemical Science}} \bibinfo{volume}{9},
+  \bibinfo{number}{2} (\bibinfo{year}{2018}), \bibinfo{pages}{513--530}.
+\newblock
+\href{https://doi.org/10.1039/C7SC02664A}{doi:\nolinkurl{10.1039/C7SC02664A}}
+
+
+\bibitem[Yao et~al\mbox{.}(2023)]%
+        {yao2023react}
+\bibfield{author}{\bibinfo{person}{Shunyu Yao}, \bibinfo{person}{Jeffrey Zhao},
+  \bibinfo{person}{Dian Yu}, \bibinfo{person}{Nan Du}, \bibinfo{person}{Izhak
+  Shafran}, \bibinfo{person}{Karthik Narasimhan}, {and} \bibinfo{person}{Yuan
+  Cao}.} \bibinfo{year}{2023}\natexlab{}.
+\newblock \showarticletitle{{ReAct}: Synergizing Reasoning and Acting in
+  Language Models}. In \bibinfo{booktitle}{\emph{International Conference on
+  Learning Representations}}.
+\newblock
+
+
+\end{thebibliography}

@@ -1,0 +1,27 @@
+Use case: infographic-diagram. Redraw Figure 1 for the MIRA-Relay paper using Figure 1 v18 as a style reference. Keep the compact v07-like visual grammar, current method semantics, and zero provider-letter clutter. This revision specifically removes the long lower U-shaped Update route: put the delayed feedback chain on one horizontal baseline aligned with the highlighted released-state row.
+
+FIGURE ROLE
+Method architecture: frozen base score plus released selected-only state produce one tool choice; a valid selected result is judged, delayed, released, and writes only the selected state row. Do not draw a separate temporal timeline.
+
+TEXT
+No standalone provider letters “A”, “B”, or “C”; no provider names or arbitrary row IDs. Use only short labels: Inputs, MIRA-Relay, Execution, Molecule + Endpoint, Features, Frozen scorer, base score, released state, residual, score, Eligible tools, Selector, Selected tool, Call, Return, Judge, Chemical feedback, Runtime ledger, selected-only queue, Release, Update. Equations only q=q⁰+Δ and τ_t=t+1+D. Under 65 English words; no explanatory sentences.
+
+GLOBAL STYLE
+White landscape 2.7:1, flat vector, pale-blue method panel, pale-cream execution panel, muted-purple delay elements, navy text and arrows, blue state/update, gray frozen records, amber judge/feedback, simple document/lock/gear/clock icons, concrete grids and cells. No full-canvas grid, swimlane, giant ribbon, crossed-out cards, robots, glossy 3-D, gradients, watermark, or performance numbers.
+
+ARCHITECTURE LAYOUT
+LEFT: narrow Inputs panel with molecule and endpoint icons labelled Molecule + Endpoint. No line from this panel may enter released state.
+CENTER TOP: Features grid → locked Frozen scorer → slim base-score vector q⁰. A released-state register sits below with three unlabeled rows and two columns n and s; highlight only its middle row blue. Register → residual vector Δ. q⁰ and Δ → one plus operator → slim score vector q=q⁰+Δ → one compact Selector. Put a small neutral Eligible tools tray immediately beside or inside Selector, with three simple icons and no provider letters. Selector emits one Selected tool.
+RIGHT: Selected tool → Call → Return. Valid return → frozen endpoint Judge → amber Chemical feedback r∈{0,1}. Runtime error from Return → gray Runtime ledger dead-end. Runtime error never enters feedback or state.
+
+SINGLE-BASELINE FEEDBACK CHAIN
+The released-state register’s highlighted middle row must be visually aligned with a horizontal chain of blue/purple modules. Immediately to the RIGHT of the register, at the SAME vertical center as the highlighted row, place a blue Update card. Immediately to the RIGHT of Update, on that same baseline, place a purple Release clock labelled τ_t=t+1+D. Immediately to the RIGHT of Release, place a purple selected-only queue. Draw exactly three short, single-direction edges on this one baseline: selected-only queue → Release (purple dashed waiting edge), Release → Update (solid blue/purple edge), Update → the INTERIOR CENTER of the highlighted middle row. The Update arrowhead must visibly land inside the blue middle-row n/s cells; it must not land on the outer border, bottom edge, or whitespace. Do not place Update below the register. Do not route Update upward from a lower strip. Do not use a long horizontal line, U-shaped detour, diagonal return, or Release→register bypass. This is the only edge entering released state from outside.
+
+FEEDBACK INPUT
+Draw one short purple downward arrow from amber Chemical feedback to the selected-only queue. The queue may be visually just below the execution panel but must remain horizontally aligned with Release and Update; keep the drop short. Decisions can continue while queued, but do not add prose or a second architecture.
+
+GRAPH AUDIT
+Exactly one path: Chemical feedback → selected-only queue ⇢ Release → Update → highlighted released-state row. Exactly one score path: q⁰ + Δ → score → Selector. Exactly one execution path and one runtime dead-end. Every arrowhead docks on its receiving card or row cell. No A/B/C labels or duplicated provider identity.
+
+FINAL NEGATIVE CHECK
+The image must look like a compact architecture with a single straight feedback baseline, not a table, swimlane, process poster, or repeated Figure 2. The highlighted row and Update module are same-height; the three feedback edges are short and visibly connected.

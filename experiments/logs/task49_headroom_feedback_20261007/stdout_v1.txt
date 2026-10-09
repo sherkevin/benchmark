@@ -1,0 +1,1 @@
+{"status": "completed", "n_molecules": 722, "n_streams": 90, "n_decisions": 12996, "wall_seconds": 2.5143749590000004, "error": null}

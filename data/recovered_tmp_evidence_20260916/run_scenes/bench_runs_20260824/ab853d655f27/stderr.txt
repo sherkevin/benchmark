@@ -1,0 +1,5 @@
+Could not parse message into JSON: {"code":"InvalidParameter","message":"encryption header error","request_id":"449ca8a4-b119-9dc4-b6c0-7f3593197df1"}
+{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " the pool"}}
+From chunk: [ "id:6", ":HTTP_STATUS/400", "data:{\"code\":\"InvalidParameter\",\"message\":\"encryption header error\",\"request_id\":\"449ca8a4-b119-9dc4-b6c0-7f3593197df1\"}",
+  "id:7", ":HTTP_STATUS/200", "event: content_block_delta", "data: {\"type\": \"content_block_delta\", \"index\": 0, \"delta\": {\"type\": \"text_delta\", \"text\": \" the pool\"}}"
+]

@@ -1,0 +1,38 @@
+You are a materials scientist. From the candidate list below, find the SINGLE
+candidate with the MAXIMUM superconducting transition temperature (Tc).
+
+BUDGET: you may call get_property at most 10 times. There are
+        25 candidates, so you cannot measure them all — choose what to
+        measure wisely, then submit the one you conclude has the highest Tc.
+
+CANDIDATES (normalized composition formulas; use verbatim as identifiers):
+  O3.500Cu1Nd2
+  O6.300Ca1Cu2Ba2Hg1
+  O4Cu1Ba0.142La1.858
+  O6.240Ca1Cu2Ba2Hg1
+  O4Cu1Sr0.150La1.850
+  O6.130Ca1Cu2Ba2Hg1
+  O6.310Ca1Cu2Ba2Hg1
+  O8.077Ca1Cu2Sr2Bi2
+  O6.190Ca1Cu2Ba2Hg1
+  O6.210Ca1Cu2Ba2Hg1
+  O6.080Ca1Cu2Ba2Hg1
+  B1O5Cu1Ba1La1
+  O7Ca0.800Cu2Ba2Nd0.200Tl1
+  O6.270Ca1Cu2Ba2Hg1
+  O6.140Ca1Cu2Ba2Hg1
+  O4Ca0.080Cu1La1.920
+  O8Ca0.075Cu4Y0.925Ba2
+  O8Ca0.900Cu2Ba2Ce0.100Tl2
+  O6.220Ca1Cu2Ba2Hg1
+  O4Na0.020Cu1La1.980
+  O11Ti2Cu2Ba2La2
+  O2Cl2Ca2Cu1
+  O6.100Ca1Cu2Ba2Hg1
+  O2Cu1Sr0.860Nd0.140
+  O6.160Ca1Cu2Ba2Hg1
+
+TOOLS: literature_search (metadata only), get_property (measure tc /
+       element_count / family; costs budget), submit_answer (give the single
+       highest-Tc candidate, your reasoning, and the measured evidence).
+Every Tc value you cite must come from an actual measurement.

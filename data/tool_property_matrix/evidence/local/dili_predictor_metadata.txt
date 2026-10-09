@@ -1,0 +1,23 @@
+# 出处：/Users/jingwu/.local/share/benchmark-runtimes/dili_predictor/lib/python3.10/site-packages/dilipred-4.0.9.dist-info/METADATA
+Metadata-Version: 2.1
+Name: dilipred
+Version: 4.0.9
+Summary: DILIPRedictor is an open-source app framework built specifically for human drug-induced liver injury
+Author: Srijit Seal
+Requires-Python: >=3.10,<3.12
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Requires-Dist: MolVS (==0.1.1)
+Requires-Dist: dimorphite-dl (==2.0.1)
+Requires-Dist: loguru (>=0.7.2,<0.8.0)
+Requires-Dist: mordred (==1.2.0)
+Requires-Dist: numpy (==1.23.5)
+Requires-Dist: pandas (==1.5.2)
+Requires-Dist: rdkit (>=2025.3.3,<2026.0.0)
+Requires-Dist: scikit-learn (==1.2.0)
+Requires-Dist: shap (==0.41.0)
+
+# 引用行：
+## Cite
+> doi: https://doi.org/10.1021/acs.chemrestox.4c00015

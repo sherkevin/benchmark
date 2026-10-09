@@ -1,0 +1,82 @@
+commit 47519172d6c626a78cfe761e9f2ae22767f952b9
+Author: Jing Wu <jingwu.wu@alibaba-inc.com>
+Date:   Fri Aug 7 13:00:17 2026 +0800
+
+    监工裁定 A：断言口径改造（task-04 §1 收口）。test_main_end_to_end_with_discovery_case 断言拆两段：① legacy 9 点逐字段零差异——'fixed 判分公式零改动'实证意图原样保留；② 新契约 6 点必须与修复前断裂态快照逐字段不同（翻转方向断言，防抽取链回归）且重跑自洽（字段集/类型/取值域），不许只删断言放行。文件头与测试 docstring 登记：_all_results.json 为修复前断裂态快照（新契约 6 点 cp1-cp5 恒 0），task-04 修复后不再以此为基线（§6 历史结论翻转为预期）；快照本体 traces/** 红线只读未动。全量 pytest 152 passed + 1 skipped 零失败
+
+diff --git a/dag_poc/mcp_mock_server/tests/test_evaluate_open_discovery.py b/dag_poc/mcp_mock_server/tests/test_evaluate_open_discovery.py
+index 5c15331..b73a565 100644
+--- a/dag_poc/mcp_mock_server/tests/test_evaluate_open_discovery.py
++++ b/dag_poc/mcp_mock_server/tests/test_evaluate_open_discovery.py
+@@ -12,8 +12,13 @@
+      仍走 _score_open，逐字段与改动前基线一致；discovery 归属读
+      BPartitionReader 接缝（不硬编码 case 名单）。
+   5. __main__ 端到端冒烟：monkeypatch listdir 注入合成 discovery case，
+-     16 实验点（15 fixed 基线 + 1 discovery）跑通不 KeyError，
+-     fixed 15 点逐字段零差异，discovery 行 open_gate/open_score/grounding_mode 落账。
++     16 实验点（15 fixed 基线 + 1 discovery）跑通不 KeyError，discovery 行
++     open_gate/open_score/grounding_mode 落账。基线口径（任务 #45 / task-04 §1
++     监工裁定 A）：_all_results.json 为修复前断裂态快照——extract_tool_data
++     只认旧工具名时新契约 6 点（cardiac_sotalol / cns_metoprolol）cp1-cp5
++     恒 0；task-04 修复后该 6 点不再以此为基线（§6"历史结论翻转为预期"）。
++     现断言两段：legacy 9 点逐字段零差异（保住"fixed 判分公式零改动"意图）
++     + 新契约 6 点必须与旧快照不同且重跑自洽（不许只删断言放行）。
+ 
+ fixture 对齐修复三/任务 #32 ②：case_id = case_fixture_isolation_v1，
+ G_B = [阿司匹林 ADR-0017 dummy atom 匿名形态]（新键空间，canonical 回环稳定）。
+@@ -212,7 +217,17 @@ def test_discovery_case_ids_from_reader():
+ 
+ def test_main_end_to_end_with_discovery_case(tmp_path, monkeypatch, capsys):
+     """__main__ 全流程：15 fixed 基线 + 1 合成 discovery case（无 gt）端到端
+-    跑通不 KeyError；fixed 逐字段零差异；discovery 行三门指标落账。"""
++    跑通不 KeyError；legacy 9 点逐字段零差异、新契约 6 点与修复前快照必然
++    不同且重跑自洽；discovery 行三门指标落账。
++
++    基线登记（任务 #45 / task-04 §1，监工裁定 A：断言口径改造）：
++    _all_results.json 是修复前断裂态快照——extract_tool_data 只认旧 6 工具名
++    时，新契约 6 点（cardiac_sotalol / cns_metoprolol × 3 model）证据集恒空、
++    cp1-cp5 恒 0；task-04 §1 双轨抽取修复后该 6 点不再以此为基线（任务书 §6
++    风险预判"历史结论翻转为预期"）。故断言拆两段：① legacy 9 点逐字段零差异
++    ——判分公式/权重/阈值零改动的实证意图原样保留；② 新契约 6 点必须与旧快照
++    不同（翻转方向断言，不许只删断言放行）且重跑自洽。_all_results.json 本体
++    属 dag_poc/traces/** 红线，只读不改。"""
+     baseline = json.load(open(os.path.join(DAG_POC, 'traces', '_all_results.json')))
+     traces = tmp_path / 'traces'
+     shutil.copytree(os.path.join(DAG_POC, 'traces'), traces)
+@@ -251,11 +266,32 @@ def test_main_end_to_end_with_discovery_case(tmp_path, monkeypatch, capsys):
+     d = disc[0]
+     assert d['gt'] is None and d['open_gate'] is True
+     assert d['open_score'] == 1.0 and d['grounding_mode'] == 'placeholder'
+-    # fixed 15 点逐字段零差异（fixed 判分零改动实证）
++    # 两段断言（task-04 §1 监工裁定 A）：① legacy 9 点逐字段零差异——
++    # "fixed 判分公式零改动"实证意图保留；② 新契约 6 点必须与修复前快照不同
++    # 且重跑自洽（§6 历史结论翻转为预期；不许只删断言放行）。
++    _NEW_CONTRACT_CASES = {'cardiac_sotalol', 'cns_metoprolol'}
+     fixed_new = {r['case'] + '|' + r['model']: r for r in rows
+                  if r['case'] != 'fixture_isolation_v1'}
+     assert len(fixed_new) == len(baseline) == 15
++    n_legacy = 0
+     for o in baseline:
+-        n = fixed_new[o['case'] + '|' + o['model']]
+-        for f in set(o) | set(n):
+-            assert o.get(f) == n.get(f), f'fixed 字段漂移 {o["case"]} {f}'
++        key = o['case'] + '|' + o['model']
++        n = fixed_new[key]
++        if o['case'] in _NEW_CONTRACT_CASES:
++            # ② 翻转方向断言：修复后必须与断裂态快照逐字段不同
++            # （快照该 6 点 cp1-cp5/process/task_score 恒 0），
++            # 若仍全等 → 新契约抽取链回归/未生效
++            assert dict(o) != dict(n), (
++                f'新契约点 {key} 未翻转：与修复前断裂态快照逐字段相同，'
++                f'task-04 §1 抽取修复未生效')
++            # 重跑自洽：结构完整、关键字段类型与取值域合法
++            assert set(o) == set(n), f'新契约点 {key} 字段集漂移'
++            assert n['case'] == o['case'] and n['model'] == o['model']
++            assert isinstance(n['task_score'], (int, float)) and n['task_score'] >= 0
++            assert isinstance(n['gold_pass_set'], list)
++        else:
++            # ① legacy 9 点逐字段零差异（fixed 判分公式零改动实证）
++            n_legacy += 1
++            for f in set(o) | set(n):
++                assert o.get(f) == n.get(f), f'legacy 字段漂移 {o["case"]} {f}'
++    assert n_legacy == 9  # 账本对平：legacy 9 点 + 新契约 6 点 = 15
