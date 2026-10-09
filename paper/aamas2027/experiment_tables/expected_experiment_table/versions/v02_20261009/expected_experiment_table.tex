@@ -1,0 +1,205 @@
+% Expected experiment matrix v02 for the current AAMAS 2027 paper.
+% Every cell is a planning target, not a measurement or a claim.
+% The table structure is copied from paper/aamas2027/main.tex.
+\documentclass[10pt]{article}
+\usepackage[letterpaper,margin=0.66in]{geometry}
+\usepackage{booktabs,tabularx,array,multirow,xcolor,amsmath,hyperref,fancyhdr,lastpage}
+\definecolor{Blue}{HTML}{2E5DA1}
+\definecolor{Ink}{HTML}{27313D}
+\definecolor{Gray}{HTML}{687585}
+\definecolor{Watermark}{HTML}{E5E9EE}
+\hypersetup{colorlinks=true,linkcolor=Blue,urlcolor=Blue}
+\newcommand{\notrun}{\textemdash}
+\newcommand{\smallnote}[1]{{\footnotesize\color{Gray}#1}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\renewcommand{\arraystretch}{1.14}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\footnotesize\color{Gray}MIRA-Relay · expected experiment matrix v02}
+\fancyhead[R]{\footnotesize\color{Watermark}EXPECTED TARGET — NOT MEASURED}
+\fancyfoot[C]{\footnotesize\color{Gray}\thepage/\pageref{LastPage}}
+
+\begin{document}
+{\color{Blue}\Large\bfseries Expected Experiment Matrix}\\
+{\color{Ink}\large Exact table structure of the current paper, with expected values}\\
+\smallnote{v02 · 2026-10-09 · planning targets only. No cell is an observed result, confidence interval, or closure decision.}
+
+\small
+\textbf{Binding.}
+The row order, column semantics, experiment IDs, and displayed methods follow the canonical
+\texttt{main.tex} and its 9-page \texttt{main.pdf}. Exact hashes are in
+\texttt{main\_input\_sha256.txt}. The preview is not the binding table numbering.
+
+\textbf{Reading convention.}
+Numbers are conservative targets anchored to the current recorded table and its documented estimands.
+They express the intended direction: natural stationary routing is tied to or slightly below Frozen;
+controlled correctness drift is where MIRA-Relay should outperform Frozen and the matched Online-SGD row;
+the development objectives remain below Corrected Frozen; and cost is a separate trade-off.
+A target range is a planning band, never evidence.
+
+\section*{Table 1 --- Comparators under the common routing contract}
+\begin{tabularx}{\linewidth}{@{}p{0.21\linewidth}X@{}}
+\toprule
+Role & Expected displayed methods \\
+\midrule
+Anchors & Random; fit-only Best Fixed; retrospective Best Fixed$^{\dagger}$ \\
+Matched updates & Frozen; MIRA-Relative; Online SGD \\
+Online controls & Greedy LinUCB; BayesianRouter \\
+Proposed & MIRA-Relay \\
+\midrule
+Mechanism & Fixed cyclic permutation credit \\
+Audit only & Pooled-feedback static recentering \\
+\bottomrule
+\end{tabularx}
+\smallnote{$^{\dagger}$ Evaluator-only headroom reference. The cyclic control is a sealed replay; pooled recentering is excluded from mechanism claims. \texttt{Online SGD} is the displayed label for the matched method ID \texttt{matched\_online\_sgd}.}
+
+\section*{Table 2 --- Experimental map}
+\begin{tabularx}{\linewidth}{@{}llX@{}}
+\toprule
+ID & Question & Expected evidence location \\
+\midrule
+E1 & Adaptation and drift & Table 3 and Figure 3 \\
+E2 & Source-aligned credit & Tables 4 and 3 \\
+E3 & Initial selection & Table 5 \\
+E4 & Scale and centering & Table 6 \\
+E5 & Policy cost / validity & Table 8 \\
+E6 & Post-call refusal & Table 7 \\
+\bottomrule
+\end{tabularx}
+\smallnote{This map is copied as a structural table; it contains no acceptance thresholds.}
+
+\clearpage
+\section*{Table 3 --- Selected correctness (\%)}
+\smallnote{Original order and the mean over 128 uniform random orders of the same previously inspected cohort. The controlled columns use the declared evaluator-side correctness drift.}
+\begin{tabularx}{\linewidth}{@{}Xrrrr@{}}
+\toprule
+& \multicolumn{2}{c}{Natural} & \multicolumn{2}{c}{Controlled drift} \\
+\cmidrule(lr){2-3}\cmidrule(l){4-5}
+Method & Original & 128-order mean & Original & 128-order mean \\
+\midrule
+Random & 83.8 & 86.5 & \notrun & \notrun \\
+Best Fixed & 88.2 & 88.2 & \notrun & \notrun \\
+Frozen & 89.8 & 89.8 & 73.4 & 75.8 \\
+MIRA-Relative & 89.8 & 89.8 & \notrun & \notrun \\
+\midrule
+Online SGD & 89.2 & 89.1 & 84.0 & 82.3 \\
+Greedy LinUCB & 89.7 & 89.7 & 81.2 & 76.9 \\
+BayesianRouter & 89.5 & 89.7 & 80.3 & 79.6 \\
+\textbf{MIRA-Relay} & \textbf{89.8} & 89.5 & \textbf{87.6} & \textbf{87.0} \\
+\midrule
+Fixed-permutation credit & \notrun & 89.9 & \notrun & 71.4 \\
+\midrule
+Retrospective Best Fixed$^{\dagger}$ & 90.5 & 90.5 & \notrun & \notrun \\
+\bottomrule
+\end{tabularx}
+\smallnote{The MIRA-Relative natural target equals Frozen because its molecule-independent multiplicative factor leaves the action sequence unchanged. The natural MIRA target is a null/slight-loss pattern; its controlled target is below any evaluator-only ceiling and above the matched online controls. $^{\dagger}$ Evaluator-only.}
+
+\subsection*{Figure 3 data --- expected gain over Frozen (pp)}
+\begin{tabularx}{\linewidth}{@{}llrrr@{}}
+\toprule
+Panel & Method & $D=0$ & $D=1$ & $D=4$ \\
+\midrule
+Natural & Online SGD & $-0.76$ & $-0.89$ & $-0.13$ \\
+Natural & Greedy LinUCB & $-0.13$ & $0.00$ & $-0.13$ \\
+Natural & BayesianRouter & $-0.25$ & $-0.25$ & $-0.32$ \\
+Natural & MIRA-Relay & $-0.13$ & $-0.13$ & $+0.25$ \\
+\midrule
+Controlled drift & Online SGD & $+11.59$ & $+11.21$ & $+9.17$ \\
+Controlled drift & Greedy LinUCB & $+8.66$ & $+7.01$ & $+7.64$ \\
+Controlled drift & BayesianRouter & $+6.82$ & $+6.94$ & $+6.94$ \\
+Controlled drift & MIRA-Relay & $+13.63$ & $+14.52$ & $+14.39$ \\
+\bottomrule
+\end{tabularx}
+\smallnote{These are the points plotted in Figure 3, not a second estimand. The controlled MIRA and Online-SGD means are approximately $+14.18$ and $+10.66$ pp, matching the intended Table 3 original-order contrast. No uncertainty band is implied.}
+
+\section*{Table 4 --- Source-aligned attribution}
+\begin{tabularx}{\linewidth}{@{}lrr@{}}
+\toprule
+Contrast & Natural $\Delta$ [planning band] & Controlled $\Delta$ [planning band] \\
+\midrule
+Local $-$ Frozen & $+0.10\;[-1.08,+1.42]$ & $+14.40\;[+9.79,+19.23]$ \\
+Permutation $-$ Frozen & $+0.41\;[-0.47,+1.32]$ & $-1.27\;[-3.66,+0.95]$ \\
+\textbf{Local $-$ Permutation} & $-0.30\;[-1.42,+0.76]$ & \textbf{$+15.67\;[+10.65,+20.74]$} \\
+\bottomrule
+\end{tabularx}
+\smallnote{Units: pp. Equal-weight scaffold-mean contrasts over 124 clusters and 90 replay streams per condition. The bands are planning ranges, not observed confidence intervals; this estimand is separate from Table 3 pooled correctness.}
+
+\clearpage
+\section*{Table 5 --- Cold-start accuracy on BBB development}
+\begin{tabularx}{\linewidth}{@{}lr@{}}
+\toprule
+Selector & Accuracy (\%) \\
+\midrule
+Best Fixed & 79.2 \\
+Raw Frozen & 79.4 \\
+Corrected Frozen & \textbf{80.2} \\
+\midrule
+BCE + auxiliary CLS & 78.5 / 79.0 \\
+BT + auxiliary CLS & 78.8 / 78.3 \\
+\midrule
+Per-molecule oracle$^{\dagger}$ & 85.6 \\
+\bottomrule
+\end{tabularx}
+\smallnote{The two values for each learned objective are paired training seeds 0/1. Both objectives are expected to remain below Corrected Frozen, preserving the documented negative diagnostic. $^{\dagger}$ Uses unselected outputs and is evaluator-only.}
+
+\section*{Table 6 --- Score scale and update rule}
+\begin{tabularx}{\linewidth}{@{}llrr@{}}
+\toprule
+Score & Update & Natural & Drift \\
+\midrule
+\multirow{3}{*}{Raw} & Frozen & 79.4 & 69.1 \\
+& Marginal & 79.2 & 77.3 \\
+& Query & 78.5 & 76.0 \\
+\midrule
+\multirow{3}{*}{Corrected} & Frozen & 80.2 & 63.3 \\
+& Marginal & 79.8 & 78.3 \\
+& Query & \textbf{80.3} & \textbf{78.7} \\
+\bottomrule
+\end{tabularx}
+\smallnote{This is a development diagnostic. Query-relative updating is expected to improve drift modestly; its natural effect remains small and does not establish a main-method gain.}
+
+\section*{Table 7 --- Post-call refusal}
+\begin{tabularx}{\linewidth}{@{}lrrr@{}}
+\toprule
+Policy & Coverage (\%) & Accepted accuracy (\%) & Utility \\
+\midrule
+Always accept & 100.00 & 88.15 & $-0.1285$ \\
+Confidence refuse & 84.46 & \textbf{94.57} & $\mathbf{-0.0947}$ \\
+Always refuse & 0.00 & \notrun & $-0.2600$ \\
+\midrule
+Same-coverage random$^{\dagger}$ & 84.46 & 88.69 & $-0.1444$ \\
+\bottomrule
+\end{tabularx}
+\smallnote{Secondary analysis on the reused holdout. Expected integer tuples $(W,R,C,N)$ are $(93,0,785,785)$ for always accept, $(36,122,785,785)$ for confidence refuse, $(0,785,0,785)$ for always refuse, and $(75,122,785,785)$ for same-coverage random.}
+\smallnote{Coverage and utility use these counts and $U=-(W+0.25R+0.01C)/N$. $^{\dagger}$ Evaluator-side conditional null.}
+
+\clearpage
+\section*{Table 8 --- CPU policy overhead ($\mu$s)}
+\smallnote{Expected mean of 30 stream-level p95 timings on macOS arm64. Provider inference, I/O, service latency, and live memory are separate quantities.}
+\begin{tabularx}{\linewidth}{@{}lrrr@{}}
+\toprule
+& \multicolumn{2}{c}{Natural menu} & Controlled \\
+\cmidrule(lr){2-3}\cmidrule(l){4-4}
+Method & Selection & Update & Update \\
+\midrule
+Random & 67.1 & 5.4 & \notrun \\
+Best Fixed & 5.8 & 0.7 & \notrun \\
+Frozen & 15.9 & 1.3 & 1.5 \\
+MIRA-Relative & 42.0 & 73.3 & \notrun \\
+\midrule
+Online SGD & 14.1 & 19.4 & 20.0 \\
+Greedy LinUCB & 128.6 & 90.9 & 92.3 \\
+BayesianRouter & 133.7 & 89.0 & 92.6 \\
+\textbf{MIRA-Relay} & \textbf{27.2} & \textbf{2.8} & \textbf{3.5} \\
+\bottomrule
+\end{tabularx}
+\smallnote{Trade-off target: MIRA-Relay costs more selection time than Frozen but less than LinUCB/BayesianRouter, while its update remains lightweight. This table does not assert a joint p95 cap or end-to-end service cost.}
+
+\vfill
+\small
+\textbf{References.}
+Canonical schema: \texttt{main.tex}; E1--E6 semantics: \texttt{experiment\_tables/README.md}.
+Baseline anchors: Li et al. (2010) and Agrawal and Goyal (2013). The Guide v09 audits are review inputs only; its status remains HOLD.
+
+\end{document}
